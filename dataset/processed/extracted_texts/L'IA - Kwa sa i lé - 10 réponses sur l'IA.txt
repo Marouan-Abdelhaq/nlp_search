@@ -1,0 +1,1442 @@
+L’IA : Kwa sa i lé ?
+10 réponses sur l’IA
+L’intelligence artificielle, en 2024
+2024
+1 | Aract Réunion - L’IA : Kwa sa i lé ?
+2 | Aract Réunion - L’IA : Kwa sa i lé ?
+Kwa sa i lé ? – SOMMAIRE :
+Dans le domaine de l'intelligence artificielle (IA), les transformations ne se limitent pas
+uniquement à des avancées technologiques. Elles englobent également l'ensemble des
+cadres organisationnels, incluant de nouvelles temporalités, des rythmes de travail renouvelés
+et des modes de collaboration inédits entre l'IA et les acteurs de l'entreprise. Cependant, pour
+de nombreux acteurs, ces changements semblent être induits par des algorithmes, souvent
+perçus comme inaccessibles, réservés aux experts et spécialistes.
+Pourtant, pour concrétiser les promesses de l'intelligence artificielle - telles qu'une
+productivité et une performance accrues, une réduction de la pénibilité du travail, la possibilité
+de déléguer les tâches répétitives à une IA, entre autres - il est essentiel d'impliquer l'ensemble
+des parties prenantes dans le processus de changement et d'intégration de l'IA. En mobilisant
+l'expérience des utilisateurs, les entreprises pourront pleinement tirer parti des évolutions en
+cours dans le domaine de l'IA.
+Il est donc impératif de déconstruire le sens des changements induits par l'intelligence
+artificielle. En encourageant la participation de tous les acteurs de l'entreprise, nous pourrons
+véritablement exploiter le potentiel transformateur de l'IA.
+KWA SA I LE ? Ð SOMMAIRE : ........................................................................................................................... 3
+KWA SA I LE ? Ð LÕINTELLIGENCE ARTIFICIELLE, EN 2024 .................................................................... 5
+INTRODUCTION ....................................................................................................................................................... 5
+1. LÕIA Ð DE QUOI SÕAGIT-IL ? ....................................................................................................................... 7
+DEFINITION(S) : ...................................................................................................................................................... 7
+LES DIFFERENTS TYPES DÕIA : ............................................................................................................................ 11
+2. LÕIA Ð QUELS SONT LES ENJEUX ASSOCIES A LÕIA ? .................................................................. 13
+3. LÕIA Ð LÕIA PEUT-ELLE ETRE PREDICTIVE ? ..................................................................................... 15
+4. LÕIA Ð QUELS SONT LES PRINCIPAUX DOMAINES DÕAPPLICATION DE
+LÕINTELLIGENCE ARTIFICIELLE DANS LE MONDE PROFESSIONNEL ? .......................................... 19
+5. LÕIA Ð QUELS SONT LES AVANTAGES ET LES INCONVENIENTS DE
+LÕUTILISATION DE LÕIA DANS LES ENTREPRISES ? ............................................................................... 23
+AVANTAGES : ....................................................................................................................................................... 23
+INCONVENIENTS : ................................................................................................................................................. 24
+6. LÕIA Ð COMMENT LÕINTELLIGENCE ARTIFICIELLE PEUT-ELLE
+CONTRIBUER A LÕINNOVATION ET A LA TRANSFORMATION DES
+ENTREPRISES ? ................................................................................................................................................... 27
+7. LÕIA Ð QUELS SONT LES DEFIS ETHIQUES ET SOCIETAUX POSES PAR LE
+DEVELOPPEMENT DE LÕINTELLIGENCE ARTIFICIELLE ? ..................................................................... 31
+8. LÕIA Ð QUELS SONT LES TENDANCES EMERGENTES DANS LE DOMAINE
+DE LÕINTELLIGENCE ARTIFICIELLE ? .......................................................................................................... 35
+IA ET SANTE : ...................................................................................................................................................... 35
+IA ET CONDITIONS DE TRAVAIL : ........................................................................................................................ 36
+IA ET QUALITE DE VIE : ....................................................................................................................................... 37
+3 | Aract Réunion - L’IA : Kwa sa i lé ?
+9. LÕIA Ð COMMENT LÕINTELLIGENCE ARTIFICIELLE POURRAIT-ELLE
+EVOLUER DANS LES ANNEES A VENIR ? .................................................................................................. 39
+10. LÕIA Ð QUELLES SONT LES INITIATIVES ET LES POLITIQUES
+REGLEMENTAIRES VISANT A ENCADRER LE DEVELOPPEMENT ET
+LÕUTILISATION DE LÕINTELLIGENCE ARTIFICIELLE ? ............................................................................ 45
+1. CADRE REGLEMENTAIRE INITIAL : ............................................................................................................ 45
+2. RENFORCEMENT REGLEMENTAIRE : ........................................................................................................ 46
+3. ADOPTION D'UN TRAITE INTERNATIONAL : ............................................................................................... 46
+4. REGLEMENTATION EUROPEENNE : LÕAI ACT : ......................................................................................... 47
+5. LA STRATEGIE FRANCE I.A. : .................................................................................................................... 47
+4 | Aract Réunion - L’IA : Kwa sa i lé ?
+Kwa sa i lé ? – L’intelligence artificielle, en 2024
+Introduction
+Dans un environnement économique et technologique en constante évolution,
+où l'entrepreneuriat est en perpétuelle mutation et l'innovation façonne l'avenir,
+l'intelligence artificielle (IA) se présente comme une clé essentielle pour ouvrir de
+nouvelles perspectives, repousser les limites du possible et façonner la prochaine ère
+de progrès humain. L'IA pourrait induire un renouvellement des fondements des
+entreprises en provoquant des transformations profondes dans leur fonctionnement,
+leur capacité à créer de la valeur et leurs interactions avec leur environnement. Cette
+évolution transversale souligne que l'impact de l'IA ne se cantonne pas à la sphère
+opérationnelle, mais influence également les relations et les dynamiques au sein et
+autour de l'entreprise, impliquant les clients, les partenaires, les collaborateurs, les
+salariés ainsi que les représentants du personnel et de la gouvernance. Ces
+transformations induites par l’IA conditionnent étroitement les conditions de travail de
+tous les acteurs impliqués. Cependant, investir dans l'IA et s'engager dans son
+intégration sont souvent complexes et peuvent représenter des défis considérables.
+Cette complexité peut conduire à une intégration perçue comme subie, suscitant ainsi
+des résistances au sein des organisations. Par ailleurs, la prolifération des hors-séries,
+des articles de presse spécialisée ou quotidienne sur le sujet témoigne d'un réel
+engouement des utilisateurs autour de l'IA.
+Face à ces enjeux, une question fondamentale se pose : comment mieux
+maîtriser les potentialités offertes par l’intelligence artificielle et transformer ces défis
+en opportunités ? C’est dans cette optique que cet ouvrage intitulé "10 questions sur
+l'intelligence artificielle" offre aux acteurs de l'entreprise des pistes de réflexion pour
+appréhender cette technologie émergente et conduire des projets adaptés aux défis
+de demain. En explorant ces questions, notre objectif est d'éclairer le chemin vers une
+intégration réussie de l’IA, favorisant ainsi une performance et une innovation
+durables.
+Auteur : Jean-Noël AMATO
+5 | Aract Réunion - L’IA : Kwa sa i lé ?
+6 | Aract Réunion - L’IA : Kwa sa i lé ?
+1. L’IA – De quoi s’agit-il ?
+Synth(cid:143)se
+L'intelligence artificielle (IA) utilise des procédés logiques et automatisés basés
+sur des algorithmes. Elle accomplit des tâches spécifiques et imite des comportements
+humains comme le raisonnement et la planification. Actuellement, les modèles de
+langage pré-entraînés (GPT) sont médiatisés, soulevant des questions de conformité
+et de confiance. Le développement de l'IA, accéléré depuis 2010, repose sur
+l'exploitation de concepts anciens et l'utilisation de vastes ensembles de données (Big
+Data) pour automatiser des tâches.
+L'intégration de l'IA dans le monde du travail soulève des questions sur la délégation
+des tâches, la collaboration homme-machine et la confiance dans les systèmes IA. Il
+est crucial de comprendre non seulement les capacités de l'IA, mais aussi comment
+maximiser son potentiel tout en équilibrant les capacités humaines et automatisées.
+En quelques phrases :
+L'intelligence artificielle utilise des algorithmes pour automatiser des tâches en
+imitant le raisonnement humain.
+Les modèles de langage pré-entraînés comme GPT suscitent des
+préoccupations sur la conformité et la fiabilité.
+L'intégration croissante de l'IA dans le travail soulève des questions sur la
+collaboration homme-machine et la confiance dans les systèmes automatisés,
+nécessitant un équilibre entre capacités humaines et technologiques.
+Dans un environnement professionnel en pleine mutation numérique et
+digitale, aucune industrie, profession ou fonction n'est épargnée par cette
+transformation généralisée. Au cœur de cette évolution se trouve l'émergence
+grandissante de systèmes générant d'importantes quantités de données. Cette
+explosion des données a alimenté le développement d'algorithmes de Deep
+Learning, une branche de l'intelligence artificielle permettant aux machines
+d'apprendre à partir de données complexes et d'émettre des suggestions en
+autonomie. Cependant, il est essentiel de reconnaître que cette évolution va au-delà
+de la simple dimension technologique, englobant des enjeux économiques, sociaux et
+juridiques significatifs, susceptibles de redéfinir les structures organisationnelles et les
+interactions professionnelles. Dans ce contexte en perpétuelle évolution, une
+technologie se démarque par son potentiel transformateur : l'intelligence artificielle
+(IA).
+Définition(s) :
+à Pour simplifier, pour la CNIL (Commission nationale de l'informatique et des
+libertés) « L'intelligence artificielle est un procédé logique et automatisé
+reposant généralement sur un algorithme et en mesure de réaliser des tâches
+bien définies. »
+(https://www.cnil.fr/fr/definition/intelligence-artificielle)
+7 | Aract Réunion - L’IA : Kwa sa i lé ?
+à Pour le Parlement européen, « l’intelligence artificielle représente tout outil
+utilisé par une machine afin de reproduire des comportements liés aux humains,
+tels que le raisonnement, la planification et la créativité ».
+(https://www.europarl.europa.eu/topics/fr/article/20200827STO85804/intelligen
+ce-artificielle-definition-et-utilisation)
+à L’INRS (Institut National de Recherche et de Sécurité) propose une définition
+quelque peu complexe, mais relativement exhaustive : « Même s'il n'y a pas de
+définition consensuelle, le terme "IA" fait référence à des systèmes qui
+manifestent des comportements intelligents en analysant leur environnement et
+en effectuant des actions avec un certain degré d'autonomie afin d'atteindre des
+objectifs spécifiques. Les systèmes d'IA peuvent être purement logiciels,
+agissant dans le monde virtuel. Des exemples incluent les agents
+conversationnels (comme ChatGPT), les logiciels d'analyse d'images, les
+moteurs de recherche et les systèmes de reconnaissance faciale. D'autres
+systèmes d'IA intègrent l'IA dans des appareils tels que des robots avancés,
+des voitures autonomes, des drones ou des applications de l'Internet des
+objets. Contrairement aux systèmes d'IA logiciels, ces systèmes perçoivent leur
+environnement grâce à des capteurs et agissent sur celui-ci ou s'y déplacent,
+nécessitant donc des mesures de sécurité plus robustes. »
+(https://www.inrs.fr/media.html?refINRS=PV%2020 ; https://www.occitanie-
+ouest.cnrs.fr/sites/delegation_dr14/files/page/2022-04/2020PetitIllustreIA.pdf)
+à Le CNRS (Centre National de la Recherche Scientifique) rappelle que
+l'intelligence artificielle est une notion forgée au milieu des années 1950, dans
+la foulée des réflexions du mathématicien Alan Turing, qui se demandait si un
+ordinateur saurait un jour « penser », ou s'il n'était capable que d'un « jeu
+d'imitation » (imitation game). Les champs d'action de l'IA sont vastes et
+semblent difficiles à circonscrire, car ils s'étendent à de nombreux aspects du
+quotidien, que ce soit pour effectuer des recherches ou des achats en ligne, le
+ciblage publicitaire, la traduction automatique, les assistants numériques
+personnels, les villes connectées, mais aussi dans les domaines des transports,
+de la santé, etc.
+Actuellement, les GPT (Generative Pre-trained Transformers) ou modèles de
+langage pré-entraînés suscitent des interrogations quant à leur utilisation des
+données et de leurs algorithmes, la plupart d'entre eux n'étant pas en open
+source (code source ouvert). Le RGPD impose en effet que les données traitées
+soient exactes, or les intelligences artificielles génératives produisent à partir
+de ces données un contenu qui peut être erroné, ce qui serait donc non
+conforme à la réglementation européenne.
+(https://www.enseignementsup-recherche.gouv.fr/fr/intelligence-artificielle-de-
+quoi-parle-t-91190)
+à Pour l’Inserm (Institut national de la santé et de la recherche médicale), «
+L’intelligence artificielle (IA) est un domaine de recherche en pleine expansion
+et promis à un grand avenir. Ses applications, qui concernent toutes les activités
+humaines, permettent notamment d’améliorer la qualité des soins. L’IA est en
+effet au cœur de la médecine du futur avec les opérations assistées, le suivi
+des patients à distance, les prothèses intelligentes, ou encore les traitements
+personnalisés grâce au recoupement de données (big data) … Dans ce cadre,
+8 | Aract Réunion - L’IA : Kwa sa i lé ?
+les chercheurs développent des approches et techniques multiples, du
+traitement des langues et de la construction d’ontologies, à la fouille de données
+et à l’apprentissage automatique. Il est toutefois indispensable que le grand
+public comprenne comment fonctionnent ces systèmes pour savoir ce qu’ils font
+et surtout ce qu’ils ne font pas. »
+(https://www.inserm.fr/dossier/intelligence-artificielle-et-sante/)
+Nous pourrions définir l’IA ainsi : « L'intelligence artificielle (IA) repose sur des
+procédés logiques et automatisés, exploitant souvent des algorithmes
+préexistants développés jusqu'au début du 20e siècle. Avec la démocratisation des
+services basés sur Internet, ces algorithmes ont été largement popularisés, sans pour
+autant être démocratisés. L'IA peut accomplir des tâches spécifiques, reproduire
+des comportements humains tels que le raisonnement, la planification et la
+"créativité", et démontrer des comportements intelligents en analysant son
+environnement et en agissant de manière autonome pour atteindre des objectifs
+définis. Cependant, pour l'instant, elle est principalement utilisée pour une gamme
+variée de tâches relativement définies :
+- allant de la recherche en ligne au ciblage publicitaire,
+- en passant par la traduction automatique et les assistants numériques
+personnels.
+Les applications les plus médiatisées actuellement reposent sur des GPT
+(Generative Pre-trained Transformers) ou des modèles de langage pré-
+entraînés. Dans le monde du travail, l'intégration de l'intelligence artificielle
+soulève des questions telles que : quelles tâches devraient être déléguées à une
+IA ? Comment collaborer efficacement avec elle ? Comment coopérer et
+dialoguer de manière productive avec une IA ? Quelle confiance peut-on
+accorder aux IA ? En effet, le CNRS souligne que « les intelligences artificielles
+génératives produisent (…) un contenu qui peut être erroné ». Ces interrogations
+mettent en lumière la nécessité pour les individus et les organisations de comprendre
+non seulement les capacités de l'IA, mais aussi comment maximiser son potentiel tout
+en maintenant un équilibre entre les capacités humaines et les capacités
+automatisées. ».
+L'intelligence artificielle (IA) a principalement connu son développement entre
+1940 et 1990.
+En 2010, elle a amorcé une nouvelle phase de croissance avec l'avènement des
+algorithmes d'apprentissage automatique. Deux éléments ont fortement contribué à
+cette accélération : l'accessibilité à des ensembles de données exponentielles et
+l'efficacité toujours plus importante des processeurs d'ordinateur pour accélérer le
+traitement des algorithmes.
+La « révolution » actuelle de l'IA repose ainsi moins sur des découvertes récentes
+que sur la capacité à exploiter efficacement des concepts plus anciens, tels que
+l'inférence bayésienne du XVIIIe siècle ou les neurones formels de 1943, les réseaux
+neuronaux, en 1957. L'apprentissage automatique a véritablement changé la donne
+par rapport à la génération précédente d'IA, les systèmes experts. Contrairement à
+ces derniers, l'objectif de l'apprentissage automatique n'est pas tant d'acquérir
+des connaissances déjà formalisées que de comprendre la structure des
+données et de les intégrer dans des modèles par corrélation et classification, en
+9 | Aract Réunion - L’IA : Kwa sa i lé ?
+s'appuyant sur des ensembles de données (Big Data), notamment pour automatiser
+des tâches.
+(https://www.coe.int/fr/web/artificial-intelligence/what-is-ai)
+(https://www.courrierinternational.com/grand-format/infographie-plongee-au-c-ur-du-
+cerveau-numerique-ou-comment-l-intelligence-artificielle-fonctionne)
+10 | Aract Réunion - L’IA : Kwa sa i lé ?
+Les différents types d’IA :
+Synth(cid:143)se
+La recherche en intelligence artificielle (IA) repose sur divers domaines tels que
+la logique mathématique, les statistiques, les probabilités, la neurobiologie
+computationnelle et l'informatique. En octobre 2023, trois types d'IA se distinguaient :
+l'IA limitée (ANI) spécialisée dans des tâches spécifiques comme la reconnaissance
+vocale ; l'IA générale (AGI) capable de raisonnement et d'adaptation similaires aux
+humains ; et la superintelligence (ASI), surpassant largement les capacités humaines.
+En mai 2024, on distingue sept types d'IA applicables au travail : IA basée sur les
+règles, IA faible, IA forte, apprentissage supervisé, apprentissage non supervisé,
+apprentissage par renforcement, et apprentissage profond. Ces technologies
+permettent de résoudre des problèmes complexes, d'optimiser des processus, et
+d'automatiser des tâches diverses, améliorant ainsi l'efficacité opérationnelle.
+En quelques phrases :
+La recherche en intelligence artificielle (IA) repose sur divers domaines tels que
+la logique mathématique, les statistiques, les probabilités, la neurobiologie
+computationnelle et l'informatique.
+En octobre 2023, trois types d'IA se distinguaient : l'IA limitée (ANI) spécialisée
+dans des tâches spécifiques comme la reconnaissance vocale ; l'IA générale (AGI)
+capable de raisonnement et d'adaptation similaires aux humains ; et la
+superintelligence (ASI), surpassant largement les capacités humaines.
+En mai 2024, on distingue sept types d'IA applicables au travail : IA basée sur
+les règles, IA faible, IA forte, apprentissage supervisé, apprentissage non supervisé,
+apprentissage par renforcement, et apprentissage profond.
+Ces technologies permettent de résoudre des problèmes complexes, d'optimiser
+des processus, et d'automatiser des tâches diverses, améliorant ainsi l'efficacité
+opérationnelle.
+La recherche en intelligence artificielle s'appuie sur divers domaines,
+notamment la logique mathématique, les statistiques, les probabilités, la
+neurobiologie computationnelle et l'informatique.
+(Gamkrelidze , T., Zouinar , M. and Barcellini , F. (2021). The “Old” Issues of the “New”
+Artificial Intelligence Systems in Professional Activities. In Digital Transformations in
+the Challenge of Activity and Work, M.-E.B. Chaumon (Ed.).
+https://doi.org/10.1002/9781119808343.ch6)
+En octobre 2023, trois principaux types d'intelligence artificielle se sont distingués à
+la fois dans la recherche et dans leur application pratique :
+1. L'intelligence artificielle limitée (ANI) : Cette forme d'IA se spécialise dans
+l'exécution de tâches spécifiques et souvent répétitives, telles que la
+reconnaissance vocale, la génération d'itinéraires ou la classification d'images.
+Bien qu'excellant dans des domaines spécifiques, l'ANI est limitée à ces tâches
+définies et ne possède pas la capacité de raisonner au-delà de ces limites.
+2. L'intelligence artificielle générale (AGI) : Contrairement à l'ANI, l'AGI est
+conçue pour posséder une forme de compréhension générale et une capacité
+de raisonnement similaire à celle des êtres humains. Elle est capable de
+résoudre une gamme plus large de problèmes complexes et de s'adapter sans
+nécessiter de programmation spécifique pour chaque tâche. L'objectif de l'AGI
+11 | Aract Réunion - L’IA : Kwa sa i lé ?
+est de pouvoir raisonner de manière autonome et de comprendre son
+environnement de manière similaire à un être humain.
+3. La superintelligence artificielle (ASI) : Ce type d'IA surpasserait largement
+les capacités cognitives humaines. Elle posséderait un niveau d'intelligence et
+de compétence bien supérieur à celui de n'importe quel individu. L’ASI serait
+capable de résoudre des problèmes complexes à une vitesse et avec une
+précision bien supérieures à celles des êtres humains. Son potentiel est
+souvent considéré comme ayant des implications profondes et potentiellement
+révolutionnaires, mais aussi posant des risques si elle n'est pas maîtrisée avec
+précaution.
+Aujourd’hui, en mai 2024, on dénombre sept types d’IA, tous pouvant trouver une
+application dans le monde du travail :
+(1) L'IA basée sur les règles : Elle utilise des instructions préétablies pour
+résoudre des problèmes spécifiques, comme les GPT (Generative Pre-trained
+Transformers) pour répondre aux questions des clients ou les systèmes de
+gestion des ressources humaines pour traiter les demandes de congés.
+(2) L'IA faible (ou étroite) : Spécialisée dans une tâche spécifique, elle est utilisée
+dans des domaines comme l'analyse financière, la détection de fraudes ou
+l'interprétation d'images médicales.
+(3) L'IA forte (ou générale) : Représentant un niveau supérieur, elle possède la
+capacité d'apprendre, de comprendre le contexte et de s'adapter à de nouvelles
+situations. Son application pratique est encore limitée, mais pourrait être utilisée
+pour des tâches complexes telles que la prise de décision stratégique.
+(4) L'apprentissage supervisé : Les modèles d'IA sont entraînés sur des données
+étiquetées pour la classification et la prédiction, comme l'évaluation de la
+solvabilité des clients par les banques.
+(5) L'apprentissage non supervisé : Il découvre des structures ou des motifs
+cachés ou des signaux faibles dans les données sans étiquettes préalables,
+comme la segmentation de la clientèle pour mieux comprendre les besoins des
+clients. Il peut être utilisé dans l’analyse des accidents et des « presque
+accidents » pour détecter des signaux précurseurs et suggérer des mesures de
+prévention primaire.
+(6) L'apprentissage par renforcement : L’IA apprend à prendre des décisions en
+interagissant avec son environnement, ce qui est utile pour optimiser des
+processus dans des environnements dynamiques, comme la gestion de la
+chaîne d'approvisionnement.
+(7) L'apprentissage profond (Deep Learning) : Utilisant des réseaux neuronaux
+computationnels, il résout des problèmes complexes comme la reconnaissance
+de formes par ordinateur ou la traduction automatique, permettant
+d'automatiser des tâches consommatrices de données et d'améliorer l'efficacité
+des opérations.
+(https://www.coe.int/fr/web/artificial-intelligence/history-of-ai)
+12 | Aract Réunion - L’IA : Kwa sa i lé ?
+2.L’IA – Quels sont les enjeux associés à l’IA ?
+Synth(cid:143)se
+Dans le contexte professionnel contemporain, l'intelligence artificielle (IA) est
+largement perçue comme un moteur inévitable du progrès technologique et un outil
+indispensable pour maintenir la compétitivité. Cependant, son adoption rapide soulève
+des questions cruciales quant à son impact et à sa pertinence éthique. Les avancées
+de l'IA posent des défis majeurs, notamment en termes d'éthique et de responsabilité,
+où la prise de décision automatisée, la protection de la vie privée et la prévention de
+la discrimination algorithmique sont des préoccupations centrales. De plus,
+l'automatisation accrue par l'IA suscite des inquiétudes quant à son impact sur l'emploi
+et la nécessité d'une transition équitable pour les travailleurs affectés. La transparence
+et l'explicabilité des décisions prises par les systèmes d'IA sont également essentielles
+pour établir la confiance et assurer une utilisation responsable. En parallèle, la sécurité
+des données et la lutte contre les biais algorithmiques deviennent des impératifs pour
+prévenir les abus potentiels. Face à ces enjeux, une réglementation et une
+gouvernance appropriées sont nécessaires pour encadrer l'IA et garantir qu'elle
+bénéficie à la société dans son ensemble tout en minimisant ses risques.
+En quelques phrases :
+L'intelligence artificielle (IA) est vue comme essentielle à la compétitivité et au
+progrès technologique dans le monde professionnel actuel, bien que son adoption
+rapide soulève des questions éthiques majeures concernant la prise de décision
+automatisée, la protection de la vie privée et la discrimination algorithmique.
+L'automatisation accrue par l'IA suscite également des préoccupations quant à
+son impact sur l'emploi et la nécessité d'une transition équitable pour les travailleurs
+affectés.
+Pour établir la confiance et assurer une utilisation responsable, la transparence
+des décisions et la lutte contre les biais algorithmiques sont cruciaux, tout comme la
+nécessité d'une réglementation et d'une gouvernance adaptées pour encadrer l'IA et
+maximiser ses bénéfices tout en minimisant ses risques pour la société.
+Dans le monde professionnel d'aujourd'hui, les avancées dans le domaine
+de l'intelligence artificielle (IA) sont souvent considérées comme une étape
+inévitable du progrès technologique, et comme un outil indispensable à
+exploiter pour rester compétitif. Cependant, ces évolutions suscitent des
+questionnements quant à leur pertinence et à leur intégration. Souvent, leur
+déploiement semble être dirigé par les développeurs et les décideurs, sans réel
+espace pour remettre en question leur utilité ou les modalités de leur adoption.
+(https://travail-emploi.gouv.fr/actualites/l-actualite-du-ministere/article/le-deploiement-
+de-l-ia-dans-les-organisations-et-son-utilisation-dans-les)
+Les enjeux associés à l'IA sont nombreux et variés, et ils évoluent constamment avec
+les progrès technologiques et l'adoption croissante de l'IA dans différents secteurs.
+Voici quelques-uns des principaux enjeux :
+¥ Éthique et responsabilité : L'IA soulève des questions éthiques concernant la
+manière dont elle est utilisée, notamment en ce qui concerne la prise de décision
+automatisée, la vie privée, la surveillance, la discrimination algorithmique et la
+13 | Aract Réunion - L’IA : Kwa sa i lé ?
+sécurité des données. Il est essentiel de garantir que l'IA est développée et
+utilisée de manière responsable et éthique.
+¥ Impact sur l'emploi : L'automatisation alimentée par l'IA pourrait entraîner des
+perturbations sur le marché du travail en remplaçant certains emplois, en
+modifiant les compétences requises et en créant de nouveaux types d'emplois
+ou en ajoutant de nouvelles activités dans certains emplois. Il est nécessaire de
+gérer cette transition de manière équitable pour que l’introduction de l’IA soit un
+avantage et non une contrainte.
+¥ Transparence et explicabilité : Il est crucial que les décisions prises par les
+systèmes d'IA soient transparentes et explicables, surtout lorsqu'elles ont un
+impact significatif sur les salariés ou le collectif de travail. Comprendre comment
+les algorithmes prennent leurs décisions est essentiel pour établir la confiance
+et garantir la responsabilité.
+¥ Sécurité et confidentialité : L'IA peut être vulnérable et perturbée par la
+manipulation des données d'entraînement ou les biais algorithmiques
+intentionnels. Assurer la sécurité des systèmes d'IA et protéger la confidentialité
+des données est essentiel pour prévenir les abus.
+¥ Biais et équité : Les algorithmes d'IA peuvent refléter et amplifier les préjugés
+existants dans les données d'entraînement, ce qui peut conduire à des décisions
+« injustes » ou discriminatoires. Il est crucial de détecter et de corriger les biais
+dans les systèmes d'IA afin de garantir l'équité et la justice dans leurs résultats.
+¥ Réglementation et gouvernance :Les progrès rapides de l'IA nécessitent une
+réglementation et une gouvernance appropriées pour garantir son utilisation
+sûre et responsable. Cela comprend des normes de sécurité, des lignes
+directrices éthiques, des mécanismes de responsabilité et des cadres juridiques
+pour aborder les questions complexes liées à l'IA.
+En résumé, les enjeux associés à l'IA nécessitent une approche collaborative,
+holistique, multidimensionnelle et multifactorielle impliquant des acteurs
+gouvernementaux, des entreprises, des chercheurs, des utilisateurs/travailleur et la
+société dans son ensemble pour promouvoir un développement et une utilisation de
+l'IA qui bénéficient à tous.
+Ç LÕEXPƒRIENCE-TRAVAILLEUR È
+Cette notion implique de prendre en considération l'expérience et le ressenti des travailleurs dans
+les projets de transformation, dans le but d'améliorer le service offert et la performance des
+organisations. On peut la comparer à l'« expérience utilisateur », ou « UX », dans le domaine de
+l'ergonomie cognitive. L'UX, qui signifie User eXperience, se réfère à la qualité de l'expérience vécue
+par l'utilisateur lors de toute interaction avec un dispositif numérique. Il englobe l'expérience globale
+ressentie lors de l'utilisation d'une interface, d'un appareil digital, ou plus largement, en interagissant
+avec n'importe quel dispositif ou service. L'UX se distingue ainsi de l'ergonomie, qui étudie l'activité
+humaine dans toutes ses dimensions, et de l'utilisabilité, qui se réfère à la facilité avec laquelle un objet
+peut être utilisé pour accomplir une tâche donnée par une personne spécifique.
+Voir : https://www.anact.fr/10-questions-sur-la-maitrise-des-transformations-numeriques /
+https://www.anact.fr/la-transition-numerique-promesses-et-menaces-pour-lexperience-travailleur
+14 | Aract Réunion - L’IA : Kwa sa i lé ?
+3.L’IA – L’IA peut-elle être prédictive ?
+Synth(cid:143)se
+L'intelligence artificielle (IA) utilise des algorithmes d'apprentissage automatique
+et des méthodes statistiques pour analyser les historiques d'accidents au travail et
+identifier des tendances et des risques. Cela permet aux entreprises d'adopter des
+mesures préventives proactives pour renforcer la sécurité des travailleurs. Cependant,
+les prédictions de l'IA sont probabilistes et donc sujettes à l'incertitude. Par exemple,
+les modèles comme la régression linéaire intègrent des variables telles que la
+production d'articles, les coûts des matières premières et la masse salariale, offrant
+des estimations sous forme de distributions de probabilité. Ces modèles permettent
+aux entreprises de prendre des décisions informées, en considérant différents
+scénarios (optimistes, modérés, pessimistes) et en tenant compte des variations
+possibles dans les données.
+En quelques phrases :
+L'intelligence artificielle (IA) utilise des algorithmes pour analyser les historiques
+d'accidents au travail, identifiant ainsi des tendances et des risques, ce qui aide les
+entreprises à adopter des mesures préventives pour améliorer la sécurité.
+Les prédictions de l'IA, telles que celles fournies par la régression linéaire avec
+des variables comme la production et les coûts, sont probabilistes et permettent aux
+entreprises de prendre des décisions informées en considérant divers scénarios et
+incertitudes associées.
+L'intelligence artificielle (IA) peut effectivement être prédictive dans de
+nombreux domaines. En utilisant des algorithmes d'apprentissage automatique
+et des méthodes statistiques et probabilistes, les IA peuvent analyser de
+grandes quantités de données pour identifier des tendances, des schémas et
+des corrélations1. Ces analyses permettent souvent de faire des prédictions sur des
+événements « futurs » ou des comportements probables.
+Dans le domaine du travail et de la prévention des accidents, l'intelligence artificielle
+peut fournir des analyses prédictives pour identifier et atténuer les risques de manière
+proactive.
+1. Analyse des données de sécurité : Les entreprises peuvent exploiter l'IA pour
+examiner les données concernant les accidents du travail, les incidents de
+sécurité et même les presque accidents. Grâce à des algorithmes
+d'apprentissage automatique, l'IA peut détecter des signaux faibles, des
+schémas et des facteurs de risque. Cela permet aux entreprises de prendre des
+mesures préventives ciblées pour réduire les risques.
+(https://www.lemonde.fr/emploi/article/2023/01/25/sante-au-travail-les-
+promesses-de-l-intelligence-artificielle-pour-ameliorer-la-
+prevention_6159191_1698637.html)
+2. Optimisation des équipements de sécurité : En utilisant des techniques d'IA
+telles que l'apprentissage par renforcement, les entreprises peuvent maximiser
+1 Ç CorrŽlation nÕest pas causalitŽ È. La causalitŽ se produit lorsqu'une variable en affecte une autre,
+tandis que la corrŽlation implique simplement une relation entre les deux variables.
+15 | Aract Réunion - L’IA : Kwa sa i lé ?
+l'utilisation des équipements de sécurité. Par exemple, des capteurs équipés
+d'IA peuvent surveiller en temps réel l'utilisation des équipements de protection
+individuelle (EPI) par les travailleurs et fournir des recommandations pour
+améliorer leur utilisation.
+(https://inforisque.fr/fiches-pratiques/IA-risques-travail.php)
+En combinant les capacités prédictives et probabilistes de l'IA, les entreprises peuvent
+considérablement renforcer leur capacité à prévenir les accidents du travail et à créer
+des conditions de travail plus sûres pour leurs employés.
+Cependant, il est essentiel de reconnaître que même si les algorithmes
+d'intelligence artificielle sont optimisés et performants, ils ne sont pas
+intrinsèquement prédictifs. Au contraire, ils sont conçus pour générer des
+modèles probabilistes2 en analysant les données disponibles. Ces modèles
+peuvent être influencés par divers facteurs, tels que la sur-représentation ou l'absence
+de certaines variables dans les ensembles de données. Par conséquent, les
+prédictions de l'IA ne sont pas des certitudes absolues, mais plutôt des estimations
+basées sur des probabilités. Il est donc crucial d'exercer une analyse critique et de
+prendre en compte les limitations et les incertitudes associées aux prédictions de l'IA.
+2 Un exemple classique de mod(cid:143)le probabiliste est le mod(cid:143)le de rŽgression linŽaire. Dans ce mod(cid:143)le,
+on cherche ˆ Žtablir une relation linŽaire entre une variable dŽpendante (la variable que l'on cherche
+ˆ prŽdire) et une ou plusieurs variables indŽpendantes (les variables explicatives). Supposons que
+nous ayons des donnŽes historiques sur la production de l'entreprise, comprenant le nombre
+d'articles fabriquŽs et le cožt total de production pour chaque lot. Nous pouvons utiliser un mod(cid:143)le
+de rŽgression linŽaire pour modŽliser la relation entre ces deux variables (Y=β0+β1×X+ε). Le mod(cid:143)le
+de rŽgression linŽaire tenterait de trouver une relation linŽaire entre ces deux variables. Cependant,
+le mod(cid:143)le reconna”trait Žgalement qu'il existe une certaine incertitude associŽe ˆ cette relation. Par
+consŽquent, il produirait non seulement une estimation du cožt de production pour un nombre donnŽ
+d'articles ˆ fabriquer, mais Žgalement une estimation de l'incertitude de cette prŽdiction. Cette
+incertitude pourrait (cid:144)tre reprŽsentŽe sous forme de distribution de probabilitŽ, ce qui rendrait le
+mod(cid:143)le probabiliste. Ainsi, l'entreprise pourrait utiliser cette Ç prŽdiction È pour prendre des
+dŽcisions en mati(cid:143)re de planification de production et de gestion des cožts.
+16 | Aract Réunion - L’IA : Kwa sa i lé ?
+Supposons que nous ayons accès à des données historiques sur la production d'une
+entreprise, telles que le nombre d'articles fabriqués et le coût total de production pour
+chaque lot. Pour analyser cette relation, nous pouvons recourir à un modèle de
+régression linéaire.
+Dans ce cadre :
+- La variable dépendante (Y) représente le coût total de production.
+- La variable indépendante (X) correspond au nombre d'articles fabriqués.
+Maintenant, ajoutons deux variables supplémentaires pour évaluer les variations des
+coûts : des matières premières et de la masse salariale :
+- La variable indépendante (X2) rend compte du coût relatif des matières premières.
+- La variable indépendante (X3) reflète l'augmentation relative de la masse salariale.
+Le modèle de régression linéaire vise à établir une relation entre ces variables. Par
+exemple, il pourrait estimer que pour chaque augmentation de 1 dans le nombre
+d'articles fabriqués (X), le coût de production augmente d'une certaine valeur (Y).
+Ensuite, le statisticien ou l'IA ferait varier délibérément les coûts des matières
+premières (X2) et la masse salariale (X3).
+Il en résulte un premier modèle de régression linéaire (Y = β0+β1×X+ε), suivi par des
+modèles de régression linéaire supplémentaires prenant en compte ces variations (Y
+= β0+β1×X+β2×X2+ε, puis Y = β0+ β1×X+β2×X3+ε …).
+Ces modèles reconnaissent l'incertitude associée à ces relations et fournissent
+non seulement une estimation du coût de production, mais également une estimation
+de l'incertitude de cette prédiction. Cette incertitude est représentée sous forme de
+distribution de probabilité, ce qui rend les modèles probabilistes.
+Cette approche permet à l'entreprise de générer différents modèles prédictifs, tenant
+compte de diverses variations qui pourraient influencer le modèle initial, afin de
+prendre des décisions probabilistes en matière de planification de production et de
+gestion des coûts, en considérant les variations possibles des coûts des matières
+premières et de la masse salariale.
+Cette méthodologie est similaire à celle utilisée dans la modélisation des
+scénarios de réchauffement climatique. En modifiant les variables « pertinentes », on
+peut créer des modèles optimistes avec un faible degré de réchauffement climatique,
+des modèles modérés avec un réchauffement de deux degrés, ou des modèles
+pessimistes avec un réchauffement de trois degrés.
+Par ailleurs, même si nous disposions de toutes les combinaisons de loterie
+jusqu'à aujourd'hui, il est important de reconnaître que la variable entropique reste
+significative. Avec des tirages réguliers, la probabilité de reproduire un tirage
+précédent devient incertaine et difficile à estimer. En effet, chaque tirage de loterie est
+indépendant et aléatoire, ce qui rend la prédiction de la prochaine combinaison
+extrêmement complexe. Même avec une connaissance exhaustive des résultats
+passés, la nature aléatoire de la loterie limite notre capacité à prédire les tirages futurs
+avec une certitude absolue.
+17 | Aract Réunion - L’IA : Kwa sa i lé ?
+18 | Aract Réunion - L’IA : Kwa sa i lé ?
+4.L’IA – Quels sont les principaux domaines
+d’application de l’intelligence artificielle dans le
+monde professionnel ?
+Synth(cid:143)se
+L'intelligence artificielle (IA) a profondément modifié divers secteurs
+professionnels, devenant un élément essentiel du monde du travail moderne. Une
+étude de LaborIA auprès de 250 dirigeants de PME a révélé des perceptions
+divergentes : ceux familiarisés avec l'IA mettent en avant son autonomie et ses
+bénéfices, tandis que les novices expriment des craintes liées à la déshumanisation.
+L'IA est largement utilisée pour des tâches telles que le calcul de charges et la
+maintenance d'avions, avec une adoption croissante notamment dans les grandes
+entreprises et le secteur des transports. En conclusion, l'IA continue de transformer le
+travail en proposant des solutions innovantes tout en nécessitant une réflexion
+continue sur son impact éthique et ses applications efficaces dans les organisations.
+En quelques phrases :
+L'intelligence artificielle (IA) a profondément transformé de nombreux secteurs
+professionnels, devenant un élément indispensable du paysage professionnel
+moderne.
+Une étude de LaborIA avec 250 dirigeants de PME a révélé que l'expérience
+directe de l'IA met en avant son autonomie et son savoir-faire, tandis que ceux sans
+expérience expriment des préoccupations sur la déshumanisation du travail,
+soulignant l'importance de l'expérience pratique dans la perception de l'IA.
+Les applications diversifiées de l'IA, telles que le calcul de charges et la
+maintenance d'avions, ainsi que son adoption croissante dans divers secteurs selon
+une enquête de l'INSEE, montrent comment elle automatise, analyse et améliore
+l'efficacité opérationnelle.
+L'intelligence artificielle (IA) a radicalement transformé divers secteurs
+professionnels, devenant un élément incontournable du paysage professionnel
+moderne.
+(https://travail-emploi.gouv.fr/actualites/presse/communiques-de-presse/article/le-
+laboria-publie-ses-premiers-resultats-d-observation-du-deploiement-de-l-ia)
+Une étude menée par LaborIA (https://www.laboria.ai/) auprès de 250 dirigeants
+de PME a mis en lumière des perceptions divergentes de l'IA au sein du milieu
+professionnel.
+¥ Les répondants ayant une expérience directe de l'IA ont mis en avant des
+aspects tels que l'autonomie et le savoir-faire,
+¥ tandis que ceux sans expérience ont exprimé des préoccupations concernant la
+déshumanisation du travail.
+Ces observations soulignent l'importance de l'expérience pratique dans la
+perception de l'IA.
+19 | Aract Réunion - L’IA : Kwa sa i lé ?
+Parallèlement, cette étude a identifié et étudié divers cas d'usage, offrant un
+aperçu de la diversité des applications de l'IA dans le monde professionnel. Des
+systèmes de calcul de charges aux solutions de maintenance de moteurs d'avion, l'IA
+s'est révélée être un outil polyvalent capable de répondre à une multitude de besoins
+des organisations.
+Les résultats d'une enquête de l'INSEE ont également fourni des informations
+supplémentaires sur l'adoption de l'IA dans les entreprises.
+¥ En 2021, 10% des entreprises de 10 personnes ou plus utilisaient des systèmes
+interconnectés, avec une forte présence dans les grandes sociétés et le secteur
+des transports. De même, 8% des entreprises, principalement des industries,
+utilisaient des robots.
+¥ Des résultats plus récents d’une enquête de 2022 ont révélé que les entreprises
+de toutes tailles utilisaient principalement des systèmes d'IA (SIA) pour des
+tâches telles que l'analyse de langage écrit, l'apprentissage automatique et
+l'automatisation de processus décisionnels.
+Le questionnaire a été adressé à 250 décideurs, dont 70% travaillent dans des TPE et
+des PME, et 30% dans des ETI et des grandes entreprises. Au total, 53 répondants
+sur les 250 interrogés (soit 21,2% de l'échantillon) ont déclaré avoir un SIA
+opérationnel ou en projet dans leur entreprise. Dans la suite de ce rapport, nous
+nommerons ces répondants les « utilisateurs » en opposition aux « non-utilisateurs ».
+(https://travail-emploi.gouv.fr/IMG/pdf/enquete_laboria.pdf)
+Les motifs d'utilisation de l'IA étaient variés, allant de la réduction des risques
+d'erreurs à l'amélioration des performances des salariés et à la réduction des tâches
+fastidieuses. Les secteurs de l'industrie et des technologies de l'information et de la
+communication étaient en tête en termes d'adoption de l'IA, mais chaque secteur avait
+ses propres spécificités et besoins.
+Voici un tableau de synthèse avec les principaux domaines d'application de
+l'intelligence artificielle dans le monde professionnel :
+Domaine d'Application Exemples d'Applications
+DŽtection de dŽfauts dans les textes
+Analyse de langage Žcrit Analyse dÕŽlŽments subjectifs
+GŽnŽration de rapport automatisŽ
+PrŽvisions de demandes
+Apprentissage automatique Recommandations personnalisŽe
+Mod(cid:143)le de prŽdiction
+Chatbots Ð Callbots
+Automatisation de t‰ches Traitement automatisŽ des factures
+Gestion des processus de production
+Syst(cid:143)mes de reconnaissance dÕimage
+Ç Vision È DŽtection dÕanomalies sur les lignes de production
+Surveillance et sŽcuritŽ
+Contr™le qualitŽ automatisŽ
+DŽtection de dŽfauts et dÕanomalie DŽtection de fraudes
+Diagnostic prŽcoce de probl(cid:143)mes techniques
+20 | Aract Réunion - L’IA : Kwa sa i lé ?
+Domaine d'Application Exemples d'Applications
+VŽhicules autonomes
+Machines autonomes Robots industriels
+Syst(cid:143)mes de logistique automatisŽ
+Ce tableau illustre la diversité des domaines d'application de l’IA dans le monde
+professionnel, montrant comment elle est utilisée pour automatiser des tâches,
+analyser des données et améliorer l'efficacité opérationnelle dans une variété de
+secteurs.
+En conclusion, l'IA trouve des
+applications variées dans le monde
+professionnel, des systèmes de
+détection de défauts aux chatbots et
+callbots en passant par l'analyse de
+langage écrit. Ces applications ont des
+implications profondes pour les
+organisations et les travailleurs, nécessitant
+une exploration continue de leur potentiel et
+de leurs limitations afin de les intégrer de
+manière efficace et éthique dans le milieu
+professionnel.
+(https://www.leparisien.fr/high-
+tech/lintelligence-artificielle-un-immense-
+defi-pour-lemploi-04-02-2023-
+2DHXHWLQ6VANFFWL42AS6VZC4I.php)
+21 | Aract Réunion - L’IA : Kwa sa i lé ?
+22 | Aract Réunion - L’IA : Kwa sa i lé ?
+5.L’IA – Quels sont les avantages et les
+inconvénients de l’utilisation de l’IA dans les
+entreprises ?
+Synth(cid:143)se
+L'intelligence artificielle (IA) présente des avantages majeurs pour les
+entreprises, notamment en automatisant les tâches répétitives, en améliorant la prise
+de décision stratégique grâce à l'analyse de données avancée, et en permettant une
+personnalisation accrue des produits et services. Cependant, son adoption nécessite
+des investissements initiaux significatifs et soulève des préoccupations quant à
+l'impact sur l'emploi, à la sécurité des données et aux risques de biais algorithmique.
+Pour maximiser les bénéfices de l'IA tout en minimisant ses risques, une gestion
+proactive et équilibrée de ces défis est essentielle.
+En quelques phrases :
+L'intégration de l'intelligence artificielle (IA) dans les entreprises améliore
+l'efficacité par l'automatisation des tâches répétitives et permet une prise de décision
+stratégique plus informée grâce à l'analyse de données avancée.
+Toutefois, cela implique des coûts initiaux élevés et des défis concernant l'impact
+social, notamment sur l'emploi et les compétences nécessaires, ainsi que des
+préoccupations croissantes en matière de sécurité des données et de biais
+algorithmique dans les décisions automatisées.
+Pour maximiser les avantages de l'IA tout en minimisant ses risques, une gestion
+proactive de ces défis est indispensable.
+L'utilisation de l'intelligence artificielle (IA) dans les entreprises présente
+une gamme étendue d'avantages, mais comporte également certains
+inconvénients à prendre en compte.
+(https://travail-emploi.gouv.fr/actualites/presse/communiques-de-presse/article/le-
+laboria-publie-ses-premiers-resultats-d-observation-du-deploiement-de-l-ia)
+Avantages :
+¥ Efficacité : L'IA permet l'automatisation de nombreuses tâches répétitives et
+chronophages, libérant ainsi du temps pour se concentrer sur des activités à
+plus forte valeur ajoutée. L'étude menée par LaborIA auprès de 250 dirigeants
+de PME a mis en évidence cet avantage, en montrant que les répondants ayant
+une expérience directe de l'IA mettaient en avant « l'autonomie » de ces
+systèmes.
+¥ Aide à la prise de décision : Les systèmes d'IA (SIA) peuvent analyser de
+vastes ensembles de données rapidement, fournissant des tendances, des
+schémas et des modèles probabilistes pour soutenir des prises de décision
+stratégiques au sein de l'entreprise.
+23 | Aract Réunion - L’IA : Kwa sa i lé ?
+¥ Personnalisation : Grâce à l'IA, les entreprises peuvent proposer des produits
+et services personnalisés à leurs clients, anticipant ainsi leurs besoins et offrant
+des solutions adaptées basées sur des analyses de tendances.
+¥ Réduction des erreurs : Les SIA sont capables de détecter et de corriger les
+erreurs plus efficacement que les humains, améliorant ainsi la qualité des
+produits et des services, comme le confirme l'étude de LaborIA qui met en avant
+la réduction des risques d'erreurs comme l'un des principaux motifs d'utilisation
+de l'IA par les entreprises.
+¥ Innovation : L'IA permet l'exploration de nouvelles idées et le développement
+de produits et services innovants, renforçant ainsi la compétitivité sur le marché
+(souligné par l'étude de LaborIA qui met en évidence une diversité des cas
+d'usage).
+Inconvénients :
+¥ Coût initial élevé : L'intégration des systèmes d'IA dans les entreprises
+implique un investissement financier significatif, à la fois pour l'acquisition des
+technologies et pour la formation du personnel. Cette observation est étayée par
+l'étude de LaborIA, qui met en lumière les coûts initiaux élevés auxquels les
+entreprises sont confrontées lorsqu'elles tentent d'intégrer l'IA dans leurs
+processus. L'étude LaborIA suggère que les industries semblent moins affectées
+que d'autres secteurs par ces coûts financiers. Cette disparité pourrait
+s'expliquer par un niveau de maturité plus élevé des industries et de leur
+écosystème de services associés. De plus, les impératifs de productivité propres
+aux logiques de production industrielle incitent les acteurs de ce secteur à être
+plus proactifs dans l'expérimentation et l'investissement dans des solutions d'IA
+visant à accélérer, améliorer ou automatiser leurs processus de production.
+¥ « Instabilité » de l'emploi : L'automatisation des tâches peut entraîner la
+suppression de certains postes de travail ou la nécessité de nouvelles
+compétences, ce qui peut avoir un impact négatif sur le climat social de
+l'entreprise. De plus, l'étude de LaborIA met en évidence les préoccupations des
+entreprises concernant les impacts sociaux de l'automatisation.
+¥ Dépendance technologique : Les entreprises qui dépendent trop de l'IA
+peuvent être vulnérables en cas de défaillance ou de panne des systèmes. Cette
+observation souligne l'importance pour les entreprises de diversifier leurs outils
+et leurs compétences.
+¥ Menaces pour la confidentialité des données : L'utilisation de l'IA implique la
+collecte et le traitement de grandes quantités de données, soulevant ainsi des
+préoccupations en matière de confidentialité et de sécurité des données.
+¥ Biais algorithmique : Les systèmes d'IA peuvent être affectés par des biais
+présents dans les données utilisées pour l'apprentissage, pouvant entraîner des
+décisions discriminatoires ou injustes.
+En conclusion, bien que l'utilisation de l'IA dans les entreprises offre de nombreux
+avantages en termes d'efficacité, d'innovation et de personnalisation, il est crucial de
+24 | Aract Réunion - L’IA : Kwa sa i lé ?
+reconnaître et de gérer les inconvénients potentiels tels que les coûts initiaux élevés,
+les questions d'emploi, la confidentialité des données et les biais algorithmiques afin
+de minimiser les risques
+25 | Aract Réunion - L’IA : Kwa sa i lé ?
+26 | Aract Réunion - L’IA : Kwa sa i lé ?
+6.L’IA – Comment l’intelligence artificielle peut-
+elle contribuer à l’innovation et à la
+transformation des entreprises ?
+Synth(cid:143)se
+L'intelligence artificielle (IA) révolutionne les entreprises en automatisant les
+tâches répétitives et en optimisant les processus internes, ce qui permet des gains
+significatifs en termes de productivité et de compétitivité. Cependant, son intégration
+pose des défis en matière d'interface utilisateur et de confiance, nécessitant des
+solutions transparentes et des mécanismes de contrôle robustes. En explorant de
+vastes ensembles de données, l'IA aide les entreprises à découvrir des tendances et
+à personnaliser leurs offres, bien que son efficacité soit parfois limitée par des biais
+algorithmiques et la nature probabiliste de ses modèles. Dans la prise de décision, l'IA
+fournit des recommandations basées sur des analyses de données, mais nécessite
+l'expertise humaine pour interpréter et contextualiser ces informations. Une approche
+éthique et collaborative est essentielle pour maximiser les bénéfices de l'IA tout en
+atténuant ses risques, permettant ainsi une transformation durable et innovante des
+entreprises.
+En quelques phrases :
+L'intelligence artificielle (IA) transforme les entreprises en automatisant les
+tâches répétitives et en optimisant les processus internes, ce qui renforce leur
+productivité et compétitivité grâce à des économies de temps et de ressources.
+Toutefois, son efficacité dépend d’interfaces utilisateur conviviales et de
+mécanismes de contrôle fiables pour assurer une interaction efficace et des résultats
+précis.
+En exploitant de nouvelles sources de données, l'IA stimule l'innovation en
+découvrant des tendances significatives, bien que ses prédictions restent limitées par
+la nature probabiliste de ses algorithmes.
+L'intelligence artificielle (IA) joue un rôle de plus en plus crucial dans
+l'innovation et la transformation des entreprises, offrant des possibilités
+d'amélioration et de croissance dans divers domaines.
+L'IA permet d'optimiser les processus internes des entreprises en automatisant
+les tâches répétitives et chronophages. Grâce à des systèmes d'IA spécialisés, les
+entreprises peuvent réaliser des économies de temps et de ressources en déléguant
+certaines activités à des algorithmes capables de les exécuter de manière plus efficace
+et précise que les humains. Par exemple, les systèmes d'IA peuvent être utilisés pour
+la gestion des stocks, l'analyse de données financières, ou encore la surveillance de
+la chaîne logistique, permettant ainsi aux entreprises de gagner en productivité et en
+compétitivité.
+¥ Cependant, cette automatisation des processus pose des défis en termes de
+gestion du dialogue entre l'IA et les utilisateurs. Il est essentiel de développer
+des interfaces utilisateur conviviales et transparentes pour faciliter l'interaction
+27 | Aract Réunion - L’IA : Kwa sa i lé ?
+entre les salariés et les systèmes d'IA (SIA), afin de garantir une utilisation
+efficace au sein des entreprises. De plus, la confiance dans les systèmes d'IA
+est un aspect important pour favoriser leur intégration et leur acceptation par les
+utilisateurs. Les entreprises doivent donc mettre en place des mécanismes de
+contrôle et de validation des résultats produits par les systèmes d'IA, ainsi que
+des politiques de transparence quant aux méthodes utilisées par les
+algorithmes.
+¥ En outre, la collaboration, entre utilisateurs et SIA, devient de plus en plus
+importante. Plutôt que de remplacer complètement les salariés, les SIA sont
+conçus pour compléter et optimiser les organisations, en fournissant des
+analyses et des recommandations pour soutenir les prises de décision et les
+actions des utilisateurs. Il est donc essentiel de promouvoir une culture
+d'ouverture et de collaboration au sein des entreprises.
+¥ L'IA offre des possibilités d'optimisation des processus internes et de gain de
+productivité pour les entreprises, son intégration soulève des questions
+importantes en matière d'interface utilisateur, de confiance et de collaboration
+entre humains et machines. En abordant ces défis de manière proactive et en
+favorisant une approche inclusive et éthique de l'utilisation de l'IA, les entreprises
+peuvent maximiser les avantages de ces technologies tout en atténuant les
+risques.
+L'IA favorise l'innovation en permettant aux entreprises d'exploiter de nouvelles
+sources de données et de découvrir des tendances, des schémas et des modèles
+probabilistes « pertinents ». Les SIA peuvent analyser de vastes ensembles de
+données provenant de diverses sources, y compris des données non structurées telles
+que des textes, des images ou des vidéos. Ces informations peuvent ensuite être
+utilisées pour développer de nouveaux produits et services, améliorer l'expérience
+client, ou encore anticiper les besoins du marché.
+¥ Cependant, il est important de nuancer ces innovations. Bien que l'IA puisse
+permettre de découvrir des tendances et des schémas dans les données, elle
+se base nécessairement sur l'existant. Les modèles probabilistes utilisés par les
+systèmes d'IA ne font que traiter les données disponibles et rechercher des
+structurations ou des récurrences, ce qui peut limiter leur capacité à anticiper
+des événements inattendus. Même avec un grand nombre de données, l'IA reste
+essentiellement basée sur des méthodologies statistiques et probabilistes, ce
+qui signifie qu'elle ne peut jamais être totalement prédictive et qu'elle comporte
+toujours une part d'incertitude.
+¥ L'IA offre des opportunités d'innovation en permettant aux entreprises d'explorer
+de nouvelles sources de données et de découvrir des tendances significatives,
+il est important de reconnaître les limites de cette approche. Les entreprises
+doivent rester conscientes que l'IA se base sur des modèles probabilistes et
+qu'elle ne peut pas réaliser de « prédiction ». Cependant, en combinant les
+capacités de l'IA avec l'expertise humaine et une approche agile et adaptative,
+les entreprises peuvent faire preuve d’innovation.
+28 | Aract Réunion - L’IA : Kwa sa i lé ?
+Par ailleurs, l'IA permet aux entreprises d'offrir des produits et services plus
+personnalisés et adaptés aux besoins spécifiques de chaque client. En analysant le
+comportement et les préférences des utilisateurs, les systèmes d'IA peuvent
+recommander des produits, personnaliser des offres promotionnelles, ou encore
+fournir un support client personnalisé. Cette capacité à répondre de manière plus
+précise aux attentes des clients permet aux entreprises de fidéliser leur clientèle et de
+se démarquer de la concurrence.
+¥ Cependant, il convient de noter que ces personnalisations ne sont pas sans
+risque. Les algorithmes d'IA sont susceptibles d'être affectés par des biais qui
+peuvent fausser les recommandations ou les offres personnalisées. En outre, il
+est important de souligner que les algorithmes se basent souvent sur des
+corrélations plutôt que sur des causalités. Cela signifie que même si deux
+variables sont corrélées, cela ne garantit pas qu'il existe un lien de cause à effet
+entre elles. Par conséquent, les recommandations et les offres personnalisées
+fournies par les systèmes d'IA peuvent parfois manquer de pertinence ou être
+inexactes.
+En outre, l'IA contribue à améliorer la prise de décision au sein des entreprises
+en fournissant des tendances, des schémas et des modèles probabilistes ainsi que
+des recommandations basées sur des analyses de données. Les SIA peuvent aider
+les dirigeants à identifier les opportunités de croissance, à anticiper les risques, ou
+encore à optimiser les stratégies marketing et commerciales.
+¥ Cependant, il est crucial de souligner que dans ce domaine de la prise de
+décision, la collaboration, la coopération et le dialogue homme-machine restent
+primordiaux. Bien que les systèmes d'IA puissent fournir des recommandations
+basées sur des données, l'expertise humaine est nécessaire pour interpréter ces
+informations, évaluer les implications stratégiques et prendre des décisions
+éclairées. Les dirigeants et les décideurs doivent donc travailler en étroite
+collaboration avec les systèmes d'IA, en utilisant leur expertise et leur jugement
+pour affiner et contextualiser les recommandations fournies.
+¥ En exploitant pleinement le potentiel des données plus rapidement, les
+entreprises peuvent prendre des décisions plus éclairées et plus stratégiques,
+ce qui les rend plus agiles et réactives. En combinant les capacités analytiques
+de l'IA avec l'intuition et l'expérience humaine, les entreprises peuvent tirer
+avantages de l'automatisation de la prise de décision.
+En résumé, l'intelligence artificielle (IA) représente un levier majeur pour
+l'optimisation des processus internes, la stimulation de l'innovation et
+l'amélioration de la prise de décision au sein des entreprises. Cependant, pour
+tirer pleinement parti de son potentiel, une approche proactive, inclusive et
+éthique est essentielle. En favorisant la collaboration, la transparence et en
+combinant judicieusement l'expertise humaine avec les capacités de l'IA, les
+entreprises peuvent atténuer les risques et s'engager sur la voie d'une
+transformation durable et réussie.
+29 | Aract Réunion - L’IA : Kwa sa i lé ?
+30 | Aract Réunion - L’IA : Kwa sa i lé ?
+7.L’IA – Quels sont les défis éthiques et sociétaux
+posés par le développement de l’intelligence
+artificielle ?
+Synth(cid:143)se
+L'intelligence artificielle (IA) transforme rapidement notre société en offrant des
+opportunités nouvelles tout en posant des défis éthiques majeurs. Elle optimise
+l'automatisation des tâches, mais suscite des préoccupations sur l'avenir de l'emploi
+et la reproduction de biais discriminatoires. La collecte massive de données soulève
+des questions de vie privée et de surveillance, nécessitant des régulations strictes. La
+complexité des systèmes d'IA complique également l'attribution de responsabilité en
+cas de dysfonctionnement, exigeant une transparence accrue. En adoptant une
+approche collaborative et éthique, impliquant développeurs, entreprises et régulateurs,
+nous pouvons maximiser les avantages de l'IA tout en minimisant ses impacts négatifs,
+assurant ainsi un développement technologique durable et respectueux des droits
+humains.
+En quelques phrases :
+L'intelligence artificielle (IA) transforme rapidement notre société en offrant de
+nouvelles opportunités tout en soulevant des défis éthiques et sociétaux, notamment
+autour de l'emploi et de la discrimination basée sur des données biaisées.
+La protection de la vie privée et la responsabilité des systèmes d'IA sont des
+préoccupations cruciales qui nécessitent des régulations strictes et une transparence
+accrue.
+Une approche collaborative entre développeurs, entreprises et régulateurs est
+essentielle pour maximiser les bénéfices de l'IA tout en minimisant ses impacts
+négatifs, en veillant à une utilisation éthique et équitable de cette technologie.
+L'intelligence artificielle (IA) est en train de transformer notre société à une
+vitesse fulgurante, offrant des opportunités inédites dans de nombreux
+domaines. Cependant, cette avancée technologique soulève des défis éthiques
+et sociétaux majeurs qui nécessitent une attention particulière.
+Automatisation et emploi :
+L'IA permet d'automatiser des tâches répétitives et chronophages, optimisant
+ainsi les processus internes des entreprises et libérant des ressources humaines pour
+des activités à plus forte valeur ajoutée. Toutefois, cette automatisation massive pose
+la question de l'impact sur l'emploi. De nombreux travailleurs, notamment dans les
+secteurs manufacturiers, logistiques et administratifs, risquent de voir leurs postes
+disparaître. La transition vers une économie fortement automatisée nécessitera des
+politiques de reconversion et de formation continue pour éviter une augmentation des
+inégalités sociales et des discriminations basées sur le niveau de formation et les
+aptitudes à faire usage de l’IA. Les entreprises devront investir dans des programmes
+de formation et de développement des compétences pour préparer leurs employés à
+31 | Aract Réunion - L’IA : Kwa sa i lé ?
+de nouveaux rôles qui nécessitent des compétences en gestion et en interaction avec
+les systèmes d'IA.
+Biais et discrimination :
+Les systèmes d'IA sont construits à partir de grandes quantités de données. Si
+ces données sont biaisées, les algorithmes reproduiront ces biais, entraînant des
+discriminations dans des domaines tels que l'emploi, la justice et les services
+financiers. Par exemple, un système de recrutement basé sur l'IA pourrait discriminer
+des candidats issus de minorités si les données d'entraînement reflètent des «
+préjugés historiques ». Pour atténuer ces risques, il est essentiel de diversifier les
+équipes de développement et de mettre en place des mécanismes de contrôle
+rigoureux pour garantir l'équité des algorithmes. Les entreprises doivent également
+adopter des politiques internes de lutte contre les biais, en effectuant régulièrement
+des audits de leurs systèmes d'IA pour identifier et corriger les biais potentiels.
+Vie privŽe et surveillance :
+L'IA permet de collecter et d'analyser des quantités massives de données
+personnelles, posant ainsi des défis importants en matière de vie privée et de
+surveillance. Les technologies de reconnaissance faciale et de suivi des
+comportements peuvent être utilisées à des fins de surveillance par les
+gouvernements et les entreprises, menaçant les libertés individuelles. Il est crucial de
+développer des cadres législatifs solides pour protéger la vie privée des citoyens et
+garantir que l'utilisation de ces technologies se fasse de manière éthique et
+transparente. Les entreprises doivent être particulièrement vigilantes dans la gestion
+des données clients, en respectant les réglementations en vigueur telles que le RGPD
+(Règlement général sur la protection des données) et en adoptant des pratiques de
+gestion des données responsables.
+ResponsabilitŽ et transparence :
+La complexité des systèmes d'IA rend difficile l'attribution de la responsabilité en
+cas de dysfonctionnement. Par exemple, si une voiture autonome provoque un
+accident, déterminer la responsabilité entre le fabricant, le développeur du logiciel et
+l'utilisateur final peut devenir un problème complexe. La transparence des algorithmes
+et des processus décisionnels de l'IA est essentielle pour établir des normes de
+responsabilité claires. Les entreprises doivent être transparentes sur le
+fonctionnement de leurs systèmes et les méthodologies utilisées. Des politiques
+internes de transparence et de communication sur les capacités et les limites des
+systèmes d'IA peuvent aider à construire la confiance des employés et des clients.
+Impact sur les interactions humaines :
+Les technologies d'IA, telles que les assistants virtuels et les cobots (robots
+sociaux développés pour collaborer avec les humains), modifient la nature des
+interactions humaines. Si elles peuvent faciliter certaines tâches, elles risquent
+également de déshumaniser les relations et de créer un isolement social. Il est
+important de favoriser une utilisation de l'IA qui complète les interactions humaines
+plutôt que de les remplacer, en mettant l'accent sur le maintien de relations
+interpersonnelles. Les entreprises doivent encourager une culture de collaboration où
+l'IA est vue comme un outil d'augmentation des capacités humaines plutôt que comme
+un substitut.
+32 | Aract Réunion - L’IA : Kwa sa i lé ?
+Le développement de l'IA est porteur de promesses, mais aussi de défis éthiques et
+sociétaux significatifs. Pour en tirer le meilleur parti tout en minimisant les risques, il
+est essentiel d'adopter une approche proactive et collaborative impliquant l'ensemble
+des parties prenantes : développeurs, chercheurs, décideurs politiques, entreprises et
+société civile.
+En promouvant une IA éthique, équitable et respectueuse des droits humains, nous
+pouvons envisager un avenir où la technologie est au service de tous, tout en
+préservant les valeurs fondamentales de notre société. Les entreprises ont un rôle clé
+à jouer dans cette transition en adoptant des pratiques responsables et en collaborant
+avec les régulateurs pour construire un cadre éthique robuste autour de l'IA.
+33 | Aract Réunion - L’IA : Kwa sa i lé ?
+34 | Aract Réunion - L’IA : Kwa sa i lé ?
+8.L’IA – Quels sont les tendances émergentes dans
+le domaine de l’intelligence artificielle ?
+Synth(cid:143)se
+L'intelligence artificielle (IA) transforme notre quotidien à travers plusieurs
+domaines clés. En santé, elle améliore le diagnostic et le traitement des maladies
+grâce à l'analyse précise des images médicales et à une médecine plus personnalisée
+basée sur les données génomiques. Au travail, l'IA automatise les tâches répétitives
+et renforce la sécurité en détectant les risques en temps réel. Dans notre vie
+quotidienne, les assistants virtuels facilitent la gestion des tâches et la domotique
+intelligente ajuste nos environnements selon nos préférences. Toutefois, ces
+avancées nécessitent une gestion éthique pour assurer la transparence des décisions
+algorithmiques et protéger la vie privée.
+En quelques phrases :
+L'intelligence artificielle (IA) transforme profondément notre vie quotidienne en
+révolutionnant le diagnostic et le traitement des maladies grâce à l'analyse précise des
+images médicales et à une médecine personnalisée basée sur les données
+génomiques.
+Dans le domaine du travail, elle automatise les tâches répétitives et améliore la
+sécurité grâce à des systèmes de surveillance intelligents.
+En parallèle, l'IA enrichit notre qualité de vie avec des assistants virtuels
+sophistiqués et des environnements domestiques intelligents, tout en exigeant une
+gestion éthique pour assurer la transparence et prévenir les biais.
+L'intelligence artificielle (IA) révolutionnera de nombreux aspects de notre
+vie quotidienne, y compris la santé, les conditions de travail et la qualité de vie.
+Les avancées récentes et les tendances émergentes dans ce domaine
+transformeront la façon dont nous vivrons et travaillerons.
+IA et Santé :
+Diagnostic et Traitement AssistŽ par IA :
+L'IA sera de plus en plus utilisée pour améliorer le diagnostic et le traitement des
+maladies. Des algorithmes analyseront des images médicales, telles que des
+radiographies et des IRM, pour détecter des anomalies avec une précision
+probablement supérieure à celle des médecins humains. Par exemple, l'IA détectera
+les premiers signes de cancer du sein, de rétinopathie diabétique et d'autres conditions
+graves.
+En 2024, l’étude Colive Voice, portée par le Deep Digital Phenotyping, une unité
+de recherche dédiée à la santé digitale et rattachée au Luxembourg Institute of Health,
+visera à comprendre comment certaines maladies influenceront nos intonations et le
+placement de notre voix. En utilisant l’IA, l'objectif sera de détecter, de façon précoce,
+un certain nombre de pathologies, comme les maladies cardio-vasculaires, les
+maladies mentales, le diabète, la maladie d’Alzheimer ou encore certains types de
+cancer.
+35 | Aract Réunion - L’IA : Kwa sa i lé ?
+Cette approche innovante transformera la manière dont nous surveillerons notre
+santé et détecterons les maladies, en fournissant des diagnostics précoces et précis
+simplement en analysant notre voix.
+(https://lejournal.cnrs.fr/dossiers/lintelligence-artificielle-au-defi-du-langage ;
+https://www.colivevoice.org/fr/)
+MŽdecine PersonnalisŽe :
+L'IA permettra également une approche plus personnalisée de la médecine. En
+analysant de grandes quantités de données génomiques, l'IA aidera à prédire
+comment un patient réagira à un traitement spécifique, permettant ainsi des plans de
+traitement sur mesure. Cela améliorera non seulement l'efficacité des soins, mais
+réduira également les effets secondaires.
+Gestion des DonnŽes de SantŽ :
+La gestion des données de santé sera un autre domaine où l'IA apportera des
+améliorations significatives. Les systèmes d'IA trieront, organiseront et analyseront
+des volumes massifs de données de santé pour identifier des tendances et des
+modèles qui pourront être utilisés pour améliorer les soins aux patients et la recherche
+médicale.
+IA et Conditions de Travail :
+Automatisation des T‰ches RŽpŽtitives :
+L'automatisation par l'IA des tâches répétitives et monotones libérera les
+travailleurs pour des tâches plus complexes et créatives. Par exemple, dans les
+secteurs de la fabrication et de la logistique, des robots et des systèmes d'IA
+effectueront des tâches telles que l'assemblage de produits et la gestion des stocks.
+(https://www.usinenouvelle.com/article/l-intelligence-artificielle-revolutionne-la-
+supply-chain.N1825807)
+Les technologies d'IA, telles que la robotique et l'apprentissage automatique,
+seront utilisées pour automatiser des processus dans des domaines tels que la
+fabrication, la logistique, la finance et les ressources humaines.
+AmŽlioration de la SŽcuritŽ au Travail :
+Les technologies d'IA seront de plus en plus utilisées pour améliorer la sécurité
+sur le lieu de travail. Des systèmes de surveillance intelligents détecteront des
+comportements dangereux ou des conditions de travail à risque et alerteront les
+travailleurs et les gestionnaires en temps réel, réduisant ainsi le risque d'accidents.
+L'intégration de l'intelligence artificielle dans la prévention des risques professionnels
+sera une tendance émergente qui visera à améliorer le bien-être des travailleurs.
+Les entreprises utiliseront des systèmes d'IA pour analyser les données liées à
+la santé et à la sécurité au travail, identifier les risques potentiels et proposer des
+mesures préventives. Ces technologies prévoiront les accidents potentiels en
+détectant des modèles de comportement à risque et recommanderont des actions
+correctives pour réduire les risques sur le lieu de travail. Par exemple, des capteurs
+intelligents et des logiciels d'analyse de données fourniront des informations en temps
+réel et des alertes précoces, contribuant ainsi à un environnement de travail plus sûr.
+36 | Aract Réunion - L’IA : Kwa sa i lé ?
+Formation et DŽveloppement :
+L'IA jouera un rôle croissant dans la formation et le développement des
+employés. Des plateformes d'apprentissage automatisées et personnalisées
+adapteront les programmes de formation aux besoins individuels des employés,
+améliorant ainsi l'efficacité de la formation et aidant les travailleurs à acquérir de
+nouvelles compétences plus rapidement.
+(https://360learning.com/fr/blog/ia-generative-formation/)
+IA et Qualité de Vie :
+Assistants Virtuels :
+Les assistants virtuels alimentés par l'IA, comme Siri, Alexa et Google Assistant,
+deviendront de plus en plus sophistiqués. Ils aideront avec des tâches quotidiennes
+telles que la gestion des calendriers, l'envoi de messages et la recherche
+d'informations, ce qui facilitera grandement la vie quotidienne.
+En parallèle, les systèmes d'IA conversationnelle, tels que les assistants virtuels
+et les chatbots, connaîtront une adoption croissante dans divers secteurs. Ces
+technologies permettront aux entreprises d'automatiser les interactions avec les
+clients, d'améliorer le service client et d'optimiser les processus internes. Les
+avancées dans le traitement du langage naturel et la compréhension des intentions
+des utilisateurs rendront ces systèmes plus efficaces et polyvalents, offrant ainsi une
+meilleure expérience utilisateur et augmentant l'efficacité opérationnelle des
+entreprises.
+Domotique :
+L'IA transformera nos maisons en environnements intelligents. Les systèmes de
+domotique apprendront nos routines et préférences pour ajuster automatiquement
+l'éclairage, le chauffage et les appareils électroménagers, améliorant ainsi notre
+confort et réduisant notre consommation d'énergie.
+(https://www.lesechos.fr/idees-debats/cercle/smart-home-lintelligence-artificielle-fait-
+son-entree-chez-les-particuliers-132142 ;
+https://fr.statista.com/infographie/31725/domotique-smart-home-technologies-objets-
+connectes-les-plus-utilises-pour-economies-energie/)
+Bien-(cid:144)tre Mental et Physique :
+L'intelligence artificielle jouera un rôle croissant dans la promotion du bien-être
+mental et physique. Des applications de santé mentale exploiteront l'IA pour offrir des
+thérapies cognitivo-comportementales et des outils de méditation. Par ailleurs, les
+dispositifs de fitness intelligents surveilleront notre activité physique et fourniront des
+recommandations personnalisées pour optimiser notre santé.
+Cependant, cette avancée significative exigera une approche éthique et
+responsable de l'IA. Les entreprises reconnaîtront de plus en plus l'importance de
+développer et d'implémenter des pratiques d'IA conformes aux principes éthiques et
+aux valeurs sociétales. Cela inclura la transparence dans les processus décisionnels
+des algorithmes, la prévention des biais discriminatoires et la protection de la vie privée
+et de la sécurité des données.
+(https://www.lemonde.fr/sciences/article/2024/02/16/l-intelligence-artificielle-au-
+secours-du-suivi-de-la-sante-mentale_6216937_1650684.html ; https://www.presse-
+citron.net/google-va-lancer-une-ia-specialisee-dans-la-sante-et-le-bien-etre-un-
+veritable-coach-personnel/)
+37 | Aract Réunion - L’IA : Kwa sa i lé ?
+Les tendances émergentes dans le domaine de l'intelligence artificielle offriront
+des possibilités pour améliorer la santé, les conditions de travail et la qualité de vie.
+Cependant, il sera crucial de continuer à surveiller et à gérer les implications éthiques
+et sociales de ces technologies pour s'assurer qu'elles bénéficieront à tous de manière
+équitable.
+38 | Aract Réunion - L’IA : Kwa sa i lé ?
+9.L’IA – Comment l’intelligence artificielle
+pourrait-elle évoluer dans les années à venir ?
+Synth(cid:143)se
+Dans un avenir où les avancées technologiques progresseront de manière
+exponentielle, l'intelligence artificielle (IA) continuera de fasciner par ses promesses
+tout en soulevant des questions éthiques cruciales. L'apprentissage profond, inspiré
+par le cerveau humain, dominera, révolutionnant des domaines comme la médecine
+et la cybersécurité. L'objectif de développer une IA généralisée, capable d'apprendre
+comme un humain, pourrait transformer nos interactions quotidiennes et nos
+environnements de travail. Cependant, cette autonomie croissante pose des défis de
+responsabilité et de sécurité. En favorisant une collaboration homme-machine plus
+étroite, l'IA pourrait enrichir la créativité et améliorer l'efficacité professionnelle. En
+conclusion, maîtriser l'IA tout en respectant des normes éthiques strictes sera crucial
+pour naviguer dans ce nouveau paysage technologique.
+En quelques phrases :
+Dans un futur où les avancées technologiques progresseront de manière
+exponentielle, l'intelligence artificielle (IA) continuera de fasciner par son évolution
+potentiellement transformative, notamment dans la médecine et la cybersécurité, tout
+en soulevant des préoccupations éthiques cruciales.
+L'objectif de développer une IA généralisée capable d'interagir de manière plus
+humaine tout en collaborant avec les individus pourrait redéfinir les modèles de travail
+et introduire de nouvelles formes de productivité et de sécurité.
+En réponse à ces avancées, il sera essentiel de maintenir des normes éthiques
+rigoureuses pour guider son développement responsable et respectueux de la vie
+privée.
+Dans un monde où les avancées technologiques progresseront à un
+rythme « exponentiel », l'intelligence artificielle (IA) continuera de susciter
+fascination et interrogation quant à son évolution future. Alors que nous nous
+trouverons à un tournant de cette révolution numérique, il sera pertinent d'explorer les
+voies par lesquelles l'IA pourrait évoluer dans les années à venir, notamment en tenant
+compte de la transformation des modèles de travail.
+Apprentissage profond et neuronaux :
+L'un des domaines les plus dynamiques de l'IA sera l'apprentissage profond. Les
+réseaux de neurones artificiels, inspirés par le fonctionnement du cerveau humain,
+auront déjà révolutionné de nombreux secteurs, de la reconnaissance d'images à la
+traduction automatique. Dans les années à venir, ces réseaux devraient continuer à
+s'améliorer, devenant plus efficaces et plus spécialisés dans des tâches spécifiques.
+Imaginons un scénario où une IA avancée pourrait non seulement diagnostiquer des
+maladies, mais aussi proposer des plans de traitement personnalisés basés sur les
+données génétiques et le mode de vie de chaque patient.
+39 | Aract Réunion - L’IA : Kwa sa i lé ?
+Bhatt, C., Kumar, I., Vijayakumar, V. et al. The state of the art of deep learning
+models in medical science and their challenges. Multimedia Systems 27, 599–613
+(2021). https://doi.org/10.1007/s00530-020-00694-1
+Nosratabadi, S., Mosavi, A., Duan, P., Ghamisi, P., Filip, F., Band, S.S., Reuter, U.,
+Gama, J., Gandomi, A.H. Data Science in Economics: Comprehensive Review of
+Advanced Machine Learning and Deep Learning. Methods. Mathematics, 8, 1799
+(2020). https://doi.org/10.3390/math8101799
+Mijwil, M., Salem, I.E. and Ismaeel, M.M. The Significance of Machine Learning and
+Deep Learning Techniques in Cybersecurity: A Comprehensive Review. Iraqi Journal
+For Computer Science and Mathematics 4, 1, 87-101 (2023).
+https://doi.org/10.52866/ijcsm.2023.01.01.008
+IA gŽnŽralisŽe :
+Actuellement, la plupart des systèmes d'IA seront spécialisés dans des tâches
+spécifiques, comme la reconnaissance faciale ou la recommandation de produits.
+Cependant, l'objectif à long terme sera de développer une IA généralisée, capable
+d'apprendre et de s'adapter à un large éventail de tâches, tout comme le fait un
+cerveau humain. Bien que cela restera un défi majeur, des progrès significatifs seront
+attendus dans ce domaine. Une telle IA pourrait devenir un assistant personnel
+polyvalent, gérant divers aspects de la vie quotidienne, de la gestion des finances à la
+planification des repas. Cela représenterait une évolution majeure, intégrant l'IA dans
+notre quotidien et anticipant nos besoins.
+Sonko, S., Okechukwu Adewusi, A., Chimezie Obi, O., Onwusinkwue, S.and
+Atadoga, A. A critical review towards artificial general intelligence: Challenges,
+ethical considerations, and the path forward. World Journal of Advanced Research
+and Reviews, 21(03), 1262–1268 (2024).
+https://doi.org/10.30574/wjarr.2024.21.3.0817
+Buttazzo, G. Rise of artificial general intelligence: risks and opportunities. Frontiers in
+Artificial Intelligence 6, 1226990 (2023). https://doi.org/10.3389/frai.2023.1226990
+Hellström, T., Bensch, S. Apocalypse now: no need for artificial general intelligence.
+AI & Society 39, 811–813 (2024). https://doi.org/10.1007/s00146-022-01526-8
+Ciesla, R. Towards an Artificial General Intelligence. The Book of Chatbots: From
+ELIZA to ChatGPT. Cham: Springer Nature Switzerland, 151-159 (2024).
+https://doi.org/10.1007/978-3-031-51004-5_8
+IA Žthique :
+Avec la montée en puissance de l'IA se posera également la question de son
+utilisation éthique. Des efforts seront en cours pour développer des normes et des
+réglementations visant à garantir que l'IA sera utilisée de manière responsable et
+respectueuse de la vie privée. Dans les années à venir, nous devrions assister à un
+renforcement de ces mesures, ainsi qu'à une prise de conscience croissante de
+l'importance de l'éthique dans le développement de l'IA. Par exemple, des cadres
+éthiques pourraient être établis pour réguler l'utilisation de l'IA dans la surveillance de
+masse, assurant que les technologies ne soient pas utilisées pour violer les droits
+humains. À l'avenir, nous devrions voir un renforcement de ces mesures, avec une
+40 | Aract Réunion - L’IA : Kwa sa i lé ?
+prise de conscience croissante de l'importance de l'éthique dans le développement de
+l'IA.
+Floridi L. The Ethics of Artificial Intelligence: principles, challenges, and opportunities.
+Oxford University Press (2023).
+https://doi.org/10.1093/oso/9780198883098.001.0001
+Roche, C., Wall, P.J. & Lewis, D. Ethics and diversity in artificial intelligence policies,
+strategies and initiatives. AI Ethics 3, 1095–1115 (2023).
+https://doi.org/10.1007/s43681-022-00218-9
+Solanki, P., Grundy, J. & Hussain, W. Operationalising ethics in artificial intelligence
+for healthcare: a framework for AI developers. AI Ethics 3, 223–240 (2023).
+https://doi.org/10.1007/s43681-022-00195-z
+Blanchard, A., Taddeo, M. The Ethics of Artificial Intelligence for Intelligence
+Analysis: a Review of the Key Challenges with Recommendations. DISO 2, 12
+(2023). https://doi.org/10.1007/s44206-023-00036-4
+Lehuedé, S. An elemental ethics for artificial intelligence: water as resistance within
+AI’s value chain. AI & Society (2024). https://doi.org/10.1007/s00146-024-01922-2
+Schneider-Kamp, A. Can ethics be assembled? Consumer ethics in the age of
+artificial intelligence and smart objects. Consumption Markets & Culture, 27(1), 59–
+70 (2024). https://doi.org/10.1080/10253866.2024.2302598
+Casiraghi, S., & van Dijk, N. Ethics reviews in the European Union. Implications for
+the governance of scientific research in times of data science and Artificial
+Intelligence. Law, Innovation and Technology, 16(1), 101–122 (2024).
+https://doi.org/10.1080/17579961.2024.2313798
+Marino, D., Cananzi, D., Aragona, F. Artificial Intelligence and Ethics Challenges of
+Technologies. In: Ethics and Artificial Intelligence. Studies in Systems, Decision and
+Control, Springer, Cham, 519, 41-55 (2024). https://doi.org/10.1007/978-3-031-
+50902-5_3
+Collaboration homme-machine :
+Plutôt que de remplacer les humains, l'IA devrait de plus en plus être utilisée pour
+collaborer avec eux. Des systèmes d'IA avancés pourraient aider les professionnels
+dans leur travail quotidien, en leur fournissant des informations pertinentes et des «
+suggestions » (des tendances, des schémas et des modèles probabilistes) basées sur
+de vastes ensembles de données. Cette collaboration homme-machine pourrait
+conduire à des avancées significatives dans des domaines tels que la médecine, la
+recherche scientifique et la créativité artistique. Par exemple, dans le domaine de la
+création artistique, des artistes pourraient utiliser des IA pour générer des idées ou
+des éléments visuels qu'ils intégreraient dans leurs œuvres.
+(https://usbeketrica.com/fr/article/et-si-les-humains-revaient-avec-les-machines-et-
+vice-versa)
+Fui-Hoon Nah, F., Zheng, R., Cai, J., Siau, K., & Chen, L. Generative AI and
+ChatGPT: Applications, challenges, and AI-human collaboration. Journal of
+41 | Aract Réunion - L’IA : Kwa sa i lé ?
+Information Technology Case and Application Research, 25(3), 277–304 (2023).
+https://doi.org/10.1080/15228053.2023.2233814
+McComb C, Boatwright P, Cagan J. Focus and modality: defining a roadmap to
+future ai-human teaming in design. Proceedings of the Design Society, 3:1905-1914
+(2023). https://doi.org/10.1017/pds.2023.191
+Mandarano, P. Perspectives about the Collaboration between Human and Artificial-
+Intelligence in Creative Decision-Making. PsyArXiv Preprints (2023).
+https://doi.org/10.31234/osf.io/bq4sf
+Han, Y., Qiu, Z., Cheng, J., & RAY LC. When Teams Embrace AI: Human
+Collaboration Strategies in Generative Prompting in a Creative Design Task. In
+Proceedings of the CHI Conference on Human Factors in Computing Systems (CHI
+’24), May 11–16, 2024, Honolulu, HI, USA. ACM, New York, NY, USA, 14 pages
+(2024). https://doi.org/10.1145/3613904.3642133
+Lockey, D.S. et al. Human-AI Collaboration in Software Development: A Review of
+Current Practices and Future Directions. African Journal of Artificial Intelligence and
+Sustainable Development. 4, 1, 92–107 (2024).
+https://africansciencegroup.com/index.php/AJAISD/article/view/20
+Autonomie croissante :
+L'autonomie des systèmes d'IA devrait également augmenter dans les années à
+venir. Des voitures autonomes aux drones de livraison, en passant par les robots
+industriels, les machines dotées de capacités d'apprentissage et de prise de décision
+de plus en plus avancées deviendront de plus en plus courantes. Cela soulèvera
+néanmoins des questions importantes en matière de responsabilité et de sécurité.
+Yazdanpanah, V., Gerding, E.H., Stein, S. et al. Reasoning about responsibility in
+autonomous systems: challenges and opportunities. AI & Society 38, 1453–1464
+(2023). https://doi.org/10.1007/s00146-022-01607-8
+Geisslinger, M., Poszler, F. & Lienkamp, M. An ethical trajectory planning algorithm
+for autonomous vehicles. Nature Machine Intelligence 5, 137–144 (2023).
+https://doi.org/10.1038/s42256-022-00607-z
+He, X., Wenhui H., and Chen L. Toward trustworthy decision-making for autonomous
+vehicles: A robust reinforcement learning approach with safety guarantees.
+Engineering 33, 77-89 (2024). https://doi.org/10.1016/j.eng.2023.10.005
+Kirwan, B. The Impact of Artificial Intelligence on Future Aviation Safety Culture.
+Future Transportation 4(2), 349-379 (2024).
+https://doi.org/10.3390/futuretransp4020018
+Correa-Jullian, C., Ramos, M., Mosleh, A., Ma, J. Operational safety hazard
+identification methodology for automated driving systems fleets. Proceedings of the
+Institution of Mechanical Engineers, Part O: Journal of Risk and Reliability. 2024.
+https://doi.org/10.1177/1748006X241233863
+42 | Aract Réunion - L’IA : Kwa sa i lé ?
+Transformation des Mod(cid:143)les de Travail :
+L'évolution de l'IA pourrait également entraîner une transformation des modèles
+de travail traditionnels. Par exemple, avec l'essor du travail à distance et des outils de
+collaboration en ligne, les travailleurs pourraient de plus en plus utiliser des
+technologies d'IA pour faciliter la communication et la coordination avec leurs
+collègues. De même, les avancées dans les technologies d'IA pourraient permettre le
+développement de nouvelles formes de travail, telles que le travail sur projet et le
+travail en réseau, qui seraient facilitées par des plateformes d'IA qui mettront en
+relation les travailleurs en fonction de leurs compétences et de leurs intérêts.
+Jarrahi, M. H., Lutz, C., Boyd, K., Oesterlund, C., & Willis, M. Artificial intelligence in
+the work context. Journal of the Association for Information Science and Technology,
+74(3), 303–310 (2023). https://doi.org/10.1002/asi.24730
+Pereira, V., Hadjielias, E., Christofi, M., & Vrontis, D. A systematic literature review
+on the impact of artificial intelligence on workplace outcomes: A multi-process
+perspective. Human Resource Management Review 33(1), 100857 (2023).
+https://doi.org/10.1016/j.hrmr.2021.100857
+Lee, M. C., Scheepers, H., Lui, A. K., & Ngai, E. W. The implementation of artificial
+intelligence in organizations: A systematic literature review. Information &
+Management, 103816 (2023). https://doi.org/10.1016/j.im.2023.103816
+Herrmann, T., Pfeiffer, S. Keeping the organization in the loop: a socio-technical
+extension of human-centered artificial intelligence. AI & Society 38, 1523–1542
+(2023). https://doi.org/10.1007/s00146-022-01391-5
+Jarrahi, M. H., Askay, D., Eshraghi, A., & Smith, P. Artificial intelligence and
+knowledge management: A partnership between human and AI." Business Horizons
+66(1), 87-99 (2023). https://doi.org/10.1016/j.bushor.2022.03.002
+Kwasek, A., Kocot, M., Kocot, D., Maciaszczyk, M., & Rogozińska-Mitrut, J. The role
+of artificial intelligence in agile organization management. European Research
+Studies Journal, 27(2), 118-130 (2024).
+https://www.um.edu.mt/library/oar/handle/123456789/121729
+Bankins, S., Ocampo, A. C., Marrone, M., Restubog, S. L. D., & Woo, S. E. A
+multilevel review of artificial intelligence in organizations: Implications for
+organizational behavior research and practice. Journal of Organizational Behavior,
+45(2), 159–182 (2024). https://doi.org/10.1002/job.2735
+Neumann, O., Guirguis, K., & Steiner, R. Exploring artificial intelligence adoption in
+public organizations: a comparative case study. Public Management Review, 26(1),
+114–141 (2024). https://doi.org/10.1080/14719037.2022.2048685
+En conclusion, l'évolution de l'intelligence artificielle dans les années à venir
+promettra d'être pleine de défis. Alors que nous nous efforcerons de développer des
+systèmes d'IA plus puissants et plus sophistiqués, il sera essentiel de veiller à ce que
+ces avancées soient guidées par des principes éthiques, tout en tenant compte des
+changements qu'elles pourraient induire dans nos modes de travail et d'interaction
+sociale.
+43 | Aract Réunion - L’IA : Kwa sa i lé ?
+44 | Aract Réunion - L’IA : Kwa sa i lé ?
+10. L’IA – Quelles sont les initiatives et les
+politiques réglementaires visant à encadrer le
+développement et l’utilisation de l’intelligence
+artificielle ?
+Synth(cid:143)se
+Entre 2020 et 2024, la régulation de l'intelligence artificielle (IA) a fait des progrès
+significatifs. Le Conseil de l'Europe a introduit des résolutions pour prévenir les
+discriminations liées à l'IA, suivies par un projet de règlement européen imposant des
+obligations strictes aux systèmes à haut risque. La directive "AI Liability" de 2022
+établit la responsabilité en cas de préjudice, et l'adoption en 2024 de la Convention-
+cadre sur l'IA et les Droits de l'Homme par le Conseil de l'Europe représente une
+avancée vers une régulation internationale contraignante. L'AI Act de l'UE renforce
+également la sécurité et la transparence des systèmes d'IA, tandis que la France a
+consolidé ses efforts avec la stratégie France I.A., visant à soutenir l'innovation tout
+en assurant une approche éthique de l'IA. Ces initiatives témoignent d'un engagement
+croissant à encadrer l'IA pour préserver les droits fondamentaux tout en favorisant son
+développement responsable.
+En quelques phrases :
+Entre 2020 et 2024, des régulations strictes ont été introduites pour encadrer
+l'utilisation de l'intelligence artificielle (IA), incluant des directives européennes comme
+la Résolution 2343 et le projet de règlement sur l'IA, ainsi que la directive "AI Liability"
+visant à établir la responsabilité en cas de dommages.
+L'adoption de la Convention-cadre sur l'IA et les Droits de l'Homme en mai 2024
+marque un pas décisif vers une régulation internationale garantissant le respect des
+droits de l'homme dans le développement et l'utilisation de l'IA, soutenue par des
+initiatives nationales comme la stratégie France I.A. visant à promouvoir l'innovation
+responsable.
+Le développement rapide de l'intelligence artificielle (IA) pose des défis
+importants en matière de réglementation et de gouvernance. Les initiatives et
+politiques visant à encadrer l'utilisation de l'IA se sont multipliées ces dernières
+années, illustrant la volonté des gouvernements et des organisations
+internationales de promouvoir une IA éthique et responsable. Cet article explore
+les principales initiatives et politiques adoptées entre 2020 et 2024.
+1. Cadre Réglementaire Initial :
+PrŽvention des Discriminations et MarchŽs du Travail :
+En 2020, le Conseil de l'Europe a adopté deux textes majeurs :
+Résolution 2343 (https://pace.coe.int/fr/files/28807/html) et Recommandation 2183
+(https://pace.coe.int/fr/files/28809/html) : Ces textes visent à prévenir les
+discriminations résultant de l’utilisation de l’IA, soulignant l'importance de l'équité
+45 | Aract Réunion - L’IA : Kwa sa i lé ?
+algorithmique et de la transparence. Ces documents examinent les opportunités et les
+défis posés par l'intégration de l'IA dans divers secteurs professionnels.
+2021 : Projet de Règlement Européen sur l'IA :
+L'Union européenne a présenté en 2021 un projet de règlement sur l'IA, introduisant
+des obligations de conformité pour les systèmes à haut risque, notamment l'inclusion
+d'un contrôle humain à toutes les étapes, depuis la conception jusqu'à la mise sur le
+marché et au-delà.
+(https://eur-lex.europa.eu/legal-
+content/FR/TXT/HTML/?uri=CELEX:52021PC0206&from=EN#footnoteref14)
+2. Renforcement Réglementaire :
+2022 : Directive EuropŽenne "AI Liability" :
+En 2022, l'UE a proposé une directive visant à établir la responsabilité extra-
+contractuelle en cas de préjudice causé par des systèmes d'IA, introduisant une
+présomption réfragable3 de lien de causalité en l'absence de respect du contrôle
+humain.
+(https://commission.europa.eu/business-economy-euro/doing-business-eu/contract-
+rules/digital-contracts/liability-rules-artificial-intelligence_en)
+2023 : Stabilisation des R(cid:143)glements sur l'IA :
+Le projet de règlement sur l'IA a été stabilisé en 2023, notamment les articles 14
+et 29 relatifs au contrôle humain. La législation prévoit une entrée en application en
+2025, offrant aux États membres le temps nécessaire pour adapter leurs législations
+nationales.
+(https://www.europarl.europa.eu/doceo/document/TA-9-2023-0236_FR.html)
+3. Adoption d'un Traité International :
+17 mai 2024 : Adoption de la Convention-cadre sur l'IA et les Droits de l'Homme :
+Lors de leur session annuelle à Strasbourg, les ministres des affaires étrangères
+des 46 pays membres du Conseil de l'Europe ont adopté un traité international visant
+à garantir que les activités liées à l'IA respectent les droits de l'homme, la démocratie
+et l'État de droit. Ce traité, le premier de son genre à être juridiquement contraignant,
+sera ouvert à la signature en septembre 2024.
+(https://www.coe.int/fr/web/portal/-/council-of-europe-adopts-first-international-treaty-
+on-artificial-intelligence)
+Les principaux objectifs de ce traité sont :
+¥ Respect des droits fondamentaux : Le traité établit des règles pour garantir que
+l'IA respecte les droits de l'homme à toutes les étapes de son cycle de vie.
+¥ Transparence et Contrôle : Les processus décisionnels et le fonctionnement des
+modèles d'IA doivent être compréhensibles et accessibles. Les utilisateurs
+doivent être informés lorsqu'ils interagissent avec une IA.
+¥ Responsabilité et Recours : Les États doivent anticiper et atténuer les risques
+associés aux systèmes d'IA et offrir des voies de recours aux victimes en cas de
+violation des droits de l'homme.
+3 Adjectif. (Droit) Qui peut (cid:144)tre rŽfutŽ par une preuve contraire, en parlant d'une prŽsomption.
+46 | Aract Réunion - L’IA : Kwa sa i lé ?
+Le traité est compatible avec l’AI Act (https://artificialintelligenceact.eu/fr/), une
+législation adoptée par le Parlement européen en mars 2024 visant à encadrer les
+systèmes d'IA en Europe.
+4. Réglementation Européenne : L’AI Act :
+AI Act : Objectifs et Dispositions :
+L’AI Act vise à :
+¥ Sécuriser les systèmes d'IA : Assurer que les systèmes d’IA mis sur le marché
+respectent les droits fondamentaux et les valeurs de l’UE.
+¥ Faciliter l'innovation : Fournir un cadre juridique clair pour encourager les
+investissements dans l'IA.
+¥ Gouvernance et Transparence : Renforcer la gouvernance des systèmes d'IA,
+avec des règles harmonisées sur la transparence et des exigences spécifiques
+pour les systèmes à haut risque.
+Interdictions et Obligations :
+L’AI Act interdit certaines pratiques, telles que la manipulation comportementale
+subliminale et l'exploitation des vulnérabilités individuelles. Les systèmes
+d'identification biométrique à distance en temps réel sont strictement régulés, avec des
+exceptions limitées et soumises à une autorisation préalable.
+Les citoyens auront le droit de déposer des plaintes et de recevoir des
+explications sur les décisions fondées sur des systèmes d'IA à haut risque.
+Mises en Îuvre et Sanctions :
+Le règlement prévoit des délais pour l'application de différentes dispositions,
+avec des amendes pouvant atteindre 7% du chiffre d'affaires mondial pour les
+infractions graves.
+5. La Stratégie France I.A. :
+En 2017, la France a lancé la stratégie France I.A. pour mobiliser et fédérer la
+communauté nationale autour de l’IA, avec l'objectif de positionner le pays en leader
+dans ce domaine stratégique.
+(https://www.enseignementsup-recherche.gouv.fr/fr/la-strategie-france-ia-soutenir-la-
+dynamique-francaise-autour-de-l-intelligence-artificielle-46305)
+Cette initiative vise à soutenir l'innovation et l'appropriation des technologies d'IA
+par le tissu économique français. La stratégie repose sur plusieurs axes clés : clarifier
+les débats sur l'IA, mobiliser les acteurs nationaux et internationaux, définir un plan
+d'action et mobiliser les financements nécessaires, notamment à travers le programme
+d’investissements d’avenir.
+Parmi les actions notables, on trouve la mise en place d'un comité stratégique,
+la création de nouvelles infrastructures de recherche, et le soutien à des start-ups
+innovantes. La France entend également affirmer son leadership européen et mondial
+en matière d'IA, en développant des écosystèmes d'innovation et en intégrant
+systématiquement l'IA dans les dispositifs publics de soutien à l'innovation.
+47 | Aract Réunion - L’IA : Kwa sa i lé ?
+Les initiatives et politiques réglementaires adoptées entre 2020 et 2024
+témoignent d'une volonté croissante de maîtriser les risques associés à l'IA tout en
+favorisant son développement responsable. L'adoption du traité international le 17 mai
+2024 marque une étape clé, plaçant les droits de l'homme au cœur de la régulation de
+l'IA. Les législations européennes, telles que l’AI Act, et la stratégie nationale France
+I.A. complètent ce cadre en introduisant des règles harmonisées et strictes pour
+encadrer l'utilisation de cette technologie transformative.
+48 | Aract Réunion - L’IA : Kwa sa i lé ?
+49 | Aract Réunion - L’IA : Kwa sa i lé ?
+Auteur(e)s:
+Jean-Noël AMATO
+Corinne DUBOIS
+Remerciements à Béatrice De LOUISE, Pierre MERCADER, Patrick ISSARTELLE

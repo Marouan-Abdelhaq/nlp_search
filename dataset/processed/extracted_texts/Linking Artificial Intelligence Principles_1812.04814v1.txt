@@ -1,0 +1,254 @@
+In the Proceedings of the AAAI Workshop on Artificial Intelligence Safety (AAAI-Safe AI 2019), 2019.
+Linking Artificial Intelligence Principles
+Yi Zeng1,2,3, Enmeng Lu1,*, Cunqing Huangfu1,*
+1 Institute of Automation, Chinese Academy of Sciences
+2 School of Artificial Intelligence, University of Chinese Academy of Sciences
+3 Berggruen Institute China Center, Peking University
+{yi.zeng, enmeng.lu, cunqing.huangfu}@ia.ac.cn
+Abstract to make the extracted text self-explanatory. Principle pro-
+Artificial Intelligence principles define social and ethical posals are grouped by their backgrounds:
+considerations to develop future AI. They come from re- • Principles from Academia, Non-profits and Non-Gov-
+search institutes, government organizations and industries. ernmental Organizations: (1) Asilomar AI Principles (FLI
+All versions of AI principles are with different considerations
+2017). (2) General Principles in Ethically Aligned Design,
+covering different perspectives and making different empha-
+version 2, by IEEE (IEEE 2017). (3) Principles for Algorith-
+sis. None of them can be considered as complete and can
+cover the rest AI principle proposals. Here we introduce mic Transparency and Accountability by ACM (USACM
+LAIP, an effort and platform for linking and analyzing differ- 2017). (4) The Japanese Society for Artificial Intelligence
+ent Artificial Intelligence Principles. We want to explicitly Ethical Guidelines (JSAI 2017). (5) The Montreal Declara-
+establish the common topics and links among AI Principles
+tion for a Responsible Development of Artificial Intelli-
+proposed by different organizations and investigate on their
+gence (Montreal 2017). (6) Three ideas from the Stanford
+uniqueness. Based on these efforts, for the long-term future
+of AI, instead of directly adopting any of the AI principles, Human-Centered AI Initiative (HAI) (Stanford 2018). (7)
+we argue for the necessity of incorporating various AI Prin- Three Rules for Artificial Intelligence Systems by the CEO
+ciples into a comprehensive framework and focusing on how of Allen Institute for Artificial Intelligence (Etzioni 2017).
+they can interact and complete each other.
+(8) Harmonious Artificial Intelligence Principles (HAIP
+2018). (9) Universal Guidelines for Artificial Intelligence
+Artificial Intelligence Principles: Different (The Public Voice 2018). (10) Principles for the Governance
+of AI (The Future Society 2017). (11) Tenets of Partnership
+School of Thoughts
+on AI (PAI 2016). (12) Top 10 Principles For Ethical Arti-
+AI ethics and social impacts have drawn serious attentions ficial Intelligence (UNI Global Union 2017). (13) AI Policy
+and lots of policy frameworks have been brought up by var- Principles (ITI 2017).
+ious organizations. We confine our study to different AI • Principles from Governments: (14) AI R&D Principles
+principles (including guidelines, codes, and initiatives) per- (MIC 2017). (15) Draft AI Utilization Principles (MIC
+taining to the general governance of AI. Typically, such 2018). (16) AI Code (House of Lords 2018). (17) Ethical
+principles are literally and explicitly documented in an item- principles and democratic prerequisites, European Group on
+by-item style, announced as an efforts to express the propos- Ethics in Science and New Technologies (EGE 2018).
+ers’ values and attitudes towards the understanding, devel- • Principles from Industry: (18) DeepMind Ethics & So-
+opment, and utilization of AI. Technically detailed discus- ciety Principles (DeepMind 2017). (19) OpenAI1 Charter
+sions, including techniques oriented standards, are not in- (OpenAI 2018). (20) AI at Google: Our Principles (Google
+cluded in this study. Traditional principles on robotics are 2018). (21) Microsoft AI Principles (Microsoft 2018). (22)
+also not included in this study. Microsoft CEO’s 10 AI rules (Nadella 2016). (23) Princi-
+Based on these considerations, we collected 27 proposals ples for the Cognitive Era (IBM 2017). (24) Principles for
+of AI principles to date. For each of the collected principles, Trust and Transparency (IBM 2018). (25) Developing AI
+we extract the texts of direct relevance to the author’s points for Business with Five Core Principles (Sage 2017). (26)
+(in most cases this means the title words of the principles). SAP’s Guiding Principles for Artificial Intelligence. (SAP
+We also include the necessary comments from the raw text 2018). (27) Sony Group AI Ethics Guidelines (Sony 2018).
+* These authors contributed equally to this study. 1 OpenAI identifies itself as “a non-profit AI research company”.
+Semantically Linking Various AI Principles has covered the related topic. Table 1 presents 10 general
+topics and related terms for AI Principles. Term expansion
+We aim to link various AI principles from the perspectives efforts based on semantic similarities are introduced to ex-
+that they considered in common. Common perspectives may tend the list for more comprehensive coverage.
+not use exactly the same word term, and semantically equiv-
+alent and similar terms should be considered.
+We first identified a set of manually chosen keywords as
+the core terms, which belong to 10 general topics. We use
+word2vec representation of the word to find keywords with
+similar meanings. Google word vector trained from news1 is
+used. The similarity between the original keyword and the
+other words is calculated by the cosine similarity between
+the word vector of the original keyword and the other words.
+A list of candidate extended keywords ranked by similarity
+is generated. The first word on the list with obviously devi-
+ated semantic meaning from the original keyword is selected
+as the threshold point, and all words with lower similarity
+Figure 1. Topic coverage of principle titles and explanatory texts
+are abandoned. Some phrases with similar meanings are
+based on manually chosen keywords (A) and extended keyword
+added to the expanded keyword list. For example, for the
+groups by semantic similarity (B).
+term “collaboration”, the expanded list also includes collab-
+orations, collaborative, collaboratively, collaborate, collab- Figure 1 shows the coverage of different principles on the
+orates and collaborating. While for the term “fairness”, the 10 topics. The colors are related to how many times the term
+expanded list also includes fair, fairer, unfair and unfairness. appeared in the proposal. As can be observed, expanding the
+keywords using semantic similarity significantly increased
+Table 1.Topics and Manually Chosen Keywords for AI Principles
+topics found in principles, making the semantic analysis
+Topics Keywords more accurate and robust against different use of similar
+Humanity humanity, beneficial, well-being, human word terms and expressions. The linkages among different
+value, human right, dignity, freedom, edu- AI principles are represented using Semantic Web standards
+cation, common good, human-centered, (RDF/OWL) on the LAIP platform.
+human-friendly
+Collabora- collaboration, partnership, cooperation,
+tion dialogue Complementary Considerations from Differ-
+Share share, equal, equity, inequity, inequality ent Organizations and Different AI Principles
+Fairness fairness, justice, bias, discrimination, prej-
+udice Different principle proposals are compared by calculating
+their coverage on topics and keywords, as shown in Figure
+Transpar- transparency, explainable, predictable, in-
+2. We can observe that one of the principle proposals cov-
+ency telligible, audit, trace, opaque
+ered all the major topics. Among the top 10 proposals ranked
+Privacy privacy, personal information, data pro-
+by keywords, 8 of them ranked top 10 on topic coverage
+tection, informed, explicit confirmation,
+ranking as well. However, SAP 2018 ranked higher on key-
+control the data, notice and consent
+words coverage ranking (the 10th), but ranked comparatively
+Security security, cybersecurity, cyberattack,
+lower on topic coverage ranking (the 14th in parallel), since
+hacks, confidential
+it discussed extensively about collaboration, fairness, pri-
+Safety safety, validation, verification, test, con-
+vacy, and safety, while may have missed the topics of share,
+trollability, under control, control the
+accountability and AGI/ASI. HAIP 2018 covered 8 of the
+risks, human control
+10 major topics (the 7th in parallel) without going through
+Accounta- accountability, responsibility
+much of the details, hence ranked lower in keywords rank-
+bility
+ing (the 16th). We should emphasize that coverage of a pro-
+AGI/ASI AGI, superintelligence, super intelligence
+posal may not reflect lacking of considerations on certain
+Here we define the topic coverage of a principle proposal
+topics, but just reflects that they may choose to have differ-
+as the percentage of topics that have been mentioned in the
+ent emphasis. On the other hand, different considerations
+proposal. If any term or expanded keyword term has ever
+may interact to complement with each other.
+appeared in a proposal, we would mark that this proposal
+1 https://drive.google.com/file/d/0B7XkCwpI5KDYNlNUT-
+TlSS21pQmM/edit
+the analysis of the text still remain. The ambiguities may
+come from the polysemy of words and the context. For ex-
+ample, “race” is used in the context of “arms race” and “race
+avoiding” (FLI 2017) to represent the competition across re-
+searchers and nations (thus referring to the topic of “collab-
+oration”), it is also used in the context of “gender, race, sex-
+ual orientation” (UNI Global Union 2017) to talk about pos-
+sible biases of AI system (thus referring to the topic of “fair-
+ness”). Meanwhile, the “self-improvement” of an advanced
+AI system is a trait we should be very cautious about (FLI
+2017), yet such “self-improvement” of AI researchers is
+(A) Topic Coverage Ranking
+what we ask for (JSAI 2017).
+Such ambiguities also appear within a topic. For instance,
+we may ask for “transparency” from the decision-making
+process of the system out of our fairness concerns. We may
+also ask for “transparency” from the system to make it more
+safe, traceable, and controllable. The Asilomar AI principles
+have made such distinctions explicitly in their discussions
+(see “Judicial Transparency” and “Failure Transparency” in
+(B) Keywords Coverage Ranking (FLI 2017)) while others usually seem to take one side of
+the concept or mixed them up. The ambiguities in these
+Figure 2. Coverage Ranking for General Topics (A) and Key-
+cases can be derived from the high-level abstraction of the
+words (B) for Different AI Principle Proposals
+concept itself and is also a reflection of the inner linkage
+According to the division of different school of thoughts between various topics.
+from the types of publisher point of view, Figure 3 shows Besides the general topics those AI Principle proposals
+the comparative frequency of topics mentioned in three dif- share in common, many principles also reflect the unique
+ferent types of AI principle proposals. perspectives of different organizations. For example, the
+Montreal Declaration has suggested promoting the well-be-
+ing of “all sentient creatures”, which according to their def-
+inition, includes “any being able to feel pleasure, pain, emo-
+tions; basically, to feel” (Montreal 2017). The JSAI Ethical
+Guidelines include that AI must abide these guidelines “in
+the same manner as the members of the JSAI in order to be-
+come a member or a quasi-member of society” (JSAI 2017).
+The General Principles from IEEE’s report recommend that
+“For the foreseeable future, A/IS should not be granted
+rights and privileges equal to human rights: A/IS should al-
+Figure 3. Average topic frequency in different types of publishers, ways be subordinate to human judgment and control” (IEEE
+with standard error of the data. The asterisks indicate that the T- 2017). IBM takes the view that “Cognitive systems will not
+test p-value of the data is less than 0.05. realistically attain consciousness or independent agency”
+We can observe from Figure 3 that corporations would and thus lay their stress on promoting AI and cognitive sys-
+like to mention more about collaboration, but not that much tems to “augment human intelligence” (IBM 2017). Those
+for security and privacy. While governments mentioned different perspectives from different proposals reflect the di-
+more about security, but would not like to mention account- versity of the whole AI community and it turns to be neces-
+ability. Corporations can benefit from collaboration, but the sary to identify and incorporate such various considerations
+atmosphere of collaboration may not be as good as academia, for a more comprehensive framework.
+which may be the reason why they would like to mention it. Based on the analysis, we have the following suggestions
+Privacy and security are sensitive issues for corporations, for future research and proposals for AI Principles:
+maybe that is why corporations would not like to mention • Strengthening safety-related considerations in academia
+them. And the government mentioned the topic of account- and industry. Safety issues are the core for AI governance
+and have been realized in different government organiza-
+ability significantly less than academia.
+tions, but many of the AI companies have not taken this
+Although in most cases, principles from different organi-
+seriously. While their AI products will directly bring po-
+zations usually share a common vocabulary, ambiguities in
+tential risks for society.
+• Long-term strategic design for AGI and ASI. Most AI IBM. 2017. Principles for the Cognitive Era. https://www.ibm
+principles investigated here do not cover considerations .com/blogs/think/2017/01/ibm-cognitive-principles/.
+for AGI and ASI. While most of them should have been IBM. 2018. Principles for Trust and Transparency. https://www
+regarded as relatively long-term design for AI. Long-term .ibm.com/blogs/policy/trust-principles/.
+planning on AGI and ASI will have clearer observations Information Technology Industry Council (ITI). 2017. AI Policy
+for strategic future and could have arrangements for po- Principles. https://www.itic.org/public-policy/ITIAIPolicy
+tential risks in advance. PrinciplesFINAL.pdf.
+• From Human-centered to Harmonious Principle Design. Microsoft. 2018. Microsoft AI Principles. https://www.microsoft
+Current AI principle proposals mainly focus on beneficial, .com/en-us/ai/our-approach-to-ai.
+human-centered design, while lack of considerations that Ministry of Internal Affairs and Communications (MIC), the Gov-
+the human society is on the way for transformation. More ernment of Japan. 2017. AI R&D Principles. http://www
+harmonious design considering both human and future AI .soumu.go.jp/main_content/000507517.pdf.
+as cognitive living systems should be considered. Ministry of Internal Affairs and Communications (MIC), the Gov-
+ernment of Japan. 2018. Draft AI Utilization Principles.
+http://www.soumu.go.jp/main_content/000581310.pdf.
+Conclusions
+Nadella, S. 2016. The Partnership of the Future: Microsoft’s CEO
+explores how humans and A.I. can work together to solve society’s
+Different AI Principles have their own perspectives and cov-
+greatest challenges. https://slate.com/technology/2016/06
+erage for the current and future strategies of AI. Instead of /microsoft-ceo-satya-nadella-humans-and-a-i-can-work-together
+directly adopting any of the AI principles, we argue the ne- -to-solve-societys-challenges.html.
+cessity of linking and incorporating various AI Principles OpenAI. 2018. OpenAI Charter. https://blog.openai.com/openai
+into a comprehensive framework and focusing on how they -charter/.
+can interact and complement each other. The Linking Arti- Partnership on AI (PAI). 2016. Tenets. https://www.partnership
+ficial Intelligence Principles (LAIP) platform is available as onai.org/tenets/.
+an online service under the address http://www.linking-ai- Sage. 2017. The Ethics of Code: Developing AI for Business with
+Five Core Principles. https://www.sage.com/ca/our-news/press-re-
+principles.org. It supports semantic search by keyword
+leases/2017/06/designing-AI-for-business.
+terms and paragraph search where semantically similar prin-
+SAP. 2018. SAP's Guiding Principles for Artificial Intelligence.
+ciples could be listed for exploration.
+https://news.sap.com/2018/09/sap-guiding-principles-for-artificial
+-intelligence/.
+Acknowledgement Sony. 2018. Sony Group AI Ethics Guidelines. https://www.sony
+.net/SonyInfo/csr_report/humanrights/hkrfmg0000007rtj-att/AI
+This study is supported by New Generation of Artificial In- _Engagement_within_Sony_Group.pdf.
+telligence Development Research Center, Ministry of Sci- Stanford University. 2018. The Stanford Human-Centered AI Ini-
+tiative (HAI). http://hai.stanford.edu/news/introducing_stanfords
+ence and Technology of China under the project “Key issues
+_human_centered_ai_initiative/.
+of Social Ethics for Artificial Intelligence” from ISTIC.
+The Future Society. 2017. Principles for the Governance of AI.
+http://www.thefuturesociety.org/science-law-society-sls-initiative
+/#1516790384127-3ea0ef44-2aae.
+References
+The IEEE Global Initiative on Ethics of Autonomous and Intelli-
+DeepMind. 2017. DeepMind Ethics & Society Principles. gent Systems. 2017. Ethically Aligned Design, Version 2.
+https://deepmind.com/applied/deepmind-ethics-society/principles/. http://standards.ieee.org/develop/indconn/ec/autonomous_
+Etzioni, O. 2017. How to Regulate Artificial Intelligence. https: systems.html.
+//www.nytimes.com/2017/09/01/opinion/artificial-intelligence- The Japanese Society for Artificial Intelligence (JSAI). 2017. The
+regulations-rules.html. Japanese Society for Artificial Intelligence Ethical Guidelines.
+European Group on Ethics in Science and New Technologies http://ai-elsi.org/wp-content/uploads/2017/05/JSAI-Ethical-
+(EGE). 2018. Statement on Artificial Intelligence, Robotics and Guidelines-1.pdf.
+'Autonomous' Systems. http://ec.europa.eu/research/ege/pdf/ege The Public Voice. 2018. Universal Guidelines for Artificial Intel-
+_ai_statement_2018.pdf. ligence. https://thepublicvoice.org/ai-universal-guidelines/.
+Future of Life Institute (FLI). 2017. Asilomar AI Principles. https: UNI Global Union. 2017. Top 10 Principles For Ethical Artificial
+//futureoflife.org/ai-principles/. Intelligence. http://www.thefutureworldofwork.org/media/35420
+Google. 2018. AI at Google: Our Principles. https://ai.google /uni_ethical_ai.pdf.
+/principles. University of Montreal. 2017. The Montreal Declaration for a Re-
+HAIP Initiative. 2018. Harmonious Artificial Intelligence Princi- sponsible Development of Artificial Intelligence. https://www
+ples (HAIP). http://bii.ia.ac.cn/hai/index.php. .montrealdeclaration-responsibleai.com/the-declaration.
+House of Lords, UK. 2018. AI in the UK: ready, willing and able? US Public Policy Council, Association for Computing Machinery
+https://publications.parliaent.uk/pa/ld201719/ldselect/ldai/100 (USACM). 2017. Principles for Algorithmic Transparency and Ac-
+/100.pdf. countability. https://www.acm.org/binaries/content/assets
+/public-policy/2017_usacm_statement_algorithms.pdf.

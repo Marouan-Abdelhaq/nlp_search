@@ -1,0 +1,1065 @@
+A Demonstration of Issues with Value-Based Multiobjective
+Reinforcement Learning Under Stochastic State Transitions
+PeterVamplew CameronFoale RichardDazeley
+FederationUniversityAustralia FederationUniversityAustralia DeakinUniversity
+MtHelen,Victoria,Australia MtHelen,Victoria,Australia WaurnPonds,Victoria,Australia
+p.vamplew@federation.edu.au c.foale@federation.edu.au r.dazeley@deakin.edu.au
+ABSTRACT trueutility.Asaresultnumerousnon-linearscalarisationfunctions
+Wereportapreviouslyunidentifiedissuewithmodel-free,value- have been explored in the literature (for example, [4, 23, 24]) –
+basedapproachestomultiobjectivereinforcementlearninginthe these tend to produce algorithmic complications, but also may
+contextofenvironmentswithstochasticstatetransitions.Anex- betterrepresentthetruepreferencesoftheuser.
+amplemultiobjectiveMarkovDecisionProcess(MOMDP)isused Aswellasthechoiceofscalarisationfunctionandparameters,a
+todemonstratethatundersuchconditionstheseapproachesmay secondfactormustbeconsideredwithinthisutility-basedparadigm
+beunabletodiscoverthepolicywhichmaximisestheScalarised –thetime-frameoverwhichtheutilityisbeingmaximised.Roijers
+ExpectedReturn,andinfactmayconvergetoaPareto-dominated etal.[12]identifiedtwodistinctpossibilities.Theagentmayaimto
+solution.Wediscussseveralalternativemethodswhichmaybe maximisetheexpectedscalarisedreturn(ESR).Thatis,itisassumed
+more suitable for maximising SER in MOMDPs with stochastic thereturnsarefirstscalarised,andthenthisagentaimsforthe
+transitions. policy which maximises the expected value of that scalar. This
+ESRapproachissuitedtoproblemswheretheaimistomaximise
+KEYWORDS theexpectedoutcomewithinanyindividualepisode.Forexample,
+whenproducingatreatmentplanforapatientwhichtradesoffthe
+multiobjectivereinforcementlearning,multiobjectiveMDPs,sto-
+likelihoodofacureversustheextentofnegativeside-effects-any
+chasticMDPs
+individualpatientwillonlyundergothistreatmentonce,andso
+theycareabouttheutilityobtainedwithinthatspecificepisode.
+1 INTRODUCTION Inothercontextswemaybeconcernedaboutthemeanutility
+receivedovermultipleepisodes.Inthissituationtheagentshould
+Multiobjectivereinforcementlearning(MORL)aimstoextendthe
+aimtomaximisethescalarisedexpectedreturn(SER)-thatis,it
+capabilitiesofreinforcementlearning(RL)methodstoenablethem
+estimatestheexpectedvectorreturnperepisode,andthenmax-
+to work for problems with multiple, conflicting objectives [12].
+imisesthescalarisationofthatexpectedreturn.Asdemonstrated
+RLalgorithmsgenerallyassumethattheenvironmentisaMarkov
+inRoijersetal.[11],theoptimalpolicyforaparticularMOMDP
+DecisionProcess(MDP)inwhichtheagentisprovidedwithascalar
+undertheESRandSERsettingmaydifferconsiderably,evenifthe
+rewardaftereachaction,andmustaimtolearnthepolicywhich
+samescalarisationfunctionandparametersareusedinbothcases.
+maximisesthelong-termreturnbasedonthoserewards.Incontrast
+AsnotedbyRoijersetal.[11]andRădulescuetal.[10]much
+MORLalgorithmsoperatewithinmultiobjectiveMDPs(MOMDPs),
+oftheexistingworkinMORLhasconsideredSERoptimization,
+inwhichtherewardtermsarevectors,witheachelementinthe
+althoughthishasoftenbeenimplicitratherthanexplicitlystated.
+vectorcorrespondingtoadifferentobjective.Thiscreatesanumber
+Much of this SER-focused work has been based on benchmark
+ofnewissuestobeaddressedbytheMORLagent.Mostnotably
+environmentssuchasthoseofVamplewetal.[18],themajorityof
+theremaybemultiplepolicieswhichmaybeoptimal(intermsof
+whicharedeterministicMOMDPs.
+Paretooptimality),andwhichpolicytheagentshouldlearnisnot
+Inthispaperwedemonstratebyexamplethatthemodel-free
+immediatelyobvious.
+value-basedmethodspreviouslywidelyusedinMORLresearch
+Intheutility-basedparadigmofMORL[12,29]itisassumedthat
+mayfailtomaximisetheSERutilitywhenappliedtoMOMDPs
+thepreferencesoftheusercanbedefinedintermsofaparame-
+withstochasticstatetransitions.
+terisedutilityfunctionf,andthattheaimoftheagentshouldbeto
+learnthepolicywhichproducesvectorreturnswhichmaximises
+2 SPACETRADERS:ANEXAMPLE
+theutilitytotheuserasdefinedbyf.
+STOCHASTICMOMDP
+Variousapproacheshavebeenexploredfortheformoftheutility
+function–somemaybebettersuitedtoexpressthepreferenceof AsshowninFigure1theSpaceTradersMOMDPisafinite-horizon
+theuserwithinaparticularproblemdomain,whileothersoffer taskwithahorizonof2time-steps.Itconsistsoftwonon-terminal
+benefitsfromanalgorithmicperspective.Asimpleweightedlinear states,withthreeactionsavailableineachstate.Theagentstartsat
+scalarisationhasbeenwidelyusedbecauseofitssimplicity(for itshomeplanet(stateA)andmusttraveltoanotherplanet(stateB)
+example, [1, 3, 8]). Linear scalarisation transforms an MOMDP todeliverashipment,andthenreturntoStateAwiththepayment.
+intoanequivalentsingle-objectiveMDP,andenablesexistingRL Theagentreceivesarewardwithtwoelements-thefirstis0onall
+approachestobedirectlyapplied[12].Howeverformanytasksthis actions,exceptthatarewardof1isreceivedwhentheagentsuc-
+maynotbeabletoaccuratelyrepresenttheutilityoftheuser,andso cessfullyreturnstostateA,whilethesecondelementisanegative
+mayfailtodiscoverthepolicywhichisoptimalwithregardstotheir valuereflectingthetimetakentoexecutetheaction.
+0202
+rpA
+41
+]GL.sc[
+1v77260.4002:viXra
+p=1.0; r=(0,‐12)
+p=1.0; r=(1,‐10)
+p=0.1; r=(0,‐1)
+p=0.9; r=(0,‐6)
+A B
+p=0.9; r=(1,‐8)
+p=0.1; r=(0,‐7)
+p=0.85; r=(0,0)
+p=0.15; r=(0,0)
+p=0.15; r=(0,0)
+p=0.85; r=(1,0)
+Figure1: TheSpaceTradersMOMDP.SolidblacklinesshowtheDirectactions,solidgreylinesshowtheIndirectactions,and
+dashedlinesindicateTeleportactions.Soldblackcirclesindicateterminal(failure)states.
+Reward Reward Policy Actionin Actionin
+Mean Meanreturn
+State Action P(success) on on identifier stateA stateB
+reward
+success failure II Indirect Indirect (1,-22)
+Indirect 1.0 (0,-12) n/a (0,-12) ID Indirect Direct (0.9,-19.9)
+A Direct 0.9 (0,-6) (0,-1) (0,-5.5) IT Indirect Teleport (0.85,-12)
+Teleport 0.85 (0,0) (0,0) (0,0) DI Direct Indirect (0.9,-14.5)
+Indirect 1.0 (1,-10) n/a (1,-10) DD Direct Direct (0.81,-12.61)
+B Direct 0.9 (1,-8) (0,-7) (0.9,-7.9) DT Direct Teleport (0.765,-5.5)
+Teleport 0.85 (1,0) (0,0) (0.85,0) TI Teleport Indirect (0.85,-8.5)
+Table 1: The probability of success and reward values for TD Teleport Direct (0.765,-6.715)
+eachstate-actionpairintheSpaceTradersMOMDP. TT Teleport Teleport (0.7225,0)
+Table 2: The mean episodic return vector for each of the
+ninedeterministicpoliciesavailablefortheSpaceTraders
+MOMDP.
+There are three possible pathways between the two planets.
+Thedirectpath(actionsshownbysolidblacklinesinFigure1)
+isfairlyshort,butthereisariskoftheagentbeingwaylaidby
+locatedviamethodsusinglinearscalarisation–thissetofpolicies
+spacepiratesandfailingtocompletethetask.Theindirectpath
+isreferredtoastheConvexCoverageSet[13]).
+(greylines)avoidsthepiratesandsoalwaysleadstosuccessful
+Fortheremainderofthepaperwewillassumethattheagent’s
+completionofthemission,buttakeslonger.Finallytherecently
+aimistominimisethetimetakentocompletethedeliveryand
+developedteleportationsystem(dashedlines)allowsinstantaneous
+returntoA,subjecttohavingatleastan88%probabilityofsuc-
+transportation, but has a higher risk of failure. The figure also
+detailstheprobabilityofsuccess,andtherewardforthemission-
+cessfulcompletion.Thatis,thescalarisationfunction f(v(cid:174)) =v2
+successandtimeobjectivesforeachaction–duetovariationsin
+ifv1 >0.88and−∞otherwise.Theoptimalpolicyforthisaimis
+tofollowthedirectpathtoBandthentheindirectpathbacktoA
+localconditionssuchassolarwindsandthelocationofthespace
+(policyDI).
+pirates,thetimevaluesfortheoutwardandreturnjourneysona
+particularpathmayvary.
+3 APPLYINGMODEL-FREEVALUE-BASED
+Table1summarisesthetransitionprobabilitiesandrewardsof
+MORLMETHODSTOSPACETRADERS
+theMOMDP,andalsoshowsthemeanimmediaterewardforeach
+actionfromeachstate,weightedbytheprobabilityofsuccess. Inthissectionwewilldiscusshowsomeofthevalue-basedMORL
+Astherearethreeactionsfromeachstatethereareatotalofnine methodspreviouslyusedintheliteraturewouldperformonthe
+deterministicpoliciesavailabletotheagent.Themeanrewardper SpaceTradersMOMDP.Allthemethodsdiscussedareassumedto
+episodeforeachofthesepoliciesisshowninTable2andillustrated bebasedonamultiobjectiveextensionofmodel-freevalue-based
+inFigure2.Thesolidpointsinthefigurehighlightthepolicies RLalgorithmssuchasQ-LearningorSARSA–forexamplesee[25,
+whichbelongtotheParetofront,andthedashedgreylineindicates p.3668].Forthepurposesofthissectionwewillrestrictdiscussion
+theconvexhull(onlythosepolicieslyingontheconvexhullcanbe tosingle-policymethodsinwhichthescalarisationfunctionf is
+2
+0
+TT
+‐5 DT
+TD TI
+‐10
+DD IT
+‐15 DI
+‐20
+ID
+II
+‐25
+0.7 0.75 0.8 0.85 0.9 0.95 1
+ytlanep
+emiT
+ActioninstateA Policy Q(A,a)
+Indirect ID (0.9,-19.9)
+Direct DD (0.81,-12.61)
+Teleport TD (0.765,-6.715)
+Table3: TheQ-valueswhichwillbelearnedforeachaction
+instateA,undertheassumptionthattheDirectactionwill
+beselectedinStateB.
+onlyonthecurrentstateoftheenvironment,butalsoonrewards
+Probability of mission success
+receivedsofarbytheagentduringthisepisode[5,11].Thatis,ifthe
+Figure2: Themeanreturnperepisodefortheninepossible scalarisationfunctionisf thenattimektheagentwillselecttheac-
+deterministicpoliciesfortheSpaceTradersMOMDP.Each tionawhichmaximisesthevalueoff(Q(s k ,a,(cid:205)k t=1 rt )+(cid:205)k t=1 rt ).
+policy’s return is labelled with a bigram specifying its ac- Forthepurposesofthefollowingdiscussionwewillassumethat
+tions.I,D,Trefertotheindirect,directandteleportactions f isthethresholdedlexicographicorderingoperator(TLO)[4,6],
+so,forexample,policyDIselectsthedirectactioninstate andthatathresholdingparameterof0.88isappliedtothefirst
+AandtheindirectactioninstateB.Solidmarkersindicate elementoftheQ-valuevector.Theintentionhereistomaximise
+policies which are members of the Pareto-front, and hol- thevalueofthesecondobjective(i.e.minimisetime),subjectto
+lowmarkersindicatedominatedpolicies.Thedashedgrey achievingthethresholdlevelforthefirstobjective.Ifthisoperator
+linesillustratetheconvexhullformedbymixturecombina- couldbeapplieddirectlytothemeanreturnsofeachpolicyfrom
+tions of the policies which make up the Convex Coverage Table2,thenclearlypolicyDIwouldbeselected.
+Set(CCS).Thedashedredverticallineindicatesthethresh- HoweverifweconsiderhowtheTLOoperatorselectsactions
+oldvalueof0.88fortheprobabilityofmissionsuccess,and duringtheexecutionofapolicy,thenadifferentresultwillemerge.
+theredsquaremarkeristheDIpolicywhichisoptimalfor RegardlessofthepathselectedatstateA,ifstateBissuccessfully
+thatsettingofthethreshold. reachedthenazerorewardwillhavebeenreceivedbytheagent.
+Therefore the choice of action at state B is independent of the
+previousaction.Lookingatthemeanactionvaluesreportedin
+usedtofilterthemultiplePareto-optimalpolicieswhichmaybe Table1,itcanbeseenthatactionTwillbeeliminatedasitfailsto
+available so as to obtain a single policy which is optimal with meetthethresholdforthefirstobjective,andthatactionDwillbe
+regardstof.Multiple-policyMORLmethodswillbediscussedin preferredoverIasbothmeetthethreshold,andDhasasuperior
+Section5. valueforthetimeobjective.Soitcanalreadybeseenthatthisagent
+Allmethodslearnvector-valuedestimatedQ-values,butdiffer willnotconvergetothedesiredpolicyDI.
+intermsofthescalarisationororderingmethodusedtoperform KnowingthatactionDwillbeselectedatstateB,wecancalculate
+action-selection,andthecharacteristicsonwhichtheQ-valueand theQ-valuesforeachactionatstateA,asshowninTable3.TheTLO
+policyareconditioned. actionselectorwilleliminateactionsDandTfromconsideration
+asneithermeetsthethresholdof0.88fortheprobabilityofsuccess.
+3.1 Linearscalarisation ActionIwillbeselectedgivingrisetotheoverallpolicyID.Not
+onlyisthisnotthedesiredDIpolicy,butasisevidentfromFigure
+AsimpleapproachtoMORListoapplyalinearweightedscalari-
+2itsaverageoutcomeisinfactPareto-dominatedbyDI.
+sationtotheelementsoftheQ-valuevectorpriortoselectingthe
+greedyaction.Asmentionedearlier,thisconvertstheMOMDPinto
+4 THEINTERACTIONOFLOCAL
+anequivalentMDP,andsotheQ-valuesandaction-selectionneed
+DECISION-MAKINGANDSTOCHASTIC
+onlybeconditionedonthecurrentstateoftheMDP.Howeveritis
+well-knownthatmethodsusinglinearscalarisationareunableto STATETRANSITIONS
+identifysolutionswhichdonotlieontheconvexhullofthePareto
+The failure of the non-linear value-based MORL algorithms on
+front[22].ClearlyfromFigure2thisisthecaseforpolicyDI,and
+theSpaceTradersMOMDPcanbeexplainedbytheanalysisof
+solinearmethodswillnotbeabletoconvergetothispolicy.This
+stochastic-transition MOMDPs previously carried out by Bryce
+resultisnotsurprisingandwementionitheresimpleforthesake
+etal.[2]inthecontextofprobabilisticplanning.Thisanalysishas
+ofcompleteness.
+beenlargelyoverlookedbyMORLresearcherssofar,andsooneof
+thecontributionsofthispaperistobringthisworktotheattention
+3.2 Non-linearscalarisation
+oftheMORLresearchcommunity.
+Avarietyofnon-linearscalarisationmethodshavebeenexploredin Figure3illustratesasimpleMDPreproducedfromBryceetal.
+theMORLliterature[4,23,24].Thenon-linearnatureofthescalari- [2],withastochasticbranchoccurringonthetransitionfromthe
+sationfunctionmeansthattheassumptionofadditivityunderlying initialstate.Thetableinthelowerhalfofthisfigurespecifiesthe
+theBellmanequationnolongerapplies.Inordertodealwiththis, meanreturnforthefourpossibledeterministicpolicies.Keeping
+boththechoiceofactionandtheQ-valuesmustbeconditionednot inmindthatthisMOMDPisphrasedintermsofminisingcost
+3
+Pr(G|(cid:83)) = 1.0
+1 Pr(G|(cid:83)) = 0.75
+E[Cost((cid:83))] = 50 3
+1 E[Cost((cid:83))] = 30
+Pr(G|(cid:83)) = 0.5 3
+2
+E[Cost((cid:83))] = 10
+2
+E
+Pr
+[
+(
+C P
+G
+r o (
+|
+s
+(cid:83)
+G t
+1
+( (cid:83) )
+)
+(cid:83)
+=
+1 ) ]
+1
+(cid:83) =
+.
+1
+0(cid:83)
+5
+1
+0 P E r [ ( C G (cid:83) o 2| s (cid:83) t 2 ( ) (cid:83) = 2 ) ] 0 = .5 10
+P
+E
+r
+[
+(
+C
+G
+o
+|
+s
+(cid:83)
+t 3
+(cid:83)
+(
+)
+(cid:83)
+3=
+3 ) ]
+0
+=
+.7 5
+30 (cid:83) 4
+P
+E
+r
+[
+(
+C
+G
+o P
+|
+s
+(cid:83)
+r t (
+4
+(
+)
+G (cid:83)
+=
+4 ) ) ]
+0
+=
+.
+(cid:83)
+0
+0 c m o a f e l a
+T
+i t s c h
+h
+e t o i d
+i
+o
+s
+d d n s
+r
+e l
+e
+c i c
+q
+k a i
+u
+e s n i
+i
+Q o
+r
+b n
+e
+e -
+m
+l - e d m a
+e
+e r a
+n
+t n e k
+t
+i r i n m n
+is
+g g i , n
+f
+a w
+u
+e t
+n
+d h t
+d
+e h p
+a
+r e u e
+m
+r h i e
+e
+t e l
+n
+i a y s
+t
+r
+a
+a b t
+l
+s a o
+l
+s s
+y
+f u e m m d
+in
+o e o
+c
+d d n
+o
+e
+m
+t i l h n -
+p
+a f f r t o
+a
+e
+t
+t r e h
+i
+m
+b
+e v
+l
+a
+e
+a c t l o i u
+w
+o r e n r
+i
+- e
+t
+b a
+h
+c a v t s
+t
+a c
+h
+e i h l d
+e
+a o b i R
+l
+c l
+o
+L e e
+-
+2 3
+Pr(G) E[C
+(cid:83)
+o
+1
+st]
+b
+(cid:83) 1 2 a
+(cid:83)3 b
+2
+P
+E
+r
+[
+(
+C
+G
+o
+|
+s
+(cid:83) (cid:83)
+t
+4
+4(
+)
+(cid:83)
+=
+E 4 ) [ ]
+0
+C =
+.
+o
+0
+s 0 t]
+t
+m d
+o
+is a
+t
+c t
+h
+i u o
+e
+s n s
+a
+e s
+g
+d u
+e
+c
+n
+in h
+t
+S
+a
+a e
+t
+s c
+t
+t t
+h
+h io
+e
+e n
+c
+su
+u
+3 m
+r
+.2
+re
+i o
+n
+s f
+t
+i r n
+s
+e s
+t
+w
+a
+u
+t
+ffi a
+e
+r
+.
+c d
+T
+i s e
+h
+r n
+e
+e t c ,
+p
+e a
+r
+i s
+o
+v i e
+v
+t d
+i
+s
+s
+t
+i
+s
+o
+i o l
+n
+l f o a
+o
+n r
+f
+l i y
+a
+n
+d
+p t
+d
+h r
+i
+o e
+ti
+v
+o
+e id
+n
+p e i
+a
+s s
+l
+o
+i
+i d
+n
+n e
+f
+f
+o
+o a
+r
+r s
+-
+-
+(cid:83) 1 0.2 0.8 Pr(G (cid:83) ) Pr(G) mationaboutthebranchwhichhasbeenfollowedinthisepisode,
+4 a,[(cid:83)|(cid:83)]
+(cid:83) 1 3 (cid:83)
+2 a,[(cid:83)|(cid:83)] 3 ratherthanallpossiblebrancheswhichmighthavebeenexecuted.
+2 3
+b 1 b I ab, 2 [(cid:83) 1 |(cid:83) 4 ] (cid:83) 4 TheconclusiontobedrawnfromboththisexampleandSpace
+E[Cost]
+a
+a,[(cid:83)
+2
+|(cid:83)
+4
+]
+E[Cost] E[Cost]
+Tradersisthatvalue-basedmodel-freeMORLmethodsareinher-
+entlylimitedwhenappliedinthecontextofSERoptimisationof
+0.2 0.8 Pr(G)
+a,[(cid:83)|(cid:83)] non-linearutilityonMOMDPswithnon-deterministicstatetransi-
+1 3
+a,[(cid:83)|(cid:83)] tions.Thesemethodsmayfailtodiscoverthepolicywhichmax-
+2 3
+Figure1: ExampleofConditbio
+I
+nalProbabilis
+a
+t
+,
+i
+[(cid:83)
+c
+1
+P
+|(cid:83)
+l
+4
+a
+]
+nning.
+imisestheSER(i.e.themeanutilityovermultipleepisodes).To
+a,[(cid:83)|(cid:83)] thebestofourknowledgethislimitationhasnotpreviouslybeen
+2 4 E[Cost]
+identifiedintheMORLliterature.Itisparticularlyimportantas
+Plansπ E[Cost(π)] Pr(Gπ)
+| thecombinationofSER,stochasticstatetransitionsandnon-linear
+a,[π π ] 1+(.2)50+(.8)30=35 (.2)1+(.8).75 =.8
+1 3 utilitymaywellariseinimportantareasofapplicationsuchasAI
+|
+Faig,[uπr 2 eπ1 3 :]Exa1m+p(.l2e)o1f0C+o(.n8d)i3ti0o=na2l7Prob(a.2b)il.i5s+ti(c.8P)l.a7n5n=ing.7. safety[20].
+|
+a,[π π ] 1+(.2)50+(.8)0 =11 (.2)1+(.8)0 =.2
+1 4
+|
+a,[π 2 π 4 ] 1+(.2)10+(.8)0 =3 (.2).5+(.8)0 =.1 5 POTENTIALSOLUTIONS
+Plansπ| E[Cost(π)] Pr(Gπ)
+| Inthissectionwewillbrieflyreviewandcritiquevariousoptions
+Ifτ =0.6,thenusingsuba-p,l[aπnsππ ]and1π+(.e2x)c5e0e+d(s.8th)e30th=re3sh5old(w.2it)h1+a(m.8in).i7m5al=ex.8pectedcostof27.Noticethatif
+Figur1e | 33:2 Asam3pleprobabilisticplanningMOMDP,repro- whichmayaddresstheissueidentifiedabove.
+wecommittosub-plansineaadcu,h[cπberd2 afπnrc 3oh]mwBi1rthy+oc(eu.2te)ct1oa0nl.+s[i(2d.]8e.r)Ei3nx0gec=out2thi7enrgbarc(at.2nioc)n.h5ea+sf,(r.wo8m)e.7mb5
+t
+a=lyeac.7dhsooseπ
+1
+andπ
+3
+(becauseeach
+individuallyexceedsτ). Yet,attoh,it[sπwaog| bπgrrae]nsscihv1ee+s(w(a.n2itd)h5ip0nr+coo(b.ma8bp)0illeittey=)01s.2t1raantedg(0y.2.8fi).1nA+dts(e.a8a)cf0heaosfibt=hlee.2spelanwithahighercostof35.
+1 4 5.1 ESROptimisation
+Ourfirstcontribution(asabor,lau[πnticoh|nπesto]atchhi1os+ipc(er.o2bb)e1ltew0m+e)e(,n.8ist)w0toosd=ueb3la-pylasun(cs.h2w)pi.t5rhe+-d(mi.ff8a)et0urerent=cpo.am1ym- itmentsin eachbranchwith
+bottom-updynamicprogrammoffinsge 2 xi|nis 4 tbse.lTiehfesataimtefsopratchee. pElaacnhnebreliisetfositdaetentmifayinthtaeincosrarescettofno A n s -d n o o m ted in e a a t r e l d ier su th b e -p is la su n e s describedarisesduetothefactthatan
+Iafnτd,=thr0o.u6g,hthmenulutis-ionbgjescutibv-ep sdla uyn bns -ap πmlaincapn tordoe πgxreac emu x tmc e eiane tgd e s(aHt c h heenbitgh ra,r n e1s c9h h8o ,3l s)d o,cw aos imt t h oma mumniniici nam itmeissa etlhc eeo xss pet eocptteido a nc g so e t n sot t oi a t i fs m 2a i 7 n n. g ceN t s o too fi tri n sc d .eI a tth p ias o t li i c f yoptimalwithregardstoSERmust
+wecoonmlympoitstsoibsleuba-tpthlaenrsooint(eiancithiw i a t bl y h r . bi a lee nlic e2 eh nfssw utar i i ttn he)g o 3 tu sou tsc cec ole nescs stf id uthe ler e i x nseug cbu o-tpt i hloae nnrsa b btrho aav nte cca hoerfirs xe, eswpdoe pnr mdob atoa y bac il hc-oosots-eop t iπt a t s i 1 k m p e ao a i nl n l idc t f o y eπa a a3 s c c i c r b( o obl u s e se n cp m t al t u a h ul n e sti .e v p a lee lu ae e cph w iso h d ic e h s. w Fr il a l m b i e n r g ec th ei e v p e r d o o b n le a m ve in ra t g e e rm by s
+Since we cannot enumerate the (infinite sized) belief state space to perform multi-objective value iteration, our
+individuallyexceedsτ). Yet,thisaggressive(andincomplete)strategyfindsafeasibleplanwoifthESaRhoigpthimeriscaotisotnowfo3u5ld. eliminatethisissue.HoweverESRis
+second contribution is to search forward from the initial belief state using a multi-objective generalization of the
+Our first contribution(a solution to this problem), is to delay such pre-maturecommitmcelneatsrlyinineaapcphropbrriaatnecfhorwthiethcontextoftheSpaceTradersMOMDP.
+bott
+L
+om
+A
+-
+O
+u∗p
+a
+d
+l
+y
+g
+n
+o
+a
+ri
+m
+th
+i
+m
+c
+,
+pr
+c
+o
+a
+g
+ll
+r
+e
+a
+d
+m
+M
+m
+O
+in
+L
+g
+A
+in
+O
+b∗e
+.
+lie
+S
+f
+in
+s
+c
+ta
+e
+te
+th
+s
+e
+p
+c
+a
+o
+c
+s
+e
+t
+.
+-o
+E
+p
+a
+ti
+c
+m
+h
+a
+b
+l
+e
+f
+l
+e
+i
+a
+e
+s
+f
+ib
+st
+l
+a
+e
+te
+pl
+m
+an
+ai
+i
+n
+s
+ta
+o
+i
+n
+n
+e
+s
+o
+a
+f
+s
+s
+e
+e
+t
+v
+o
+e
+f
+ra
+n
+lTohn neo
+-
+nadg-
+o
+demnotm inwi
+a
+nilt ale tad eidmsu ptb loa
+-
+nepns
+la
+,sunrseeveryepisodemeetsthethreshold
+(ratherthanmaximisingtheinverseofthecost),itcanbeseenthat
+MOLAO readilycomputesParetosetsofplans. forthemission-successobjective.Thiscanonlybeachievedby
+and,throughm∗ ulti-objectivedyunnalmikeicSpparcoegTraramdemrsi,ntghe(rHeearneign,o1P9a8re3to),-dcoomminmatuendipcoaltiecsietshfeosreoptionstoitsancestors. Itis
+At first glance, it would seem as if combining multi-objective optimization and probabilfiostlliocwpinlagntnhiensgtr(itcwtlyosnaofe-IIpolicy,whichproducesresultswhich
+onlypossibleattheroot(initialtbhiesliMeOfsMtaDtPe.)1.toselectthesub-plansthatcorrespondtoacost-optimalfeasibleplan.
+toriously computationally difficult tasks) will not scale. Our third contribution is aimed atatraemfainrgwothrseecfoormthpeleuxsietry’strueutilitythantheDIpolicy.
+Since we cannot enumerate thTehe(ianimfinofittehesaizgeendt)isbteolmieifnismtaisteethspeacocset,tsoubpjeecrtftoorsmatismfyuinltgi-objective value iteration, our
+of the search, by pursuing a numberof speed-ups. The most notable of these speed-upsis to use existing planning
+atleasta0.6probabilityofsuccess.WithinanESRformulationofthe
+seco g n r d ap c h o r n e t a r c i h b a u b ti i o li n ty i h s e t u o ris s t e ic a s rc (p h Bror f yb o lce r em w ,K a (i r .ae d .me f nb r sh o ua m rmetp t h h ae e tpi,r i &o n b i a t S i b a mil l iitty b h e o, l f2 i s e 0u f 0cc6 s e t )s a ts t o e thgr u ue s sid i h n oe g ldth a iesas m ceha u ire l c t v i he - .d o W bj e ec a t l i s5v o.e2d g is e cNn u e sor sna v l-i asz rta iaa ti tto iioon nns oao frn tyheornon-deterministic
+LAO
+M∗O
+a
+L
+lg
+A
+o
+O
+ri
+∗
+th
+t
+m
+ha
+,
+t
+c
+f
+a
+o
+l
+c
+l
+u
+ed
+ss
+M
+ynt
+O
+he
+L
+isn
+A
+ise
+O
+aocn∗h
+.
+elipk
+S
+ieso
+i
+l
+n
+yd
+c
+eb)
+e
+,rtah
+t
+n
+h
+ec
+e
+ohp
+c
+eti
+o
+sm,
+s
+ar
+t-
+el
+o
+pdo
+p
+ul
+t
+ci
+i
+ce
+m
+yti
+a
+hs
+l
+eto
+f
+c
+e
+soe
+a
+lm
+s
+e
+i
+cp
+b
+tls
+l
+e
+e
+uxbi
+p
+-tpy
+l
+l
+a
+ao
+n
+nfπ
+i
+d
+s
+1 ya
+o
+nt
+n
+barm
+e
+ani
+o
+cc
+f
+hp
+s
+r
+e
+o
+v
+g
+e
+ra
+ra
+m
+l
+m
+n
+i
+o
+n
+npg - ,od alo nimcdii ren esa
+d
+t
+u
+e
+c
+d
+e
+p
+th
+la
+e
+ns,
+MOsLizAeoOf∗Pa re re a t d o il s y et c s o b m y p u u si t n es g P (cid:15)- a bd r 1 o e am t n o din s π e a 3 t t s aiot o nb f r(a p Pn l ac a hp n ab s d 2 . iamsbitortihouof&theYseansunba-kpalakniss,in2d0iv0i3d)u.allysatisfy Previous work has demonstrated that for the SER formulation,
+At fiWrsetaglsloantcaek,eiatdwvaonutladgeseoetfhmteheparsmobiufalbtcii-oliotmybjbtehicnrteiinsvhegoflmod.rumHltuoiw-laoetbivojeenrcittfoivcieonncoslipudtdeiermeodizthfareotirmoonbthjaeencSdtiEvpRerso.bIanboo ilur irs fo tfi roc nup ortl nha - n ecp noi i snn otgrdiibc (ut t wtaisoo kns n,,p o o - liciesformedfromanon-stationary
+toriowueslpyurcsoumepliumtaitteiodncaolnlytindgifefinccpuyerlstpplteaacnstnikvisen),gthw(eLiolClptPnim)o.taOlspuclaranlaeips.ptorOoeauxcerhctuhttoeirπdL2CactPobnrttraranidcbheusbti1tohanendicsπo3maaipmtleexdityaotortfnaominnci-ndreegatestrhimneginctioshtmeicspmtlaiextxetuitryeofdeterministicpoliciescanPareto-
+of thspeasceea,racshM, beyulepauurs&uiSnmgiathn(u2bm0ra0bn3ec)hr,bof2ofr–stwpheeheicldeo-πmu2ppitslse.exlfTitfyhaielosfmtouosaiscnthginevaoentaothbtehleeprrooobfbatjbheilceittsyievtehs:rpetehsheeodnl-duu,mpsbeisrdotoofmpuilnsaeanteebxrdaiesnttecirnhmgeisn.pislatincnpionligcies[17,21].Forexample,amixture
+graphreInacthhaebnielixtytsheecutiroinst,iwcse(fBor t r h ym i c s ael b ,l r yK an da c em h fibn is he e ao x mu ec rp u ap te tlia d ,n& w ni it nS h gm a mi l t o oh w d,e2 p l0. ro 0T b 6h a ) b et i o l f i o t g y lluo a i n wd d ein s tg o hes th es e cet m iaor e nc a h n d.isWcuesaswelsshoitcwdhiorsacsnuidnsogsmlevlyaorsbieajleteiccottisnvbseeotwneenpoliciesTIandIIwithappropri-
+outcomeofthetwosub-planswillachievethethresholdwhilealso ateprobabilitiesatthestartofeachepisodecanproduceamean
+MOdLynAaOmictphraotgfroacmumsisnygnftohremsiuslaotniolnikseolfycbornadnitcihonesa,lrperdobuacbeiltihseticcopmlanpnleinxgityanodfsdhyonwasmhiocwptrhoegyraremlymoinngv,earyndrersetrdiuctciveethe
+∗ producingasignificantcostsaving. outcomewhichexceedsthatofpolicyDI,asshowninFigure4–
+sizeaosfsuPmarpetitoonsse.tWsbeythuesninsgho(cid:15)w-dhoomwinaantioovnel(Pmauplatid-oimbjietcritoivue&forYmaunlnaatikoankliisft,s2t0h0es3e).assumptionsinthesuccessivesection.
+Asidentifiedby[2],whethertheoverallpolicymeetsthecon- themixturepolicywhichselectsTIwithprobability0.65andII
+WTheeanlesxottsaekcetioandvdaensctarigbeesoMftshO ter L amin A tus Oldt∗ie-p aoe nbn djdes ocu otn rivs teh p e efoe p drrom-u bua p blsai , lti f tio yolnw lo itw toh eiw dnhcb ily cuh ade neac eoh mthb p rei arr n ioc ch abljiseevcextaie lvu -easti.oInn, w ao it ud h ris p fc r ou o u b ss a rit b oh il n i c t o y ofn 0 l . ti 3 rm 5 ibi a ut c et h di i o e n v , esameanreturnof(0.9025,-13.225)
+we pcounrstiunegelinmcyitpedlancnoinntgin,rgeelnatceydcpuwtleoadnrkan,sianwngedll(caLsoCnthPcel)um.seOiaounnrso.uatpcopmroeaocfheatcohbLrCanPcht.rDaedteesrmtihneincgothmeplexitwyhoicfhiniscsruepaesriinogrttohtehestdaetteerministicDIpolicywithregardsto
+space,asMeuleau&Smith(20c0o3r)re,cftosrutbh-pelacnotmopfolleloxwityatoefacuhsibnragnachnoretqhueirreosbcjoencstidiverea:titohneonfumbebroothfopblajenctbivreasn.ches.
+Inthenextsection, weform th a e ll s y ub d - e p fi la n n e op o t u io r n p s l a a v n a n il i a n b g le m at o ea d c e h l. ot T he h r e b f ra o n ll c o h w in in co g m s b e i c n t a i t o io n n discusseHsotwweovesrinthgeleusoebojfepcotilviceieswhichvarysowidelymaynotbe
+withtheprobabilityofbranchexecution. appropriateinallcontexts–formanyproblemsthemoreconsistent
+dynamicprogrammingformulationsofconditionalprobabilisticplanningandshowshowtheyrelyonveryrestrictive
+outcomeproducedbyadeterministicpolicymaybepreferable,and
+assumptions. Wethenshowhowanovelmulti-objectiveformulationliftstheseassumptionsinthesuccessivesection.
+2 somethodstofindSER-optimaldeterministicpoliciesforstochastic
+ThenextsectiondescribesMO 1 S L W pa A h c i e l O e T c r∗ l a e d a e ar r lny s! idlluosturartinsgpteheepdro-bulepms,,thfiosMllOoMwDePdalsboylacaksntheemnaprriartiivceadrlamevaaofluation M , O a M d D is P c s u a s r s e io st n ill o r f eq li u m ire it d e . d
+contingencyplanning,relatedwork,andconclusions.
+4
+2
+‐7 TI
+‐9
+‐11
+‐13 IT 0.65TI, 0.35II
+‐15 DI
+‐17
+‐19
+‐21 ID
+‐23 II
+0.85 0.87 0.89 0.91 0.93 0.95 0.97 0.99
+ytlanep
+emiT
+awareofanypriorworkwhichhasattemptedtodoso.Howeverthe
+model-basedMORLapproachproposedinWieringetal.[28]may
+provideasuitablebasisforimplementingareinforcementlearning
+equivalentofMOLAO*.
+5.5 Policy-searchmethods
+Analternativetovalue-basedapproachesistousepolicy-search
+approachestoRL.Asthesedirectlymaximisethepolicyasawhole
+asdefinedbyasetofpolicyparameters,theydonothavethelocal
+decision-makingissuefacedbymodel-freevalue-basedmethods.
+Probability of mission success Multipleresearchershaveproposedandevaluatedpolicy-search
+methodsformultiobjectiveproblems[7,9,15,16].Oneissuetobe
+Figure 4: The mean return per episode for a mixture pol- addressedhoweveristhatthesemethodsmostnaturallyproduce
+icyformedbyselectingbetweenthedeterministicpolicies stochasticpoliciesandassuchmayhavethesameproblemsas
+TIandIIwithprobability0.65and0.35respectivelyPareto- facedbythemixtureornon-stationaryapproachesdiscussedin
+dominatesthemeanreturnofdeterministicpolicyDI. Section5.2,unlesstheyaremodifiedorconstrainedsoastoensure
+convergencetoadeterministicpolicy.
+5.3 Multi-policyvalue-basedMORL 6 CONCLUSION
+Aswellasthesingle-policyvalue-basedMORLmethodsexamined WehavedescribedastochasticMOMDPandutilityfunctionwhich,
+inthispaper,severalauthorshaveproposedmulti-policymethods. despitetheirseemingsimplicity,arenotamenabletosolutionbythe
+Theseoperatebyretainingmultiplevaluevectorsateachstate. widely-usedmodel-freevalue-basedapproachestoMORL.While
+ThesecancorrespondtoeitherallPareto-optimalvaluesobtainable thisissuewithMOMDPswithstochasticstatetransitionshaspre-
+fromthatstate,or(forpurposesofefficiency)beconstrainedto viouslybeendescribedinthecontextofprobabilisticplanning[2],
+storeonlythosevalueswhichcanhelpconstructtheoptimalvalue thisisthefirstworktoidentifytheimplicationsforMORL.Our
+functionundersomeassumptionsaboutthenatureoftheoverall examplealsodemonstratesthatunderstochasticstate-transitions,
+utilityfunctionf [13].Multi-policyalgorithmswerefirstproposed itisinfactpossibleforsuchMORLmethodstoconvergetoaPareto-
+forvariantsofdynamicprogramming[26,27]andmorerecently dominatedpolicy.
+havebeenextendedtoMORL[14,25]. ThecombinationofSERoptimisation,stochasticstatetransi-
+Bypropagatingbackthecoveragesetofvaluesavailableateach tions and the need for a deterministic policy are likely to arise
+successorstate,thesealgorithmswouldcorrectlyidentifyallpoten- inarangeofapplications(particularlyinrisk-awareagents),and
+tiallyoptimalpoliciesavailableatthestartingstate,andtheoptimal soawarenessofthelimitationsofsomeMORLmethodstowork
+policycouldthenbeselectedatthatpoint–inthecontextofSpace underthesecharacteristicsisimportantinordertoavoidtheuse
+TradersthiswouldallowforthedesiredDIpolicytobeselected. ofinappropriatemethods.
+Howevertwoissuesstillneedtobeaddressed.Oneisensuring
+thattheagenthasameansofdeterminingwhichactionshould REFERENCES
+beperformedineachencounteredstatetoalignwiththeinitial
+[1] LeonBarrettandSriniNarayanan.2008. Learningalloptimalpolicieswith
+choiceofpolicy.Existingalgorithmsdonotnecessarilyprovide multiplecriteria.InProceedingsofthe25thinternationalconferenceonMachine
+suchameansinthecontextofstochastictransitions.Second,the learning.41–47.
+[2] DanielBryce,WilliamCushing,andSubbaraoKambhampati.2007.Probabilistic
+existingmulti-policyMORLalgorithmsdonothaveanobvious
+planningismulti-objective.ArizonaStateUniversity,Tech.Rep.ASU-CSE-07-006
+extensiontocomplexstate-spaceswheretabularmethodsarein- (2007).
+feasible.Conventionalfunction-approximationmethodscannot [3] ACastelletti,StefanoGalelli,MarcelloRestelli,andRodolfoSoncini-Sessa.2010.
+Tree-basedreinforcementlearningforoptimalwaterreservoiroperation.Water
+beapplied,asthecardinalityofthevectorstobestoredcanvary
+ResourcesResearch46,9(2010).
+betweenstates.Vamplewetal.[19]providespreliminaryworkad- [4] ZoltánGábor,ZsoltKalmár,andCsabaSzepesvári.1998.Multi-criteriareinforce-
+dressingthisproblem,butfurtherworkisstillrequiredtomake mentlearning..InICML,Vol.98.197–205.
+[5] PeterGeibel.2006.ReinforcementlearningforMDPswithconstraints.InEuro-
+thisapproachpractical. peanConferenceonMachineLearning.Springer,646–653.
+[6] RustamIssabekovandPeterVamplew.2012.Anempiricalcomparisonoftwo
+5.4 Model-basedmethods commonmultiobjectivereinforcementlearningalgorithms.InAustralasianJoint
+ConferenceonArtificialIntelligence.Springer,626–636.
+Aswellasdescribingthedifficultiesfacedbyprobabilisticplan- [7] SimoneParisi,MatteoPirotta,andJanPeters.2017. Manifold-basedmulti-
+objectivepolicysearchwithsamplereuse.Neurocomputing263(2017),3–14.
+ning,Bryceetal.[2]alsoproposeasearchalgorithmknownas [8] JulienPerez,CécileGermain-Renaud,BalázsKégl,andCharlesLoomis.2009.
+MultiobjectiveLoopingAO*(MOLAO*)tosolvesuchtasks.Asa Responsiveelasticcomputing.InProceedingsofthe6thinternationalconference
+industrysessiononGridsmeetsautonomiccomputing.55–64.
+planningmethod,thisassumesanMOMDPwithknownstatetran-
+[9] MatteoPirotta,SimoneParisi,andMarcelloRestelli.2015.Multi-objectiverein-
+sitionprobabilitiesandafiniteandtractablenumberofdiscrete forcementlearningwithcontinuousParetofrontierapproximation.InTwenty-
+states.Itmaybepossibletoextendthisapproachbyintegratingit NinthAAAIConferenceonArtificialIntelligence.
+[10] RoxanaRădulescu,PatrickMannion,DiederikMRoijers,andAnnNowé.2019.
+withinmodel-basedRLalgorithmswhichcanlearntoestimatethe
+Equilibriainmulti-objectivegames:Autility-basedperspective.InProceedingsof
+transitionprobabilitiesandtogeneraliseacrossstates.Wearenot theadaptiveandlearningagentsworkshop(ALA-19)atAAMAS.
+5
+[11] DiederikMRoijers,DenisSteckelmacher,andAnnNowé.2018.Multi-objective
+reinforcementlearningfortheexpectedutilityofthereturn.InAdaptiveLearning
+Agents(ALA)workshopatAAMAS,Vol.18.
+[12] DiederikMRoijers,PeterVamplew,ShimonWhiteson,andRichardDazeley.2013.
+Asurveyofmulti-objectivesequentialdecision-making. JournalofArtificial
+IntelligenceResearch48(2013),67–113.
+[13] DiederikMRoijers,ShimonWhiteson,andFransAOliehoek.2013.Computing
+convexcoveragesetsformulti-objectivecoordinationgraphs.InInternational
+ConferenceonAlgorithmicDecisionTheory.Springer,309–323.
+[14] ManuelaRuiz-Montiel,LawrenceMandow,andJosé-LuisPérez-de-laCruz.2017.
+Atemporaldifferencemethodformulti-objectivereinforcementlearning.Neuro-
+computing263(2017),15–25.
+[15] ChristianRobertShelton.2001.Importancesamplingforreinforcementlearning
+withmultipleobjectives.(2001).
+[16] EijiUchibeandKenjiDoya.2007. Constrainedreinforcementlearningfrom
+intrinsicandextrinsicrewards.In2007IEEE6thInternationalConferenceon
+DevelopmentandLearning.IEEE,163–168.
+[17] PeterVamplew,RichardDazeley,EwanBarker,andAndreiKelarev.2009.Con-
+structingstochasticmixturepoliciesforepisodicmultiobjectivereinforcement
+learningtasks.InAustralasianjointconferenceonartificialintelligence.Springer,
+340–349.
+[18] PeterVamplew,RichardDazeley,AdamBerry,RustamIssabekov,andEvan
+Dekker.2011.Empiricalevaluationmethodsformultiobjectivereinforcement
+learningalgorithms.Machinelearning84,1-2(2011),51–80.
+[19] PeterVamplew,RichardDazeley,CameronFoale,andTanveerChoudhury.2018.
+Non-functionalregression:Anewchallengeforneuralnetworks.Neurocomputing
+314(2018),326–335.
+[20] PeterVamplew,RichardDazeley,CameronFoale,SallyFirmin,andJaneMum-
+mery.2018. Human-alignedartificialintelligenceisamultiobjectiveproblem.
+EthicsandInformationTechnology20,1(2018),27–40.
+[21] PeterVamplew,RustamIssabekov,RichardDazeley,CameronFoale,AdamBerry,
+TimMoore,andDouglasCreighton.2017.SteeringapproachestoPareto-optimal
+multiobjectivereinforcementlearning.Neurocomputing263(2017),26–38.
+[22] PeterVamplew,JohnYearwood,RichardDazeley,andAdamBerry.2008. On
+thelimitationsofscalarisationformulti-objectivereinforcementlearningof
+paretofronts.InAustralasianJointConferenceonArtificialIntelligence.Springer,
+372–378.
+[23] KristofVanMoffaert,MadalinaMDrugan,andAnnNowé.2013.Hypervolume-
+basedmulti-objectivereinforcementlearning.InInternationalConferenceon
+EvolutionaryMulti-CriterionOptimization.Springer,352–366.
+[24] KristofVanMoffaert,MadalinaMDrugan,andAnnNowé.2013. Scalarized
+multi-objectivereinforcementlearning:Noveldesigntechniques.In2013IEEE
+SymposiumonAdaptiveDynamicProgrammingandReinforcementLearning(AD-
+PRL).IEEE,191–199.
+[25] KristofVanMoffaertandAnnNowé.2014.Multi-objectivereinforcementlearning
+usingsetsofparetodominatingpolicies.TheJournalofMachineLearningResearch
+15,1(2014),3483–3512.
+[26] DJWhite.1982. Multi-objectiveinfinite-horizondiscountedMarkovdecision
+processes.Journalofmathematicalanalysisandapplications89,2(1982),639–647.
+[27] MarcoAWieringandEdwinDDeJong.2007.Computingoptimalstationary
+policiesformulti-objectivemarkovdecisionprocesses.In2007IEEEInternational
+SymposiumonApproximateDynamicProgrammingandReinforcementLearning.
+IEEE,158–165.
+[28] MarcoAWiering,MaikelWithagen,andMădălinaMDrugan.2014.Model-based
+multi-objectivereinforcementlearning.In2014IEEESymposiumonAdaptive
+DynamicProgrammingandReinforcementLearning(ADPRL).IEEE,1–6.
+[29] LuisaMZintgraf,TimonVKanters,DiederikMRoijers,FransOliehoek,and
+PhilippBeau.2015. QualityassessmentofMORLalgorithms:Autility-based
+approach.InBenelearn2015:Proceedingsofthe24thAnnualMachineLearning
+ConferenceofBelgiumandtheNetherlands.
+6

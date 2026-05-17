@@ -1,0 +1,596 @@
+Robust principal graphs for data approximation
+AlexanderN.Gorban1,EvgenyM.Mirkes1,andAndreiZinovyev2
+1DepartmentofMathematics,UniversityofLeicester,UK,
+1InstitutCurie,France
+AbstractRevealinghiddengeometryandtopologyinnoisydatasetsisachal-
+lengingtask.Elasticprincipalgraphisacomputationallyefficientandflexible
+data approximator based on embedding a graph into the data space and min-
+imizing the energy functional penalizing the deviation of graph nodes both
+fromdatapointsandfrompluri-harmonicconfiguration(generalizationoflin-
+earity). The structure of principal graph is learned from data by application
+of atopological grammar whichin the simplestcase leads to theconstruction
+of principal curves or trees. In order to more efficiently cope with noise and
+outliers,herewesuggestusingatrimmeddataapproximationtermtoincrease
+therobustnessofthemethod.Themodificationofthemethodthatwesuggest
+does not affect either computational efficiency or general convergence prop-
+erties of the original elastic graph method. The trimmed elastic energy func-
+tionalremainsaLyapunovfunctionfortheoptimizationalgorithm.Onseveral
+examplesofcomplexdatadistributionswedemonstratehowtherobustprinci-
+palgraphslearntheglobaldatastructureandshowtheadvantageofusingthe
+trimmeddataapproximationtermfortheconstructionofprincipalgraphsand
+otherpopulardataapproximators.
+1 Introduction
+Inthispaper,weconsideraclassicalproblem:howtoapproximateafiniteset
+D in Rm for relatively large m by a finite subset of regular low-dimensional
+objects in Rm. In applications this problems arises in many areas: from data
+6102
+voN
+42
+]SD.sc[
+2v82860.3061:viXra
+2 AuthorsSuppressedDuetoExcessiveLength
+visualization (e.g., visualization of the differences between human genomes)
+tofluiddynamics.
+Atypicaldataapproximationtaskstartswiththefollowingquestion:whether
+the dataset D is situated near a low–dimensional affine manifold (plane) in
+Rm? If we look for a point, straight line, plane, ... that minimizes the aver-
+age squared distance to the datapoints, we immediately come to the Principal
+Component Analysis (PCA) which is one of the most seminal inventions in
+data analysis (Jolliffe, 2002). The nonlinear generalization of PCA remains a
+challengingtask.Oneoftheearliestattemptsuggestedinthisdirectionwasthe
+Self-Organizing Maps (SOM) (Kohonen, 2001) with its multiple generaliza-
+tions and implementations such as Growing SOM (GSOM) (Alahakoon et al,
+2000).However,unlikeclassicalPCAandk-means,theSOMalgorithmisnot
+basedonoptimizationofanyexplicitfunctional(Erwinetal,1992).
+For a known probability distribution, principal manifolds were introduced
+as lines or surfaces passing through “the middle” of the data distribution
+(Hastie and Stuetzle, 1989). Several algorithms for the construction of prin-
+cipal curves (Kégl and Krzyz´ak, 2002) and surfaces for finite datasets were
+developed during last decade, as well as many applications of this idea. In
+theendof1990s,amethodofmultidimensionaldataapproximationbasedon
+elastic energy minimization was proposed (see (Gorban’ and Rossiev, 1999;
+Zinovyev,2000;GorbanandZinovyev,2005,2001;Gorbanetal,2008a;Gor-
+ban and Zinovyev, 2009) and the bibliography there). This method is based
+ontheanalogybetweentheprincipalmanifoldandtheelasticmembrane.Fol-
+lowingthemetaphorofelasticity,twoquadraticregularizationtermsareintro-
+duced penalizing non-smoothness of data approximators. This allows one to
+apply the standard expectation-minimization strategy with quadratic form of
+the optimized functionals at the minimization step (i.e., solving a system of
+linear algebraic equations with a sparse matrix). Later on, the elastic energy
+wasappliedtoconstructingprincipalelasticgraphs(Gorbanetal,2007).Are-
+latedideaofoptimizingtheelasticenergyofasystemofspringsrepresenting
+the graph embedment in low-dimensional spaces was previously used in the
+developmentofgraphdrawingalgorithms(FruchtermanandReingold(1991);
+Kobourov(2012)).
+ThemethodofelasticenergyminimizationallowscreatinganalogsofSOM
+(Kohonen, 1982) and neuralgas (Martinetz et al, 1993) withan explicit func-
+tional to minimize: the elastic map is an analog of SOM and principal graph
+isananalogofneuralgas.Themainadvantageofoptimization-basedanalogs
+Robustprincipalgraphsfordataapproximation 3
+is the ability to explicitly control for smoothness (or other types of regularity,
+suchasharmonicity)ofdataapproximators.
+However, the main drawback of all described methods of approximation
+is sensitivity to outliers and noise, which is caused by the very nature of Eu-
+clideandistance(orquadraticvariance):datapointsdistanttotheapproximator
+haveverylargerelativecontributions.Thereexistseveralwidelyusedideasfor
+increasinganapproximator’srobustnessinthepresenceofstrongnoiseindata
+suchassubstitutingtheEuclideannormbytheL norm(e.g.Dingetal(2006);
+1
+Hauberg et al (2014)) and outliers exclusion or fixed weighting or iterative
+reweightingduringtheconstructionofdataapproximators(e.g.XuandYuille
+(1995); Allende et al (2004); Kohonen (2001)). In some works, it was sug-
+gested to utilize “trimming” averages, e.g. in the context of thek-means clus-
+tering or some generalizations of PCA Cuesta-Albertos et al (1997); Hauberg
+etal(2014)).
+Thegeneralideaoftrimmingconsistsinpenalizingthecontributionofdis-
+tantfromthemeanvaluedatapointstotheestimationofvariance.Inthesim-
+plestscenariothepointsthataretoodistantfromthemeanvaluearecompletely
+neglected;inmorecomplexscenariosthedistantpointscontributelessthanthe
+close ones. This way of robustification probably goes back to the notion of a
+truncated (or trimmed) mean value Huber (1981). The strategy of trimming
+canbeusedintheconstructionofSOMs,elasticmapsoralmostanyotherdata
+approximators.
+2 Graphgrammarsandelasticprincipalgraphs
+Below in the description of basic algorithms we follow (Gorban et al, 2007).
+Moreexplanatorymaterialsincludingthepseudo-codescanbefoundonline1.
+LetGbeasimpleundirectedgraphwithasetofverticesY andsetofedges
+E. For k≥2 a k-star in G is a subgraph with k+1 vertices y ∈Y and k
+0,1,...k
+edges{(y ,y)|i=1,...k}⊂E.Supposeforeachk≥2,asetofS ofk-stars
+0 i k
+in G (subgraphs) has been selected. We call a graph G with selected families
+of k-stars S an elastic graph if, for all E(i) ∈E and S (j) ∈S , the correspon-
+k k k
+dent elasticity moduli λ >0 and µ >0 are defined. Let E(i)(0),E(i)(1) be
+i kj
+verticesofanedgeE(i) andS (j) (0),...S (j) (k)beverticesofak-starsubgraph
+k k
+1https://github.com/auranic/Elastic-principal-graphs/wiki
+4 AuthorsSuppressedDuetoExcessiveLength
+S (j) (among them, S (j) (0) is the central vertex). For any map φ :Y →Rm the
+k k
+energyofthegraphisdefinedas
+(cid:13) (cid:13)2
+Uφ(G):= ∑λ (cid:13)φ(E(i)(0))−φ(E(i)(1))(cid:13) (1)
+i(cid:13) (cid:13)
+E(i)
+(cid:13) (cid:13)2
+(cid:13) 1 k (cid:13)
++∑µ (cid:13)φ(S (j) (0))− ∑φ(S (j) (i))(cid:13) .
+kj(cid:13) k k k (cid:13)
+S(j) (cid:13) i=1 (cid:13)
+k
+For a given map φ :Y →Rm we divide the dataset D into node neighbor-
+hoods Ky,y∈Y. The set Ky contains the data points for which the node φ(y)
+istheclosestoneinφ(y).Theenergyofapproximationis:
+1
+Uφ(G,D)= ∑ ∑ w(x)(cid:107)x−φ(y)(cid:107)2, (2)
+A ∑ w(x)
+x y∈Yx∈Ky
+where w(x)≥0 are the point weights. A simple and fast algorithm for mini-
+mizationoftheenergy
+Uφ =Uφ(G,D)+Uφ(G) (3)
+A
+is the splitting algorithm, in the spirit of the classical k-means clustering: for
+a given system of sets {Ky | y∈Y} we minimizeUφ (optimization step, it is
+theminimizationofapositivequadraticfunctional),thenforagivenφ wefind
+new{Ky}(re-partitioning),andsoon;stopwhennochange.
+Inpracticethestructureandcomplexityoftheoptimalgraphforapproxima-
+tionofacomplexdatasetisnotknown.Tolearnitfromthedatathemself,the
+principal elastic graphs are constructed using a growing schema. All possible
+graphstructuresaredefinedbyagraphgrammar.Theoptimalgraphstructure
+is obtained by the sequential application of graph grammar operations to the
+simplest initial graph (Gorban et al, 2007). A link in the energetically opti-
+maltransformationchainisaddedbyfindingatransformationapplicationthat
+givesthelargestenergydescent(afteranoptimizationstep),thenthenextlink,
+and so on, until we achieve the desirable accuracy of approximation, or the
+limitnumberoftransformations(someotherterminationcriteriaarealsopos-
+sible(ZinovyevandMirkes,2013)).
+As simple (but already rather powerful) example we use a system of two
+transformations:“addanodetoanode”and“bisectanedge”.Thesetransfor-
+mationsactonaclassofprimitiveelasticgraphs:allnon-terminalnodeswith
+k edges are centers of elastic k-stars, which form all the k-stars of the graph.
+Thisgrammarproduceselasticprincipaltrees,i.e.graphshavingnoloops.
+Robustprincipalgraphsfordataapproximation 5
+Iteration 4 Iteration 8 Iteration 16 Iteration 32
+PG
+RPG
+PG
+RPG
+Fig.1 Examplesofprincipalgraph(PG)androbustprincipalgraph(RPG)constructionfor:clear
+(twotoprows)andnoised(twobottomrows)datapatterns
+3 Robustelasticprincipalgraphs
+In order to introduce the robust elastic principal graphs, we consider a mo-
+tivating toy problem of learning a complex one-dimensional pattern sampled
+bypointsdenselylocatedaround.Thepatterncanbeaccompaniedbyaback-
+ground noisy, relatively sparse and stochastic distribution of points not con-
+nectedtothepattern(seeFigure1).ThetoprowinFigure1showsseveralsteps
+oftheelasticprincipalgraphconstructioninthecaseofabsenceofnoise.From
+the Figure 1, third row, it is clear that the presence of background noise can
+completelydistorttheresultingprincipalgraph,introducingexcessivebranch-
+ing in order to capture the variance of the noise points located distantly from
+thepattern.
+Here we apply a particular variant of “impartial trimming” (Gordaliza,
+1991) or “data-driven trimming” suitable for principal graphs. We introduce
+a parameter R (called “robustness radius" further in the text) which specifies
+0
+what is the maximal distance from a node of the principal graph at which a
+6 AuthorsSuppressedDuetoExcessiveLength
+data point can affect the position of the node during the current iteration of
+the energy optimization process. We require that all the data points which are
+moredistantthanR fromanygraphnode,donotcontributeintothegradient
+0
+of the optimized functionalUφ. However, they have a constant non-zero con-
+tribution R2 into the value of the data approximation term which is required
+0
+forpreservingthepropertiesoftheoptimizedfunctionalUφ tobeaLyapunov
+function(seenextsectionandFigure2).
+In order to satisfy these requirements, we have to change the data approxi-
+mationenergytermonly,becauseUφ(G)termisindependentofthedata.The
+data-dependentapproximationenergyterm(2)ismodifiedasfollowing:
+1
+Uφ(G,D)= ∑ ∑ w(x)min{(cid:107)x−φ(y)(cid:107)2,R2}, (4)
+R ∑ w(x) 0
+x y∈Yx∈Ky
+where R is the robustness radius. All other terms in the energy function are
+0
+the same:Uφ =Uφ(G,D)+Uφ(G). It means that all optimization strategies
+R
+used for construction of principal graphs are applicable for robust principal
+graphs too, and that the optimization problem remains quadratic at the node
+optimizationstep.Noticethat(4)canbere-writtenas
+1
+Uφ(G,D)= ∑ ∑ w(x)(cid:107)x−φ(y)(cid:107)2+ (5)
+R ∑ w(x)
+x y∈Y x∈Ky,||x−φ(y)||<R
+0
+1
++ ∑ w(x)R2,
+∑ w(x) 0
+x ||x−φ(y)||≥R 0,∀y
+from which it becomes evident that the second term is constant and does not
+contributetothederivativeU(cid:48).
+y
+The result of such a modification is shown in Figure 1, second and forth
+rows. Robust principal graph learns the data a local fragment and traces the
+local data structure, branching if this is energetically optimal. As a result, the
+global structure of the data distribution is detected only to the end of graph
+growth and only if there are no gaps in the data distribution larger than the
+robustnessradiusR .
+0
+Robustprincipalgraphsfordataapproximation 7
+4 Convergenceofrobustelasticprincipalgraphs
+Adding trimming in the data approximation term as in (4) does not change
+the property of elastic principal graph’s energy to converge to a local energy
+minimum.Bothenergyfunctions,theonedefinedby(3)andtherobustone
+1
+U = ∑ ∑ w(x)min{(cid:107)x−φ(y)(cid:107)2,R2}+Uφ(G) (6)
+∑ w(x) 0
+x y∈Yx∈Ky
+areLyapunovfunctionsforthesplitting-basedoptimizationalgorithmusedfor
+constructing the elastic principal graphs. The existence of Lyapunov function
+guarantees convergence of the optimization algorithm based on the splitting
+schema.
+Letusformallydemonstratethatateachstepofoptimizationsplittingalgo-
+rithm,theenergy(6)doesnotincrease.
+Each graph optimization algorithm step is split into two parts. First, with
+fixed partitioning of the dataset D into graph node neighbourhoods Ky,y∈Y,
+the quadratic function (6) is minimized which leads to the new positions of
+nodes φ(cid:48)(y). At this step, the energy U can not increase because it is mini-
+mized:U(φ(cid:48)(y))≤U(φ(y)).
+Secondly,anewpartitioningintosetsKy(cid:48) ofdatapointsxiscomputedwith
+respect to the new positions of nodes φ(cid:48)(y). Let us denote by K y the set of
+c
+pointsfromKywhicharenotmoredistantthanR fromφ(y):K y ={x|(cid:107)φ(y)−
+0 c
+y
+x(cid:107)≤R },andletusdenotethesetof“distant”pointsasK ={x|(cid:107)φ(y)−x(cid:107)>
+0 f
+R }. Of course, the whole neighbourhood is a union of these two sets, and
+0
+theirintersectionisempty:Ky=K y ∪K y .Afternewpartitioning,wewillhave
+c f
+a new Ky(cid:48) =K c y(cid:48) ∪K y f (cid:48) . Let us consider one particular neighbourhood Ky 1 and
+any other one Ky 2. During the first step, φ(y
+1
+)→φ(cid:48)(y
+1
+) and φ(y
+2
+)→φ(cid:48)(y
+2
+).
+Afterre-partitioning,wemighthaveseveralpossiblere-assignmentsofadata
+pointx∈Ky 1 (seeFigure2):
+1. Ky 1 →Ky(cid:48) 1: in this case the energyU
+R
+φ(G,D) does not change since the
+pointxremainsintheneighbourhoodofy .
+1
+2.K
+c
+y 1 →Ky(cid:48) 2:inthiscasetheenergytermrelatedtoy
+2
+nodeinU
+R
+φ(G,D)de-
+creasesbecausebythedefinitionofaneighbourhood(cid:107)φ(cid:48)(y )−x(cid:107)>(cid:107)φ(cid:48)(y )−
+1 2
+x(cid:107).
+3. K y 1 →K y(cid:48) 2: in this case the energy term related to y node inUφ(G,D)
+f c 2 R
+willnotincreasebecauseitwillchangefromR2 to(cid:107)φ(cid:48)(y )−x(cid:107)2≤R2.
+0 2 0
+8 AuthorsSuppressedDuetoExcessiveLength
+U (G,D)
+R
+y
+K1
+f
+y 1
+K c 1 1
+y
+2 1 1 1
+K f y 2 ’ K c y 2 ’ y 2 ’ 3 2 y 1 ’ K y 1 ’ K y 1 ’
+c f
+4
+R ||y-x||
+0
+A) B)
+Fig.2 A)Thefunctionalformofthetrimmedapproximationenergyterm.B)Possiblere-partitioning
+ofthedatapoints(onlyseveralofthemareshownasblackcircleswithnumbers)belongingtoKy1
+afterchangingthenodepositionatthegraphoptimisationstep.Fourpossiblecases(1-4)areshown,
+andeachoneleadstonon-increasingapproximationenergy(seetextforexplanation).Heretheshaded
+areadenotestherobustnessradiusR foragraphnode,thebigsolidcircledenotestheneighbourhood
+0
+Ky.TheneighbourhoodKyissplitinto“close”pointsKc yand“distant”pointsKy
+f
+.
+4. K y 1 →K y(cid:48) 2: in this case the energy term related to y node inUφ(G,D)
+f f 2 R
+doesnotchange(itequalsR2 beforeandafterre-partitioning).
+0
+Thesamefourscenariosarevalidforanypairy (cid:54)=y :therefore,thetotalen-
+i j
+ergyUφ(G,D)cannotincreasewhileUφ(G)isnotaffectedbyre-partitioning.
+R
+Itisalsoclearthatthenon-negativityofthederivativeofthetrimmedapprox-
+imation energy function (Figure 2A) is essential for thatU does not increase,
+because otherwise case (3) can lead to increase of
+Uφ(G,D).
+For example,
+R
+disregarding “distant” points completely for their contribution to the approxi-
+mationenergywouldleadtoaviolatingproperty(3).
+5 Comparingvarioustypesofrobustandnon-robustdata
+approximators
+Let us further exploit the benefits that trimming the data approximation term
+can bring to approximating complex toy 2D patterns. Figure 3 shows the re-
+sults of application of standard and the robust versions of SOM, elastic maps
+and principal graphs for spiral and kappa-like data 2D patterns. 10% of noise
+isintroducedintothedatadistribution,e.g.thefractionofrandomlypositioned
+Robustprincipalgraphsfordataapproximation 9
+Kappa Kappa noised Spiral Spiral Noised
+GNG
+GSOM
+RGSOM
+GEM
+RGEM
+PG
+RPG
+Fig. 3 Examples of different data approximator performances for four 2D toy complex patterns:
+fromlefttoright:clearkappa-like,noisedkappa-like,clearspiral,noisedspiral;fromtoptobottom:
+Growing Neural Gas (GNG)(Martinetz et al, 1993), Growing SOM (GSOM) and Robust GSOM
+(RGSOM)(Alahakoonetal,2000),growingelasticmap(GEM),robustGEM(RGEM),principal
+graph(PG)(Gorbanetal,2007;GorbanandZinovyev,2009),androbustprincipalgraph(RPG).The
+parametersofcomputationalprotocolsareprovidedinsection7
+.
+points not belonging to the data pattern is 0.1 of the number of points in the
+pattern.Forrobustificationofthenon-batchSOM,somespecificmethodswere
+useddescribedinAllendeetal(2004)andKohonen(2001).Allrobustversions
+of methods use the same robustness radius. In cases of all methods, robustifi-
+cationofapproximatorsledtomoreexactapproximationofthedatapattern.
+10 AuthorsSuppressedDuetoExcessiveLength
+6 Applicationofrobustgraphstothedataonhumangenome
+diversity
+HumanGenomeDiversityProject(HGDP)collectedalargecollectionofsin-
+gle nucleotide polymorphism (SNP) genotype profiles capturing the major
+sources of variation between human genomes. The publicly available HGDP
+dataset which can be downloaded from http://www.hagsc.org/hgdp/files.html
+containssamplesof53historicallynativepopulationfrom7largegeographical
+regions (Africa, Near East, Europe, South Central Asia, East Asia, America,
+Oceania). Each of 1043 individuals in this dataset is represented by a profile
+of660918SNPs.Itwasdemonstratedbeforethatthedatasetshowsnon-trivial
+branching structure reflecting combined effect of migration and adaptation of
+humanityinvariousgeographicalconditions(Elhaiketal,2014).Therefore,it
+is interesting to approximate this dataset by an optimally branching approxi-
+matorsuchastheprincipaltree.
+In order to represent the dataset as a set of numerical vectors in a multidi-
+mensionalspace,we’veappliedthestandardSNPquantificationapproach.For
+eachrowofthetablecorrespondingtoaparticularSNP,thehomozygousstatus
+of the SNP was assigned ’0’ value, while two different heterozygous statuses
+wereassigned’-1’and’+1’values.AllunreliablymeasuredSNPstatuseswere
+filtered out, which resulted in a numerical table of 1043 individuals (objects)
+and 429830 SNPs (variables). At first, we’ve reduced the dimension of the
+dataset to R3 by applying the standard principal component analysis (PCA).
+In this reduced space we’ve constructed both standard and robust versions of
+principaltrees.
+Applicationofthestandardprincipaltreeswasnotsuccessfullduetoinabil-
+itytocapturefinelocaldetailsofthedatadistribution(thefigurescanbefound
+online2), which resulted in mixing up the native populations belonging to the
+same region. For example, all variants of European population were mapped
+in a single tree node. Changing the elasticity parameters did not improve the
+situation.
+Atthesametime,applicationoftherobustprincipaltreeswithinitialization
+from two points belonging to a local neighborhood resulted only to local de-
+scription of the variety of human genomes. This was probably due to the fact
+thatthedistributionofindividualsischaracterizedbycertaingapsnotcovered
+2http://goo.gl/CbFMlC
+Robustprincipalgraphsfordataapproximation 11
+by 1043 genomes (and which could probably represent non-existent part of
+humangenomediversity).
+Therefore, it was not possible to find a combination of parameters which
+would represent both global and local patterns of the branching distribution
+of human genomes distribution. However, we could significantly improve the
+resultbyapplicationofahybridapproach.Wetrainedtheprincipaltreeintwo
+epochs. During the first epoch, non-robust principal graphs were applied to
+outlinethegeneralfeaturesoftheglobalstructureofthedataset,representing
+roughly the global relations between geographical regions. By contrast, dur-
+ingthesecondepoch,robustprincipaltreeapproachwasappliedstartingfrom
+the principal tree configuration obtained at the first step. During the second
+stage,theelasticitycoefficientsoftheprincipaltreeweresignificantlyreduced
+inordertoachievebetterlocalapproximationofthedata.Asaresult,thecon-
+structedprincipaltreewasabletocapturetheglobalpatternofgenomicdiver-
+sity between geographical regions and the local patterns of genomic diversity
+betweennativesub-populationsofthesameregion.Forexample,Russian,Ital-
+ian, Sardinian, Orcadian, Druze, Basque, Kalash populations were mapped to
+theirownnodes(seeFigure4),resolvingthestructureofgenomicdiversityat
+ahigherlevelofdetails.
+Inordertorepresenttheprincipaltreeona2Dplaneweusedthepreviously
+describedmetromaplayoutofatreeontheplane(Gorbanetal,2008b;Gorban
+andZinovyev,2010).Thislayoutisconstructedinordertorepresentinthebest
+fashiontheharmonicalnatureoftheembeddingofaprincipaltreeintomulti-
+dimensionalspace.Thecenterofeachstarofthetreeisthemeanpointofthe
+set of the star’s leaves (see Figure 4B). The number of individuals from dis-
+tinctpopulationsmappedtothesametreenodewererepresentedasapie-chart
+diagram(Figure4B).Thedistancesbetweentreenodesin2Drepresentapprox-
+imatelytheedgelengthsinthemultidimensionalspace,therefore,itispossible
+toestimatewhichpopulationsaremoredistinctthanothers.Forexample,un-
+like2DPCAplot(Figure4A),frommetromaplayoutitisclearthatthecom-
+position of SNPs of native Americans is significantly different from the one
+of Asian populations, even more distinct that the SNP profiles of population
+ofOceania.Interestingly,apartofEastAsiapopulation(KalashsandPathans)
+was mapped closer to the European populations than the rest of East Asia.
+Indeed, there exists a controversial discussion of whether Kalash and Pathan
+populations living in Pakistan have European roots (e.g., originated from the
+troopsofAlexandertheGreat)(Firasatetal,2007;Wood,2001).Herewecan
+12 AuthorsSuppressedDuetoExcessiveLength
+notmakeanystrongconclusionregardingthispoint:however,constructionof
+principaltreescouldpotentiallycontributetosimilardiscussions.
+To conclude, we can observe that introducing robust principal trees in the
+analysisofgenomicdataallowsbettertracingthelocalpatternsinthecomplex
+real-lifedatadistributions.
+7 Implementationdetailsandcomputationalprotocols
+All 2D illustrations used in this paper are created by a Java applet, developed
+by the authors, for constructing non-linear approximations of 2D data, using
+various algorithms (Mirkes, 2011). The construction of principal graphs in
+multidimensionalspacewasperformedusingVDAOEngineJavalibrarydevel-
+opedbytheauthors.TheParametersofthemethodsusedareprovidedtogether
+withthecodefromthecorrespondingGitHubpage3.
+8 ConclusionandSummary
+We propose a robust version of a principal elastic graph algorithm which is
+based on trimming the data approximation term in the elastic energy of the
+graph. Growing principal graphs proceeds by approximation of local data
+structures and tracing them till the global structure is detected. For those data
+distributions which contain several isolated clusters, it is necessary to restart
+robust principal graphs several times (one graph for each cluster) or apply a
+hybridapproachdescribedinthispaper.Thealgorithmcontainsanadditional
+parameterR whichiscalledtherobustnessradius.Onlythedatapointsinside
+0
+thisradiusaroundagraphnodeycaninfluencepositionofyatthenextitera-
+tionstep.Thealgorithmshowsgoodperformanceinthecasewhentheglobal
+datastructureisspoiledbynoisybackgrounddistributionofdatapoints,which
+makesthealgorithmmoresuitableinmanypracticalapplications(suchasim-
+agerecognition).TheexistenceofLyapunovfunctionguaranteesconvergence
+oftheoptimizationalgorithmbasedonthesplittingschema.
+The suggested data trimming can be applied for other data approximators
+suchaselasticmapsandSOMs.Inthefuture,weplantoapplytherecentlysug-
+3 https://github.com/auranic/Elastic-principal-graphs/wiki/
+Robust-principal-graphs
+Robustprincipalgraphsfordataapproximation 13
+PC2
+PC1
+A
+Kalash
+Pathan
+Russian
+Adygei
+Sardinian French
+Tuscan
+Orcadian
+Beduoin
+Druze
+Brahui
+Balochi
+B
+ihdniS
+PCA PLOT
+AFRICA
+NEAR EAST
+EUROPE
+SOUTH CENTRAL ASIA
+EAST ASIA
+OCEANIA
+NATIVE AMERICAN
+METRO MAP PRINCIPAL TREE LAYOUT
+Makrani
+Fig.4 Constructingarobustprincipaltreeforthedatasetmappinghumangenomediversitymeasured
+bysinglenucleotidepolymorphism(SNP)genome-wideprofiles(HGDPdataset).Largegeograph-
+ical regions are presented by a color while various tints of the color represent the distinct native
+populationswithinaregion(onlyvariabilityofEuropean,NearEastandpartofSouthCentralAsia
+isshownbyaspectsofthesamecolor).A)PrincipalcomponentanalysisoftheHGDPdata,mapping
+datapointsfromR429830toR2.Redlineshowstheembeddingoftheconstructedrobustprincipaltree
+intothedataspace.B)Robustprincipaltreeisshownusing2Dmetromaplayout(planarharmonic
+representationofatree).Aparticularregionofthegraphisshownzoomedontheleft.
+14 AuthorsSuppressedDuetoExcessiveLength
+gested machine learning framework (PQSQ-based optimization) to introduce
+a piece-wise quadratic form of the data approximation term which will allow
+takingintoaccountthepositionofdistantdatapointswithsmallerweightsand
+avoidtheproblemofdefiningtherobustnessradius(Gorbanetal,2016).
+References
+AlahakoonD,HalgamugeSK,BS(2000)Dynamicself-organizingmapswith
+controlled growth for knowledge discovery. IEEE Transactions on Neural
+Networks11(3):601–614
+Allende H, Moreno S, Rogel C, Salas R (2004) Robust self-organizing maps.
+In:ProgressinPatternRecognition,ImageAnalysisandApplications,Lec-
+tureNotesinComputerScience,vol.3287,Springer,pp179–186
+Cuesta-AlbertosJ,GordalizaA,MatránC,etal(1997)Trimmedk-means:An
+attempttorobustifyquantizers.TheAnnalsofStatistics25(2):553–576
+Ding C, Zhou D, He X, Zha H (2006) R1-PCA: rotational invariant L1-norm
+principalcomponentanalysisforrobustsubspacefactorization.Proceedings
+ofthe23rdInternationalConferenceonMachineLearning,Pittsburgh,PA,
+2006pp281–288
+Elhaik E, Tatarinova T, Chebotarev D, Piras IS, Maria Calò C, De Montis
+A, Atzori M, Marini M, Tofanelli S, Francalacci P, Pagani L, Tyler-Smith
+C, Xue Y, Cucca F, Schurr TG, Gaieski JB, Melendez C, Vilar MG, Ow-
+ings AC, Gómez R, Fujita R, Santos FR, Comas D, Balanovsky O, Bal-
+anovska E, Zalloua P, Soodyall H, Pitchappan R, Ganeshprasad A, Ham-
+mer M, Matisoo-Smith L, Wells RS, GC (2014) Geographic population
+structure analysis of worldwide human populations infers their biogeo-
+graphical origins. Nat Commun 5:3513, DOI 10.1038/ncomms4513, URL
+http://dx.doi.org/10.1038/ncomms4513
+Erwin E, Obermayer K, Schulten K (1992) Self-organizing maps: order-
+ing, convergence properties and energy functions. Biological Cybernetics
+67(1):47–55
+FirasatS,KhaliqS,MohyuddinA,PapaioannouM,Tyler-SmithC,Underhill
+PA, Ayub Q (2007) Y-chromosomal evidence for a limited greek contri-
+bution to the pathan population of pakistan. Eur J Hum Genet 15(1):121–
+126, DOI 10.1038/sj.ejhg.5201726, URL http://dx.doi.org/10.1038/sj.ejhg.
+5201726
+Robustprincipalgraphsfordataapproximation 15
+Fruchterman TM, Reingold EM (1991) Graph drawing by force-directed
+placement.Software:Practiceandexperience21(11):1129–1164
+Gorban’ A, Rossiev A (1999) Neural network iterative method of principal
+curvesfordatawithgaps.JournalofComputerandSystemsSciencesInter-
+national(c/cofTekhnicheskaiaKibernetika)38:825–830
+GorbanA,ZinovyevA(2001)Visualizationofdatabymethodofelasticmaps
+and its applications in genomics, economics and sociology. IHES Preprints
+(IHES/M/01/36),URLhttp://preprints.ihes.fr/M01/Resu/resu-M01-36.html
+GorbanA,ZinovyevA(2005)Elasticprincipalgraphsandmanifoldsandtheir
+practicalapplications.Computing75(4):359–379
+GorbanA,MirkesE,ZinovyevA(2016)Piece-wisequadraticapproximations
+ofarbitraryerrorfunctionsforfastandrobustmachinelearning.NeuralNet-
+works,inpressURLhttps://arxiv.org/abs/1605.06276
+Gorban AN, Zinovyev AY (2009) Principal graphs and manifolds. In: Olivas
+ES,GuerreroJDM,SoberMM,BeneditoJRM,LópezAJS(eds)Handbook
+of Research on Machine Learning Applications and Trends: Algorithms,
+Methods,andTechniques,Hershey–NewYork.IGIGlobal,pp28–59
+Gorban AN, Zinovyev AY(2010) Principal manifolds and graphsin practice:
+frommolecularbiologytodynamicalsystems.InternationalJournalofNeu-
+ralSystems20(3):219–232
+GorbanAN,SumnerNR,ZinovyevAY(2007)Topologicalgrammarsfordata
+approximation.AppliedMathematicsLetters20(4):382–386
+GorbanAN,KéglB,WunschDC,ZinovyevAY(eds)(2008a)PrincipalMan-
+ifolds for Data Visualisation and Dimension Reduction. Lecture Notes in
+Computational Science and Engineering, Vol. 58, Berlin–Heidelberg–New
+York.Springer
+GorbanAN,SumnerNR,ZinovyevAY(2008b)Beyondtheconceptofmani-
+folds:Principaltrees,metromaps,andelasticcubiccomplexes.In:Principal
+ManifoldsforDataVisualizationandDimensionReduction,SpringerBerlin
+Heidelberg,pp219–237
+Gordaliza A (1991) Best approximations to random variables based on trim-
+mingprocedures.JournalofApproximationTheory64(2):162–180
+Hastie T, Stuetzle W (1989) Principal curves. Journal of the American Statis-
+ticalAssociation84(406):502–516
+Hauberg S, Feragen A, Black MJ (2014) Grassmann averages for scalable
+robust PCA. In: Computer Vision and Pattern Recognition (CVPR), 2014
+IEEEConferenceon,IEEE,pp3810–3817
+HuberP(1981)RobustStatistics.NewYork,Wiley
+16 AuthorsSuppressedDuetoExcessiveLength
+Jolliffe I (2002) Principal component analysis. Springer Series in Statistics,
+Springer
+Kégl B, Krzyz´ak A (2002) Piecewise linear skeletonization using principal
+curves. IEEE Transactions on Pattern Analysis and Machine Intelligence
+24(1):59–74
+Kobourov SG (2012) Spring embedders and force directed graph drawing al-
+gorithms.CoRRabs/1201.3011,URLhttp://arxiv.org/abs/1201.3011
+Kohonen T (1982) Self-organized formation of topologically correct feature
+maps.BiologicalCybernetics43(1):59–69
+Kohonen T (2001) Self-organizing Maps. Springer Series in Information Sci-
+ences,Vol.30,Berlin,Springer
+Martinetz TM, Berkovich SG, Schulten KJ (1993) Neural-gas’ network for
+vectorquantizationanditsapplicationtotime-seriesprediction.IEEETrans-
+actionsonNeuralNetworks4(4):558–569
+MirkesE(2011)Appletforconstructingnon-linearapproximationsof2ddata,
+using various algorithms. URL http://bioinfo-out.curie.fr/projects/elmap/
+applet/Master.htm
+WoodM(2001)InthefootstepsofAlexandertheGreat:ajourneyfromGreece
+toAsia.UnivofCaliforniaPress
+XuL,YuilleA(1995)Robustprincipalcomponentanalysisbyself-organizing
+rules based on statistical physics approach. IEEE Transactions on Neural
+Networks6(1):121–143
+Zinovyev A (2000) Vizualizatsiya mnogomernykh dannykh (Visualization of
+MultidimensionalData).Krasnoyarsk:KrasnoyarskStateTechnicalUniver-
+sity
+ZinovyevA,MirkesE(2013)Datacomplexitymeasuredbyprincipalgraphs.
+Computers&MathematicswithApplications65(10):1471–1482

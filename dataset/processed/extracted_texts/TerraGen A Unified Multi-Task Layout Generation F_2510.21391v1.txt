@@ -1,0 +1,764 @@
+TerraGen: A Unified Multi-Task Layout Generation Framework for
+Remote Sensing Data Augmentation
+DataoTang1,†,HaoWang1,†,YudengXin2,HuiQiao3,
+DongshengJiang4,YinLi4,ZhihengYu4,XiangyongCao1,∗
+1Xi’anJiaotongUniversity 2UniversityofMelbourne
+3ChinaTelecomShaanxiBranch 4HuaweiTechnologiesLtd
+†Equalcontribution ∗Correspondingauthor
+flood windmill
+road
+tenniscourt
+■Semantic Segmentation
+■Object Detection
+■Building Extraction
+■Flood Detection
+vehicle building ■Road Network
+building
+road building
+bridge
+vehicle
+woodland
+Figure1:GenerationresultsoftheTerraGenmodelandcompositionoftheTerraGendataset.Themainvisualsdisplay
+high-fidelityremotesensingimagessynthesizedbyourTerraGenmodelfromgivenlayoutconditions. Thepiechart
+inthetop-rightcornerillustratesthefive-taskdistributionofourpurpose-builtTerraGendataset.
+Abstract
+Remotesensingvisiontasksrequireextensivelabeleddataacrossmultiple, interconnecteddomains. However,
+currentgenerativedataaugmentationframeworksaretask-isolated, i.e., eachvisiontaskrequirestraininganinde-
+pendentgenerativemodel,andignoresthemodelingofgeographicalinformationandspatialconstraints. Toaddress
+theseissues,weproposeTerraGen,aunifiedlayout-to-imagegenerationframeworkthatenablesflexible,spatially
+controllablesynthesisofremotesensingimageryforvarioushigh-levelvisiontasks, e.g., detection, segmentation,
+andextraction. Specifically,TerraGenintroducesageographic-spatiallayoutencoderthatunifiesboundingboxand
+segmentationmaskinputs,combinedwithamulti-scaleinjectionschemeandmask-weightedlosstoexplicitlyencode
+spatialconstraints, fromglobalstructurestofinedetails. Also, weconstructthefirstlarge-scalemulti-taskremote
+sensinglayoutgenerationdatasetcontaining45kimagesandestablishastandardizedevaluationprotocolforthistask.
+1
+5202
+tcO
+42
+]VC.sc[
+1v19312.0152:viXra
+ExperimentalresultsshowthatourTerraGencanachievethebestgenerationimagequalityacrossdiversetasks.Ad-
+ditionally,TerraGencanbeusedasauniversaldata-augmentationgenerator,enhancingdownstreamtaskperformance
+significantlyanddemonstratingrobustcross-taskgeneralisationinbothfull-dataandfew-shotscenarios.
+1 Introduction
+Deeplearninghasrevolutionizedcomputervision,yetitssuccessisfundamentallypredicateduponlarge-scaleanno-
+tateddatasets. Thisrelianceposesasignificantbottleneckinremotesensing,wheredataacquisitioniscostlyandan-
+notationdemandsspecializedexpertiseacrossdiversetaskslikeobjectdetection,segmentation,andchangedetection.
+Remotesensingtasksexhibitstrongspatialandsemanticcorrelations,sharingcommongeographiclayouts. However,
+current research paradigms are hampered by redundant annotation and isolated task pipelines. A single scene often
+requires distinct labels for each task (e.g., bounding boxes and masks), while data augmentation techniques seldom
+exploitinter-taskconsistency.
+The advent of controllable generative models, such as GLIGEN (Li et al., 2023) and InstanceDiffusion (Wang
+etal.,2024),hasestablishedpowerfulparadigmsforimagesynthesisconditionedontextandlayout. Whileeffective
+fornaturalimages,theirapplicationinremotesensingremainsconfinedtosingle-taskorsingle-conditiongeneration,
+thuslackingflexiblemultimodalcontrolandcross-taskadaptability.
+More critically, remote sensing generative models (Zhang et al., 2024b; Zang et al., 2025; Toker et al., 2024;
+Tang et al., 2025) lack standardized evaluation benchmarks. Existing approaches are typically designed for specific
+taskswithoutunifiedmulti-taskevaluationframeworks,hinderingbothtechnicalprogressandpracticaladoption.This
+limitationiscompoundedbytheuniquegeographicconstraintsinremotesensingimagery—suchasroadnetworkcon-
+nectivity,buildingarrangementpatterns,andspatialrelationshipsbetweenlandcovertypes—thatarepoorlycaptured
+bygeneral-purposegenerationmethods.
+Thecentralpremiseofthispaperisthatthechallengeoftaskisolationcanbeovercomebyidentifyingauniversal
+medium. We argue that spatial layout information serves as this universal representation, bridging different remote
+sensingvisiontasks,whilemultimodalconditionalcontrolenhancesgenerationflexibilityandprecision. Thispremise
+isbuiltonthreekeyobservations: First,spatialrepresentationsacrosstasks(boundingboxesindetection,pixelmasks
+insegmentation, contoursininstancesegmentation)fundamentallydescribethesamegeographicobjectdistribution
+patterns with shared geometric and semantic foundations. Second, geographic object layouts follow specific spatial
+rulesthatcanbeeffectivelyencodedthroughstructuredrepresentations. Third,textualdescriptionsprovidesemantic
+detailsthatcomplementlayoutconditions,enablingmorepreciseanddiversegenerationcontrol,asshowninFigure
+1.
+Basedontheseinsights,weintroduceTerraGen(fromtheLatin’Terra’forEarth),amulti-conditionalgeneration
+frameworkforremotesensingimagery. Ourcontributionsarethreefold:
+• Weconstructthefirstlarge-scalemulti-taskremotesensinglayoutgenerationdatasetandestablishstandardized
+evaluationprotocols,addressingthecriticallackofunifiedbenchmarksinthisfield.
+• We propose a unified multi-conditional layout generation framework (TerraGen) that integrates spatial lay-
+out information (bounding boxes, segmentation masks) with semantictextual informationthrough geographic
+spatial-awareconditionalencodingmechanisms, achievingfine-grainedgenerationcontrolofcomplexremote
+sensingscenes.
+• OurTerraGencanserveasauniversaldata-augmentationengine,markedlyboostingdownstream-taskaccuracy
+andexhibitingstronggeneralisationacrosstasksunderbothfull-dataandfew-shotscenarios.
+2 Related Work
+2.1 Text-to-ImageGeneration
+Text-to-image generation has evolved from GAN-based models (Reed et al., 2016) to diffusion models (Ramesh
+et al., 2021, 2022; Saharia et al., 2022; Nichol et al., 2021), offering improved stability and visual quality. Recent
+methods(Radfordetal.,2021;Podelletal.,2023;Esseretal.,2024;Labsetal.,2025)adoptMultimodalDiffusion
+Transformers(MM-DiT),treatingtextasanindependentmodalityandenhancingsynthesisviamultimodalattention.
+However,theyunderperformonremotesensingdataduetoitsuniquestructuresandpatterns(Tangetal.,2024).
+2
+2.2 Layout-to-ImageGeneration
+Layout-to-imagegenerationextendssynthesisbyintroducingfine-grainedspatialcontrol,typicallythroughstructured
+inputs like bounding boxes or segmentation masks. In the natural image domain, models like GLIGEN (Li et al.,
+2023)andLayoutDiffusion(Zhengetal.,2023)achieveimpressiveresultsbyinjectingspatialguidanceintothecross-
+attention layers of pre-trained diffusion models. Recent MM-DiT-based extensions (Zhang et al., 2024a, 2025b,a)
+further advance this by integrating layout as another input modality, demonstrating strong layout fidelity. Nonethe-
+less, these methods often rely on massive, web-scale datasets (e.g., COCO, LVIS) and still struggle with pixel-level
+precisionforcomplex,overlappinginstances.
+Intheremotesensingdomain,layout-conditionedgenerationisanemergingbutcriticalarea. Earlymethodslike
+CC-Diff(Zhangetal.,2024b)andAeroGen(Tangetal.,2025)havefocusedonboundingbox-guidedgenerationfor
+object detection, while others like SatSynth (Toker et al., 2024) have explored mask-guided synthesis for segmen-
+tation. Despite their progress, these approaches are often task-specific and tend to overlook crucial domain-specific
+constraints.Forinstance,theymaygenerateobjectsthatarespatiallyplausibleinisolationbutviolategeographicrules,
+suchasdisconnectedroadnetworks, randomlyorientedbuildings, orillogicalland-useadjacencies. Ourframework
+movesbeyondthisbyproposingaunifiedmodelthathandlesmultiplelayouttypesandisawareofthesegeospatial
+relationships.
+2.3 GenerativeAugmentationinRemoteSensing
+Thehighcostofexpertannotationandtheinherentlong-taildistributionofobjectsinremotesensinghavemotivated
+theuseofgenerativemodelsfordataaugmentation.Unliketraditionalaugmentation(e.g.,rotation,scaling),diffusion-
+basedmethodscancreatenovel,diverse,andhighlyrealisticimage-labelpairs. EarlysuccesseslikeDiffuSat(Khanna
+etal.,2023)andCRS-Diff(Tangetal.,2024)demonstratedthepotentialofconditionalgenerationtoboosttheper-
+formanceofdownstreamsegmentationmodels. SatSynth(Tokeretal.,2024)furthervalidatedthisapproachforboth
+segmentationanddetectiontasks.
+However,asignificantlimitationofexistingworkisitsfragmented,task-specificnature. Currentpipelinesrequire
+training separate generative models for detection, segmentation, or other tasks, creating data silos and preventing
+knowledge transfer. This is inefficient and fails to exploit the rich, shared information across different annotation
+types. For example, bounding box layouts contain valuable semantic and location information that could regularize
+and improve a segmentation model. Our work addresses this gap by designing an end-to-end pipeline that not only
+performs single-task augmentation but also facilitates cross-task knowledge transfer, realizing an ”annotate once,
+benefitmultipletasks”paradigmthatisessentialforscalable,real-worldremote-sensingsystems.
+3 TerraGen
+3.1 ProblemFormulation
+Remotesensingimagegenerationrequiresaddressingmultipleheterogeneousconditionssimultaneously,whereeach
+generated image must satisfy spatial layout constraints, semantic category information, and geographic contextual
+descriptions. Thefundamentalchallenge liesinaccurately integratingthesediverseuser-specified conditions—each
+representing distinct aspects of remote sensing analysis requirements—into geographically consistent and visually
+realisticimages. Currentdiffusionmodelsinremotesensingprimarilyfocusonsingle-taskscenarios,lackingunified
+frameworksthatcancapturegeographicrelationshipsacrossmultiplevisiontasks. Weformallydefinethemulti-task
+layout-conditionedremotesensingimagegenerationas:
+I =f(T,L,D), (1)
+g
+whereI representsthegeneratedremotesensingimage,T specifiesthetargettasktypefromoursupportedtaskset
+g
+{T ,T ,T ,T ,T } corresponding to object detection, semantic segmentation, building extraction, Road Extraction
+0 1 2 3 4
+mapping, and flood detection respectively. The layout condition L provides spatial constraints, while the textual
+descriptionD offerssemanticcontext. ThelayoutconditionLcomprisesngeographicentities,whereeachentityis
+characterizedbyacomprehensivetuplecontainingsemantic,spatial,andattributeinformation:
+L={l =(c ,s )}n , (2)
+i i i i=1
+3
+MSL-X Map1 Map2 Mapn
+M-feature
+Latent tokens DSB DownSample
+…
+USB UpSample
+A
+t ⊙ dot product
+t
+Mask-Cross-Attn Block … ⊙ n concat
+B
+l
+o trainable
+c
+k
+input frozen
+task text layout M1 M2 Mn 𝜶
+M prompt
+g n i p p a L S M - 0 B S D L S M - i B S U L S M - n t u o y a L [0.25,0.75,
+0.34,0,97]
+…
+r e d o c n E k c s o e l R - B n f t l t e S - A s n s t o t r C - A k c s o e l R - B n f t l t e S - A s n s t o t r C - A k c s o e l R - B n f t l t e S - A s n s t o t r C - A r e d o c n D
+Zt down up Zt-1
+Figure 2: An overview of the TerraGen architecture. TerraGen utilizes a multi-conditional generation framework
+thatintegratesgeographic-spatiallayoutencodingwithmulti-scaleinjectionmechanisms. Thesystemprocessestask
+specifications,textualdescriptions,andspatiallayoutsthroughmask-cross-attentionblocksandinjectslayoutguidance
+at multiple U-Net resolution levels to ensure both global layout consistency and fine-grained spatial accuracy in RS
+imagegeneration.
+Here,c denotesthesemanticcategory(e.g.,building,road,waterbody),ands representsthespatialrepresentation,
+i i
+which can be either bounding boxes b for detection tasks or binary masks m for segmentation tasks. This design
+i i
+enablesourframeworktocapturethecomplexspatialrelationshipsinherentinremotesensingimagery.
+Toenableeffectivecross-taskknowledgetransfer,weestablishaunifiedlayoutrepresentationthatbridgesdifferent
+tasktypesthroughatask-adaptivetransformationfunction:
+L =J(TL ). (3)
+unified task
+ThetransformationfunctionJ(·)convertstask-specificannotations—boundingboxesB={b }n forobjectdetec-
+i i=1
+tionT andpixelmasksM={m }n forsegmentationtasksT —intoastandardizedlayoutrepresentationwhile
+0 i i=1 1−4
+preservingessentialspatialandsemanticinformation.
+3.2 Multi-TaskUnifiedArchitecture
+Building upon large-scale diffusion models, TerraGen introduces a multi-conditional generation framework specif-
+ically designed for remote sensing applications. Our unified architecture effectively handles heterogeneous layout
+conditions while maintaining robust cross-task compatibility across diverse generation scenarios. An overview of
+theTerraGenarchitectureisshowninFigure2,illustratingtheintegrationofgeographic-spatiallayoutencodingand
+multi-scaleinjectionmechanismsthatenableseamlesstask-specificgeneration.
+Tocapturetheuniquecharacteristicsofremotesensingimageryandachieveprecisepixel-levellayoutguidance,
+we design an Instance-Spatial Layout Encoder that jointly processes multiple layout modalities through a unified
+embeddingspace:
+E =ψ(ϕ (B),ϕ (M)), (4)
+geo b m
+wherethefusionfunctionψ(·)integratescomplementaryspatialrepresentationsfromtheboundingboxencoderϕ (B)
+b
+andmaskencoderϕ (M). Here, B = {b }n representsthecollectionofboundingboxesdefiningcoarsespatial
+m i i=1
+regions,andM={m }n representsthecollectionofmasksprovidingfine-grainedpixel-levelconstraints.
+i i=1
+4
+The core innovation of TerraGen lies in its multi-conditional layout control mechanism that enables seamless
+layout-to-image generation across various remote sensing tasks. To enable task-specific generation while maintain-
+ingourunifiedarchitecture,weintroduceadaptivetaskconditioningmodulesthatdynamicallyadjustthegeneration
+process:
+ct =θ(T)⊕δ(hl,T). (5)
+Thetaskencoderθ(·)processestaskspecificationsT togeneratetask-awareembeddings,whilethetaskadapterδ(·)
+modulateslayoutfeatureshl = {hl}n accordingtospecifictaskrequirements,ensuringoptimalgenerationquality
+i i=1
+acrossdifferentremotesensingscenarios.
+3.3 Multi-ScaleLayoutInjection
+InspiredbyadapterslikeIP-Adapter(Yeetal.,2023)andControlNet(Zhangetal.,2023),weinjectlayoutconditions
+toguidegeneration. However,conventionalmethodssufferfromprogressivedetaillossduringdownsampling,acriti-
+calflawforpixel-levelremotesensingtasks.Toaddressthis,weproposeamulti-scaleinjectionstrategythatpreserves
+fine-grainedspatialinformation.Ourstrategyextendsspatialattentionwithahierarchicalmechanismoperatingacross
+multipleresolutions
+(cid:88) K (cid:18) QKT ⊙M(k)(cid:19)
+Attn(Q,K,V)= α ·Softmax √ V, (6)
+k
+d
+k=1
+where the learnable weights α dynamically balance contributions across different scales, and M(k) represents the
+k
+attention mask at scale k that enforces spatial constraints at the corresponding resolution level. Building upon this
+hierarchicalattentionmechanism,weinjectresolution-specificlayoutfeaturesintoeachattentionblockoftheU-Net
+architecture. Thismulti-scaleinjectionensuresthatlayoutguidanceismaintainedateveryresolutionlevel:
+fout =fin+ζ(fin,h(ℓ),M ), (7)
+ℓ ℓ ℓ ℓ
+whereℓdenotesthescaleleveldeterminingthefeatureresolution,thecross-attentionoperationζ(·)facilitatesseam-
+less feature integration between layout conditions and image features, h(ℓ) provides scale-specific layout guidance
+extractedfromourInstance-SpatialLayoutEncoder,andM servesastheattentionmaskthatcontrolsspatialfocus
+ℓ
+atthecorrespondingscalelevel.
+This multi-scale injection mechanism enables our framework to maintain both global layout consistency and lo-
+cal detail accuracy, addressing the fundamental limitation of existing methods in pixel-level remote sensing image
+generation.
+3.4 TrainingandInferenceStrategy
+To provide enhanced layout-guided information injection in the training process, we introduce an adaptive mask-
+weightedmechanismthatdynamicallyadjustslosscomputation:
+L =E
+(cid:2)
+∥ϵ−ϵ (x
+,t,c)∥2⊙Wadapt(cid:3)
+. (8)
+total t,x0,ϵ θ t
+TheadaptiveweightmatrixWadaptiscomputedbasedonbothexplicitlayoutconstraintsandlearnedattentiondistri-
+butions:
+(cid:32) n (cid:33)
+(cid:88)
+Wadapt =β·M +(1−β)·Norm A , (9)
+layout i
+i=1
+where attention maps A for layout entity i are aggregated and normalized, while parameter β controls the balance
+i
+betweenexplicitmaskconstraintsM andlearnedattentionpatterns. Duringtraining,weempiricallysetβ =0.5
+layout
+toachieveoptimalbalance.
+During the inference phase, we apply a unified Classifier-Free Guidance (CFG) to all input conditions, treating
+non-targettasksasnegativesamplestoachievepreciseandeffectivegeneration:
+ϵ=ϵ (x ,t,∅)+s·(ϵ (x ,t,c )−ϵ (x ,t,c )), (10)
+θ t θ t t θ t non
+wheresistheguidancescale,c representstargettaskconditions,andc denotesnon-targettaskconditionsused
+t non
+asnegativeguidance.
+5
+4 Dataset and Benchmark
+Toaddressthelackofunifiedmulti-taskdatasetsforremotesensingimagegeneration, weconstructthefirstdataset
+thatsupportslayout-conditionedgenerationacrossfiverepresentativevisiontasks:objectdetection,semanticsegmen-
+tation, building extraction, road extraction, and flood mapping. It provides a foundation for multi-task learning and
+cross-taskgeneralization.
+4.1 DatasetConstruction
+We follow a multi-stage pipeline to ensure annotation
+quality and task consistency. High-resolution remote
+sensingimagesarecollectedfrompublicsources(Shir-
+shmall, 2023; Wang et al., 2021; Xia et al., 2023; Li
+et al., 2025, 2020; Maggiori et al., 2017; Ji et al.,
+2018;Guptaetal.,2019;Zhuetal.,2021;Demiretal.,
+2018; Mnih, 2013b). Annotations for five tasks are in-
+tegrated from 12 datasets, and layout-controllable text
+prompts are automatically generated using the multi-
+modalmodelQwen-VL(Baietal.,2025).
+To enhance reliability, we adopt automatic consis-
+tency checks for detecting annotation issues such as Figure3:Wordcloudofsemanticcategoriescoveredinour
+overlapping boxes, broken road segments, and seman- dataset.
+ticconflicts. Thefinaldatasetcontains45khigh-quality
+samples with either single-task or multi-task annotations. A word cloud in Figure 3 illustrates the rich and diverse
+semanticcategories. FurtherdetailsonourdatasetconstructionareprovidedinAppendixD.1.
+4.2 EvaluationBenchmark
+Toestablishstandardizedevaluationprotocolsforremotesensinglayoutgeneration,weconstructedacomprehensive
+benchmark dataset specifically designed for assessing generation quality and downstream task effectiveness. Our
+benchmark consists of 1k carefully selected high-quality images that represent the full spectrum of challenges in
+remotesensinglayoutgeneration, ensuringvisualcomplexityandgeographicdiversitywhileavoidingdense, small-
+scale,andlow-qualitysamples.
+Eachbenchmarkimageisassociatedwithmultipleevaluationscenarios,asasingleimagemaycorrespondtogen-
+erationqualityassessmentacrossdifferentdownstreamtasks. Toaddresstheuniquechallengesofevaluatingremote
+sensing layout generation, we introduce specialized metrics tailored for spatial accuracy and semantic consistency.
+Thesemetricsencompassbothpixel-levelfidelityandstructuralcoherenceassessments. Detailedmetriccalculations
+areprovidedintheAppendixD.2.
+RS Image Quality (RS-IQ): We calculate FID scores using an InceptionV3 network (Szegedy et al., 2016) fine-
+tunedonremotesensingdatasetstobettercapturedomain-specificcharacteristics.
+ContentFidelity: WeemployCLIP-T(Radfordetal.,2021)tomeasuresemanticconsistencybetweengenerated
+imagesandglobaldescriptions,andDINO-I(Zhangetal.,2022)toevaluatevisualfeaturealignment.
+LayoutConsistency: WeevaluategeneratedimagesusingYOLOv8(Jocheretal.,2023)-basedmodelstrainedon
+remotesensingdata,reportingmAPandAP forobjectdetectiontasks,andAccandmIoUforsegmentationtasks.
+50
+5 Experiments
+5.1 ExperimentalSetup
+Formodeltraining, weadoptatwo-stageconfigurationtoensureoptimalperformanceandconvergence. Inthefirst
+stage, we train the UNet (Ronneberger et al., 2015) network with additional constraints on the diffusion process to
+improve the LDM (Rombach et al., 2022) -based generation capability, using a learning rate of 1e-4 with AdamW
+(Loshchilov,2017)optimizerfor100kstepswithbatchsizeof8.Weemploycosineannealingschedulingtogradually
+reduce the learning rate throughout training. The second stage introduces an adaptive mask-weighted loss function
+6
+to enhance layout consistency and spatial accuracy, incorporating attention mechanisms to better preserve structural
+detailsandgeometricrelationshipsinthegeneratedoutputs. Furtherimplementationdetailsandablationstudiesare
+providedintheAppendix.
+5.2 ImageQualityResults
+WecompareTerraGenagainstbothremotesensing-specificconditionalgenerationmethodsandstate-of-the-artnatural
+image generation approaches. Our comparison includes remote sensing domain methods: CRS-Diff (Tang et al.,
+2024), SatSynth (Toker et al., 2024), AeroGen (Tang et al., 2025), and CC-Diff (Zhang et al., 2024b), as well as
+natural image generation advances: GLIGEN (Li et al., 2023), Uni-ControlNet (Zhao et al., 2023), ControlNet, and
+InstanceDiffusion (Wang et al., 2024). Due to architectural constraints and fine-tuning methodologies, we did not
+includeDiTmodel(Peebles&Xie,2023)comparisonsinthisevaluation.
+Table1demonstratesTerraGen’ssuperiorperformanceacrossallevaluationmetrics. Ourmethodachievesstate-
+of-the-art results in generation quality, Content Fidelity, and layout accuracy, establishing the effectiveness of our
+frameworkingeneratinggeographicallyplausibleandlayout-consistentremotesensingimagery.
+Figure 4 presents visual comparison results under various conditional settings. As a multi-modal controllable
+generation model, TerraGen demonstrates superior performance in both layout consistency and semantic alignment
+compared to baseline methods. For object detection tasks, our method enables precise generation of small objects
+such as vehicles while maintaining excellent background compatibility. For semantic segmentation tasks, TerraGen
+achievesbetterroadgenerationqualityanddemonstratesfine-grainedcontrolovermultipleconditionssimultaneously.
+RS-IQ ContentFidelity Mask BBox
+Method Task
+FID↓ CLIP-T↑ DINO-I↑ mIoU↑ Acc↑ AP ↑ mAP↑
+50
+UpperBound(realimg) – – 30.8 – 68.6 83.5 59.5 42.9
+GLIGEN(Lietal.,2023) OD 42.5 24.8 53.4 – – 48.7 33.1
+CC-Diff(Zhangetal.,2024b) OD 41.8 25.9 58.2 – – 48.4 34.8
+AeroGen(Tangetal.,2025) OD 43.7 24.5 59.2 – – 50.9 34.7
+SatSynth(Tokeretal.,2024) Seg 49.6 21.1 48.9 38.2 58.1 – –
+CRS-Diff(Tangetal.,2024) Seg 36.3 27.7 61.3 42.6 62.8 – –
+Uni-ControlNet(Zhaoetal.,2023) Seg 37.2 26.8 64.2 46.5 65.9 – –
+InstanceDiffusion(Wangetal.,2024) Uni 40.1 25.5 62.1 41.8 61.3 51.2 35.8
+TerraGen(Ours) Uni 34.6 29.6 64.7 50.8 69.6 52.5 37.1
+Table1: GenerationQualityandConsistencyComparison
+5.3 DownstreamTaskEnhancement
+To validate TerraGen’s efficacy as a data enhancement tool, we designed three distinct experimental scenarios eval-
+uating its performance from in-domain application to challenging data-scarce and generalization settings. In each
+scenario, we started with a baseline model trained on an initial dataset and then measured performance gains after
+enhancing the training data with synthetic images generated by TerraGen. For a detailed breakdown of the models,
+datasets,andtrainingconfigurationsusedintheseexperiments,pleaseseeAppendixE.
+In-DomainDataAugmentation. ThisexperimenttestedthecorecapabilityofTerraGentoimproveperformance
+when the data distribution is consistent. The baseline models were trained and tested on splits from our proposed
+dataset. ThetrainingsetwasthenenhancedbyaddingsyntheticdatageneratedbyTerraGenusingtheoriginallayouts
+fromthissamedataset. AsshowninTable2,progressivelyaddingsyntheticdata(from1xto4xthebaselinequantity)
+yielded consistent and significant performance gains across all tasks and models. For instance, SegFormer’s IoU
+in semantic segmentation improved by a relative 20.8%, demonstrating the direct benefit of same-distribution data
+enhancement.
+Few-ShotGeneralization. Thisexperimentsimulateddata-scarcescenariostoevaluateTerraGen’sabilitytogen-
+eratevaluabletrainingdatawhenoriginalsamplesareextremelylimited. Thebaselinemodelsweretrainedandtested
+7
+Instance
+Label SatSynth CRS-Diff Uni-ControlNet Diffusion Ours
+road
+flood
+mask
+building
+baseballfield
+bbox
+Label GliGen CC-Diff AeroGen
+Figure4: Qualitativecomparisonformask-to-image(topfourrows)andbbox-to-image(bottomrow)generationby
+variousmethods.
+onsmall,publiclyavailabledatasets(100trainingsampleseach),completelyseparatefromourproposeddataset. The
+trainingsetwasthenenhancedwithsyntheticdatageneratedbyTerraGen. Table3showsthatenhancingthesesmall
+datasetswithsyntheticsamplesledtosubstantialperformanceimprovementsacrossalltasks,highlightingTerraGen’s
+effectivenessinlow-dataregimes.
+EnhancementwithTransformedLayouts. ThisexperimentassessesTerraGen’srobustnessbytestingitsability
+to generate effective data from geometrically transformed layouts. While the baseline setup mirrored the in-domain
+experiment,theenhancementdatawasgeneratedusinglayoutsalteredbyvariousgeometrictransformations(e.g.,ro-
+tation,flipping),detailedinAppendixE.TheresultsinTable4confirmtheefficacyofthisapproach,withperformance
+gains across nearly all metrics. This is crucial, demonstrating that TerraGen robustly interprets and renders diverse
+spatialconditionsratherthanmerelymemorizingstaticlayouts.
+5.4 AblationStudies
+We conducted ablation studies to evaluate the impact of layout control, multi-scale injection, and mask-weighted
+loss on our model’s performance. As shown in Table 5, combining both bounding boxes and masks consistently
+outperforms using either modality alone, improving the Fre´chet Inception Distance (FID) from 38.7 to 34.6 and the
+meanIntersectionoverUnion(mIoU)from45.3to50.8. Thehalf-scalemulti-scaleinjectionstrategyofferedagood
+balance between precision and computational efficiency, while the mask-weighted loss further boosted all metrics,
+achievingthebestoverallperformance. Theseresultsconfirmtheeffectivenessofeachcomponentinenhancingthe
+8
+Task ObjectDetection SemanticSegmentation BuildingExtraction RoadExtraction FloodDetection
+Model F-RCNN O-RCNN SegFormer U-Net SegFormer U-Net SegFormer U-Net SegFormer U-Net
+Metric mAP↑ AP50↑ mAP↑ AP50↑ IoU↑ Acc↑ IoU↑ Acc↑ IoU↑ Acc↑ IoU↑ Acc↑ IoU↑ Acc↑ IoU↑ Acc↑ IoU↑ Acc↑ IoU↑ Acc↑
+0x 24.5 46.9 35.0 55.5 41.8 58.9 44.9 62.0 49.3 93.7 53.5 94.6 32.2 95.2 40.2 95.5 66.8 86.9 66.9 86.3
+1x 26.2 49.5 35.1 57.2 47.3 64.2 46.1 63.1 52.7 94.5 54.9 95.0 33.8 95.2 48.1 96.4 69.1 87.7 66.3 86.0
+2x 26.5 49.9 35.4 57.0 49.0 65.8 47.9 64.7 54.7 94.8 56.9 95.3 38.0 95.6 48.7 96.5 68.9 87.3 67.0 86.4
+3x 27.4 51.1 35.8 57.6 50.5 67.1 47.2 64.1 55.0 94.9 56.9 95.4 38.6 95.7 49.0 96.5 69.3 87.5 67.5 86.5
+4x 28.4 51.3 35.9 57.4 50.5 67.1 48.5 65.4 56.1 95.1 58.3 95.6 39.6 95.8 49.0 96.6 69.3 87.7 68.1 87.0
+vs.Baseline +15.9% +9.4% +2.6% +3.8% +20.8% +13.9% +8.0% +5.5% +13.8% +1.5% +9.0% +1.1% +23.0% +0.6% +21.9% +1.2% +3.7% +0.9% +1.8% +0.8%
+Table2: PerformanceGainsfromIn-DomainDataEnhancement
+Task ObjectDetection SemanticSegmentation BuildingExtraction RoadExtraction FloodDetection
+Dataset NWPUVHR-10 DroneDeploy Mass.Buildings RoadNet FloodNet
+Model F-RCNN O-RCNN SegFormer U-Net SegFormer U-Net SegFormer U-Net SegFormer U-Net
+Metric mAP↑ AP50↑mAP↑AP50↑ IoU↑ Acc↑ IoU↑ Acc↑ IoU↑ Acc↑ IoU↑ Acc↑ IoU↑ Acc↑ IoU↑ Acc↑ IoU↑ Acc↑ IoU↑ Acc↑
+0x 29.8 66.6 45.7 77.4 43.7 60.8 57.9 73.3 27.4 88.1 33.9 88.4 67.5 94.5 79.8 96.7 51.0 69.5 51.6 74.1
+1x 30.4 67.2 46.9 80.9 53.5 69.7 59.0 74.2 27.5 88.2 35.7 90.4 69.7 95.2 83.0 97.3 51.3 71.1 52.6 70.5
+2x 31.1 69.8 48.1 81.9 60.4 75.3 61.0 75.8 29.2 89.1 36.7 90.7 71.0 95.2 83.2 97.4 52.2 70.6 53.4 72.9
+3x 34.7 71.3 48.0 84.0 59.9 74.9 61.2 75.9 30.8 89.5 37.3 91.0 72.4 95.3 83.2 97.3 52.8 73.2 53.3 72.8
+vs.Baseline+16.4%+7.1%+5.3%+8.5%+38.2%+23.8%+5.7%+3.5%+12.4%+1.6%+10.0%+2.9%+7.3%+0.8%+4.3%+0.7%+3.5%+5.3%+3.5%-1.6%
+Table3: GeneralizationPerformanceinFew-ShotSettings
+quality,spatialaccuracy,andconsistencyoflayout-guidedremotesensingimagegeneration.
+6 Conclusion
+In this work, we introduce TerraGen, a unified
+LayoutControl
+multi-task layout-to-image generation framework MSL MALoss FID↓ CLIP-T↑ mIoU↑
+box mask
+designed to overcome the critical challenges of
+task isolation and the absence of geographic con- ✓ ✗ half ✗ 38.7 28.2 45.3
+✗ ✓ half ✗ 37.1 28.1 47.8
+straintsinremotesensing.Ourapproachfeaturesa
+✓ ✓ half ✗ 35.2 28.4 49.2
+novelgeographic-spatiallayoutencoderthatseam-
+✓ ✓ full ✗ 35.4 28.3 49.1
+lesslyintegratesdiversespatialconditions(bound- ✓ ✓ full ✓ 34.9 29.4 50.5
+ing boxes, masks) with textual descriptions, cou-
+✓ ✓ half ✓ 34.6 29.6 50.8
+pled with a multi-scale injection strategy for pre-
+cise, controllable synthesis of spatially coherent Table5: AblationStudy: EffectofLayoutControl, Multi-Scale
+imagery. To validate our method, we also con- Layout(MSL),andMask-weightedLoss(MALoss).
+tributethefirstlarge-scale,multi-taskremotesens-
+inglayoutdatasetandestablishunifiedevaluation
+benchmarks.ExtensiveexperimentsdemonstratethatourproposedTerraGencanachievestate-of-the-artresultsacross
+various tasks, including object detection, segmentation, and flood mapping, while proving highly effective for data
+augmentation in both full-data and few-shot scenarios. Most notably, our framework validates the central premise
+that spatial layouts can serve as a universal medium to bridge previously isolated remote sensing tasks. We empiri-
+Task ObjectDetection SemanticSegmentation BuildingExtraction RoadExtraction FloodDetection
+Model F-RCNN O-RCNN SegFormer U-Net SegFormer U-Net SegFormer U-Net SegFormer U-Net
+Metric mAP↑AP ↑mAP↑AP ↑mIoU↑Acc↑mIoU↑Acc↑IoU↑ Acc↑ IoU↑Acc↑IoU↑ Acc↑ IoU↑Acc↑IoU↑ Acc↑ IoU↑Acc↑
+50 50
+Baseline 32.8 57.4 42.0 63.6 54.2 70.3 51.7 68.2 66.9 96.4 66.7 96.4 51.9 96.6 58.0 97.1 69.5 87.9 68.5 87.4
++TerraGen 34.0 57.6 42.6 64.5 54.3 70.4 52.5 68.9 68.2 96.7 68.0 96.6 53.4 96.7 58.2 97.2 69.7 88.0 68.6 87.5
+Table4: EnhancementwithTransformedLayouts
+9
+callydemonstratethatthiscross-taskknowledgetransferishighlyeffective,aslayoutsfromdetectioncanbedirectly
+utilizedtosignificantlyenhancetheperformanceofsegmentationmodels,andviceversa.
+References
+ShuaiBai, KeqinChen, XuejingLiu, JialinWang, WenbinGe, SiboSong, KaiDang, PengWang, ShijieWang, Jun
+Tang,etal. Qwen2.5-vltechnicalreport. arXivpreprintarXiv:2502.13923,2025.
+Gong Cheng, Junwei Han, Peicheng Zhou, and Lei Guo. Multi-class geospatial object detection and geographic
+imageclassificationbasedoncollectionofpartdetectors. ISPRSJournalofPhotogrammetryandRemoteSensing,
+98:119–132,2014.
+IlkeDemir,KrzysztofKoperski,DavidLindenbaum,GuanPang,JingHuang,SaikatBasu,ForestHughes,DevisTuia,
+andRameshRaskar. Deepglobe2018: Achallengetoparsetheearththroughsatelliteimages. InProceedingsof
+theIEEEconferenceoncomputervisionandpatternrecognitionworkshops,pp.172–181,2018.
+DroneDeploy. Dronedeploysegmentationbenchmark,2019.
+Patrick Esser, Sumith Kulal, Andreas Blattmann, Rahim Entezari, Jonas Mu¨ller, Harry Saini, Yam Levi, Dominik
+Lorenz,AxelSauer,FredericBoesel,etal. Scalingrectifiedflowtransformersforhigh-resolutionimagesynthesis.
+InForty-firstinternationalconferenceonmachinelearning,2024.
+RitwikGupta,RichardHosfelt,SandraSajeev,NiravPatel,BryceGoodman,JigarDoshi,EricHeim,HowieChoset,
+and Matthew Gaston. xbd: a dataset for assessing building damage from satellite imagery. arxiv. arXiv preprint
+arXiv:1911.09296,2019.
+Shunping Ji, Shiqing Wei, and Meng Lu. Fully convolutional networks for multisource building extraction from an
+open aerial and satellite imagery data set. IEEE Transactions on geoscience and remote sensing, 57(1):574–586,
+2018.
+GlennJocher,AyushChaurasia,andJingQiu. UltralyticsYOLO,January2023.
+Samar Khanna, Patrick Liu, Linqi Zhou, Chenlin Meng, Robin Rombach, Marshall Burke, David B Lobell, and
+Stefano Ermon. Diffusionsat: A generative foundation model for satellite imagery. In The Twelfth International
+ConferenceonLearningRepresentations,2023.
+BlackForestLabs,StephenBatifol,AndreasBlattmann,FredericBoesel,SakshamConsul,CyrilDiagne,TimDock-
+horn,JackEnglish,ZionEnglish,PatrickEsser,etal. Flux.1kontext: Flowmatchingforin-contextimagegenera-
+tionandeditinginlatentspace. arXivpreprintarXiv:2506.15742,2025.
+KaiyuLi, ZepengXin, LiPang, ChaoPang, YupengDeng, JingYao, GuisongXia, DeyuMeng, ZhiWang, andXi-
+angyongCao. Segearth-r1:Geospatialpixelreasoningvialargelanguagemodel. arXivpreprintarXiv:2504.09644,
+2025.
+KeLi,GangWan,GongCheng,LiqiuMeng,andJunweiHan. Objectdetectioninopticalremotesensingimages: A
+surveyandanewbenchmark. ISPRSjournalofphotogrammetryandremotesensing,159:296–307,2020.
+YuhengLi,HaotianLiu,QingyangWu,FangzhouMu,JianweiYang,JianfengGao,ChunyuanLi,andYongJaeLee.
+Gligen: Open-set grounded text-to-image generation. In Proceedings of the IEEE/CVF Conference on Computer
+VisionandPatternRecognition,pp.22511–22521,2023.
+YahuiLiu,JianYao,XiaohuLu,MenghanXia,XingboWang,andYuanLiu. Roadnet: Learningtocomprehensively
+analyzeroadnetworksincomplexurbanscenesfromhigh-resolutionremotelysensedimages. IEEETransactions
+onGeoscienceandRemoteSensing,57(4):2043–2056,2018.
+ILoshchilov. Decoupledweightdecayregularization. arXivpreprintarXiv:1711.05101,2017.
+10
+EmmanuelMaggiori,YuliyaTarabalka,GuillaumeCharpiat,andPierreAlliez. Cansemanticlabelingmethodsgener-
+alizetoanycity? theinriaaerialimagelabelingbenchmark. InIEEEInternationalGeoscienceandRemoteSensing
+Symposium(IGARSS).IEEE,2017.
+VolodymyrMnih. MachineLearningforAerialImageLabeling. PhDthesis,UniversityofToronto,2013a.
+VolodymyrMnih. Machinelearningforaerialimagelabeling. UniversityofToronto(Canada),2013b.
+AlexNichol,PrafullaDhariwal,AdityaRamesh,PranavShyam,PamelaMishkin,BobMcGrew,IlyaSutskever,and
+MarkChen. Glide: Towardsphotorealisticimagegenerationandeditingwithtext-guideddiffusionmodels. arXiv
+preprintarXiv:2112.10741,2021.
+William Peebles and Saining Xie. Scalable diffusion models with transformers. In Proceedings of the IEEE/CVF
+internationalconferenceoncomputervision,pp.4195–4205,2023.
+Dustin Podell, Zion English, Kyle Lacey, Andreas Blattmann, Tim Dockhorn, Jonas Mu¨ller, Joe Penna, and
+Robin Rombach. Sdxl: Improving latent diffusion models for high-resolution image synthesis. arXiv preprint
+arXiv:2307.01952,2023.
+Alec Radford, Jong Wook Kim, Chris Hallacy, Aditya Ramesh, Gabriel Goh, Sandhini Agarwal, Girish Sastry,
+Amanda Askell, Pamela Mishkin, Jack Clark, et al. Learning transferable visual models from natural language
+supervision. InInternationalconferenceonmachinelearning,pp.8748–8763.PmLR,2021.
+Maryam Rahnemoonfar, Tashnim Chowdhury, Argho Sarkar, Debvrat Varshney, Masoud Yari, and Robin Roberson
+Murphy. Floodnet: Ahighresolutionaerialimagerydatasetforpostfloodsceneunderstanding. IEEEAccess, 9:
+89644–89654,2021.
+AdityaRamesh,MikhailPavlov,GabrielGoh,ScottGray,ChelseaVoss,AlecRadford,MarkChen,andIlyaSutskever.
+Zero-shottext-to-imagegeneration. InInternationalconferenceonmachinelearning,pp.8821–8831.Pmlr,2021.
+Aditya Ramesh, Prafulla Dhariwal, Alex Nichol, Casey Chu, and Mark Chen. Hierarchical text-conditional image
+generationwithcliplatents. arXivpreprintarXiv:2204.06125,1(2):3,2022.
+ScottReed,ZeynepAkata,XinchenYan,LajanugenLogeswaran,BerntSchiele,andHonglakLee. Generativeadver-
+sarialtexttoimagesynthesis. InInternationalconferenceonmachinelearning,pp.1060–1069.PMLR,2016.
+Shaoqing Ren. Faster r-cnn: Towards real-time object detection with region proposal networks. arXiv preprint
+arXiv:1506.01497,2015.
+Robin Rombach, Andreas Blattmann, Dominik Lorenz, Patrick Esser, and Bjo¨rn Ommer. High-resolution image
+synthesiswithlatentdiffusionmodels. InProceedingsoftheIEEE/CVFconferenceoncomputervisionandpattern
+recognition,pp.10684–10695,2022.
+OlafRonneberger,PhilippFischer,andThomasBrox. U-net: Convolutionalnetworksforbiomedicalimagesegmen-
+tation. InInternationalConferenceonMedicalimagecomputingandcomputer-assistedintervention,pp.234–241.
+Springer,2015.
+Chitwan Saharia, William Chan, Saurabh Saxena, Lala Li, Jay Whang, Emily L Denton, Kamyar Ghasemipour,
+Raphael Gontijo Lopes, Burcu Karagol Ayan, Tim Salimans, et al. Photorealistic text-to-image diffusion mod-
+elswithdeeplanguageunderstanding. Advancesinneuralinformationprocessingsystems,35:36479–36494,2022.
+Shirshmall. Water-body-segmentation-in-Satellite-Images,2023. Accessed: July28,2025.
+Christian Szegedy, Vincent Vanhoucke, Sergey Ioffe, Jon Shlens, and Zbigniew Wojna. Rethinking the inception
+architectureforcomputervision.InProceedingsoftheIEEEconferenceoncomputervisionandpatternrecognition,
+pp.2818–2826,2016.
+DataoTang,XiangyongCao,XingsongHou,ZhongyuanJiang,JunminLiu,andDeyuMeng. Crs-diff: Controllable
+remote sensing image generation with diffusion model. IEEE Transactions on Geoscience and Remote Sensing,
+2024.
+11
+Datao Tang, Xiangyong Cao, Xuan Wu, Jialin Li, Jing Yao, Xueru Bai, Dongsheng Jiang, Yin Li, and Deyu Meng.
+Aerogen: Enhancingremotesensingobjectdetectionwithdiffusion-drivendatageneration. InProceedingsofthe
+ComputerVisionandPatternRecognitionConference,pp.3614–3624,2025.
+AysimToker,MarvinEisenberger,DanielCremers,andLauraLeal-Taixe´. Satsynth: Augmentingimage-maskpairs
+throughdiffusionmodelsforaerialsemanticsegmentation. InProceedingsoftheIEEE/CVFConferenceonCom-
+puterVisionandPatternRecognition,pp.27695–27705,2024.
+JunjueWang,ZhuoZheng,AilongMa,XiaoyanLu,andYanfeiZhong. Loveda: Aremotesensingland-coverdataset
+for domain adaptive semantic segmentation. In J. Vanschoren and S. Yeung (eds.), Proceedings of the Neural
+InformationProcessingSystemsTrackonDatasetsandBenchmarks,volume1,2021.
+XudongWang, TrevorDarrell, SaiSaketh Rambhatla, RohitGirdhar, and IshanMisra. Instancediffusion: Instance-
+levelcontrolforimagegeneration. InProceedingsoftheIEEE/CVFConferenceonComputerVisionandPattern
+Recognition,pp.6232–6242,2024.
+Junshi Xia, Naoto Yokoya, Bruno Adriano, and Clifford Broni-Bediako. Openearthmap: A benchmark dataset for
+globalhigh-resolutionlandcovermapping. InProceedingsoftheIEEE/CVFWinterConferenceonApplicationsof
+ComputerVision,pp.6254–6264,2023.
+EnzeXie, WenhaiWang, ZhidingYu, AnimaAnandkumar, JoseMAlvarez, andPingLuo. Segformer: Simpleand
+efficientdesignforsemanticsegmentationwithtransformers. Advancesinneuralinformationprocessingsystems,
+34:12077–12090,2021a.
+Xingxing Xie, Gong Cheng, Jiabao Wang, Xiwen Yao, and Junwei Han. Oriented r-cnn for object detection. In
+ProceedingsoftheIEEE/CVFinternationalconferenceoncomputervision,pp.3520–3529,2021b.
+HuYe,JunZhang,SiboLiu,XiaoHan,andWeiYang. Ip-adapter: Textcompatibleimagepromptadapterfortext-to-
+imagediffusionmodels. arXivpreprintarXiv:2308.06721,2023.
+QiZang,JiayiYang,ShuangWang,DongZhao,WenjunYi,andZhunZhong. Changediff: Amulti-temporalchange
+detectiondatageneratorwithflexibletextpromptsviadiffusionmodel. InProceedingsoftheAAAIConferenceon
+ArtificialIntelligence,volume39,pp.9763–9771,2025.
+HaoZhang,FengLi,ShilongLiu,LeiZhang,HangSu,JunZhu,LionelMNi,andHeung-YeungShum. Dino: Detr
+withimproveddenoisinganchorboxesforend-to-endobjectdetection. arXivpreprintarXiv:2203.03605,2022.
+Hong Zhang, Zhongjie Duan, Xingjun Wang, Yingda Chen, and Yu Zhang. Eligen: Entity-level controlled image
+generationwithregionalattention. arXivpreprintarXiv:2501.01097,2025a.
+Hui Zhang, Dexiang Hong, Yitong Wang, Jie Shao, Xinglong Wu, Zuxuan Wu, and Yu-Gang Jiang. Cre-
+atilayout: Siamese multimodal diffusion transformer for creative layout-to-image generation. arXiv preprint
+arXiv:2412.03859,2024a.
+Hui Zhang, Dexiang Hong, Maoke Yang, Yutao Cheng, Zhao Zhang, Jie Shao, Xinglong Wu, Zuxuan Wu, and Yu-
+Gang Jiang. Creatidesign: A unified multi-conditional diffusion transformer for creative graphic design. arXiv
+preprintarXiv:2505.19114,2025b.
+LvminZhang,AnyiRao,andManeeshAgrawala. Addingconditionalcontroltotext-to-imagediffusionmodels. In
+ProceedingsoftheIEEE/CVFinternationalconferenceoncomputervision,pp.3836–3847,2023.
+MuZhang,YunfanLiu,YueLiu,YuzhongZhao,andQixiangYe. Cc-diff: enhancingcontextualcoherenceinremote
+sensingimagesynthesis. arXivpreprintarXiv:2412.08464,2024b.
+Shihao Zhao, Dongdong Chen, Yen-Chun Chen, Jianmin Bao, Shaozhe Hao, Lu Yuan, and Kwan-Yee K Wong.
+Uni-controlnet: All-in-onecontroltotext-to-imagediffusionmodels. AdvancesinNeuralInformationProcessing
+Systems,36:11127–11150,2023.
+12
+Guangcong Zheng, Xianpan Zhou, Xuewei Li, Zhongang Qi, Ying Shan, and Xi Li. Layoutdiffusion: Controllable
+diffusionmodelforlayout-to-imagegeneration. InProceedingsoftheIEEE/CVFConferenceonComputerVision
+andPatternRecognition,pp.22490–22499,2023.
+QiqiZhu,YananZhang,LizengWang,YanfeiZhong,QingfengGuan,XiaoyanLu,LiangpeiZhang,andDerenLi. A
+globalcontext-awareandbatch-independentnetworkforroadextractionfromvhrsatelliteimagery. ISPRSJournal
+ofPhotogrammetryandRemoteSensing,175:353–365,2021.
+13
+A Statement on LLM Usage
+WeutilizedLargeLanguageModels(LLMs),specificallyGoogle’sGeminiProandOpenAI’sChatGPT,asassistants
+for writing and code generation during thepreparation of this manuscript. Their roles included improving grammar
+and clarity, formatting LaTeX tables, and structuring paragraphs based on key points provided by the authors. The
+core scientific contributions, including all ideas, experiments, and analyses, are exclusively the work of the human
+authors,whotakefullresponsibilityforthefinalcontent.
+B Limitations
+While TerraGen marks a significant step forward in unified multi-task layout generation for remote sensing, certain
+limitations and avenues for future work exist. For instance, in object detection data synthesis, its generation quality
+noticeably degrades when object density becomes excessively high, for example, exceeding 20 instances in a single
+image. In tasks based on segmentation masks, the internal resizing to a fixed lower dimension, such as 64x64, can
+reduce quality for large objects or those requiring exceptionally fine-grained details. Furthermore, despite breaking
+taskisolationandgeneralizingwellwithintrainedcategories,TerraGen’ssemanticunderstandingiscurrentlyrelatively
+closed-set,limitingitscapacityforopen-domaingenerationofnovelorout-of-distributionobjects.
+C TerraGen Implementation Details
+ThissectionprovidesdetailedimplementationspecificationsfortheTerraGenframework,includingarchitecturalcon-
+figurations,trainingprocedures,andinferencesettings.
+C.1 ModelArchitecture
+TerraGen builds upon Stable Diffusion v1.5 with a UNet backbone consisting of 4 downsampling and 4 upsam-
+pling blocks. The model operates on 512×512 resolution images in the latent space using a pre-trained VAE en-
+coder/decoderwith8×compressionratio. Thelayoutencoderconsistsoftwoparallelbranches. TheBoundingBox
+Encoder ϕ employs a 2-layer MLP that processes normalized box coordinates (x ,y ,x ,y ) and category em-
+b 1 1 2 2
+beddings to produce 768-dimensional feature vectors. The Mask Encoder ϕ utilizes a lightweight CNN with 4
+m
+convolutionallayers,progressingthroughchannels1→32→64→128→768,followedbyadaptiveaveragepoolingto
+generate 768-dimensional mask features. The fusion function ψ employs cross-attention mechanisms with 8 heads
+and 96-dimensional keys/queries. The final geographic embedding E has dimensionality 768 to match the UNet
+geo
+featurechannels. LayoutfeaturesareinjectedatthreeresolutionlevelsoftheUNettocapturedifferentspatialgran-
+ularities. Highresolution(64×64)capturesfine-grainedspatialdetails,mediumresolution(32×32)handlesmid-level
+structures, and low resolution (16×16) ensures global layout consistency. At each level ℓ, we use specialized cross-
+attentionblockswithlearnablescaleweightsα initializedto0.1,0.3,and0.6forhigh,medium,andlowresolutions
+ℓ
+respectively.
+C.2 TrainingConfiguration
+Ourtrainingfollowsacarefullydesignedtwo-stageapproach. InStage1(Layout-FreePre-training),wetrainthebase
+UNetfortext-to-imagegenerationwithoutlayoutconstraintsfor50kstepsusinglearningrate1e-4. Stage2(Layout-
+GuidedFine-tuning)introduceslayoutencodersandmulti-scaleinjectionwithadaptivemask-weightedlossfor100k
+stepsusinglearningrate5e-5. WeemploytheAdamWoptimizerwithβ =0.9,β =0.999,andweightdecay1e-2.
+1 2
+Thelearningratefollowsacosineannealingschedulewithwarm-upfor1000steps. Trainingusesbatchsize8with
+gradientaccumulationtoachieveaneffectivebatchsizeof32.
+C.3 InferenceConfiguration
+Duringinference,weusetheDDIMschedulerwith50samplingstepsforoptimalquality-speedtrade-off. Theguid-
+ancescaleissettos=5.5forstandardgenerationands=3.0forenhancedlayoutcontrolscenarios. Classifier-Free
+Guidance is applied to all conditions, with 10% unconditional dropout during training to enable this capability. We
+14
+use fixed seeds for reproducible evaluation and random seeds for data augmentation purposes. For different task
+typesT,weapplyadaptiveconditioningstrategies. ObjectDetectiontasksemphasizeboundingboxconstraintswith
+α =0.8,whileSegmentationTasksprioritizemaskconsistencywithα =0.9. Multi-Modalscenariosemploy
+box mask
+balancedattentionwithα =α =0.6.
+box mask
+Figure5: TerraGenGenerationShowcase: Imagessynthesizedfromconditionallayouts.
+D Dataset Construction and Evaluation Benchmark
+D.1 DatasetConstruction
+Tosupportunifiedlayoutgeneration,weconstructedamulti-taskdatasetbyintegratinghigh-resolutionimageryfrom
+12 public benchmarks (Shirshmall, 2023; Wang et al., 2021; Xia et al., 2023; Li et al., 2025, 2020; Maggiori et al.,
+15
+2017;Jietal.,2018;Guptaetal.,2019;Zhuetal.,2021;Demiretal.,2018;Mnih,2013b).
+The dataset consolidates five remote sensing
+tasks—SemanticSegmentation,ObjectDetection,Build- SemanticSeg. ObjectDetection
+ing Extraction, Flood Detection, and Road Ex- agriculture Expressway-Service-area
+background Expressway-toll-station
+traction—totaling approximately 44,887 samples with
+barren airplane
+96,549 annotations across 31 categories. For control- building airport
+lable generation, we used Qwen-VL (Bai et al., 2025) forest baseballfield
+grassland basketballcourt
+toautomaticallygeneratetextpromptsforeachsample.
+road bridge
+Toensuredataquality, weperformedautomaticconsis- water chimney
+tencycheckstodetectannotationissueslikeoverlapping woodland dam
+unknown golffield
+boundingboxesandbrokenroadsegments. Thedataset
+groundtrackfield
+was further refined by removing samples with overly harbor
+complex annotations or poor image quality and filter- overpass
+ship
+ing based on CLIP scores (Radford et al., 2021). This
+stadium
+processprovidesasolidfoundationfordownstreamap- storagetank
+plications. Categories for multi-class tasks are listed in tenniscourt
+trainstation
+Table6, andaggregatedstatisticsareinTable7. InSe-
+vehicle
+mantic Segmentation, the unknown class is retained to windmill
+improve control over unlabeled masks. The other three
+tasksaresingle-category: building,flood,androad. Table6: Categoriesformulti-classtasksinTerraGen.
+Task SourceDataset #Samples #Annotations
+LoveDA(Wangetal.,2021)(23.3%)
+SemanticSegmentation OpenEarthMap(Xiaetal.,2023)(27.7%) 10,846 35,797
+ReasonSeg(Lietal.,2025)(49.0%)
+ObjectDetection DIOR(Lietal.,2020)(100.0%) 5,860 32,571
+Inria(Maggiorietal.,2017)(25.6%)
+WHU Aerial(Jietal.,2018)(26.4%)
+BuildingExtraction 16,327 16,327
+WHU SatII(Jietal.,2018)(23.9%)
+xBD(Guptaetal.,2019)(24.1%)
+FloodDetection WBS-SI(Shirshmall,2023)(100.0%) 2,172 2,172
+CHN6-CUG(Zhuetal.,2021)(24.3%)
+RoadExtraction DeepGlobe(Demiretal.,2018)(64.3%) 9,682 9,682
+Massachusetts(Mnih,2013b)(11.4%)
+Table 7: Composition of the TerraGen dataset. Percentages in parentheses indicate the proportion of samples from
+eachsourcedataset.
+D.2 EvaluationBenchmark
+Torigorouslyevaluatetheperformanceoflayoutgenerationmodels,wecuratedabenchmarktestsetof1,000samples,
+whichisindependentofthetrainingset. Thesesamplesaresourcedfromthesamepublicdatasetstoensureconsistent
+data distribution but with no overlap. The test set is composed of 400 samples for object detection, 200 for flood
+detection, and another 400 versatile samples designated for multi-class semantic segmentation, building extraction,
+androadextractiontasks. Thiscompositionguaranteescomprehensivecoverageofalltasksandsemanticcategories
+definedinTerraGen.
+Below,wedetailthecalculationmethodsandspecificexperimentalsettingsforourproposedevaluationmetrics.
+AllexperimentswereconductedonNVIDIAGeForceRTX4090GPUs.
+RS Image Quality (RS-IQ): The Fre´chet Inception Distance (FID) measures the similarity between the distribution
+of generated images and real images. It is calculated by fitting multivariate Gaussian distributions to the feature
+representationsextractedbyafeaturenetwork:
+FID=||µ −µ ||2+Tr(Σ +Σ −2(Σ Σ )1/2)
+r g r g r g
+16
+where (µ ,Σ ) and (µ ,Σ ) are the feature statistics for real and generated images. For our RS-IQ metric, we use
+r r g g
+anInceptionV3network(Szegedyetal.,2016)whoseweightswerepre-trainedonImageNetandsubsequentlyfine-
+tunedonalarge-scaleremotesensingdataset. Thisensuresthefeatureextractorishighlysensitivetodomain-specific
+patterns. Inpractice,wefirstuseourmodeltogenerateasetofimagescorrespondingtothetestprompts. Then,we
+use the fine-tuned InceptionV3 to extract feature vectors from both the generated images and the real ground-truth
+images,andfinallycomputetheFIDscore.
+Content Fidelity: This metric evaluates the alignment between the generated image and the input text prompt using
+twodistinctscores.
+• CLIP-T:Thisscoremeasuressemanticconsistency. Weutilizetheofficialpre-trainedweightsoftheCLIPViT-
+L/14model(Radfordetal.,2021)withoutanyfine-tuning. Thecomputationinvolvesasimpleforwardpassto
+extractembeddingsfromthegeneratedimageandthetextprompt,followedbyacosinesimilaritycalculation:
+CLIP-T=cos(E (I ),E (T ))
+I gen T prompt
+• DINO-I:Thisscoreassesseshigh-levelvisualfeaturealignment. Similarly,weusetheofficialpre-trainedDI-
+NOv2ViT-g/14model(Zhangetal.,2022)withoutfine-tuningtoextractembeddingsfromboththegenerated
+imageanditsreal-worldcounterpart,thencomputetheircosinesimilarity:
+DINO-I=cos(E (I ),E (I ))
+D gen D real
+LayoutConsistency:ThismetricusesexpertmodelstrainedontheTerraGentrainingsettoevaluatelayoutadherence.
+AllexpertmodelsweretrainedonanNVIDIAGeForceRTX4090GPUuntilconvergence.
+• ForObjectDetection,wefine-tuneaYOLOv8-detmodel(Jocheretal.,2023)fromCOCOpre-trainedweights.
+Thismodelpredictsboundingboxesongeneratedimages,whicharethenevaluatedusingmAPandAP .
+50
+• ForSegmentation,wetrainaYOLOv8-segmodel(Jocheretal.,2023)onthecorrespondingTerraGentraining
+splits. Themodelgeneratessegmentationmasks,andtheiraccuracyismeasuredagainstthegroundtruthusing
+PixelAccuracy(Acc)andmeanIntersectionoverUnion(mIoU).
+E Downstream Task Enhancements Implementation Details
+General Training Configura-
+tion. All downstream models, ObjectDetection Segmentation-basedTasks
+including Faster R-CNN (Ren, Dataset:NWPUVHR-10(Chengetal.,2014) SemanticSegmentation
+Categories: Dataset:DroneDeploy(DroneDeploy,2019)
+2015), Oriented R-CNN (Xie
+airplane, ship, storage tank, baseball diamond, tennis Categories:background,vegetation,water,building
+et al., 2021b), SegFormer (Xie court,basketballcourt,groundtrackfield,harbor,bridge, BuildingExtraction
+etal.,2021a),andU-Net(Ron- vehicle Dataset:Mass.Buildings(Mnih,2013a)
+neberger et al., 2015), were
+RoadExtraction
+trained on NVIDIA GeForce Dataset:RoadNet(Liuetal.,2018)
+RTX 4090 GPUs. To en-
+FloodDetection
+sure a fair comparison, all ex-
+Dataset:FloodNet(Rahnemoonfaretal.,2021)
+periments followed a consis-
+tent protocol, which included Table8: Datasetsandcategoriesusedinfew-shotgeneralizationexperiments.
+an early stopping mechanism
+thathaltedtrainingafter10epochswithoutvalidationlossimprovement. Eachmodelwasinitializedfromthesame
+officialpre-trainedweightsineveryexperimentalrun.
+Baseline Dataset Configurations. We designed three distinct settings to comprehensively validate our data en-
+hancementcapabilities. Thebaselinesamplecountsforeachtaskineachsettingaredetailedbelow:
+• In-Domain Setting: The baseline for Object Detection utilized 2,000 samples from our proposed dataset’s
+trainingsplit. Forothertasks,thesplitsweresmaller:500samplesforFloodDetection,and1,000sampleseach
+forSemanticSegmentation,Building,andRoadExtraction.
+17
+• Few-ShotSetting: Tosimulateadata-scarceenvironment,weusedspecializedpublicdatasetswithastandard-
+ized100/50/50train/validation/testsplit. ThedatasetsandcategoriesusedaredetailedinTable8.
+• SettingforTransformedLayouts: Fortheexperimentsinvolvingtransformedlayouts, weleveragedalarger
+scaleofourproposeddatasettoestablishthebaselines.Thisinvolvedusing5,860samplesforObjectDetection,
+3,500forSemanticSegmentation,1,000forFloodDetection,and8,000eachforBuildingandRoadExtraction.
+Enhancement Data Generation. For all scenarios, synthetic data was added in multiples (1x, 2x, etc.) of the
+baselinetrainingsetsize.
+• For in-domain and few-shot enhancement, synthetic images were generated using the original layouts from
+theirrespectivetrainingsets.
+• For enhancement with transformed layouts, the layouts from our proposed dataset were first modified by a
+varietyofgeometrictransformationsbeforebeingusedforgeneration.Visualexamplesofthesetransformations,
+whichincluderotation,flipping,scaling,andshearing,areshowninFigure6.
+Figure 6: Visual examples of geometric transformations for data augmentation on bounding box (top row) and seg-
+mentationmask(bottomrow)layouts.
+18

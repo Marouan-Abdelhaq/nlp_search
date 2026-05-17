@@ -1,0 +1,572 @@
+Introduction à l’algorithmique et à la
+programmation
+Cours 1
+Anthony Labarre
+UniversitéGustaveEiffel
+Avant de commencer
+InstallezPython3(etpas2):
+installezlepackagepython3
+téléchargezladernièreversion(normalement:3.8.3)sur
+https://www.python.org/
+Attention:sousWindows,suivezleprogrammed’installationmaisajoutez
+pythonàlavariablePATH!
+Sanscela,vousnepourrezpastaperpythondansleterminal.
+2/37
+Aspects pratiques
+Organisation :
+I
+10 séances de 2h de cours / TD
+I
+12 séances de 2h de TP
+Evaluation :
+I
+une note de TP : vous rendez chaque TP, tous seront
+notés
+I
+un projet de programmation
+I
+un examen
+Ressources :
+I
+http://igm.univ-mlv.fr/~alabarre/teaching.php
+I
+une page sur l’intranet de l’UPEM (voir TPs)
+3/37
+Plan d’aujourd’hui
+Variables, types et opérations
+Instructions et blocs
+Instruction conditionnelle (if)
+4/37
+Qu’est-ce que la programmation?
+Programmer : (verbe transitif) “Écrire les pro-
+grammes informatiques correspondant à l’algo-
+rithme de résolution d’un problème” (Larousse),
+fractionner un problème en instructions codifiées
+acceptables par la machine.
+compilation
+idée(s) code source exécutable
+interpréteur
+5/37
+Pourquoi un langage?
+I
+L’ordinateur ne comprend que le langage binaire;
+I
+tropdifficilepourleshumains(engénéral);
+I
+pascompatibled’unemachineàl’autre!
+...010101101101 Est-ce que 210 et
+110101100010... 1024 sont égaux?
+CCPPUU 2 ** 10 == 1024 hhuummaaiinn
+True
+I
+Il nous faut donc un langage commun pour se comprendre
+(Python, C, Java, ...);
+6/37
+Introduction sur un exemple
+Un exemple de programme en Python 3 :
+if __name__ == '__main__':
+date = input(
+"Bonjour! Quelle est votre date "
+"de naissance (jj/mm/aaaa)? "
+)
+jour_naissance = int(date.split("/")[0])
+mois_naissance = int(date.split("/")[1])
+annee_naissance = int(date.split("/")[2])
+age = 2020 - annee_naissance
+if mois_naissance > 9:
+age = age - 1
+if mois_naissance == 9 and jour_naissance > 5:
+age = age - 1
+print("Vous avez", age, "ans")
+C’est un programme un peu avancé::: mais essayons de
+comprendre ce qu’il fait.
+7/37
+La coloration syntaxique
+if __name__ == '__main__':
+date = input(
+"Bonjour! Quelle est votre date "
+"de naissance (jj/mm/aaaa)? "
+)
+jour_naissance = int(date.split("/")[0])
+mois_naissance = int(date.split("/")[1])
+annee_naissance = int(date.split("/")[2])
+age = 2020 - annee_naissance
+if mois_naissance > 9:
+age = age - 1
+if mois_naissance == 9 and jour_naissance > 5:
+age = age - 1
+print("Vous avez", age, "ans")
+I
+Certains mots sont en couleurs : c’est la coloration
+syntaxique;
+I
+Elle varie selon l’éditeur utilisé;
+I
+Elle rend le programme plus lisible.
+8/37
+La coloration syntaxique
+I
+La couleur d’un mot indique sa catégorie; ici, on a entre
+autres :
+I
+desfonctionsintégréesdePythonenvert:
+input=entrée,int=entier
+I
+desmots-clésdePythonenvertgras:
+if=si,print=imprimer(afficher)
+I
+desopérateursenmauvegras:
+and=et
+I
+deschaînesdecaractèresenrouge:
+"Quelle est votre date de naissance?"
+.
+.
+.
+I
+Nos variables ne sont pas coloriées;
+9/37
+L’indentation
+ILeslignesnecommencent
+if__name__=='__main__':
+date=input( pastoutesaumêmeendroit.
+"Bonjour!Quelleestvotredate"
+"denaissance(jj/mm/aaaa)?"
+) ICen’estpasundétail!
+jour_naissance=int(date.split("/")[0])
+mois_naissance=int(date.split("/")[1])
+a
+a
+n
+g
+n
+e
+ee
+=
+_n
+2
+a
+0
+i
+2
+s
+0
+sa
+-
+nc
+a
+e
+nn
+=
+ee
+i
+_
+n
+n
+t
+a
+(
+i
+d
+s
+a
+s
+t
+a
+e
+n
+.
+c
+s
+e
+plit("/")[2]) ILepositionnement(ondit
+ifmois_naissance>9:
+age=age-1 l’indentation)deslignesest
+ifmois_naissance==9andjour_naissance>5:
+age=age-1 importantpourleursignification.
+print("Vousavez",age,"ans")
+Modifierl’indentationmodifielecomportementdu
+programme—etpeutmêmel’empêcherdefonc-
+tionner.
+10/37
+La structure d’un programme Python
+Les programmes Python doivent être structurés (cf.
+modele.py sur la page du cours) :
+Modèle
+def main():
+# mon code ici
+if __name__ == "__main__":
+main()
+On expliquera pourquoi plus tard.
+Configurez votre éditeur pour qu’il insère au-
+tomatiquement ce texte dans vos nouveaux fi-
+chiers.
+11/37
+En résumé
+I
+On a vu un exemple avancé illustrant dans les grandes
+lignes à quoi ressemble un programme;
+I
+On a vu
+I
+queleslignessontdesinstructionsàeffectuer,dans
+l’ordre;
+I qu’onpeutstockerdesvaleurs(dansdate,age,...);
+I qu’onpeuteffectuerdescalculs(age - 1);
+I qu’onpeututiliserdesfonctionsdePython(print,input,
+int);
+I
+quelastructureetl’indentationimportent;
+I qu’onpeutexécuterleprogrammefichier.pyavecla
+commandepython3 fichier.py
+I
+...
+I
+Dans la suite, on va apprendre pas à pas et dans le détail
+toutes ces notions (et bien d’autres), afin que vous
+maîtrisiez les bases de la programmation
+12/37
+Python pas à pas
+Variables, types et opérations
+13/37
+Types de valeurs
+I
+Les valeurs de base possèdent un type;
+I
+Le type va notamment déterminer ce qui se passe quand
+on fait une opération sur des valeurs;
+Les principaux types (on en verra d’autres) sont :
+Type EnPython Exemples
+entier int 12,-4,123545,...
+flottant float 3.14159,-1.5,12.,4.56e12,...
+booléen bool True(vrai)ouFalse(faux)
+indéfini,rien None None
+chaînedecaractères str 'bonjour','IUT info',...
+Les majuscules/minuscules sont impor-
+tantes :
+True 6= true
+14/37
+Opérations sur les nombres
+I
+Les opérations mathématiques que vous connaissez
+existent en Python;
+I
+Le type du résultat dépend du type des données de
+départ :
++, (cid:0), (cid:3) int float
+int int float
+float float float
+I Attention : la division (=) donne toujours un float;
+I
+On a aussi :
+math python exemple
+x mod y x % y 19 % 4 ! 3
+xy x ** y 3 ** 3 ! 27
+bx=yc x // y 19 // 4 ! 4
+15/37
+Opérations sur les booléens
+I
+On a les opérations logiques sur les booléens :
+p q p and q p or q not p
+False False False False True
+False True False True True
+True False False True False
+True True True True False
+I
+Les comparaisons produisent des booléens :
+math python math python
+a = b? a == b a 6= b? a != b
+a (cid:20) b? a <= b a < b? a < b
+a (cid:21) b? a >= b a > b? a > b
+16/37
+Opérations sur les chaînes de caractères
+I
+Seuls+et*marchentsurleschaînes;
+I
++réaliselaconcaténationdedeuxchaînes:
+'IUT' + 'CHAMPS'!'IUTCHAMPS'
+I *concatènenexemplairesdelachaîne:
+'IUT' * 3!'IUTIUTIUT'
+I Lescomparaisons(<,<=,...)fonctionnentetsebasentsur
+l’ordrealphabétique('a...' < 'b...' < 'c...' < ...):
+'IUT' < 'CHAMPS'!False
+I
+Ilexistebeaucoupd’autresopérationssurleschaînes;
+I
+Etaussipleindefonctionsmathématiques(cos,log,...);
+17/37
+Variables
+I
+Unevariableestunnomquiréférenceunevaleurenmémoire;
+I
+Onpeuts’enservirdanslescalculs;
+I
+Ellealemêmetypequelavaleurqu’elleréférence;
+Affectation
+I
+L’affectationd’unevariablelieunnomàunevaleur;
+I
+Lasyntaxe:nom=expression,oùexpressionestunevaleur
+ouuncalculquiproduitunevaleur;
+18/37
+Étapes de l’affectation
+x = 40 + 2
+1. Oncommenceparcalculerle
+membredroit,iciontrouve42 42
+2. Ensuiteoncréelenompourx
+(saufs’iladéjàétécréé) x 42
+3. Enfinonrelielavariableàsa
+x 42
+valeur
+Encasderéaffectation,lelien 42
+(cid:2)
+d’avantestperdu:x = -6.5
+x
+-6.5
+19/37
+Affectation 6= égalité!
+Cen’estpasdutoutle=desmathématiques.Ilfautle
+lirecomme“prendlavaleur”:x=x+1
+Exemple
+>>> x = 3
+>>> y = x
+>>> x = x + 2
+>>> x
+5
+>>> y
+3
+La situation sera différente pour les “objets modifiables” qu’on
+verra plus tard.
+20/37
+Nommage
+Certaines règles doivent être respectées pour nommer les
+variables (et les fonctions qu’on verra plus tard) :
+I
+caractères autorisés : abc..., ABC..., 0123..., _;
+I
+caractères interdits : tout le reste (et é, è, à, ç, ...);
+I
+attention : les chiffres sont permis, mais pas au début!
+exemple _ex2 Ex2mpl1 2020IUT
+I
+noms interdits : ce qui a déjà été utilisé, ainsi que les mots
+réservés et les fonctions prédéfinies de Python (voir suite);
+21/37
+Mots réservés
+Les mots suivants sont réservés pour le langage :
+and as assert break class continue
+def del elif else except finally
+for from global if import in
+is lambda nonlocal not or pass
+raise return try while with yield
+True False None
+Si votre éditeur affiche le nom de votre variable
+en gras ou en couleur, c’est qu’il s’agit d’un mot
+réservé ) choisissez un autre nom!
+22/37
+Au passage ... input
+date = input(
+"Bonjour! Quelle est votre date "
+"de naissance (jj/mm/aaaa)? "
+)
+I input(str)permetàl’utilisateurderentrerdesvaleurs;
+I
+Ici,onluidemandederentrerunedate;
+I Attention:lafonctioninputrenvoietoujoursdutexte!
+Exemple
+>>> x = input("Entrez un nombre: ")
+Entrez un nombre: 1
+>>> y = input("Entrez un deuxième nombre: ")
+Entrez un deuxième nombre: 3
+>>> print(x, "+", y, "=", x + y)
+1 + 3 = 13
+23/37
+Transtypage (conversion de types)
+I Pour convertir ce que nous donne input en entier, on
+utilise la fonction int;
+I
+On peut donc corriger l’exemple précédent comme ceci :
+Exemple
+>>> x = input("Entrez un nombre: ")
+Entrez un nombre: 1
+>>> y = input("Entrez un deuxième nombre: ")
+Entrez un deuxième nombre: 3
+>>> x = int(x) # conversion de la chaîne x en entier
+>>> y = int(y) # conversion de la chaîne y en entier
+>>> print(x, "+", y, "=", x + y)
+1 + 3 = 4
+I
+Plus généralement :
+I str(valeur)convertitvaleurenchaîne;
+I int(valeur)convertitvaleurenentiersipossible;
+I float(valeur)convertitvaleurenréelsipossible;
+I bool(valeur)convertitvaleurenbooléen;
+24/37
+Quelques exemples
+Voici quelques exemples de conversions :
+int(4.5)!4 int(-4.5)!-4 int('0345')!345
+int('IUT')!erreur float(4)!4. float('4.5')!4.5
+str(4)!'4' str(True)!'True' str(-4.5)!'-4.5'
+bool(4)!True bool(0)!False bool('IUT')!True
+bool(None)!False int('4.5')!erreur
+Remarques importantes :
+I str fonctionne toujours;
+I int et float échouent sur une chaîne qui n’est pas un
+nombre;
+I int échoue sur une chaîne représentant un réel;
+I solution:int(float('4.5'))aulieudeint('4.5');
+I bool donne False si son paramètre équivaut à 0, True
+sinon
+25/37
+La fonction type
+I
+On connaît en général le type des variables qu’on définit
+soi-même;
+I
+Comment faire pour connaître le type des variables qui
+viennent d’ailleurs?
+I On utilise la fonction type;
+Exemple
+>>> type(1.5)
+<class 'float'>
+>>> type(2)
+<class 'int'>
+>>> type(input)
+<class 'builtin_function_or_method'>
+26/37
+TypeError : types incompatibles
+I
+Certains types sont incompatibles : on ne peut pas les
+mélanger dans une même opération;
+I
+Quand ce problème survient, Python provoque une
+exception de type TypeError;
+I
+Cela a pour effet d’arrêter le programme;
+Exemple
+>>> '3' * 2 # ok
+'33'
+>>> '3' + 2 # erreur!
+Traceback (most recent call last):
+File "<stdin>", line 1, in <module>
+TypeError: Can't convert 'int' object to str implicitly
+I
+Si une variable n’a pas le bon type, vous devez la convertir
+(transtypage);
+27/37
+Python pas à pas
+Instructions et blocs
+28/37
+Instructions et séquences d’instructions
+if __name__ == '__main__':
+date = input(
+"Bonjour! Quelle est votre date "
+"de naissance (jj/mm/aaaa)? "
+)
+jour_naissance = int(date.split("/")[0])
+mois_naissance = int(date.split("/")[1])
+annee_naissance = int(date.split("/")[2])
+age = 2020 - annee_naissance
+if mois_naissance > 9:
+age = age - 1
+if mois_naissance == 9 and jour_naissance > 5:
+age = age - 1
+print("Vous avez", age, "ans")
+I
+Les instructions sont exécutées dans l’ordre, de haut en
+bas
+I
+En Python, il n’y a qu’une instruction par ligne
+I
+Le flot d’instructions peut être modifié / redirigé par des
+conditions (if), des boucles (plus tard), ...
+29/37
+Blocs d’instructions
+Certaines instructions sont regroupées en blocs de la façon
+suivante :
+entête du bloc:
+instruction 1 du bloc
+instruction 2 du bloc
+instruction 3 du bloc
+instruction hors bloc
+I
+L’indentation(ledécalage)sefaitaveclatouchetabulation;
+I
+On peut insérer un bloc dans un bloc, un bloc dans un bloc
+dans un bloc, ...
+I
+L’indentation fait partie du langage Python, changer
+l’indentation change la signification du programme
+30/37
+Espaces, pas tabulations!
+Ne mélangez pas tabulations et espaces
+dans l’indentation!!! Configurez votre édi-
+teur pour qu’il remplace les tabulations par
+des espaces.
+Sous Geany :
+31/37
+Python pas à pas
+Instruction conditionnelle (if)
+32/37
+La conditionnelle : le if
+if mois_naissance > 9:
+age = age - 1
+if mois_naissance == 9 and jour_naissance > 5:
+age = age - 1
+print("Vous avez", age, "ans")
+I Dans cet exemple, on teste si mois_naissance > 9;
+I Sic’estlecas,oneffectueleblocquisuit,oùagechute
+d’uneunité
+I On teste ensuite si mois_naissance == 9 ET si
+jour_naissance > 5;
+I Sic’estlecas,onretireuneunitéàage
+I
+Dans tous les cas, on termine par afficher l’âge calculé;
+33/37
+La conditionnelle : le if
+La forme la plus simple est
+# début
+if expression: non
+début expressionvraie? suite
+# instruction 1 du if
+# instruction 2 du if oui
+# ... blocif
+# suite
+I
+expressionestuneexpressionquirenvoieunbooléen,qui
+est donc évaluée à True ou False
+I les instructions du bloc du if sont effectuées uniquement
+si l’expression est évaluée à True
+I
+dans tous les cas, le programme reprend à l’instruction
+après if
+34/37
+Conditions multiples
+I L’expression du if peut contenir plusieurs conditions;
+if jour == "mardi" and heure > 16 or minutes < 30:
+I
+Les conditions sont évaluées dans l’ordre de lecture;
+I
+Python ne teste pas tout si le résultat est connu d’avance :
+1 < 2 or x / 0 == 3(cid:0)!True (mêmesixn’existepas)
+x / 0 == 3 or 1 < 2(cid:0)!erreur
+35/37
+Attention : Python 2 6= Python
+3
+Les deux versions ne sont pas
+compatibles!
+36/37
+Quelques liens utiles
+Indispensable
+I Télécharger Python : http://www.python.org/
+Editeurs
+Les éditeurs suivants rendent le développement Python plus
+facile; choisissez celui que vous préférez :
+Geany https://www.geany.org/
+PyCharm https://www.jetbrains.com/pycharm/
+Notepad++ https://notepad-plus-plus.org/
+Kate http://kate-editor.org/
+SublimeText https://www.sublimetext.com/
+Autres
+I Visualiser Python : http://pythontutor.com/
+37/37

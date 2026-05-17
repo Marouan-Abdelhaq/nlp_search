@@ -1,0 +1,281 @@
+Generative AI for Software Metadata: Overview of the
+Information Retrieval in Software Engineering Track
+at FIRE 2023
+SrijoniMajumdar1,2,*,†, SoumenPaul1,*,†, DebjyotiPaul8, AyanBandyopadhyay4,
+SamiranChattopadhyay7, ParthaPratimDas1, PaulDClough4,5 and
+PrasenjitMajumder3,6
+1IITKharagpur,West-Bengal,India
+2UniversityofLeeds,UK
+3TCGCREST,West-Bengal,India
+4TPXimpactLondon,UK
+5SheffieldUniversity,Sheffield,UK
+6DA-IICTGandhinagar,Gujarat,India
+7JadavpurUniversity,West-Bengal,India
+8IndianStatisticalInstitute,KolkataIndia
+Abstract
+TheInformationRetrievalinSoftwareEngineering(IRSE)trackaimstodevelopsolutionsforautomated
+evaluationofcodecommentsinamachinelearningframeworkbasedonhumanandlargelanguage
+modelgeneratedlabels.Inthistrack,thereisabinaryclassificationtasktoclassifycommentsasuseful
+andnotuseful.Thedatasetconsistsof9048codecommentsandsurroundingcodesnippetpairsextracted
+fromopensourcegithubCbasedprojectsandanadditionaldatasetgeneratedindividuallybyteams
+usinglargelanguagemodels.Overall56experimentshavebeensubmittedby17teamsfromvarious
+universitiesandsoftwarecompanies. Thesubmissionshavebeenevaluatedquantitativelyusingthe
+F1-Scoreandqualitativelybasedonthetypeoffeaturesdeveloped,thesupervisedlearningmodelused
+andtheircorrespondinghyper-parameters.Thelabelsgeneratedfromlargelanguagemodelsincrease
+thebiasinthepredictionmodelbutleadtolessover-fittedresults.
+Keywords
+bert,GPT-2,StanfordPOSTagging,neuralnetworks,abstractsyntaxtree
+ForumforInformationRetrievalEvaluation(FIRE)-2023, IndianStatisticalInstitute, Kolkata, India, 15𝑡ℎ −13𝑡ℎ
+December,2023
+*Correspondingauthor.
+†Theseauthorscontributedequally.
+$majumdar.srijoni@gmail.com(S.Majumdar);soumenpaul165@gmail.com(S.Paul);debjyoti93.paul@gmail.com
+(D.Paul);bandyopadhyay.ayan@gmail.com(A.Bandyopadhyay);samiran.chattopadhyay@jadavpuruniversity.in
+(S.Chattopadhyay);ppd@cse.iitkgp.ac.in(P.P.Das);p.d.clough@sheffield.ac.uk(P.D.Clough);
+prasenjit.majumder@gmail.com(P.Majumder)
+©2023Copyrightforthispaperbyitsauthors.UsepermittedunderCreativeCommonsLicenseAttribution4.0International(CCBY4.0).
+CEURWorkshopProceedings(CEUR-WS.org)
+CWPr Eoo UrckR esehdoinpgshISttSpN:// c1e6u1r3-w-0s0.o7r3g
+3202
+tcO
+72
+]ES.sc[
+1v47330.1132:viXra
+1. Introduction
+Assessingcommentqualitycanhelptode-cluttercodebasesandsubsequentlyimprovecode
+maintainability. Comments can significantly help to read and comprehend code if they are
+consistentandinformative.
+Theperceptionofqualityintermsofthe’usefulness’oftheinformationcontainedincom-
+mentsisrelativeandhenceisperceiveddifferentlybasedonthecontext.Bosuetal.[1]attempted
+to assess code review comments (logged in a separate tool) in the context of their utility in
+helpingdeveloperswritebettercodethroughadetailedsurveyatMicrosoft. Asimilarquality
+assessmentmodelisimportanttoanalysethetypeofsourcecodecommentsthatcanhelpfor
+standardmaintenancetasksbutislargelymissing. Majumdaretal.[2]proposedacomment
+qualityevaluationframeworkwhereincommentswereassessedas’useful’,’partiallyuseful’,
+and’notuseful’basedonwhethertheyincreasethereadabilityofthesurroundingcodesnip-
+pets. Theauthorsanalysecommentsforconceptsthataidincodecomprehensionandalsothe
+redundanciesorinconsistenciesoftheseconceptswiththerelatedcodeconstructsinamachine
+learningframeworkforanoverallassessment. Theconceptsarederivedthroughexploratory
+studieswithdevelopersacross7companiesandfromalargercommunityusingcrowd-sourcing.
+The first edition of the IRSE track of FIRE 2023, extends the work in [2] and empirically
+investigatescommentqualitywithalargersetofmachinelearningsolversandfeatures. The
+taskisbasedonthequalityevaluationofcommentsintotwoclusters-’useful’and’notuseful’.
+A ’useful’ comment (refer Table 1) contains relevant concepts that are not evident from the
+surroundingcodedesign,andthusincreasesthecomprehensibilityofthecode. Thesuitability
+ofanalysingcommentqualityusingvariousvectorspacerepresentationsofcodeandcomment
+pairsalongwithstandardtextualfeaturesandcodecommentcorrelationlinksareevaluated.
+Table1
+UsefulandNot-Usefulcommentsincontextofcodecomprehension
+# Comment Code Label
+1 /*usespng_calloc /*usespng_callocdefinedinpngriv.h*/ U
+defined in pn- PNG_FUNCTION(png_const_structrp png_ptr)
+griv.h*/
+{ if (png_ptr == NULL || info_ptr == NULL)
+return;
+png_calloc(png_ptr); ...}
+2 /* serial bus is static int bus_reset ( . . . ) /* serial bus NU
+lockedbeforeuse is locked before use*/
+*/ { .. update_serial_bus_lock (bus * busR); }
+3 //integervariable int Delete\_Vendor; // integer variable NU
+U:Useful;NU:NotUseful
+The 2023 IRSE track extends this challenge to understand the feasibility of using silver
+standard quality labels generated from the Large Language Models (LLMs) and understand
+howitaugmentstheclassificationmodelintermsofprediction. Developingthegoldindustry
+standardforanalysingtheusefulnessofcommentsthatcanberelevantforcodecomprehension
+inlegacysystemscanbechallengingandtime-consuming. However,toscalethemodelanduse
+itondifferentlanguages,itisimportanttogeneratemoredatawhichweattempttodowith
+the large language models. The performance of these modes in the context of understating
+the relations between code and comment can provide an approximation of the data quality
+generatedandhowitcanbeusedtoscaletheexistingclassificationmode. Thisapproachcan
+alsobefurthergeneralisedtoanyclassificationmodelbasedonsoftwaremetadata.
+2. Related Work
+Softwaremetadataisintegraltocodemaintenanceandsubsequentcomprehension.Asignificant
+numberoftools[3,4,5,6,7,8]havebeenproposedtoaidinextractingknowledgefromsoftware
+metadatalikeruntimetracesorstructuralattributesofcodes.
+In terms of mining code comments and assessing the quality, authors [9, 10, 11] compare
+thesimilarityofwordsincode-commentpairsusingtheLevenshteindistanceandlengthof
+commentstofilterouttrivialandnon-informativecomments. Rahmanetal.[12]detectuseful
+andnon-usefulcodereviewcomments(logged-inreviewportals)basedonattributesidentified
+fromasurveyconductedwithdevelopersofMicrosoft[1]. Majumdaretal.[2,13]proposeda
+frameworktoevaluatecommentsbasedonconceptsthatarerelevantforcodecomprehension.
+Theydevelopedtextualandcodecorrelationfeaturesusingaknowledgegraphforsemantic
+interpretation of information contained in comments. These approaches use semantic and
+structuralfeaturestodesignfeaturestosetupapredictionproblemforusefulandnotuseful
+commentsthatcanbesubsequentlyintegratedintotheprocessofdeclutteringcodebases.
+With the advent of large language models [14], it is important to compare the quality as-
+sessment of code comments by the standard models like GPT 3.5 or llama with the human
+interpretation. TheIRSEtrackatFIRE2023extendstheapproachproposedin[2]toexplorevar-
+iousvectorspacemodels[15]andfeaturesforbinaryclassificationandevaluationofcomments
+inthecontextoftheiruseinunderstandingthecode. Thistrackalsocomparestheperformance
+ofthepredictionmodelwiththeinclusionoftheGPT-generatedlabelsforthequalityofcode
+andcommentsnippetsextractedfromopen-sourcesoftware.
+3. IRSE Track Overview and Data Set
+Thefollowingsectionoutlinesthetaskdescriptionsandthecharacteristicsofthedataset.
+3.1. TaskDescription
+CommentClassification: AbinaryclassificationtasktoclassifysourcecodecommentsasUseful
+orNotUsefulforagivencommentandassociatedcodepairasinput.
+: Acodecommentwithsurroundingcodesnippet(writteninC)
+Input
+:Alabel(UsefulorNotUseful)thatcharacteriseswhetherthecommenthelpsdevelopers
+Output
+comprehendtheassociatedcode
+Thereforeinthisclassificationtask,theoutputisbasedonwhethertheinformationcontained
+inthecommentisrelevantand wouldhelptocomprehendthesurroundingcode,i.e.,itisuseful.
+Useful: Commentshavesufficientsoftwaredevelopmentconcept→CommentisRelevant,
+andtheseconceptsarenotmostlypresentinthesurroundingcode→CommentisnotRedundant,
+hencethecommentisUseful
+NotUseful: Commentshavesufficientsoftwaredevelopmentconcept→CommentisRele-
+vant,andtheseconceptsaremostlypresentinthesurroundingcode→CommentisRedundant,
+hencethecommentisNotUseful
+Itmayalsobethecasethatcommentsdonotcontainsufficientsoftwaredevelopmentconcepts
+→CommentisNotRelevant,hencethecommentisNotUseful.
+Itislefttotheparticipantstodecideonthethresholdvalueforhowmanyconceptsretrieved
+make a comment relevant or how many matches with surrounding code make a comment
+redundant.
+Thenotionofrelevantcommentsreferstothosethatdevelopersperceiveasimportantin
+comprehendingtheassociatedorsurroundinglinesofcode. Theseconceptsarerelatedtothe
+outlineofthealgorithm,data-structuredescriptions,mappingtouserinterfacedetails,possible
+exceptions,versiondetails,etc. Inthebelowexamples,thecommentshighlightusefuldetails
+abouttheinputdatatothefunction,whichisnotevidentfromtheassociatedcodeitself.
+Dataset: FortheIRSEtrack,weuseasetof9048comments(fromGithub)withcomment
+text,surroundingcodesnippets,andalabelthatspecifieswhetherthecommentisusefulornot.
+SampledatahasbeencharacterisedinTable1.
+• Thedevelopmentdatasetcontains8048rowsofcommenttext,surroundingcodesnippets,
+andlabels(UsefulandNotuseful).
+• Thetestdatasetcontains1,000rowsofcommenttext,surroundingcodesnippets,and
+labels(UsefulandNotuseful).
+4. Participation and Evaluation
+IRSE 2023 received a total of 56 experiments from 17 teams for the two tasks. As this track
+isrelatedtosoftwaremaintenance,wereceivedparticipationfromcompanieslikeMicrosoft,
+Amazon,AmercianExpress,BoschResearchalongwithseveralresearchlabsofeducational
+institutes.
+ThevariousteamswiththedetailsoftheirsubmissionsarecharacterisedinTable2.
+EvaluationProcedure: Candidatessubmitedthepredictionmetrics(precision,recall,F1-Score)
+fotheclassificationmodelwiththeGoldlabelsdataset(referredtoastheSeedDataset)and
+combineddataset(Seed+LLMgeneratedlabels-Silverlablesdataset). ThedifferenceintheF1
+scorewasevaluatedbyus.
+Features: Apartfromevaluatingthepredictionmetrics,weanalysedthetypesoffeaturesthe
+teamshaveusedtodevisethemachinelearningpipeline. Theteamshaveperformedroutine
+pre-processingandhaveretainedthesignificantwordsorlettersonlyforboththecodeand
+commentpairs. Further,someoftheteamshavealsousedmorphologicalfeaturesofacomment
+Table2
+CharacterizationsoftheSubmissions:testDataPredictions
+Seeddata Seeddata+LLM-generateddata
+Affiliation
+Precision Recall F1Score Precision Recall F1Score
+0.8326 0.8626 0.8473 0.844 0.8682 0.8559
+DSTI,France 0.8948 0.8738 0.884 0.9 0.8707 0.885
+0.8807 0.8822 0.8813 0.8871 0.8839 0.8854
+0.8 0.8 0.8 0.8021 0.81 0.73
+SSN-1(RAM)
+0.72 0.71 0.74 0.7 0.73 0.74
+0.788 0.7363 0.7613 0.89 0.8802 0.8846
+0.7994 0.7994 0.7994 0.89 0.8795 0.8841
+SSN-2(Aloy) 0.7993 0.9352 0.8619 0.839 0.9199 0.8776
+0.7842 0.8453 0.8136 0.8154 0.8823 0.8475
+0.7572 0.8637 0.807 0.7785 0.9003 0.835
+IIT(ISM)
+0.92 0.96 0.94 0.92 0.97 0.97
+Dhanbad
+0.7916 0.8446 0.8172 0.7886 0.847 0.8167
+0.763 0.8696 0.813 0.7655 0.8724 0.8154
+SSN-3(Black)
+0.705 0.9387 0.8052 0.6994 0.9041 0.7887
+0.7292 0.856 0.7875 0.7374 0.8533 0.7911
+Microsoft-
+0.7902 0.8016 0.7949 0.7908 0.8014 0.7952
+AmericanExpress
+DDU-1 0.895 0.891 0.893 0.890 0.894 0.892
+DDU-2 0.875 0.872 0.874 0.870 0.875 0.880
+IITKGP-1 0.8283 0.804 0.8141 0.8322 0.8086 0.8185
+SRM 0.8283 0.804 0.8141 0.8178 0.7906 0.8013
+IITKGP-2 0.78 0.85 0.8 0.77 0.85 0.8
+DA-IICT 0.81 0.8 0.8 0.58 0.58 0.58
+IITGoa 0.6087 0.6526 0.6321 0.6114 0.6598 0.6403
+TCS 0.778 0.753 0.74 0.645 0.6598 0.650
+IITKGP-3 0.631 0.645 0.639 0.6114 0.6598 0.631
+Amazon 0.659 0.672 0.666 0.656 0.635 0.645
+likealength,significantwordsratio,partsofspeechcharacteristics,oroccurrenceofwordsfrom
+anenumeratedsetastextualfeatures. Tocorrelatecodeandcommentanddetectredundancies,
+theteamsmostlyusedgrep-likestringmatchtofindsimilarwords.
+VectorSpaceRepresentations: Codeandcommentsbelong-todifferentsemanticgranularity
+whichisunifiedbyavectorspacerepresentation.Theparticipantshaveusedvariouspre-trained
+embeddingstogeneratevectorsforthewordslikethosebasedononehotencoding,tf-idfbased,
+word2vecorcontextawarelikeELMoandBERT.Eachoftheemployedembeddingmodelsare
+trainedorfinetunedusingsoftwaredevelopmentcorpora.
+Results: Theparticipantsareabletoachieveaslightincrease(intherangeof2%-4%)inthe
+testpredictionmetricsandinmanycasestheperformancedecrease. However,theincreasein
+biasduetotheincorporationofsilverstandarddatareducestheover-fittingofthemodels.
+Table3
+CharacterizationsoftheLLMGenerateddatasets
+Teamname Totalentry Usefulentry Notusefulentry
+DSTI,France 421 412 9
+SSN-1(RAM) 1238 740 497
+SSN-2(Alloy) 1510 24 1486
+IIT(ISM)Dhanbad 199 182 17
+SSN3(Black) 738 80 658
+Microsoft-AmericanExpress 233 92 141
+DDU-1 8588 4649 3939
+DDU-2 332 311 21
+IITKGP-1 334 309 25
+SRM 217 196 21
+IITKGP-2 263 130 133
+DA-IICT 150 65 85
+IIT-Goa 543 460 83
+TCS 282 61 221
+IITKGP-3 570 450 120
+IITKGP-3 412 345 67
+5. Conclusions
+TheIRSE2023trackempiricallyinvestigatesthefeasibilityofaugmentingexistingclassification
+modelsusingdatasetswithlabelsgeneratedfromLLM’s. Atotalof17teamsparticipatedand
+submitted 56 experiments that used various types of machine learning models, embedding
+spaces, features and different LLMs to generate data. The LLM-generated labels reduce the
+overfittingoftheoverallclassificationmodelandalsoimprovetheF1scorewhenthecombined
+data from all participants were used to augment the existing data with gold standard labels
+fromindustrypractitioners.
+References
+[1] A.Bosu,M.Greiler,C.Bird, Characteristicsofusefulcodereviews: Anempiricalstudyat
+microsoft, WorkingConferenceonMiningSoftwareRepositories,IEEE,2015,pp.146–156.
+[2] S.Majumdar,A.Bansal,P.P.Das,P.D.Clough,K.Datta,S.K.Ghosh,Automatedevaluation
+ofcommentstoaidsoftwaremaintenance, JournalofSoftware: EvolutionandProcess34
+(2022)e2463.
+[3] S. Majumdar, S. Papdeja, P. P. Das, S. K. Ghosh, Smartkt: a search framework to assist
+programcomprehensionusingsmartknowledgetransfer, in: 2019IEEE19thInternational
+ConferenceonSoftwareQuality,ReliabilityandSecurity(QRS),IEEE,2019,pp.97–108.
+[4] N.Chatterjee,S.Majumdar,S.R.Sahoo,P.P.Das, Debuggingmulti-threadedapplications
+usingpin-augmentedgdb(pgdb), in: Internationalconferenceonsoftwareengineering
+researchandpractice(SERP).Springer,2015,pp.109–115.
+[5] S.Majumdar,N.Chatterjee,S.R.Sahoo,P.P.Das,D-cube:toolfordynamicdesigndiscovery
+frommulti-threadedapplicationsusingpin, in: 2016IEEEInternationalConferenceon
+SoftwareQuality,ReliabilityandSecurity(QRS),IEEE,2016,pp.25–32.
+[6] S.Majumdar,N.Chatterjee,P.P.Das,A.Chakrabarti,Amathematicalframeworkfordesign
+discoveryfrommulti-threadedapplicationsusingneuralsequencesolvers, Innovationsin
+SystemsandSoftwareEngineering17(2021)289–307.
+[7] S.Majumdar,N.Chatterjee,P.PratimDas,A.Chakrabarti, Dcube_nndcubenn: Tool
+for dynamic design discovery from multi-threaded applications using neural sequence
+models, AdvancedComputingandSystemsforSecurity: Volume14(2021)75–92.
+[8] M.P.O’brien,Softwarecomprehension–areviewandresearchdirection,TechnicalReport
+TechnicalReport,DepartmentofComputerScience&InformationSystemsUniversityof
+Limerick,Ireland,2003.
+[9] D.Steidl,B.Hummel,E.Juergens,Qualityanalysisofsourcecodecomments, International
+ConferenceonProgramComprehension(ICPC),IEEE,2013,pp.83–92.
+[10] S.Majumdar, A.Bandyopadhyay, P.P.Das, P.Clough, S.Chattopadhyay, P.Majumder,
+Canwepredictusefulcommentsinsourcecodes?-analysisoffindingsfrominformation
+retrievalinsoftwareengineeringtrack@fire2022, in: Proceedingsofthe14thAnnual
+MeetingoftheForumforInformationRetrievalEvaluation,2022,pp.15–17.
+[11] S.Majumdar,A.Bandyopadhyay,S.Chattopadhyay,P.P.Das,P.D.Clough,P.Majumder,
+Overviewoftheirsetrackatfire2022: Informationretrievalinsoftwareengineering, in:
+ForumforInformationRetrievalEvaluation,ACM,2022.
+[12] M.M.Rahman,C.K.Roy,R.G.Kula, Predictingusefulnessofcodereviewcommentsusing
+textualfeaturesanddeveloperexperience, InternationalConferenceonMiningSoftware
+Repositories(MSR),IEEE,2017,pp.215–226.
+[13] S. Majumdar, S. Papdeja, P. P. Das, S. K. Ghosh, Comment-mine - a semantic search
+approachtoprogramcomprehensionfromcodecomments, in: AdvancedComputingand
+SystemsforSecurity,Springer,2020,pp.29–42.
+[14] T. Brown, B. Mann, N. Ryder, M. Subbiah, J. D. Kaplan, P. Dhariwal, A. Neelakantan,
+P.Shyam,G.Sastry,A.Askell,etal., Languagemodelsarefew-shotlearners, Advancesin
+neuralinformationprocessingsystems33(2020)1877–1901.
+[15] S.Majumdar,A.Varshney,P.P.Das,P.D.Clough,S.Chattopadhyay, Aneffectivelow-
+dimensional software code representation using bert and elmo, in: 2022 IEEE 22nd
+InternationalConferenceonSoftwareQuality,ReliabilityandSecurity(QRS),IEEE,2022,
+pp.763–774.

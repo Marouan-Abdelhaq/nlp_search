@@ -1,0 +1,597 @@
+IntroductionauDeepLearning
+Introduction au Deep Learning
+Je´re´mieBigot
+UFMI,InstitutdeMathe´matiquesdeBordeaux-Universite´deBordeaux
+MasterMAS-MSS&CMIISI
+Universite´ deBordeaux
+IntroductionauDeepLearning
+Classification d’images par Deep Learning ILSVRC
+Challenge (2010)1
+apprentissage:1.2milliond’imageslabellise´es(1000classes)
+test:150000images
+1. Krizhevsky,A.,Sutskever,I.,andHinton,G.E.(2012)
+IntroductionauDeepLearning
+Ce cours : un bref aperc¸u du Deep Learning
+Introductionauxprincipesdesre´seauxdeneurones(telsque
+formule´sde`slesanne´es50)
+Re´seauxdeneuronesprofonds(apre`s2012):de´finitionet
+me´thodesd’infe´rence
+Miseenoeuvrepratiquesurdesexemplestre`ssimples:facilite´
+d’utilisationetre´sultatsspectaculairescommeraisonsdu
+succe`s?
+IntroductionauDeepLearning
+1 Principesdel’apprentissagestatistique(machinelearning)
+2 Re´seauxdeneuronesmulti-couches
+3 Re´seauxdeneuronesconvolutionnels
+IntroductionauDeepLearning
+Principesdel’apprentissagestatistique(machinelearning)
+1 Principesdel’apprentissagestatistique(machinelearning)
+2 Re´seauxdeneuronesmulti-couches
+3 Re´seauxdeneuronesconvolutionnels
+IntroductionauDeepLearning
+Principesdel’apprentissagestatistique(machinelearning)
+Apprentissage statistique
+Proble`mege´ne´rique:e´tantdonne´ unebased’apprentissage
+(X
+i
+,Y
+i
+)1≤i≤n ou`
+X ∈Rd
+i
+Y ∈R(re´gression)ouY ∈{1;2;...;K}(classification)
+i i
+Onsouhaite:
+de´terminerunmode`lequipermetdelierl’entre´eX a` lasortieY
+i i
+pourtout1≤i≤n
+pouri0 ∈/ {1,...,n}onveutde´terminerYˆ
+i0
+pre´dictiondeY
+i0
+(non-observe´)auvudel’observationdeX
+i0
+Lecouple(X ,Y )estune´le´mentdel’ensembletest.
+i0 i0
+Remarque: enclassificationonpeutaussiconside´rerque
+K
+Y
+i
+∈Σ
+K
+= (p1,...,p
+K
+):p
+k
+≥0et p
+k
+=1
+( k=1 )
+X
+IntroductionauDeepLearning
+Principesdel’apprentissagestatistique(machinelearning)
+Choix d’une classe de mode`les
+Definition:uneclassedemode`lesestunensembledefonctions
+f :Rd →R(re´gression)ouf :Rd →Σ (classification)indexe´es
+θ θ K
+parunparame`tre
+θ ∈Θ⊂Rp
+Apprentissaged’unmode`le:minimisationdurisqueempirique
+1 n
+θˆ∈argminM (θ) avec M (θ):= L(Y,f (X))
+n n n i θ i
+θ∈Θ i=1
+X
+ou` Lestunefonctiondepertee.g.
+2
+L(y,z)=ky−zk
+oubiencross-entropyenclassificationi.e.
+K
+L(y,z)=− y log(z )
+k k
+k=1
+X
+Pre´diction:Yˆ =f (X )
+i0 θˆ i0
+IntroductionauDeepLearning
+Principesdel’apprentissagestatistique(machinelearning)
+Choix d’une classe de mode`les + pe´nalisation
+Definition:uneclassedemode`lesestunensembledefonctions
+f :Rd →R(re´gression)ouf :Rd →Σ (classification)indexe´es
+θ θ K
+parunparame`tre
+θ ∈Rp
+Apprentissaged’unmode`le:minimisationdurisqueempirique
+pe´nalise´
+1 n
+θˆ∈argminM (θ) avec M (θ):= L(Y,f (X))+λpen(θ)
+θ∈Rp n n n
+i=1
+i θ i
+X
+ou` pen(θ)estunefonctiondepe´nalisationquiaugmenteavecla
+complexite´ dumode`leparame`tre´ parθ,etλ≥0estunparame`trede
+re´gularisation(Exemple:pen(θ)=kθk 2
+2
+oupen(θ)=kθk1)
+Pre´diction:Yˆ =f (X )
+i0 θˆ i0
+IntroductionauDeepLearning
+Principesdel’apprentissagestatistique(machinelearning)
+Choix d’une me´thode d’optimisation
+Remarque:pourlesre´seauxdeneuronesθ 7→M (θ)est
+n
+non-convexeetladimensiondeθ esttre`sgrande!
+Calculdeθˆpardescentedegradient:(e.g.packagennetdeR
+base´esurlame´thodeBFGS)
+θˆ j+1 =θˆ j −γ j ∇M n (θˆ j ) et θˆ=θˆ J ,
+pourJ assezgrand.
+IntroductionauDeepLearning
+Principesdel’apprentissagestatistique(machinelearning)
+Choix d’une me´thode d’optimisation
+Deeplearning:lenombrend’exemplesesttre`sgrand,couˆte´leve´ de
+l’e´valuation
+1 n
+M (θ):= L(Y,f (X))
+n n i θ i
+i=1
+X
+Calculdeθˆpardescentedegradientstochastique:(e.g.librairie
+TensorflowdePython)
+Achaqueite´rationj,choixale´atoired’unsous-ensemblededonne´es
+X ,...X (batch)detailleq(cid:28)n
+i1 iq
+1 q
+θˆ j+1 =θˆ j −γ j ∇m q (θˆ j ) ou` m q (θ)= q L(Y i` ,f θ (X i` ))
+`=1
+X
+Enpratique:partitiondesdonne´esenunensembledebatch
+(disjoints)detaillem
+Epoch:nombredepassagesurl’ensembledesdonne´es
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+1 Principesdel’apprentissagestatistique(machinelearning)
+2 Re´seauxdeneuronesmulti-couches
+3 Re´seauxdeneuronesconvolutionnels
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Ele´ments bibliographiques
+Expose´ base´ surlelivreenlignedeMichaelNielsen
+http://neuralnetworksanddeeplearning.com/index.html
+aveccodesenPython:
+https://github.com/mnielsen/neural-networks-and-deep-learning.git
+etexemplesd’utilisationdelalibrairieTheanodePython
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Ele´ments bibliographiques
+Exempleillustratif:basededonne´esMNIST1
+Imagedetailled =28×28=784pixels,K =10classes
+1. http://neuralnetworksanddeeplearning.com/index.html
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Ele´ments bibliographiques
+Classificationparre´seauxdeneuronesconvolutionnels
+Ensembled’apprentissagede50000images
+Tauxdeclassification>99%
+Ensembletestde10000images:tauxdeclassification>99%
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Ele´ments bibliographiques
+33imagesmal-classe´essurl’ensembletest1
+Vraieclasse:coinsupe´rieurdroit
+Classepre´dite:coininfe´rierdroit
+1. http://neuralnetworksanddeeplearning.com/index.html
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Ele´ments bibliographiques
+Pourceuxquin’aimentpaslalecture...
+Vide´osenlignesurlesiteduColle`gedeFrance:
+CoursdeYannLeCun,“L’apprentissageprofond:the´orieet
+pratique”,Colle`gedeFrance(2015-2016),Informatiqueet
+SciencesduNume´rique.
+www.college-de-france.fr/site/yann-lecun/course-2015-2016.htm
+CoursdeSte´phaneMallat,“Myste`resmathe´matiquesdes
+re´seauxdeneuronesconvolutionnels”,Colle`gedeFrance
+(2015-2016),InformatiqueetSciencesduNume´rique.
+www.college-de-france.fr/site/yann-lecun/seminar-2016-02-19-15h30.htm
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Me´thode d’apprentissage line´aire
+Choixd’uneme´thoded’apprentissage-se´parationdeclassespar
+unhyperplan
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Me´thode d’apprentissage line´aire
+Choixd’uneme´thoded’apprentissage-se´parationdeclassespar
+unhyperplan
+Equationd’unhyperplan x∈Rd : hx,wi+b=0 ou`
+θ =(w,b)∈Rd×Rsontlesparame`tresdel’hyperplan(icid =2)
+(cid:8) (cid:9)
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Me´thode d’apprentissage line´aire
+Choixd’uneme´thoded’apprentissage-se´parationdeclassespar
+unhyperplan
+Pointsau-dessusdel’hyperplan x∈Rd : hx,wi+b>0
+Pointsau-dessousdel’hyperplan (cid:8) x∈Rd : hx,wi+b<(cid:9) 0
+(cid:8) (cid:9)
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Me´thode d’apprentissage line´aire
+Choixd’uneme´thoded’apprentissage-se´parationdeclassespar
+unhyperplan
+Re`gledeclassificationf(x,θ)=σ(hx,wi+b)avecσ(z)=11 R+ (z)ou
+σ(z)= 1 avecθ =(w,b)∈Rd×R
+1+exp(−z)
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Construction d’un re´seau de neurones
+Neuronedebase:mode`leduPerceptron(Rosenblatt,1957)
+Source:https://stats385.github.io/
+Combinaisonline´airedex∈Rd aveclespoidsω1,...,ω
+d
+etunbiaisb
+Fonctionnon-line´aired’activationf(z)=σ(z)=11
+{z≥0}
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Construction d’un re´seau de neurones
+Neuronedebase:mode`leduPerceptron(Rosenblatt,1957)
+Source:https://stats385.github.io/
+Combinaisonline´airedex∈Rd aveclespoidsω1,...,ω
+d
+etunbiaisb
+Autrechoixσ(z)= 1 (sigmo¨ıde)ouσ(z)=max(0,z)(ReLU)
+1+exp(−z)
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Construction d’un re´seau de neurones
+SinglelayerPerceptron
+Source:https://stats385.github.io/
+Ecriturecondense´e:f
+θ
+(x0)=σ1(W1x0+b1),ou`
+σ1 :Rd1 →Rd1 estunefonctionnon-line´aireentre´eparentre´e
+W1 ∈Rd×d1 (poids)b1 ∈Rd1 (biais)
+θ =(W1,b1):parame`tresdure´seau
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Construction d’un re´seau de neurones
+SinglelayerPerceptron-Re´gression
+Source:http://neuralnetworksanddeeplearning.com/index.html
+Ecriturecondense´e:f
+θ
+(x0)=W2σ1(W1x0+b1)+b2,
+avecW1 ∈Rd×d1,b1 ∈Rd1,W2 ∈Rd1×1,b2 ∈Retθ =(W1,b1,W2,b2)
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Construction d’un re´seau de neurones
+SinglelayerPerceptron-Classification
+Source:http://neuralnetworksanddeeplearning.com/index.html
+Ecriturecondense´e:f
+θ
+(x0)=σsoftmax(W2σ1(W1x0+b1)+b2),
+avecW1 ∈Rd×d1,b1 ∈Rd1,W2 ∈Rd1×K,b2 ∈RK etθ =(W1,b1,W2,b2)
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Construction d’un re´seau de neurones
+Multi-layerPerceptron
+Source:https://stats385.github.io/
+Ecriturecondense´e-entre´ex0 ∈Rd,sortiex
+L
+,puis,pour`=1,...,L,
+fairex
+`
+=σ
+`
+(W
+`
+x `−1+b
+`
+)avecσ
+L
+=Id oubienσ
+L
+=σsoftmax
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Construction d’un re´seau de neurones
+Multi-layerPerceptron
+Source:https://stats385.github.io/
+S 1 i ≤ x L k − ≤ 1 = K. (x(1),...,x(K))alors[σsoftmax(x L−1)] k = PK ` e = x 1 p e ( x x p (k ( ) x ) (`)) pouttout
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Construction d’un re´seau de neurones
+Multi-layerPerceptron
+Source:http://neuralnetworksanddeeplearning.com/index.html
+Re´seaudeneuronesprofonds:“nombreuses”couchescache´es
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Exemple : classification dans R2 avec K = 4 classes
+Visualisationdesdonne´es-Me´langegaussien
+−5 0 5 10
+01
+5
+0
+5−
+x[,1]
+]2,[x
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Exemple : classification dans R2 avec K = 4 classes
+Classificiationoptimale:re`gledeBayes(inde´pendantedesdonne´es)
+−5 0 5 10
+01
+5
+0
+5−
+x[,1]
+]2,[x
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Exemple : classification dans R2 avec K = 4 classes
+Single-layerPerceptronavec1neuronedanslacouchecache´e
+Optimisationpardescentedegradient(BFGS,librairiennetdeR)
+−5 0 5 10
+01
+5
+0
+5−
+x[,1]
+]2,[x
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Exemple : classification dans R2 avec K = 4 classes
+Single-layerPerceptronavec2neuronesdanslacouchecache´e
+Optimisationpardescentedegradient(BFGS,librairiennetdeR)
+−5 0 5 10
+01
+5
+0
+5−
+x[,1]
+]2,[x
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Exemple : classification dans R2 avec K = 4 classes
+Single-layerPerceptronavec10neuronesdanslacouchecache´e
+Optimisationpardescentedegradient(BFGS,librairiennetdeR)
+−5 0 5 10
+01
+5
+0
+5−
+x[,1]
+]2,[x
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Calcul du gradient par re´tro-propagation de l’erreur
+Soitf
+θ
+unre´seaudeneurones-entre´ex0 ∈Rd,sortiex
+L
+=f
+θ
+(x0),
+puispour`=1,...,L,fairex
+`
+=σ
+`
+(W
+`
+x `−1+b
+`
+).
+Parame`tres:θ =(W
+`
+,b
+`
+)1≤`≤L
+Algorithmedeback-propagation(Rumelhartetal.1986;LeCun
+1988):calculefficacedugradientdeθ 7→f
+θ
+(x0)(avecx0 fixe´)c’esta`
+direde
+∂ ∂
+f
+θ
+(x0) et f
+θ
+(x0)
+∂W ∂b
+` `
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Calcul du gradient par re´tro-propagation de l’erreur
+FormulationparmultiplicateurdeLagrange(LeCun1988)pourle
+calculdugradientdef
+θ
+Optimisation(e´crituresanslebiais)
+2
+minkx −yk
+W,x L
+sous-contraintesx
+`
+=σ
+`
+(W
+`
+x `−1)pour`=1,...,L.
+Formulationlagrangienne(sanscontrainte)
+min L(W,x,B)
+W,x,B
+avec
+L
+L(W,x,B)=kx
+L
+−yk 2 + BT
+`
+(x
+`
+−σ
+`
+(W
+`
+x `−1))
+`=1
+X
+IntroductionauDeepLearning
+Re´seauxdeneuronesmulti-couches
+Calcul du gradient par re´tro-propagation de l’erreur
+Diffe´rentiationdutermelagrangien
+∂ L=0impliqueque(forwardpass)pour`=1,...,L
+∂B
+x ` =σ ` W ` x `−1
+a
+(cid:0) ` (cid:1)
+∂
+∂ xL=0impliqueque(backward|pa{szs)}
+z L =2∇σ L a L (y−x L ) et z ` =∇σ ` a ` W ` T +1 z `+1
+Erre(cid:0)ur(cid:1)initiale Re´tro-p(cid:0)rop(cid:1)agation
+| {z } | {z }
+etainsi
+∂
+∂W
+f
+θ
+(x0)=z
+`
+xT
+`−1
+`
+peuteˆtrecalcule´ defac¸onre´cursive.
+Remarque:∇σ a estunematricediagonale!
+` `
+(cid:0) (cid:1)
+IntroductionauDeepLearning
+Re´seauxdeneuronesconvolutionnels
+1 Principesdel’apprentissagestatistique(machinelearning)
+2 Re´seauxdeneuronesmulti-couches
+3 Re´seauxdeneuronesconvolutionnels
+IntroductionauDeepLearning
+Re´seauxdeneuronesconvolutionnels
+Re´seaux de neurones profond pour le traitement
+d’images
+Propose´sparLeCun,Bottou,BengioandHaffner(1998)...mais
+plusieurssemainespourl’optimisationd’unre´seaudeneurones
+convolutionnelsurlabasededonne´esMNIST
+Re´volutionre´cente(apre`s2012):possibilite´ d’entrainerun
+re´seaudeneuronesprofondsurdesbasesdedonne´es
+massives(ImageNet-16millionsd’imagescouleur-K =20000
+classes,oubiensurunsous-ensembleILSVRCChallenge)
+Raisonsdusucce`s:
+Moyensdecalculs
+Tailledesbasesd’apprentissage
+Raffinementdesme´thodesd’optimisation(activationReLU,
+re´gularisationpardropout,...)
+Popularisationparlibrairiesdecalculfacilementutilisables
+IntroductionauDeepLearning
+Re´seauxdeneuronesconvolutionnels
+Couche cache´e par convolutions de l’entre´e
+Choixd’unfiltrediscret(exdetaille5×5)
+Lacouchecache´eestlere´sultatdelaconvolutiondel’imageen
+entre´eparcefiltre(suivieparunefonctiond’activation
+non-line´aire)
+Ecriturecondense´e:f
+θ
+(x0)=σ1(W1x0+b1),ou` W1 estune
+matricedeToeplitztre`screuse
+Source:http://neuralnetworksanddeeplearning.com/index.html
+IntroductionauDeepLearning
+Re´seauxdeneuronesconvolutionnels
+Couche cache´e par convolutions de l’entre´e
+Choixd’unfiltrediscret(exdetaille5×5)
+Lacouchecache´eestlere´sultatdelaconvolutiondel’imageen
+entre´eparcefiltre(suivieparunefonctiond’activation
+non-line´aire)
+Ecriturecondense´e:f
+θ
+(x0)=σ1(W1x0+b1),ou` W1 estune
+matricedeToeplitztre`screuse
+Source:http://neuralnetworksanddeeplearning.com/index.html
+IntroductionauDeepLearning
+Re´seauxdeneuronesconvolutionnels
+Couche cache´e par convolutions de l’entre´e
+Choixdeplusieursfiltresdiscret(extroisdedetaille5×5)
+Lacouchecache´eestlere´sultatdelaconvolutiondel’imageen
+entre´eparcestroisfiltres(suivieparunefonctiond’activation
+non-line´aire)
+Ecriturecondense´e:f
+θ
+(x0)=σ1(W1x0+b1),ou` W1 estune
+matricedeToeplitzparblocs
+Source:http://neuralnetworksanddeeplearning.com/index.html
+IntroductionauDeepLearning
+Re´seauxdeneuronesconvolutionnels
+Couche cache´e par pooling
+Ajoutd’unecouchecache´ parmax-poolingouL2-pooling
+(re´ductiondedimensionetdeseffetsdede´formationlocale)
+Source:http://neuralnetworksanddeeplearning.com/index.html
+IntroductionauDeepLearning
+Re´seauxdeneuronesconvolutionnels
+Couche cache´e par pooling
+Ajoutd’unecouchecache´ parmax-poolingouL2-pooling
+(re´ductiondedimensionetdeseffetsdede´formationlocale)
+Source:http://neuralnetworksanddeeplearning.com/index.html
+IntroductionauDeepLearning
+Re´seauxdeneuronesconvolutionnels
+Couche finale fully-connected + softmax
+Source:http://neuralnetworksanddeeplearning.com/index.html
+IntroductionauDeepLearning
+Re´seauxdeneuronesconvolutionnels
+Couche finale fully-connected + perceptron + softmax
+Source:http://neuralnetworksanddeeplearning.com/index.html
+IntroductionauDeepLearning
+Re´seauxdeneuronesconvolutionnels
+Exemple de filtres appris avec MNIST
+Source:http://neuralnetworksanddeeplearning.com/index.html
+IntroductionauDeepLearning
+Re´seauxdeneuronesconvolutionnels
+Filtres de Gabor
+Source:MathWorks
+IntroductionauDeepLearning
+Re´seauxdeneuronesconvolutionnels
+33 images mal-classe´es sur l’ensemble test?
+Attention:nombreuxparame`tresa` choisir!
+choixdesfonctionsd’activation:sigmo¨ıde,tanh,ReLU...
+choixdunombredecouches,nombredeneuronesetdutype
+d’ope´rations(convolution,pooling,fully-connected)
+tailledesbatch,nombred’epoch
+tauxd’apprentissageγ dansladescentedegradient
+j
+stochastique
+re´gularisationexplicite
+1 n
+2
+min L(Y,f (X))+λkθk
+θ∈Θ n i θ i
+i=1
+X
+etbiend’autres:agre´gationdere´seauxdeneurones,
+augmentationartificielledelabasededonne´es
+d’apprentissage...
+IntroductionauDeepLearning
+Re´seauxdeneuronesconvolutionnels
+Re´gularisation par Dropout
+Principe:suppressionale´atoiredecertainspoidsdanslere´seaude
+neuronesa` chaqueite´rationdeladescentedegradientstochastique
+i.ere´pe´terpourj=1,2,...
+1 choixd’unmini-batcha` l’e´tapej
+2 suppressionale´atoiredecertainspoids(i.e.connexions)dansle
+re´seaudeneuronescomplet
+Source:http://neuralnetworksanddeeplearning.com/index.html
+IntroductionauDeepLearning
+Re´seauxdeneuronesconvolutionnels
+Re´gularisation par Dropout
+Principe:suppressionale´atoiredecertainspoidsdanslere´seaude
+neuronesa` chaqueite´rationdeladescentedegradientstochastique
+i.ere´pe´terpourj=1,2,...
+3 pourchaquedonne´edumini-batchpropagerl’entre´exdansle
+sous-re´seauetre´tropropagerlasortieypourcalculerlegradient
+4 reveniraure´seaudeneuronescompletinitial
+Source:http://neuralnetworksanddeeplearning.com/index.html
+IntroductionauDeepLearning
+Re´seauxdeneuronesconvolutionnels
+33 images mal-classe´es sur l’ensemble test?
+Quelsontlesparame`tresfinalementchoisis?
+Rendez-voussurlechapitre6dulivreenlignedeMichaelNielsen!!

@@ -1,0 +1,176 @@
+1202
+tcO
+5
+]IA.sc[
+1v53810.0112:viXra
+Compression, The Fermi Paradox
+and Artificial Super-Intelligence
+Michael Timothy Bennett
+School of Computing, Australian National University,Canberra, Australia
+michael.bennett@anu.edu.au
+Abstract. The following briefly discusses possible difficulties in com-
+munication with and control of an AGI (artificial general intelligence),
+buildinguponanexplanationofTheFermiParadoxandprecedingwork
+on symbol emergence and artificial general intelligence. The latter sug-
+gests thattoinferwhat someonemeans,an agent constructsarationale
+for the observed behaviour of others. Communication then requires two
+agents labour under similar compulsions and have similar experiences
+(constructsimilarsolutionstosimilartasks).Anynon-humanintelligence
+mayconstructsolutionssuchthatanyrationalefortheirbehaviour(and
+thus the meaning of their signals) is outside the scope of what a hu-
+man is inclined to notice or comprehend. Further, themore compressed
+a signal, the closer it will appear to random noise. Another intelligence
+may possess the ability to compress information to the extent that, to
+us, theirsignals would appear indistinguishable from noise (an explana-
+tion for The Fermi Paradox). To facilitate predictive accuracy an AGI
+would tend to more compressed representations of the world, making
+any rationale for their behaviour more difficult to comprehend for the
+same reason. Communication with and control of an AGI may subse-
+quently necessitate not only human-like compulsions and experiences,
+but imposed cognitive impairment.
+Keywords: compression · symbolemergence · communication.
+1 Introduction
+When examining what problems may arise in the pursuit of AGI, it may be-
+hooveus toconsiderexplanationsfor The FermiParadox[18],the contradiction
+between the apparent absence of extra-terrestrial life and its high probability.
+After all, both involve communication with a nonhuman intelligence.
+So, let us assume for the sake of argument that a non-human intelligence
+exists inourregionofspace,emitting signalsinasimilar mediumto us (suchas
+radio)neither attemptingtocontactnorhide fromus;whymightwehavefailed
+to identify or interpret the meaning of such signals, and what does this suggest
+for the pursuit of AGI?
+2 M. T. Bennett
+2 Symbolic Abstraction
+First,letusconsiderwhatisnecessarytoinferthemeaningofsomething.Natural
+language is a means of encoding and transmitting certain information between
+membersofaspecies.Whatthisinformationis,isdebatable.Anaturallanguage
+model such as GPT-3 is trained only on text data [2], implicitly endorsing the
+idea that meaning is just relations between words. While GPT-3 is capable of
+learning correlationsin syntax to the extent that it can plausibly mimic human
+writing, it lacks any of the other sensorimotor information we might typically
+associatewithwords.Attemptstotrainmodelsonmultimodalsensorimotordata
+haveyieldedsomesuccess,withagentsabletoassociatethesensoryinformation
+ofan objectsuchas a cup with the signals thatrepresentit [7,8,9]. Yet abstract
+notions such as “politics” or “ex-wife” would seem to require more than mere
+clustering of sensorimotor information.
+One theory [10] (the mirror symbol hypothesis), posits that the informa-
+tion encoded in natural language is not just sensorimotor stimuli but intent.
+Drawing on ideas from embodied and enactive cognition [17,16], an organism’s
+environment,sensorsandactuators,the compulsionsanorganismlaboursunder
+(such as hunger and pain) and so forth together specify an arbitrary task. Util-
+ity is replaced by a statement (a logical expression) characterizing sets of more
+or less desirable sensorimotor states (including the state of memory) - repre-
+senting histories or situations from which plans and subsequently subgoals may
+be abducted. It is written in a physically implementable language such as ar-
+rangementsoftransistorsorneurons,necessaryandsufficienttoreconstructpast
+experience given appropriate stimuli. If treated as a constraint to be satisfied,
+a solution or any subgoal derived thereof, expresses intent. Given an ostensive
+definition ofatask (examples ofsuccessfultaskcompletion) there maybe many
+apparently valid solutions, which vary in how well they generalise to unfore-
+seen situations. The weaker and more general the solution, the closer it is to an
+idealised notion of intent (called an intensional solution).
+In order to predict the intent of other agents,one agentassumes others con-
+ceiveoftheworldastheydo.Itaskswhatsubgoalsmightmotivatethebehaviour
+of other agents, given they are assumed to pursue a similar solution in general.
+It constructs a rationale for specific observed behaviour, to explain what an-
+other agent means to do (a subgoal, the pursuit of which would explain the
+observed behaviour). Subsequently, in order for communication to be possible
+two agents must possess approximately the same solution. Not only must they
+experience similar stimuli with which to construct symbolic abstractions, but
+imbue that stimuli with similar significance in terms of satisfying their com-
+pulsions. The solutions they construct then facilitate encoding and decoding of
+signals interpretable by both agents [11]. Any information not relevant to satis-
+fying compulsions is not only meaningless but may be entirely ignored,which is
+consistent with observations of human behaviour [6,5] (i.e. one may be unable
+toperceivesomethinginthe streamofsensorimotorstimulibecauseitisfiltered
+out).
+Compression, The Fermi Paradox and Artificial Super-Intelligence 3
+This raises a few issues. The scope of a task is arbitrary, and so living as
+a typical human may be framed as such. Any nonhuman intelligence may face
+an entirely different task, to which they construct an entirely different solution.
+The difficulty this introduces is not only failure to understand what is meant,
+as in human language translation. Given two different solutions to two different
+tasks, stimuli may be imbued with either the same meaning, different meaning,
+or no meaning at all by one of those solutions (meaningful to one but not the
+other). The latter is particularly interesting, because such signals may not be
+recognised as intelligent behaviour (i.e. appear insane or mindless) or may per-
+haps be unnoticeable (i.e. the solution informs attention). In short, we may not
+realise something is a signal because what it conveys falls outside the scope of
+what humans are predisposed to notice or consider meaningful. While by defi-
+nition we would be disinterested in such information, it may imply something
+which we would be consider meaningful (e.g. destroying the humans because of
+incomprehensible reasons).
+3 Compression
+Allowing for the above, one may still mechanically assess information content
+and decode signals [1], to gleansomething of potential meanings by correlation,
+evenif they are incomprehensible.However,the same information canbe repre-
+sentedinmanydifferentways,compressedtodifferentextents.Asthevolumeof
+digital information exchanged and stored by humans each day has increased, so
+has the utility of compression. Streaming services such as Youtube make exten-
+sive use of compressionto reduce the cost of transmissionand storage.Another
+intelligence may also wish to reduce the cost of transmission and storage by
+employing the most effective compressionthey possess.Taking into account the
+decoder which reconstructs a signal, the greatest extent to which a signal may
+be compressedis its KolmogorovComplexity [12];the lengthofthe smallestself
+extracting archive capable of reproducing that signal. Such a compressed sig-
+nal contains no discernible pattern of which we might take advantage to more
+efficiently represent the signal without discarding information. Uniformly dis-
+tributed, random noise is also not compressible. There is no pattern. A highly
+compressedsignalmayappeartobenothingmorethanrandomnoisetoanyob-
+serverlackingtheappropriatedecoder.Anyadvancedintelligencemaycompress
+information to the extent that we mistake their signals for noise [3].
+The ability to generalise is closely related to compression [14,15], with more
+compressedrepresentationsyieldingbetteraccuracy[13]forthesamereasonthat
+there is only one straight line interpolating any two points, but infinitely many
+polynomials of higher degree. As stated earlier, solutions to a task may vary in
+how wellthey generalise,with anintensionalsolutionbeing the most general.A
+super-intelligent AGI would construct such a solution [10], which is likely to be
+amongthe mostcompressed[13],meaninganyrationaleforits decisionsmaybe
+uninterpretable for the same reasona highly compressedsignalis. Subsequently
+theonusisonthemoreintelligentagenttocommunicateintermsthatthealess
+4 M. T. Bennett
+intelligentagentcomprehends.Givenhuman-likesensors,actuators,compulsions
+andsoforth,situatedinahumanenvironment,anAGImayconstructasolution
+similar enough to humans to facilitate communication. However, to guarantee
+interpretability and control of an AGI may require restricting how it constructs
+solutions such that it is, on some level, cognitively impaired [4].
+References
+1. MacKay,D. J. C.: Information Theory, Inferenceand Learning Algorithms. Cam-
+bridge UniversityPress. (2003)
+2. Floridi,L.,Chiriatti,M.:GPT-3:ItsNature,Scope,Limits,andConsequences.In:
+Minds and Machines pp. 1–14 (2020)
+3. Gurzadyan,A.V.,Allahverdyan,A.E.:Non-RandomStructuresinUniversalCom-
+pression and The Fermi Paradox. The European Physical Journal Plus 131(2),
+(2016)
+4. Trazzi, M., Yampolskiy, R.V.: Building Safer AGI by Introducing Artificial Stu-
+pidity.ArXiv,abs/1808.03644. (2018)
+5. Flowers, J.H., Warner, J.L., Polansky, M.L.: Response and Encoding Factors in
+“Ignoring” Irrelevant Information. Memory and Cognition 7, pp.86–94 (1979)
+6. Zanto,T.P.,Gazzaley,A.:NeuralSuppressionofIrrelevantInformationUnderlies
+OptimalWorkingMemoryPerformance.JournalofNeuroscience29(10).pp.3059–
+3066 (2009)
+7. Taniguchi, T. et al.: Symbol Emergence in Cognitive Developmental Systems: A
+Survey.In:IEEETransactionsonCognitiveandDevelopmentalSystems11(4),pp.
+494–516 (2019)
+8. Taniguchi, T. et al.: Symbol Emergence in Robotics: A Survey. In: Advanced
+Robotics 30(11-12), pp.706–728 (2016)
+9. Ramesh, A.et al.: DALL-E:Creating Images From Text.OpenAI (2021)
+10. Bennett,M. T.: SymbolEmergence and TheSolutions toAnyTask. 14th Confer-
+enceon Artificial General Intelligence (2021)
+11. Bennett,M.T., Maruyama,Y.:Philosophical Specification ofEmpatheticEthical
+Artificial Intelligence. To appear in: IEEE Transactions on Cognitive and Devel-
+opmental Systems(2021)
+12. Kolmogorov,A.N.:Ontablesofrandomnumbers.In:Sankhya:TheIndianJournal
+of Statistics A,pp. 369–376 (1963)
+13. Hutter, M.: Universal Artificial Intelligence: Sequential Decisions based on Algo-
+rithmic Probability. Springer. (2005)
+14. Solomonoff, R. J.: A formal theory of inductive inference. Part I. In: Information
+and Control 7(1), pp.1–22 (1964)
+15. Solomonoff, R.J.: A formal theory of inductiveinference. Part II.In:Information
+and Control 7(2), pp.224–254 (1964)
+16. Thompson,E.:MindinLife.In:Biology,PhenomenologyandtheSciencesofMind
+18 (2007)
+17. Mil kowski, M.: Embodied Cognition. (2018)
+18. Verendel,V.,H¨aggstr¨om,O.:Fermi’sParadox,ExtraterrestrialLifeandTheFuture
+ofHumanity:ABayesiananalysis.InternationalJournalofAstrobiology16(1),pp.
+14–18 (2017)

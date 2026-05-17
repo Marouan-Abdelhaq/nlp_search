@@ -1,0 +1,1547 @@
+Large Language Models and Multimodal Retrieval for Visual Word Sense
+Disambiguation
+AnastasiaKritharoula,MariaLymperaiouandGiorgosStamou
+ArtificialIntelligenceandLearningSystemsLaboratory
+SchoolofElectricalandComputerEngineering
+NationalTechnicalUniversityofAthens
+anaskrith@gmail.com, marialymp@islab.ntua.gr, gstam@cs.ntua.gr
+Abstract
+VisualWordSenseDisambiguation(VWSD)is
+anovelchallengingtaskwiththegoalofretriev-
+inganimageamongasetofcandidates,which
+better represents the meaning of an ambigu-
+ouswordwithinagivencontext. Inthispaper,
+wemakeasubstantialsteptowardsunveiling
+thisinterestingtaskbyapplyingavaryingset
+of approaches. Since VWSD is primarily a
+text-image retrieval task, we explore the lat-
+esttransformer-basedmethodsformultimodal
+retrieval. Additionally, we utilizeLargeLan-
+guageModels(LLMs)asknowledgebasesto
+enhancethegivenphrasesandresolveambigu-
+ity related to the target word. We also study
+VWSDasaunimodalproblembyconverting
+Figure1: AnexampleoftheVWSDtask.
+totext-to-textandimage-to-imageretrieval,as
+wellasquestion-answering(QA),tofullyex-
+plorethecapabilitiesofrelevantmodels.Totap
+intotheimplicitknowledgeofLLMs,weexper- toretrievethepropercandidate. Additionally,the
+imentwithChain-of-Thought(CoT)prompting candidateimagesthemselvesposesignificantchal-
+toguideexplainableanswergeneration. Ontop lenges; forexample, byobservingthecandidates
+ofall,wetrainalearntorank(LTR)modelin of Fig. 1, which are related to several meanings
+ordertocombineourdifferentmodules,achiev-
+oftheambiguouswordandromeda(canbeeither
+ingcompetitiverankingresults. Extensiveex-
+a constellation, fish species, tree, reptile etc), a
+perimentsonVWSDdemonstratevaluablein-
+successfulretrievalsystemshouldbefine-grained
+sightstoeffectivelydrivefuturedirections.
+enough and highly sensitive to the contextualiza-
+Visual word sense disambiguation (VWSD) is tion of the ambiguous target word. In that case,
+a recently introduced challenging task where an thecontextwordtreeshouldbeprominentenough
+ambiguoustargetwordwithinagivencontexthas -from the perspective of the retrieval module- to
+to retrieve the proper image among competitive resolveambiguity. Atthesametime,thisretrieval
+candidates (Raganato et al., 2023). For example, moduleshouldnotexcessivelyrelyonthetreecon-
+thephraseandromedatreecontainstheambiguous text: images containing flowers and green grass
+targetwordandromedaaccompaniedbythecontext induce some expected visual bias in the retrieval
+treewhichresolvesthisambiguity. Outofthe10 process,thustheimagehavingthehighestprobabil-
+candidatespresentedinFig. 1,aVWSDframework ityofcontainingatreemaybeselected,ignoring
+attemptstoretrievethegroundtruthimage,denoted the ambiguous andromeda attribute. Of course,
+withcoloredborder. there is also the possible scenario that a retrieval
+EventhoughVWSDisessentiallyatext-image model has never been trained on the ambiguous
+retrieval task, there are some fundamental differ- wordatall: therarityoftheconceptspresentinthe
+ences. Firstofall,thecontextgivenforanambigu- target word vocabulary increases the probability
+ouswordisminimal,mostoftenlimitedtoasingle ofexclusivelyrelyingonthewell-knowncontext
+word, upon which a retrieval module should rely word, resulting in significant randomness during
+3202
+tcO
+12
+]LC.sc[
+1v52041.0132:viXra
+selection. Tothisend,VWSDtrustworthinessalso Visual Word Sense Disambiguation (VWSD)
+arises as a critical point, raising the need for ex- (Raganatoetal.,2023)isonlyrecentlyintroduced
+plainablesolutions. aspartoftheSemEval2023challenge. Sofar,the
+Inthiswork,weshowcaseavastvarietyofimple- concurrentworkofDadas(2023)canactasamea-
+mentationsforVWSD.Multipleexperimentsare sureofcomparisontoours. Weadoptandextend
+conductedforeachoftheimplementedapproaches, someideaspresentedintheirpaper,whilefurther
+achievingoneofthefirstextensivecontributionsto expandingtheexperimentalsuitetocovervariable
+thisinterestingtask: approachestothetask. Moreover,westepuponthe
+usageofLLMsforVWSDasinKritharoulaetal.
+• WeexploitLargeLanguageModels(LLMs)
+(2023)toaddressbothperformanceimprovement
+as knowledge bases to enrich given full
+andexplainabilityaspects.
+phrases, so that the target word is disam-
+biguated by incorporating more context, ad- LLMs as knowledge bases is a core idea fol-
+dressingevencasesthattheambiguousword lowedthroughoutourpaper,asenrichingtheshort
+isunknowntotheretrievalmodule. phrasesoftheVWSDdatasetcanfacilitatetarget
+word disambiguation, and thus improve retrieval.
+• We convert VWSD to a unimodal problem:
+Traditionally,knowledgeenhancementfordisam-
+retrieval(text-to-textandimage-to-image)and
+biguation was performed via knowledge graphs
+question-answering(QA)tofullyexplorethe
+(Feng et al., 2020; Nedelchev et al., 2020). The
+capabilitiesrelatedmodelshavetooffer.
+usage of knowledge graphs was also favored for
+knowledgeenhancementofmultimodaltasks(Lym-
+• Features extracted from the aforementioned
+peraiou and Stamou, 2022). Nevertheless, Large
+techniquesareusedtotrainalearningtorank
+Language Models (LLMs) as knowledge bases
+model,achievingcompetitiveretrievalresults.
+(LLM-as-KB) (Petroni et al., 2019; AlKhamissi
+• Chain-of-Thought(CoT)promptingislever- etal.,2022)isanovelparadigm,presentingsome
+agedtoguideanswergeneration,whilereveal- interesting capabilities compared to traditional
+ing intermediate reasoning steps that act as knowledge graphs. Knowledge retrieval from
+explanationsforretrieval. LLMs is implemented via prompting (Liu et al.,
+2021),whichattemptstoappropriatelytriggerthe
+Our code can be found at LLMinordertoprovidethefactrequested. Tothis
+https://github.com/anastasiakrith/multimodal- end, recent VL breakthroughs favor the LLM-as-
+retrieval-for-vwsd/. KB paradigm for knowledge enhancement, even
+thoughsomeunresolvedshortcomingsmaybein-
+1 Relatedwork
+herited (Lymperaiou and Stamou, 2023). We opt
+Text-image retrieval has been revolutionized forincorporatingtheLLM-as-KBparadigmwithin
+sinceadoptingthepopularTransformerframework our experimentation to investigate performance
+(Vaswanietal.,2017)tofurtherincorporatethevi- gains over knowledge-free baselines, following
+sualmodality. Thistransitiontowardsmultimodal- Kritharoulaetal.(2023).
+itywasaddressedbyincorporatingoneadditional
+2 Method
+transformer stream to process images (Tan and
+Bansal,2019;Luetal.,2019),extendingtheBERT
+Wefollowed6approachestoinvestigatetheVWSD
+(Devlinetal.,2019)architecture. Mostrecentap-
+task from several different perspectives. All our
+proaches (Kim et al., 2021; Huang et al., 2021;
+approachesweretestedexclusivelyonEnglish.
+Wangetal.,2021)improveduponthoseprimordial
+worksbyutilizingasingleencoderforbothimages 1. Image-Text similarity baseline We imple-
+andlanguage,thereforeminimizingthenumberof mentasimplemultimodal(VL)retrievalbaseline
+trainableparameters,andconsequentlyimproving toevaluatethecapabilitiesofexistingpre-trained
+theperformanceofseveralVLtasks,includingmul- VLtransformersontheVWSDtask. VLtransform-
+timodalretrieval. Asignificantmilestonewasthe ersprovidejointembeddingrepresentationsfortext
+adoptionofcontrastivelearningfortext-imagerep- phrases t and candidate images i, and the image
+resentations,atechniquethatisfollowedbyCLIP representationachievinghighestcosinesimilarity
+(Radfordetal.,2021)andALIGN(Jiaetal.,2021). score score(t,i) = max(sim(t,i)) with respect to
+the text embedding is selected. We utilize CLIP Promptname Prompttemplate
+withViT(Dosovitskiyetal.,2021)baseencoder,as exact “<phrase>”
+wellaswithViTlargeencoder(denotedasCLIP- what_is “Whatis<phrase>?”
+L).ALIGN(Jiaetal.,2021)isalsousedfortext- describe “Describe<phrase>.”
+imageretrieval. Wealsoleverageseveralversions meaning_of “Whatisthemeaningof<phrase>?”
+ofBLIP(Lietal.,2022),namelyBLIP andBLIP-
+C
+Table1: PromptsforphraseenhancementviaLLMs.
+L (pre-trained on COCO (Lin et al., 2015) and
+C
+using ViT base/ViT large as backbone encoders
+respectively),aswellasBLIP F andBLIP-L F (pre- convertimagesitotextualcaptionsc i . Specifically,
+trainedonFlickr30k(Youngetal.,2014)). More thecaptioningmodelsusedareBLIPCaptions(Li
+details are provided in Appendix G. We also ex- etal.,2022)withViT-baseencoder(BLIP-LCap-
+perimentwithincorporatingthepenaltyfactorp(i)
+tionsdenotesbuildinguponViT-large),aswellas
+describedinDadas(2023)tomodulatetheretrieval GiT(Wangetal.,2022)(withViT-base)andGiT-L
+preference of images that present high similarity (withViT-large). ForallBLIPandGiTvariantswe
+scoressim(t,i)tomultiplephrasest. Inthiscase, attempt both beam-search multinomial sampling
+thesimilarityscoreobeystothefollowing: with 5 beams to obtain k=10 captions per image
+i, as well as greedy search. We symbolize as ck
+score(t,i) = sim(t,i)−p(i) (1) i
+the k-th caption for an image i, as obtained from
+beam search (greedy search returns a single cap-
+2. LLMsforphraseenhancement Weemploy
+tion). Inthecaseofbeamsearch,the10captions
+avarietyofLLMsasknowledgebasestoenhance
+arepost-processed,assomeofthemareidentical
+theshortphrasestwithmoredetailinazero-shot
+orsubstringsoflongerones.
+fashion (Kritharoula et al., 2023) and thus facil-
+Weexploretwooptionsinobtainingembedding
+itate VL retrieval described in the previous para-
+representationsforthecaptionsc andthephrases
+graph. AllpromptstoLLMspresentedinTab. 1are i
+t. Inthefirstcase,embeddingrepresentationsare
+designeduponmanuallycraftedtemplates,based
+obtainedusingthesameVLtransformersasinmul-
+on the intuition that instructively requesting spe-
+timodalretrieval. Inthesecondcase,weutilizea
+cificinformationfromthemodelhasbeenproven
+varietyofpurelytextualsentencetransformersthat
+to be beneficial (Kojima et al., 2023). We select
+arefine-tunedforsemanticsimilarity(Reimersand
+LLMsuptothescalethatourhardwareallows,or
+Gurevych,2019). Then,forbothcases,weuseco-
+otherwiseaccessibleviapublicAPIs;specifically,
+sinesimilarityoreuclidean/manhattan2distanceto
+GPT2-XL(1.5Bparameters)(Radfordetal.,2019),
+calculatethescore(t,ck),thusretrievingthemost
+BLOOMZ-1.7B&3B(Muennighoffetal.,2023), i
+similarcaptionembeddingtoeachphraseembed-
+OPT-2.7B&6.7B(Zhangetal.,2022),Galactica
+ding. Experiments with and without LLM-based
+6.7B(Tayloretal.,2022),andthe175Bparameter
+GPT-3 (Brown et al., 2020) and GPT-3.5-turbo1 phraseenrichmentwereconducted.
+compriseourexperimentalsetforphraseenhance-
+4. Wikipedia & Wikidata image retrieval
+ment. Thedifferenceinthenumberofparameters
+Image-to-image retrieval is another way to ap-
+isviewedassignificantinordertoindicatewhether
+proach the VWSD task via unimodal represen-
+scalematterstoelicitdisambiguationcapabilities
+tations. For this reason, following the idea of
+of LLMs. We denote as t the LLM-enhanced
+e (Dadas, 2023) we exploit the Wikipedia API to
+phrases. Similar to the baseline case, a penalty
+retrieve all relevant articles corresponding to the
+factor p(i) can be included, adjusting the LLM-
+givenphraset,andwekeeptheprimaryimagei
+w
+enhancedretrievalscoreas:
+fromeacharticle. Consequently,wepost-process
+theretrievedimagesetbyconsideringamaximum
+score(t ,i) = sim(t ,i)−p(i) (2)
+e e
+ofk=10Wikipediaimagespert. Thesameprocess
+isrepeatedforWikidata(Vrandecˇic´ andKrötzsch,
+2014). We obtain embedding representations for
+3. Imagecaptioningfortextretrieval Welever-
+theretrievedimagesi ,aswellasforthecandidate
+w
+agethemeritsofunimodalretrievalbyexploiting
+imagesi,usingthesameVLtransformersasinmul-
+state-of-the-art image captioning transformers to
+2Distancemetricsarealsodenotedas’similaritymetrics’
+1https://platform.openai.com/docs/models/gpt-3-5 throughoutthispaper
+timodalretrieval. Finally,wesearchfortheembed- Moreover,basedonKojimaetal.(2023)weutilize
+dingslyingclosertogetherintheembeddingspace chain-of-thought (CoT) prompts to obtain expla-
+(usingcosinesimilarityoreuclidean/manhattandis- nationsregardingthereasoningprocesstheLLM
+tance)accordingtoscore(i ,i). followswhenselectingananswer. AllresultingQA
+w
+prompts(Tab. 2)areprovidedtoGPT-3.5-turbo.
+5. Learn to Rank Similarly to Dadas (2023),
+we implement a lightweight Learning to Rank 3 Experimentalresults
+(LTR)modelthatharnessesfeaturesextractedfrom
+our aforementioned experiments. LGBMRanker TheVWSDdatasetiscomprisedof12869training
+withlambdarankobjective3,implementeduponthe samples and 463 test samples; each sample con-
+LightGBMgradientboostingframework(Keetal., tains10images(AppendixA).Allourapproaches
+2017),isselectedastheLTRmodule. areevaluatedontheVWSDtestsplitusingAccu-
+The selected input features for the LTR model racy and Mean Reciprocal Rank (MRR) metrics.
+representrelationshipsbetweeneachgivenphrase
+and the candidate images extracted from the pre-
+LLMsforphraseenhancement InTab. 3, we
+vious 4 approaches. Specifically, the following
+present results regarding LLM-based phrase en-
+steps (a)-(e) are selected to craft features corre-
+hancementinvolvingallVLretrievalmodels(with
+sponding to the baseline case. In a similar way,
+and without penalty p(i)). Baselines refer to VL
+the steps a-e are repeated for score(t ,i) (LLM
+e
+retrievalwithnon-enhancedphrasest. Additional
+enhancement),score(t,ck)/score(t ,ck)(caption-
+i e i quantitativeresultsincludingmoreLLMs,aswell
+phraseretrieval/enhancedcaption-phraseretrieval)
+asqualitativeexamplesofhowknowledgeenhance-
+and score(i ,i) (image retrieval). We train the
+w
+mentbenefitsdisambiguationandthusretrievalare
+LTR module on several combinations of the de-
+provided in Appendix C. We can easily observe
+signedfeatures;also,differentsimilarity(cosine)
+thatdifferentpromptscontributetowardsbetterre-
+anddistance(euclidean/manhattan)scoresareat-
+sultsperLLM,whileBLIP-L isthemostsuccess-
+temptedwithinthesecombinations,whilethecon- F
+fulVLretriever;however,ALIGN(withpenalty)
+tributionofconsideringp(i)isevaluated,bothin
+achievestopperformance,togetherwithGPT-3and
+thebaselineVLretrieval(eq. 1),aswellasinthe
+"meaning_of"astheprompt. Ingeneral,largescale
+LLM-enhancedVLretrievalmodule(eq. 2).
+LLMs(GPT-3,GPT-3.5-turbo)areabletoclearly
+surpass the respective non-enhanced baselines in
+(a) score(t,i)
+mostcases.
+(b) max(score(t,i))
+Interestingly,forsmallerLLMs(upto6.7Bpa-
+(c) mean(score(t,i)) rameters), scaling-up does not necessarily imply
+advanced performance: OPT-6.7B (Tab. 12) and
+(d) differencea-b
+Galactica-6.7B (Tab. 13) fall below their smaller
+(e) differencea-c BLOOMZ-3Bcompetitorwhenthesameprompts
+areused. Nevertheless,contrarytoGPT-3andGPT-
+InordertofurtheradvanceLTRperformance,we
+3.5-turbo,thephraseenhancementthatfew-billion
+attempttocombinefeaturesfromenrichedphrases
+parameterLLMscanofferintotalisonlymarginal
+t derivedfromdifferentLLMs.
+e inthebestcase,andsometimesevenfailtocompete
+6. Question-answering for VWSD and CoT against their non-enhanced baselines, indicating
+prompting Based on the zero-shot question- thattheydonotcontainthenecessaryknowledge
+answeringsettingofKritharoulaetal.(2023),we to enrich rare target words with respect to their
+incorporate the given phrase t within a question givencontext. Therefore,ourLLM-enhancement
+template,providing10answerchoicesfromAto analysisrevealsthatthenecessaryenrichmentfor
+Jthatcorrespondtoextractedcaptionsc fromthe VWSD may be only achieved when employing
+i
+candidateimagesi = A,B,...,J foreacht. Inthe large-scaleLLMs,mostprobablybeingonparwith
+casethatbeamsearchwasusedduringcaptioning, otheremergentLLMabilities(Weietal.,2023).
+allk=10captionsforeachiareconcatenatedand
+Image captioning In Tab. 4 we present results
+separatedbycommatoformeachanswerchoice.
+ontextretrievalbetweenextractedimagecaptions
+3LGBMRankerdocs c
+i
+and given phrases t, which are achieved us-
+Promptname QAPrompttemplate
+think(greedy) “Q:Whatisthemostappropriatecaptionforthe<context>?Answerchoices:(A)<captionforimage1>
+(B)<captionforimage2>...A:Let’sthinkstepbystep.”
+think(beam) “Q:Whatisthemostappropriategroupofcaptionsforthe<context>?Answerchoices:(A)<captions
+forimage1(separatedwithcomma)>(B)<captionsforimage2>...A:Let’sthinkstepbystep.”
+CoT “<think_prompt><responseofllmwiththinkprompt>Therefore,amongAthroughJ,theansweris”
+no_CoT(greedy) “Q:Whatisthemostappropriatecaptionforthe<context>?Answerchoices:(A)<captionforimage1>
+(B)<captionforimage2>...A:”
+no_CoT(beam) “Q:Whatisthemostappropriategroupofcaptionsforthe<context>?Answerchoices:(A)<captions
+forimage1>(B)<captionsforimage2>...A:”
+Table2: QApromptsforgpt-3.5-turbocontaininggivenphraseandextractedimagecaptions.
+ing Manhattan distance as a similarity measure. detailsbetweensemanticallyrelatedcandidates.
+ALIGNandXLMdistilrobertabase(Reimersand
+Learntorank InTab. 6weexhibitresultsusing
+Gurevych, 2019) perform the caption-phrase re-
+ALIGNastheVLretriever. Thepresentedfeature
+trieval,representingtextualrepresentationsviaVL
+combinationsinvolvethefollowing: (1)Baseline
+models and purely linguistic semantic similarity
+features: the choice for incorporation (or not) of
+modelsrespectively. Moretext-to-textretrievalre-
+penaltyp(i)inscore(t,i)fortheVLretrieval;(2)
+sultsinAppendixD.TheNo-LLMrowofTab. 4
+LLM-enhancementfeatures: theprompttoproduce
+refers to the case that no phrase enhancement is
+enhanced phrases t (or an ensemble of prompts
+performed,whiletherestofthecasescorrespond e
+leadingtomultiplet )andthechoiceforincorpora-
+to prompts designed as per Tab. 1 towards en- e
+tion(ornot)ofp(i)inscore(t ,i);(3)Textretrieval
+hancedphrasest . Inallresultspresented,GPT-3 e
+e
+features: thecaptionertogeneratec ,togetherwith
+isselectedastheLLMtobeprompted,asitdemon- i
+thetextembeddingmodelandthesimilaritymea-
+strated superior knowledge-enhancement perfor-
+sure(cosine/euclidean/manhattan)fortext-to-text
+mance. WeobservethatLLM-basedenhancement
+retrieval, as well as the phrase (original t, or en-
+offersperformancebooststotext-to-textretrieval
+hancedt ,oranensembleofenhancedphrasest
+comparedtotheNo-LLMbaselineinmostcases; e e
+derivedfromdifferentLLMs);(4)Imageretrieval
+nevertheless, it still stays behind the best perfor-
+features: image embedding model and similarity
+mancesofar(acc72.57%,MRR82.29%)achieved
+measure(cosine/euclidean/manhattan)forimage-
+byGPT-3-enhancedVLretrieval. Weassumethis
+to-imageretrieval. AdditionalresultsfortheLTR
+is because of the information loss induced when
+areprovidedinAppendixE.
+convertingfromthevisualtothetextualmodality
+For all the experiments of Tab. 6 we
+duringcaptioning.
+usedthefollowinghyperparameterconfiguration:
+Another observation is that VL transformers
+n_estimators: 500, early_stopping: 100, learning
+perform better in producing textual embeddings
+rate: 0.03, feature_fraction: 0.25, max_bin: 100,
+comparedtosentencesimilarityembeddings,even
+min_child_samples: 50 and reg_alpha: 0.05. An
+though the latter have been explicitly fine-tuned
+80-20train/validationsplitwasfollowed,allocating
+onsemantictextualsimilarity. Thisobservationis
+2514samplesinthevalidationset.
+cross-validatedbyexaminingmorepurelytextual
+Theablationsoffeaturecombinationspresented
+semanticsimilaritytransformersinAppendixD.
+in Tab. 6 are highly informative, indicating that
+Wikipedia&Wikidataimageretrieval InTab. differentfeaturesposeavaryinginfluenceonthe
+5 results regarding image-to-image retrieval be- finalresult,whiletheamountofincorporatedfea-
+tween candidates i and web retrieved images i turesisalsosignificant. Ingeneral,incorporating
+w
+are presented. Out of the 463 samples of the test LLM-basedphraseenhancementinLTRishighly
+set,WikipediaAPIandWikidataAPIreturnedre- beneficial, offering optimal metric results com-
+sults for 460 and 324 phrases respectively. Even pared to other feature combinations, or our other
+best results for image-to-image retrieval are not approaches presented in Tab. 3, 4. Overall best
+competent against our previous approaches; we results are achieved when including all features
+assumethatexclusivelyvisualrepresentationsare (coloredinstancesofTab. 6). Thisisaninteresting
+notexpressiveenoughtodistinguishfine-grained observationsincestandalonetextretrieval(Tab. 4)
+CLIP CLIP-L ALIGN BLIP BLIP-L BLIP BLIP-L
+C C F F
+acc. MRR acc. MRR acc. MRR acc. MRR acc. MRR acc. MRR acc. MRR
+Withpenalty
+Baseline 63.28 76.27 62.85 76.24 68.90 80.00 60.90 74.33 64.58 77.51 60.47 73.87 69.76 80.42
+B7.2-TPO
+exact 62.85 76.00 62.85 75.93 68.68 79.89 61.12 74.46 64.58 77.41 60.26 73.73 69.76 80.36
+what_is 60.98 74.85 66.30 78.10 63.28 75.95 60.91 74.43 66.31 77.86 57.24 71.15 67.60 78.58
+describe 61.05 74.75 66.08 78.14 64.79 77.62 61.77 74.73 66.31 77.57 57.67 71.48 68.03 79.03
+meaning_of 62.15 75.60 65.25 77.45 65.66 77.54 61.99 75.35 63.93 76.88 58.32 71.65 65.44 77.69
+B3-ZMOOLB exact 61.26 74.59 62.99 76.18 66.52 78.36 60.48 73.13 63.28 76.00 57.02 71.23 65.66 77.49
+what_is 64.36 76.82 68.25 79.82 67.39 78.72 61.34 74.94 66.95 78.47 59.61 73.35 68.47 79.58
+describe 62.01 75.38 65.28 78.07 66.09 78.60 62.85 75.65 67.39 78.71 57.24 71.72 67.82 79.20
+meaning_of 65.58 77.96 67.32 78.76 68.47 79.14 63.71 76.52 66.31 78.55 59.40 73.60 68.03 79.26
+5.3-TPG
+exact 58.86 72.09 60.18 72.73 62.42 74.43 57.02 70.78 59.18 72.32 52.92 67.40 63.07 74.65
+what_is 66.52 78.81 69.35 80.51 70.41 81.42 67.60 78.56 68.47 79.67 60.91 74.30 71.71 82.02
+describe 67.32 78.95 69.28 80.31 73.22 82.73 69.33 79.90 70.41 80.80 59.83 73.65 70.63 81.29
+meaning_of 67.76 79.76 69.06 80.55 70.41 81.38 66.52 78.59 66.52 79.16 58.53 73.31 69.98 81.46
+3-TPG
+exact 61.98 74.90 64.07 76.58 66.52 78.37 60.48 73.99 64.15 76.58 59.61 72.91 65.23 77.06
+what_is 67.92 79.27 70.73 81.57 71.71 82.27 68.25 78.93 68.90 79.91 60.48 74.24 69.11 80.25
+describe 68.25 79.40 68.72 80.26 72.57 82.52 64.58 76.75 68.25 79.35 61.34 74.03 69.33 80.47
+meaning_of 68.07 80.08 69.84 81.56 74.95 84.09 66.74 78.37 71.71 81.55 62.63 75.55 72.35 82.28
+Withoutpenalty
+Baseline 59.18 72.94 60.69 74.42 65.66 77.48 57.24 72.07 61.34 75.88 57.67 71.96 65.01 77.86
+B7.2-TPO
+exact 58.96 72.77 60.26 74.15 65.66 77.48 57.45 72.19 61.12 75.77 57.24 71.68 65.01 77.90
+what_is 58.31 72.91 62.75 75.47 61.12 73.94 59.83 73.13 61.12 74.54 53.35 68.71 63.50 76.22
+describe 59.08 72.95 63.89 76.31 62.20 75.80 59.83 73.28 62.20 75.17 54.43 69.86 63.28 76.28
+meaning_of 58.19 72.97 62.99 75.79 64.58 76.48 59.18 73.38 60.26 74.70 54.86 69.43 62.42 75.86
+B3-ZMOOLB exact 56.93 71.53 59.52 73.78 63.93 76.15 58.10 71.77 59.61 74.06 54.86 69.66 61.12 74.99
+what_is 62.20 75.39 65.66 77.88 62.85 75.51 61.34 74.35 65.01 77.32 57.24 71.85 68.03 79.12
+describe 60.04 73.83 62.88 76.11 63.50 76.35 60.48 73.87 62.85 76.06 54.86 70.48 65.66 77.64
+meaning_of 61.69 75.51 64.94 77.17 66.31 77.62 61.77 74.92 62.42 76.27 57.02 71.79 65.23 77.21
+5.3-TPG
+exact 56.89 69.85 57.11 70.36 60.48 72.15 54.43 68.33 56.80 70.42 51.40 65.68 58.32 71.11
+what_is 65.00 77.11 65.87 78.11 67.82 79.52 64.15 75.91 65.87 77.78 58.10 72.32 68.03 79.36
+describe 65.80 77.26 66.67 78.42 70.84 81.16 65.44 77.57 69.11 80.20 58.96 72.66 67.60 79.47
+meaning_of 65.14 77.61 67.10 79.07 68.47 79.87 63.93 77.05 65.66 78.33 63.93 72.23 68.25 80.17
+3-TPG
+exact 59.88 73.38 61.68 74.91 64.79 76.27 58.96 71.92 60.48 74.02 55.72 70.34 62.42 75.04
+what_is 66.51 77.62 68.15 79.38 69.55 80.22 63.28 75.56 65.01 77.40 56.59 71.54 67.82 79.03
+describe 67.30 78.50 68.25 79.81 71.27 81.21 63.93 75.81 66.31 77.74 58.96 72.62 67.17 78.93
+meaning_of 66.52 78.32 68.96 80.26 72.57 82.29 65.87 77.56 69.55 80.26 60.26 74.26 70.41 81.09
+Table3: Resultsforzero-shotLLM-basedenhancement. Coloredinstancesdenoteoverallbestresultspermetric,
+whileboldnumbersindicatebestresultsforeachLLM.
+and image retrieval (Tab. 5) experiments did not t refers to combining features from all the afore-
+provide competitive metric results; nevertheless, mentioned4enhancements,plustheoriginalgiven
+consideringtherespectivefeaturesinLTRtraining phraset). AsdemonstratedinTab. 6,mostensem-
+benefits performance. Moreover, ensembling of blefeaturecombinationshelpsurpassingbaselines
+featuresishighlybeneficial. Thisappliesonboth andotherimplementations(Dadas,2023).
+ensembling the LLM-enhanced prompt features
+TheimplementedLTRmoduleiscomputation-
+(e.g. all prompts combines features from t ,
+exact allyefficient,asitonlyrequiresaCPUfortraining,
+t ,t ,t ),aswellasensembling
+what_is describe meaning_of whileachievingstate-of-the-artperformance(Tab.
+phrase features for text-to-text retrieval (all t +
+e 9). Theclearpatternthatarisesfromtheablation
+Greedy Beam
+BLIP BLIP-L GiT GiT-L BLIP BLIP-L GiT GiT-L
+acc. MRR acc. MRR acc. MRR acc. MRR acc. MRR acc. MRR acc. MRR acc. MRR
+No-LLM 40.60 59.82 48.38 64.71 44.92 62.19 48.60 65.30 46.65 63.48 54.64 69.92 45.36 62.87 54.00 68.47
+Manhattandistance-ALIGN
+exact 44.06 61.16 50.32 64.51 45.14 61.40 50.76 65.63 46.87 63.94 53.13 68.22 46.22 62.88 53.35 67.79
+what_is 47.73 64.65 50.32 66.29 47.95 64.32 54.64 69.27 49.68 66.77 61.12 74.14 51.40 66.93 57.67 71.49
+describe 47.08 64.31 51.40 66.87 46.87 63.98 54.43 69.11 52.48 67.89 59.83 73.42 52.27 68.00 58.75 72.02
+meaning_of 50.54 66.93 53.78 68.79 50.54 66.38 57.02 70.92 49.89 67.42 62.42 75.67 55.51 69.99 59.61 73.21
+Manhattandistance-XLMdistilrobertabase
+exact 38.66 56.78 38.88 57.05 36.93 54.85 42.33 59.19 42.55 59.35 42.98 60.78 41.04 58.83 48.16 63.82
+what_is 41.68 58.96 39.09 57.36 41.68 58.12 43.20 60.53 44.92 62.06 45.36 63.27 42.12 59.99 50.11 65.65
+describe 39.96 58.52 42.98 59.69 41.04 58.48 45.57 62.19 43.41 60.34 46.44 63.53 44.06 61.57 48.60 64.99
+meaning_of 41.47 59.13 41.04 59.03 39.96 57.64 44.28 62.26 61.79 61.76 47.73 64.63 45.57 62.30 53.13 67.83
+Table4: Resultsonphrase-captionretrieval(withandwithoutGPT-3enhancement)fordifferentcaptioningmodels.
+PILC
+Similarity Imagesource acc. MRR
+WikidataImages 34.26 50.13
+Cosine
+WikipediaImages 53.26 68.14
+WikidataImages 33.64 49.24
+Euclidean
+WikipediaImages 52.17 66.95
+WikidataImages 33.02 48.75
+Manhattan
+WikipediaImages 52.82 67.25
+NGILA
+choosing the correct answer C over J, which is
+preferredbyGPT-3.5-turbowhenCoTisomitted.
+Furthermore,CoTelicitsthereasoningprocessof
+the LLM, thus outputting a detailed explanation
+regardingthechoiceofacandidateagainstseman-
+ticallysimilarcandidates;forexample,C(asmall
+boatinthewaterwithtwooars)andJ(arowboat
+WikidataImages 31.11 47.84 withpeopleonitinthewater)areindeedclosely
+Cosine
+WikipediaImages 53.26 68.44 relatedandcanbeeasilyconfused. Asoneofthe
+WikidataImages 30.83 47.52 basicVWSDchallengesisthefine-graineddiscrim-
+Euclidean
+WikipediaImages 53.48 68.40 ination between semantically similar candidates,
+WikidataImages 31.11 47.66 weconsidersuchLLM-derivedexplanationstobe
+Manhattan
+WikipediaImages 53.26 68.27 highlyinformativeandaccuratefordiscerningthe
+subtle details between them. More CoT/no_CoT
+Table5: Image-to-imageretrievalresults
+examplesarepresentedinAppendixF.
+4 Discussion
+providesanexplicitdirectionforpotentialperfor-
+manceimprovements,withoutsuchendeavorsbe- AftertheannouncementoftheSemeval-2023pro-
+ingcomputationallyprohibiting. ceedings, more works achieving state-of-the-art
+resultsonVWSDforEnglishhavebeenreleased.
+CoT prompting results can reveal the internal Zhangetal.(2023b)utilizeonlinedictionariesand
+stepsfollowedbyanLLMtoreachananswer. In biencoderarchitecturesfordisambiguationanda
+Fig. 2, we present the candidate images for the matchingmodulethatselectsthemostappropriate
+phraset"rowingdory",withcandidateCserving modality to guide final retrieval. Their approach
+asthegoldenimage. Captionsareextractedusing significantlydiffersfromours,bothinthedisam-
+GiT-Lcaptionerwithgreedysearch,thusreturning biguationandtherankingpart. Patiletal.(2023)
+onecaptionc i percandidatei. Wethentransform relyonanensembleapproachinvolvingfine-tuning
+"rowingdory"inaquestionQ,followingthethink CLIPandextractingajointimage-textrepresenta-
+prompttemplate,aspresentedinTab. 2,withcap- tion. Intheirpapertheymakenousageofknowl-
+tions c i ,i = A,...,J forming the answer choices. edge sources but rather resort on more computa-
+tionallyheavyapproaches;instead,inourapproach
+Consequently,weproduceanswersviaGPT-3.5- weonlytrainalightweightrankingmodule,while
+turbo with and without CoT, as demonstrated in theusageofcomputationallydemandingmodules
+Tab. 7. In the presented case, CoT encourages such as VL retrievers and LLMs is restricted to
+Baseline LLM-enhance Textretrievalfeatures Imageretrievalfeat. Metrics
+p(i) Prompt p(i) Captioner EmbeddingSimilarity Phrase EmbeddingSimilarity Acc. MRR
+- - - - - - - - - 63.93 76.33
+- - - - - - - - 68.90 80.04
+meaning_of - - - - - - - 73.22 82.79
+meaning_of - - - - - - 75.16 84.13
+exact - - - - - - 70.41 81.10
+what_is - - - - - - 71.71 81.52
+describe - - - - - - 73.00 82.84
+allprompts - - - - - - 73.87 83.96
+all-except - - - - - - 74.30 83.80
+exact
+meaning_of - - - - - - 74.30 83.86
++describe
+all-except - - - - ALIGN manhattan 76.09 85.36
+exact
+all-except - - - - ALIGN cosine 76.52 85.29
+exact
+allprompts - - - - ALIGN cosine 76.52 85.70
+allprompts BLIP-L-beam ALIGN cosine t ALIGN cosine 77.61 85.90
+allprompts BLIP-L-beam ALIGN cosine allt +t ALIGN cosine 77.17 86.08
+e
+allprompts BLIP-L-beam ALIGN cosine t ALIGN cosine 76.52 85.63
+meaning_of
+allprompts BLIP-L-greedy ALIGN cosine allt +t ALIGN cosine 78.48 86.65
+e
+allprompts GiT-L-greedy ALIGN cosine t ALIGN cosine 77.83 86.30
+allprompts GiT-L-greedy ALIGN cosine t ALIGN cosine 77.39 85.92
+meaning_of
+allprompts GiT-L-greedy ALIGN cosine allt +t ALIGN cosine 79.35 87.23
+e
+allprompts GiT-L-greedy ALIGN cosine allt +t ALIGN euclidean 76.96 85.85
+e
+allprompts GiT-L-greedy ALIGN cosine allt +t ALIGN manhattan 76.96 86.00
+e
+allprompts GiT-L-beam ALIGN cosine allt +t ALIGN cosine 76.96 85.92
+e
+LTRofDadas(2023)(bestresults) 77.97 85.88
+SemEvalorganizers’baseline 60.48 73.87
+Table 6: LTR results using feature combinations as extracted from our previous 4 approaches (baseline, LLM
+enhancement,textretrieval,imageretrieval). ALIGNisemployedastheVLretriever. Coloredinstancesdenote
+bestresultsoverall,whileboldinstanceshighlightinstancesthatoutperformbestresultsofDadas(2023).
+A B C(goldenimage) D E
+F G H I J
+Figure2: Candidateimagesforthephrase"rowingdory".
+inference. Yang et al. (2023) create a large-scale ambiguous word. They also train a computation-
+knowledge base for VWSD based on online dic- allyheavymodelinacontrastivesettingtotackle
+tionaries to acquire the different senses for each VWSDchallenges. Overall,ourcurrentworkde-
+Q:Whatisthemostappropriatecaptionfortherowingdory? Specifically,weemployedseveralstate-of-the-art
+AnswerChoices: (A)achurchwithatalltowerandahedge.
+modelsforVLretrievaltobuildstrongbaselines,
+(B)anoldairplanesittingontopofarunway. (C)asmall
+showcased the merits of enhancing ambiguous
+boatinthewaterwithtwooars.(D)themen’srowingteamare
+competinginthemen’ssinglesculls.(E)alargeblackshipin phraseswithexternalknowledgestoredinLLMs
+thewaternearaharbor.(F)ashipisonthewaterwithpeople
+andachievedcompetitiverankingresultsbytrain-
+onit. (G)alargebrickbuildingwithasignonit. (H)ablue
+fish(sardines)attheaustralianaquarium.(I)apaintingoffour ing a lightweight retrieval module using features
+fishinthewater.(J)arowboatwithpeopleonitinthewater. extractedfromourindependentexperiments. More-
+over, weobtainedusefulexplanationsthatunveil
+no_CoT thereasoningprocessbehindVWSDviaChain-of-
+Q:Whatisthemostappropriate[...] Thoughtprompting. Ourresultssurpassedconcur-
+A:Themostappropriatecaptionfortherowingdorywould
+rent implementations and given baselines, while
+be(J)arowboatwithpeopleonitinthewater.X
+demonstratingvaluableinsightsthatcandrivefu-
+CoT
+turestate-of-the-artimplementations. Weplanto
+Q:Whatisthemostappropriate[...]
+expandourexperimentationtowardsexploringthe
+A:Let’sthinkstepbystep.
+First,weneedtoidentifythesubjectofthecaption,which use of soft prompting to advance knowledge en-
+istherowingdory. Then,weneedtochooseadescriptive
+hancement,andexplorethepossibilityofharness-
+andinformativecaptionthataccuratelyrepresentstheimage.
+Outofalltheanswerchoices,(C)"asmallboatinthewater ing large-scale knowledge graphs for further en-
+withtwooars"wouldbethemostappropriatecaptionforthe richmentofambiguousphrases. Finally,weview
+rowingdoryasitaccuratelydescribestheimageandprovides
+explainabilityaspectsofVWSDasacriticaldirec-
+relevantinformationabouttheboat.Answers(D),(F),and(J)
+alsoprovidesomeinformationabouttheboatandthepeople tiontobestudiedasfuturework.
+init,buttheyeitherincludeirrelevantinformationoraretoo
+vaguetobeanappropriatecaptionfortheimage. Acknowledgments
+Therefore,amongAthroughJ,theansweris(C)"asmall
+boatinthewaterwithtwooars."
+TheresearchworkwassupportedbytheHellenic
+Foundation for Research and Innovation (HFRI)
+Table 7: VWSD as QA problem example, with CoT
+underthe3rdCallforHFRIPhDFellowships(Fel-
+promptingencouragingtheselectionofthecorrectcan-
+didate. QuestionsQarepresentedtruncated. lowshipNumber5537).
+Limitations
+viatesfromtheaforementionedonesintwomain
+Ourcurrentworkisaccompaniedwithcertainlimi-
+aspects. First,followingtheinclinationoftheNLP
+tations,someofwhichweplantoaddressasfuture
+community towards LLMs we showcase the per-
+work. First of all, due to limited computational
+formance advancements that can be achieved in
+resources,wedonotresorttoverylargeLMs(>7B
+VWSDviaprompting,replacingtheusageofon-
+parameters)inourmachines;however,scaling-up
+line dictionaries for sense disambiguation. With
+wouldprobablyprovideadvancedknowledgeen-
+theconstantimprovementofLLMcapabilitieswe
+hancement for short phrases, an assumption that
+canalsoexpectmoreadvancedphraseenrichment,
+canbestrengthenedbytheadvancedresultsoccur-
+and thus further boost VWSD performance. Sec-
+ring when incorporating the 175B GPT-3 in our
+ond, we do not train or fine-tune heavy models
+experimental pipelines. The usage of GPT-3 and
+for the ranking stage: our LTR module requires
+GPT-3.5-turbo was focused on a targeted experi-
+20 minutes training on a CPU, thus being a very
+mental subset due to high pricing. On the other
+computationallyaffordableoptionforretrieval.
+hand, with respect to this limitation, we chose to
+A potential combination of techniques men-
+distribute our efforts across varying approaches
+tionedinZhangetal.(2023b);Patiletal.(2023);
+for VWSD rather than focusing to delve into a
+Yang et al. (2023) and ours can yield even more
+specificdirection(e.g. LLM-basedknowledgeen-
+impressive results for VWSD, as long as related
+hancement)andexplorethecontributionoflarger
+computationalconsiderationsarerelaxed.
+LMs. Moreover, under this resource limitation,
+ourresultscandriveresearchersthathaveaccess
+5 Conclusion
+tolimitedcomputationalresourcestoreplicateand
+In this work, we provided an extensive founda- extendouranalysis,insteadofrestrictingthisexper-
+tional experimentation and analysis on the novel imentationtoinstitutionsorindividualresearchers
+VisualWordSenseDisambiguation(VWSD)task. withhigherbudgets.
+Other than that, the LLM-enhancement tech- ofretrievingfalseorinaccurateinformation,which
+niquefacestherisksassociatedwithhallucinations howeverdoesnotinduceseriousimplicationsinits
+anduntruthfulgeneration,whichcannotbeeasily currentusage,giventhenon-criticalnatureofthis
+detected or resolved, according to related state- dataset. Overall,wedonotanticipateanyethical
+of-the-art research (Bang et al., 2023; Mündler issuesarisingfromourwork.
+etal.,2023;AzariaandMitchell,2023;Zhengetal.,
+2023; Zhang et al., 2023a). Such a shortcoming
+References
+couldnegativelyimpactourresults,sincewehave
+notinvestigatedwhethertherearehallucinatedor BadrAlKhamissi,MillicentLi,AsliCelikyilmaz,Mona
+untruthful enhancements, especially since some Diab,andMarjanGhazvininejad.2022. Areviewon
+languagemodelsasknowledgebases.
+phrasesmayrequirespecificdomainknowledgeto
+beevaluated(forexample,andromedatreeisnotan
+Amos Azaria and Tom Mitchell. 2023. The internal
+everydayterm,andevenahumanneedstoconsult stateofanllmknowswhenitslying.
+an encyclopedia to evaluate if a related enhance-
+YejinBang,SamuelCahyawijaya,NayeonLee,Wen-
+ment is correct). To the best of our knowledge,
+liangDai,DanSu,BryanWilie,HolyLovenia,Ziwei
+there has been no open-source tool to accurately Ji, Tiezheng Yu, Willy Chung, Quyet V. Do, Yan
+andfaithfullydetecthallucinations,thereforeasfor Xu,andPascaleFung.2023. Amultitask,multilin-
+now, we cannot resolve this limitation. However, gual,multimodalevaluationofchatgptonreasoning,
+hallucination,andinteractivity.
+wecouldpossiblymitigatehallucinationsandun-
+truthfulgenerationbycombiningLLMknowledge TomB.Brown,BenjaminMann,NickRyder,Melanie
+withknowledgegraphs,whichcanberegardedas Subbiah, Jared Kaplan, Prafulla Dhariwal, Arvind
+Neelakantan,PranavShyam,GirishSastry,Amanda
+morereliableknowledgesourcesforenhancingVL
+Askell, Sandhini Agarwal, Ariel Herbert-Voss,
+tasks (Lymperaiou and Stamou, 2023). We will
+Gretchen Krueger, Tom Henighan, Rewon Child,
+investigatesuchhybridtechniquesinfuturework. Aditya Ramesh, Daniel M. Ziegler, Jeffrey Wu,
+Finally, we have focused our experimentation ClemensWinter,ChristopherHesse,MarkChen,Eric
+Sigler,MateuszLitwin,ScottGray,BenjaminChess,
+ontheEnglishlanguageinordertodevelopava-
+Jack Clark, Christopher Berner, Sam McCandlish,
+rietyoftechniquesforVWSDratherthantesting
+Alec Radford, Ilya Sutskever, and Dario Amodei.
+an applicable subset of them on other languages. 2020. Languagemodelsarefew-shotlearners.
+Nevertheless,weplantoaddressthislimitationas
+Sławomir Dadas. 2023. Opi at semeval 2023 task 1:
+futurework.
+Image-textembeddingsandmultimodalinformation
+retrievalforvisualwordsensedisambiguation.
+EthicsStatement
+Jacob Devlin, Ming-Wei Chang, Kenton Lee, and
+Our work involves a newly introduced publicly
+KristinaToutanova.2019. Bert: Pre-trainingofdeep
+available dataset released under the CC-BY-NC bidirectionaltransformersforlanguageunderstand-
+4.0licenseandcanbeaccessedbyanyresearcher. ing. ArXiv,abs/1810.04805.
+Throughoutthiswork,weadheredtothefairdata
+Alexey Dosovitskiy, Lucas Beyer, Alexander
+usagepolicy, asrequiredbythedatasetcreators4. Kolesnikov, Dirk Weissenborn, Xiaohua Zhai,
+Weemploylanguagemodelsupto6.7Bparameters Thomas Unterthiner, Mostafa Dehghani, Matthias
+whichwererunonamachinewitha16GBGPU. Minderer, Georg Heigold, Sylvain Gelly, Jakob
+Uszkoreit, and Neil Houlsby. 2021. An image
+Suchcomputationalresourcesarerathereasilyac-
+is worth 16x16 words: Transformers for image
+cessible by most research institutions; therefore, recognitionatscale. InInternationalConferenceon
+throughout this paper we promote fair and repro- LearningRepresentations.
+ducibleresearch,eliminatingtheneedforhigh-end
+ZhifanFeng,QiWang,WenbinJiang,YajuanLyu,and
+computational budget. Accessing larger models
+Yong Zhu. 2020. Knowledge-enhanced named en-
+suchasGPT-3andGPT-3.5-turbowasfeasiblevia titydisambiguationforshorttext. InProceedingsof
+theirAPIs,whichdonotimposecomputationallim- the1stConferenceoftheAsia-PacificChapterofthe
+Association for Computational Linguistics and the
+itations from the user’s side. The task itself does
+10thInternationalJointConferenceonNaturalLan-
+notinvolveanyobviousrisks,asittargetstoexpand
+guage Processing, pages 735–744, Suzhou, China.
+the field of multimodal retrieval. Harnessing lan- AssociationforComputationalLinguistics.
+guagemodelsasknowledgebasesimposestherisk
+ZhichengHuang,ZhaoyangZeng,YupanHuang,Bei
+4https://raganato.github.io/vwsd/ Liu, Dongmei Fu, and Jianlong Fu. 2021. Seeing
+out of the box: End-to-end pre-training for vision- NielsMündler,JingxuanHe,SlobodanJenko,andMar-
+languagerepresentationlearning. tinVechev.2023. Self-contradictoryhallucinations
+oflargelanguagemodels: Evaluation,detectionand
+ChaoJia,YinfeiYang,YeXia,Yi-TingChen,Zarana mitigation.
+Parekh, Hieu Pham, Quoc V. Le, Yunhsuan Sung,
+Rostislav Nedelchev, Debanjan Chaudhuri, Jens
+Zhen Li, and Tom Duerig. 2021. Scaling up vi-
+Lehmann, and Asja Fischer. 2020. End-to-end en-
+sualandvision-languagerepresentationlearningwith
+titylinkinganddisambiguationleveragingwordand
+noisytextsupervision.
+knowledgegraphembeddings.
+Guolin Ke, Qi Meng, Thomas Finley, Taifeng Wang,
+Rahul Patil, Pinal Patel, Charin Patel, and Mangal
+WeiChen,WeidongMa,QiweiYe,andTie-YanLiu.
+Verma. 2023. Rahul patil at SemEval-2023 task
+2017. Lightgbm:Ahighlyefficientgradientboosting
+1: V-WSD: Visual word sense disambiguation. In
+decision tree. In Advances in Neural Information Proceedingsofthe17thInternationalWorkshopon
+ProcessingSystems,volume30.CurranAssociates,
+SemanticEvaluation(SemEval-2023),pages1271–
+Inc.
+1275, Toronto, Canada. Association for Computa-
+tionalLinguistics.
+WonjaeKim,BokyungSon,andIldooKim.2021. Vilt:
+Vision-and-language transformer without convolu- Fabio Petroni, Tim Rocktäschel, Patrick Lewis, An-
+tionorregionsupervision. tonBakhtin,YuxiangWu,AlexanderH.Miller,and
+SebastianRiedel.2019. Languagemodelsasknowl-
+TakeshiKojima,ShixiangShaneGu,MachelReid,Yu- edgebases?
+takaMatsuo,andYusukeIwasawa.2023. Largelan-
+AlecRadford,JongWookKim,ChrisHallacy,Aditya
+guagemodelsarezero-shotreasoners.
+Ramesh,GabrielGoh,SandhiniAgarwal,GirishSas-
+try, Amanda Askell, Pamela Mishkin, Jack Clark,
+AnastasiaKritharoula,MariaLymperaiou,andGiorgos
+GretchenKrueger,andIlyaSutskever.2021. Learn-
+Stamou.2023. Languagemodelsasknowledgebases
+ingtransferablevisualmodelsfromnaturallanguage
+forvisualwordsensedisambiguation.
+supervision.
+Junnan Li, Dongxu Li, Caiming Xiong, and Steven AlecRadford,JeffreyWu,RewonChild,DavidLuan,
+Hoi.2022. Blip: Bootstrappinglanguage-imagepre- DarioAmodei,IlyaSutskever,etal.2019. Language
+training for unified vision-language understanding modelsareunsupervisedmultitasklearners. OpenAI
+andgeneration. blog,1(8):9.
+Tsung-YiLin,MichaelMaire,SergeBelongie,Lubomir AlessandroRaganato,IacerCalixto,AsahiUshio,Jose
+Bourdev,RossGirshick,JamesHays,PietroPerona, Camacho-Collados,andMohammadTaherPilehvar.
+DevaRamanan,C.LawrenceZitnick,andPiotrDol- 2023. SemEval-2023 Task 1: Visual Word Sense
+lár.2015. Microsoftcoco: Commonobjectsincon- Disambiguation. InProceedingsofthe17thInterna-
+text. tionalWorkshoponSemanticEvaluation(SemEval-
+2023), Toronto, Canada.AssociationforComputa-
+tionalLinguistics.
+PengfeiLiu,WeizheYuan,JinlanFu,ZhengbaoJiang,
+Hiroaki Hayashi, and Graham Neubig. 2021. Pre-
+NilsReimersandIrynaGurevych.2019. Sentence-bert:
+train, prompt, and predict: A systematic survey of
+Sentenceembeddingsusingsiamesebert-networks.
+promptingmethodsinnaturallanguageprocessing.
+InProceedingsofthe2019ConferenceonEmpirical
+MethodsinNaturalLanguageProcessing.Associa-
+JiasenLu, DhruvBatra, DeviParikh, andStefanLee.
+tionforComputationalLinguistics.
+2019. Vilbert: Pretrainingtask-agnosticvisiolinguis-
+ticrepresentationsforvision-and-languagetasks. HaoTanandMohitBansal. 2019. Lxmert: Learning
+cross-modality encoder representations from trans-
+MariaLymperaiouandGiorgosStamou.2022. Asurvey formers.
+onknowledge-enhancedmultimodallearning.
+RossTaylor,MarcinKardas,GuillemCucurull,Thomas
+Scialom,AnthonyHartshorn,ElvisSaravia,Andrew
+Maria Lymperaiou and Giorgos Stamou. 2023. The
+Poulton, Viktor Kerkez, and Robert Stojnic. 2022.
+contributionofknowledgeinvisiolinguisticlearning:
+Galactica: Alargelanguagemodelforscience.
+Asurveyontasksandchallenges.
+Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob
+NiklasMuennighoff,ThomasWang,LintangSutawika,
+Uszkoreit, Llion Jones, Aidan N Gomez, Lukasz
+Adam Roberts, Stella Biderman, Teven Le Scao,
+Kaiser,andIlliaPolosukhin.2017. Attentionisall
+MSaifulBari, ShengShen, Zheng-XinYong, Hai- youneed. InAdvancesinNeuralInformationPro-
+leySchoelkopf,XiangruTang,DragomirRadev,Al- cessingSystems,volume30.CurranAssociates,Inc.
+hamFikriAji,KhalidAlmubarak,SamuelAlbanie,
+Zaid Alyafeai, Albert Webson, Edward Raff, and DennyVrandecˇic´ andMarkusKrötzsch.2014. Wiki-
+Colin Raffel. 2023. Crosslingual generalization data: Afreecollaborativeknowledgebase. Commun.
+throughmultitaskfinetuning. ACM,57(10):78–85.
+JianfengWang,ZhengyuanYang,XiaoweiHu,Linjie Split #Samples Phraselength
+Li, KevinLin, ZheGan, ZichengLiu, CeLiu, and 1word 2words 3words 4words
+LijuanWang.2022. Git: Agenerativeimage-to-text
+Train 12869 0 12868 0 0
+transformerforvisionandlanguage.
+Test 463 1 445 17 1
+ZiruiWang,JiahuiYu,AdamsWeiYu,ZihangDai,Yu-
+Table8: Datasetstatistics
+liaTsvetkov,andYuanCao.2021. Simvlm: Simple
+visuallanguagemodelpretrainingwithweaksuper-
+vision.
+B Computationalresources
+JasonWei,XuezhiWang,DaleSchuurmans,Maarten
+InTab. 9we analyzetheresources usedthrough-
+Bosma,BrianIchter,FeiXia,EdChi,QuocLe,and
+DennyZhou.2023. Chain-of-thoughtpromptingelic- out our experiments, as well as the time needed
+itsreasoninginlargelanguagemodels. for inference on the entire test set of 463 sam-
+ples. Regarding captioners, we demonstrate the
+QihaoYang,YongLi,XuelinWang,ShunhaoLi,and
+timeneededforonebatchof1000images. Asfor
+Tianyong Hao. 2023. TAM of SCNU at SemEval-
+LTR, training time refers to the train split exclu-
+2023 task 1: FCLL: A fine-grained contrastive
+language-imagelearningmodelforcross-language sively(12869samples).
+visualwordsensedisambiguation. InProceedingsof
+the17thInternationalWorkshoponSemanticEval- C AdditionalLLM-enhancementresults
+uation (SemEval-2023), pages 506–511, Toronto,
+Canada.AssociationforComputationalLinguistics. Quantitativeresults InTab. 12,13wepresent
+the continuation of Tab. 3 results. LLMs com-
+PeterYoung,AliceLai,MicahHodosh,andJuliaHock-
+bined with VL retrievers without penalty. Since
+enmaier. 2014. From image descriptions to visual
+smalleropen-sourceLLMsdonotinvolvepricing
+denotations: Newsimilaritymetricsforsemanticin-
+ferenceovereventdescriptions. Transactionsofthe limitations, we attempt to experiment with some
+AssociationforComputationalLinguistics,2:67–78. additional prompts, mostly paraphrasings of the
+"describe"prompt,aspresentedinTab. 10. Tothis
+Muru Zhang, Ofir Press, William Merrill, Alisa Liu,
+end, results for OPT-2.7B and BLOOMZ 3B are
+and Noah A. Smith. 2023a. How language model
+hallucinationscansnowball. extendedforthesenewprompts(Tab. 11).
+Asageneraltakeaway,wecanverifytheclaim
+Susan Zhang, Stephen Roller, Naman Goyal, Mikel thatLLMsinthelow-billionparameterscaledonot
+Artetxe,MoyaChen,ShuohuiChen,ChristopherDe-
+containtheappropriateknowledgetoprovidehigh-
+wan,MonaDiab,XianLi,XiVictoriaLin,TodorMi-
+qualitycontexttosemanticallyenrichambiguous
+haylov,MyleOtt,SamShleifer,KurtShuster,Daniel
+Simig, Punit Singh Koura, Anjali Sridhar, Tianlu phrases. Forexample,accordingtoTab. 12,OPT-
+Wang,andLukeZettlemoyer.2022. Opt: Openpre- 6.7B enhancement leads to scores slightly below
+trainedtransformerlanguagemodels.
+thenon-enhancedbaselinesinmostcases,irrespec-
+tively of the incorporation of penalty in the VL
+XudongZhang,TiangeZhen,JingZhang,YujinWang,
+andSongLiu.2023b. SRCBatSemEval-2023task retrieval module. The smaller models of GPT2-
+1: Promptbasedandcross-modalretrievalenhanced XL(1.5B)andBLOOMZ-1.7Bshowcasesomeim-
+visualwordsensedisambiguation. InProceedingsof
+provements compared to the respective baselines
+the17thInternationalWorkshoponSemanticEval-
+when no penalty is used, but the results remain
+uation (SemEval-2023), pages 439–446, Toronto,
+Canada.AssociationforComputationalLinguistics. lowcomparedtotheonesreportedinTab. 3. We
+also observe an interesting variability regarding
+ShenZheng,JieHuang,andKevinChen-ChuanChang. whichpromptsinducebetterenhancementresults,
+2023. Whydoeschatgptfallshortinprovidingtruth-
+withdifferentpromptsperformingbetterorworse
+fulanswers?
+acrossmodels. This verifiesthat promptsare not
+transferable, i.e. a prompt that performs well in
+A Datasetdetails
+conjunctionwithacertainmodeldoesnotnecessar-
+In Tab. 8 statistics for VWSD are presented. All ilyperformequallywellwheninsertedtoanother
+trainandtestsamplescontain10imagecandidates. model. Intotal,allmodelsinTab. 12,13demon-
+The phrase length demonstrates negligible differ- stratecomparableperformancetoeachother;even
+ences,withthevastmajorityofphrasescomprised though the reported metrics are not discouraging
+of2words. Datasamplesandofficialsplitscanbe fromtheperspectiveofapotentialrealusecase(e.g.
+foundinhttps://raganato.github.io/vwsd/. animageretrievalplatform),especiallygiventhe
+Model Hardware Time(hours)
+VLTransformersforretrieval
+CLIP GPU-NVIDIATeslaK4012GB 00:10h
+ALIGN GPU-NVIDIATeslaK4012GB 00:08h
+CLIP-L GPU-NVIDIATeslaK4012GB 00:15h
+BLIP GPU-NVIDIATeslaK4012GB 00:20h
+BLIP-L GPU-NVIDIATeslaK4012GB 00:45h
+LLMsforphraseenhancement
+GPT2XL1.5B GPU-NVIDIATeslaK4012GB 00:30h
+OPT2.7B GPU-NVIDIATeslaK4012GB 01:45h
+BLOOMZ1.7B GPU-NVIDIATeslaK4012GB 00:15h
+BLOOMZ3B GPU12.8GB 00:20h
+OPT6.7B 2xGPUT414.8GB 02:00h
+Galactica6.7B 2xGPUT414.8GB 02:15h
+ImageCaptioners
+BLIP(batcheswith1000imageseach) GPU-NVIDIATeslaK4012GB ∼02:00h/1000images
+BLIP-L(batcheswith1000imageseach) GPU-NVIDIATeslaK4012GB ∼03:00h/1000images
+GiT(batcheswith1000imageseach) GPU-NVIDIATeslaK4012GB ∼03:00h/1000images
+GiT-L GPU-NVIDIATeslaK4012GB ∼04:00h/1000images
+SentenceTransformers
+xlm-r-distilroberta NVIDIATITANXp12GB <00:08h
+stsb-roberta-base NVIDIATITANXp12GB <00:08h
+stsb-distilroberta-base NVIDIATITANXp12GB <00:04h
+stsb-mpnet-base NVIDIATITANXp12GB <00:07h
+all-MiniLM-L6 NVIDIATITANXp12GB <00:03h
+all-MiniLM-L12 NVIDIATITANXp12GB <00:04h
+all-mpnet-base NVIDIATITANXp12GB <00:06h
+multi-QA-distilbert NVIDIATITANXp12GB <00:06h
+multi-QA-MiniLM-L6 NVIDIATITANXp12GB <00:04h
+LTR
+LTRtraining CPU-16GBRAM ∼00:20h
+LTRprediction CPU-16GBRAM <00:01h
+Table9: Resourcesusedforourexperimentsandtimeneeded
+Promptname Prompttemplate labelisthetop-1choiceoftheVLmodel). InFig.
+would_say “To describe <phrase> I would say 3candidatescorrespondingtothephrase"greeting
+that” card"arepresented,withcandidateCbeingthecor-
+could_describe “Icoulddescribe<phrase>as” rect ground truth answer. The baseline predicted
+write_description “Writeadescriptionof<phrase>.” labelrankingfromCLIPis: [’G’,’C’,’D’,’E’,’J’,
+’B’,’I’,’F’,’H’,’A’];therefore,thegoldenlabelis
+Table10: PromptsforphraseenhancementviaLLMs.
+rankedsecond. Wethencreatetheenhancements
+for "greeting card" presented in Tab. 14, accom-
+panied by their label predictions using CLIP. As
+difficultyofVWSD,performanceachievedusing
+concluded by Tab. 14, enhancements can be ei-
+the multi-billion parameter models of GPT3 and
+therbeneficial("describe"promptenhancement),
+GPT-3.5 turbo set higher expectation for related
+ornot(enhancementsapartfrom"describe")with
+VWSDimplementations.
+respecttotheprediction. However,byqualitatively
+evaluatingthoseenhancements,weviewthemas
+Qualitative results We showcase some LLM-
+highlysensibleandinformative,excludingthe"ex-
+enhancementexamplesongivenphrases,accompa-
+act" phrase enhancement which is truncated (we
+niedbythelabelpredictionranking(theleftmost
+CLIP CLIP-L ALIGN BLIP BLIP-L BLIP BLIP-L
+C C F F
+acc MRR acc MRR acc MRR acc MRR acc MRR acc MRR acc MRR
+Withpenalty
+Baseline 63.28 76.27 62.85 76.24 68.90 80.00 60.90 74.33 64.58 77.51 60.47 73.87 69.76 80.42
+TPO
+would_say. 62.53 76.07 65.17 78.02 64.15 76.92 63.07 75.22 61.99 74.91 57.02 70.74 65.44 77.33
+could_desc. 59.83 73.70 56.99 72.31 68.68 80.41 65.23 77.44 66.09 77.44 57.45 71.88 68.25 79.57
+write_desc. 56.44 71.82 63.37 76.52 65.44 77.68 61.99 74.65 62.42 75.29 54.64 69.49 64.79 76.70
+ZMOOLB would_say. 64.79 77.49 68.03 79.21 70.19 80.66 65.23 77.45 66.31 78.16 60.69 73.92 68.68 79.81
+could_desc. 65.23 77.40 65.66 78.09 69.11 79.87 65.23 77.38 67.17 78.75 61.34 73.87 69.33 80.18
+write_desc. 65.73 77.16 66.81 79.16 68.68 80.07 62.85 76.23 64.36 77.61 58.53 72.21 67.39 79.17
+Withoutpenalty
+Baseline 59.18 72.94 60.69 74.42 65.66 77.48 57.24 72.07 61.34 75.88 57.67 71.96 65.01 77.86
+TPO
+would_say. 61.21 74.61 62.27 75.92 60.69 74.45 58.75 72.16 58.75 72.69 53.56 68.09 61.56 75.02
+could_desc. 56.77 71.43 54.37 69.93 66.74 78.48 61.56 75.25 62.42 75.56 54.43 69.98 65.01 77.61
+write_desc. 54.95 70.44 59.16 73.87 63.50 76.13 56.80 71.49 59.83 73.35 50.76 66.97 63.07 75.67
+ZMOOLB would_say. 61.34 74.87 64.15 76.57 66.95 78.53 62.20 75.50 63.28 76.23 56.80 71.73 65.23 77.70
+could_desc. 61.56 74.96 61.77 75.50 66.95 78.10 62.85 75.85 65.23 77.25 57.24 71.49 67.82 79.06
+write_desc. 62.26 74.85 63.56 77.02 65.87 77.75 60.91 74.43 62.42 75.68 55.51 70.35 65.01 77.40
+Table11: Resultsforzero-shotLLM-basedenhancement,asacontinuationofresultsforOPT-2.7BandBLOOMZ-
+3B(Tab. 3). BoldnumbersindicatebestresultsforeachLLM.
+cannoteasilypredefinetheoptimallengthforthe D Additionaltextretrievalresults
+generatedtext,andvariationsinlengthmayresult
+In Tab. 16 we present some additional results
+invaryingenhancementresults). Thisobservation
+regarding phrase-caption retrieval using ALIGN
+motivates our exploration towards more explain-
+asthemodeltoobtaintextualrepresentationsfor
+ablesolutions,suchastheonesinvolvingChain-
+phrases and captions. Cosine similarity and Eu-
+of-Thoughtprompting.
+clideandistanceareutilizedasameasureofsimi-
+larity(wealsoregarddistanceasameasureofsim-
+AnotherexampleregardingLLM-enhancement ilarityfornarrativesimplicity). Moretext-to-text
+is exhibited in Fig. 4 regarding the ambiguous retrievalresultsemployingotherVLtransformers
+phrase"suedechamois". ThebaselineCLIPlabel fortextembeddingsarepresentedinTab. 17Addi-
+prediction is [’A’, ’G’, ’C’, ’E’, ’I’, ’B’, ’F’, ’J’, tionally,resultsinvolvingpurelytextualsentence
+’H’, ’D’], ranking the golden candidate G in the transformersfine-tunedonsemanticsimilarityfor
+secondposition. ResultsafterGPT-3enhancement phrase and caption embeddings are presented in
+arepresentedinTab. 15. Weobservethatenhance- Tab. 18. Ingeneral,theexclusivelytextualmodels
+ments are highly relevant to the meaning of the of Tab. 18 fall behind the performance achieved
+ambiguousphrase,anddifferentpromptsshowsat- whenVLtransformers(Tab. 16,17),areemployed
+isfactoryconsistencyregardingtheenrichedphrase forthetextualrepresentations.
+theyprovide. Nevertheless,retrievalresultsdiffer
+fordifferentprompts,whenCLIPisusedastheVL E AdditionalLTRresults
+retriever between the enhanced phrase t and the
+e
+candidateimagesi. Thisisnotanexpectedbehav- As a continuation of Tab. 6, LTR results are pre-
+ior in terms of the VL retriever employed, since sented in Tab. 19, which contains results when
+semantically similar phrases should yield similar CLIP is exploited as the VL retriever in place of
+(or ideally identical) ranking results. Therefore, ALIGN.Inbothcases,GPT-3isusedastheLLM
+weverifytheneedforretrievalexplanationsand forphraseenhancement.
+weconcludethattherobustnessofVLmodels-at As in the case of ALIGN, the incorporation of
+leastforthetaskofmultimodalretrieval-shouldbe LLM-enhancementfeaturesintheLTRtrainingof-
+anissueofoutmostimportance,whensuchmodels fersbestresults. Thoseresultsareboostedevenfur-
+aredesignedanddeployed. therwhencombiningvisualfeatures,asoccurring
+CLIP CLIP-L ALIGN BLIP BLIP-L BLIP BLIP-L
+C C F F
+acc MRR acc MRR acc MRR acc MRR acc MRR acc MRR acc MRR
+Withpenalty
+Baseline 63.28 76.27 62.85 76.24 68.90 80.00 60.90 74.33 64.58 77.51 60.47 73.87 69.76 80.42
+B5.1-LX-2TPG
+exact 53.88 69.51 56.32 71.12 53.35 69.57 47.52 63.67 47.95 64.49 41.90 59.79 50.54 66.96
+what_is 61.22 74.89 61.44 75.83 63.93 76.33 57.02 70.42 57.67 71.78 51.62 67.78 61.34 74.42
+describe 57.58 72.38 60.82 74.82 58.10 72.67 54.43 68.78 53.78 69.38 47.73 65.08 57.24 71.80
+meaning_of 60.82 75.00 65.58 77.55 64.15 76.65 58.75 72.64 59.18 73.27 52.92 68.27 63.07 75.96
+would_say. 59.74 73.86 62.34 75.55 59.40 73.46 52.92 67.80 53.35 68.66 48.16 64.47 55.94 70.67
+could_desc. 57.08 71.87 59.26 73.23 58.10 72.49 52.05 68.22 55.08 70.18 46.87 64.44 57.02 72.03
+write_desc. 58.90 72.87 62.42 75.63 60.26 74.37 50.76 67.19 54.21 69.57 48.60 65.12 60.04 73.43
+B7.1-ZMOOLB
+exact 61.44 74.50 64.92 77.42 65.87 77.60 64.58 76.28 65.66 77.13 59.18 72.70 67.39 78.67
+what_is 63.71 76.41 66.74 78.92 65.44 77.65 63.28 75.95 65.23 77.68 58.32 72.06 66.52 78.30
+describe 64.72 77.21 64.07 77.47 68.90 80.28 61.34 75.61 64.36 77.45 58.53 72.41 66.74 78.81
+meaning_of 62.63 76.38 65.01 78.17 66.74 78.27 63.50 76.44 65.44 78.29 58.53 72.50 68.25 79.74
+would_say. 63.20 76.36 66.45 78.20 70.41 80.70 64.15 76.77 66.95 78.66 57.88 72.20 68.25 79.81
+could_desc. 64.86 77.13 63.99 77.10 69.33 79.96 62.42 75.65 65.87 78.17 58.10 72.47 68.47 79.89
+write_desc. 62.61 76.00 65.93 78.07 68.68 79.70 60.04 73.52 64.58 77.13 57.02 71.19 67.17 78.66
+B7.6-TPO
+exact 62.63 75.84 62.20 75.54 67.82 79.24 60.91 74.23 64.79 77.58 59.83 73.40 69.11 79.94
+what_is 61.79 75.70 64.63 77.68 64.79 77.23 61.77 75.01 63.07 76.16 57.88 71.79 65.87 77.77
+describe 64.43 76.91 65.73 78.24 65.23 77.89 61.12 74.67 63.93 77.07 56.16 71.30 66.09 78.38
+meaning_of 62.17 75.84 63.61 77.19 66.74 78.47 63.28 75.93 65.44 77.43 59.83 72.96 68.03 78.75
+would_say. 63.98 76.77 61.14 75.49 68.03 78.95 61.77 74.73 60.26 74.38 55.51 70.23 65.87 77.70
+could_desc. 58.59 73.21 61.45 74.60 65.44 77.76 63.07 75.34 64.36 76.09 58.32 71.86 65.23 77.28
+write_desc. 60.38 74.46 60.61 75.19 64.58 77.04 57.02 71.13 61.34 74.24 53.13 68.91 64.58 76.70
+Withoutpenalty
+Baseline 59.18 72.94 60.69 74.42 65.66 77.48 57.24 72.07 61.34 75.88 57.67 71.96 65.01 77.86
+B5.1LX-2TPG
+exact 49.45 66.24 53.66 69.09 51.19 67.22 44.28 61.19 45.57 62.60 35.85 55.50 47.52 64.43
+what_is 58.61 72.59 58.61 73.62 60.91 74.25 54.21 68.22 53.56 69.03 46.00 64.08 55.94 70.71
+describe 54.76 70.24 56.49 72.14 55.94 70.55 50.97 66.20 50.11 66.62 44.71 62.21 55.51 70.07
+meaning_of 58.44 72.97 62.55 75.60 61.56 74.49 55.08 70.24 54.64 70.76 50.32 66.74 57.02 72.54
+would_say. 54.51 69.99 59.34 73.54 57.45 71.77 47.52 64.76 48.16 65.10 45.36 62.79 56.16 70.50
+could_desc. 51.85 68.28 55.77 70.84 54.64 69.73 48.81 65.20 51.19 66.97 42.76 61.44 53.13 68.74
+write_desc. 54.51 69.99 59.34 73.54 57.45 71.77 47.52 64.76 48.16 65.10 45.36 62.79 56.16 70.50
+7.1ZMOOLB
+exact 58.82 72.23 61.66 75.05 63.28 75.56 59.18 72.96 62.85 74.99 56.37 70.60 63.50 76.20
+what_is 62.42 75.30 65.01 77.33 63.07 75.58 59.40 73.50 62.85 76.00 56.16 70.54 65.23 77.26
+describe 60.82 74.68 62.99 76.05 66.52 78.51 59.83 74.59 62.63 76.47 53.56 69.84 63.71 77.06
+meaning_of 58.75 73.78 64.15 77.03 64.36 76.44 60.48 74.34 61.99 76.13 56.16 70.61 65.01 77.89
+would_say. 59.96 73.99 63.64 76.37 68.03 78.94 61.56 74.87 64.79 77.09 55.94 70.84 66.31 78.34
+could_desc. 60.74 74.63 60.52 74.64 67.17 78.20 60.69 74.14 63.50 76.46 55.72 70.94 66.31 78.54
+write_desc. 59.29 73.49 64.82 77.08 66.31 77.86 57.67 71.61 61.34 74.76 52.48 68.47 64.36 76.72
+B7.6TPO
+exact 58.75 72.63 59.61 73.86 64.15 76.57 57.24 71.96 61.12 75.83 56.80 71.40 64.79 77.66
+what_is 60.48 74.10 62.45 75.89 61.77 75.18 57.88 72.27 61.77 74.89 52.92 68.83 61.99 75.23
+describe 60.74 74.28 63.12 76.19 63.28 76.26 59.40 73.03 58.96 73.86 52.92 69.18 62.63 76.13
+meaning_of 59.28 73.77 62.17 76.04 63.71 76.31 52.92 74.37 61.99 75.47 55.94 70.67 65.01 77.27
+would_say. 60.90 74.51 58.29 73.30 65.87 77.33 60.26 73.65 57.24 72.50 54.21 69.13 60.69 74.78
+could_desc. 55.29 70.73 59.25 72.95 62.20 75.18 60.04 73.27 59.83 73.50 52.70 68.52 60.26 74.46
+write_desc. 56.60 71.61 57.31 72.84 62.85 75.52 55.08 69.45 58.32 71.93 49.68 66.35 60.48 74.51
+Table12: Resultsforzero-shotLLM-basedenhancement. Boldnumbersindicatebestresultsforeachmodel.
+CLIP CLIP-L ALIGN BLIP BLIP-L BLIP BLIP-L
+C C F F
+acc MRR acc MRR acc MRR acc MRR acc MRR acc MRR acc MRR
+Withpenalty
+Baseline 63.28 76.27 62.85 76.24 68.90 80.00 60.90 74.33 64.58 77.51 60.47 73.87 69.76 80.42
+B7.6acitcalaG
+exact 49.66 66.59 56.24 71.44 52.48 68.45 43.41 60.82 50.32 66.95 41.90 59.68 54.00 70.23
+what_is 60.13 74.40 62.78 76.11 62.63 75.50 57.88 72.62 61.12 74.59 53.56 68.73 64.79 76.81
+describe 59.61 74.04 60.48 75.13 62.20 75.80 55.51 70.74 56.59 71.25 52.92 68.13 58.96 73.49
+meaning_of 60.09 74.69 60.32 74.80 62.20 75.04 61.56 74.57 61.34 74.99 52.27 68.02 61.99 75.49
+would_say. 57.78 73.32 59.75 74.52 56.16 71.45 55.29 70.42 55.72 70.92 51.19 66.89 60.26 74.05
+could_desc. 62.45 75.98 63.97 76.62 58.10 72.89 55.51 70.00 56.59 71.38 49.24 66.15 60.48 74.29
+write_desc. 58.54 73.10 60.75 74.93 57.88 72.64 55.72 70.27 56.16 70.83 49.24 64.97 60.91 74.25
+Withoutpenalty
+Baseline 59.18 72.94 60.69 74.42 65.66 77.48 57.24 72.07 61.34 75.88 57.67 71.96 65.01 77.86
+B7.6acitcalaG
+exact 45.35 63.57 53.97 69.58 49.89 66.30 38.66 57.14 47.08 64.40 38.01 56.83 50.76 67.94
+what_is 56.61 71.74 59.91 73.82 60.91 74.12 55.72 70.32 58.75 72.82 52.27 67.77 61.77 74.84
+describe 56.80 71.54 58.53 73.31 59.61 73.85 53.56 69.03 80.28 67.91 50.97 66.30 54.43 70.60
+meaning_of 56.69 72.21 56.24 72.63 58.96 72.64 55.72 70.79 56.37 71.65 50.11 66.57 58.32 72.90
+would_say. 54.32 70.73 56.30 72.15 52.05 68.27 51.40 67.87 50.97 67.77 46.87 63.77 54.21 70.28
+could_desc. 60.26 74.07 62.23 75.20 54.86 69.99 54.21 68.60 54.21 69.24 45.57 63.44 58.32 72.09
+write_desc. 55.65 71.09 57.21 72.40 54.64 70.47 50.11 66.71 51.62 67.61 43.84 61.69 57.88 72.33
+Table13: Resultsforzero-shotLLM-basedenhancementforLLMscontaining6.7Bparameters. Boldnumbers
+indicatebestresultsforeachmodel.
+A B C(Goldimage) D E
+F G H I J
+Figure3: Candidateimagesforthephrase"greetingcard".
+A B C D E
+F G(Goldimage) H I J
+Figure4: Candidateimagesforthephrase"suedechamois".
+Promptname Enhancedphrase
+greetingcardDear[Name],Ihopethiscardfindsyouingoodhealthandspirits.Iwantedtotakeamomenttolet
+exact
+youknowhowmuchIappreciateyouandallthatyoudo.YouareanamazingpersonandIamsoluckytohave
+youinmylife.Thankyouforalwaysbeingthereforme,foryourkindwordsandsupport,andforthecountless
+CLIPpredictions:[’G’,’C’,’B’,’E’,’H’,’I’,’J’,’D’,’F’,’A’]
+Whatisgreetingcard?Agreetingcardisacardwithamessageofcelebration,congratulations,orothersentiment,
+what_is
+typicallysenttosomeoneonaspecialoccasionsuchasabirthday,anniversary,orholiday.Greetingcardsoften
+featureartwork,photographs,orillustrations,andareusuallyprintedonhigh-qualitypaperstock.
+CLIPpredictions:[’G’,’D’,’B’,’J’,’E’,’H’,’C’,’F’,’I’,’A’]
+Describegreetingcard.Agreetingcardisasmall,decoratedcardthatissenttosomeonetoexpressasentimentor
+describe
+tocelebrateaspecialoccasion.Greetingcardstypicallyfeatureartwork,amessage,andsometimesasmallgift
+suchasatokenortrinket.Theyareoftensentonholidays,birthdays,anniversaries,andotherspecialoccasions.
+CLIPpredictions:[’C’,’G’,’D’,’B’,’F’,’E’,’I’,’H’,’J’,’A’]
+Whatisthemeaningofgreetingcard?Agreetingcardisacardsenttosomeonetoexpresscongratulations,best
+meaning_of
+wishes,orothersentiments.Ittypicallyincludesamessageofcelebrationorgoodwill,andmayalsoincludean
+imageordesign.
+CLIPpredictions:[’G’,’B’,’D’,’H’,’E’,’J’,’C’,’I’,’F’,’A’]
+Table14: Enhancedphrasesfor"greetingcard"usingGPT-3.
+Promptname Enhancedphrase
+suedechamoisSuedechamoisisatypeofleatherthatismadefromthehideofasheep.Itisknownforitssoft,
+exact
+velvetytextureandisoftenusedtomakeclothing,shoes,andotheraccessories.Itisalsousedinupholsteryand
+automotivedetailing.
+CLIPpredictions:[’A’,’G’,’C’,’I’,’E’,’F’,’J’,’B’,’D’,’H’]
+Whatissuedechamois?Suedechamoisisatypeofleatherthathasbeentreatedtogiveitasoft,velvetytexture.It
+what_is
+isoftenusedformakingclothing,shoes,andotheraccessories.Itisalsousedforcleaningandpolishingsurfaces,
+suchascarsandfurniture.
+CLIPpredictions:[’C’,’G’,’A’,’I’,’E’,’F’,’J’,’B’,’D’,’H’]
+Describesuedechamois.Chamoisisatypeofsoft,suedeleatherthatismadefromthehideofachamois,atype
+describe
+ofmountaingoat.Itisknownforitssoftnessandabsorbency,makingitidealforuseasacleaningclothorfor
+polishingleathergoods.Itisalsousedtomakeclothing,suchasglovesandhats.
+CLIPpredictions:[’F’,’A’,’G’,’E’,’C’,’I’,’H’,’B’,’D’,’J’]
+Whatisthemeaningofsuedechamois?Suedechamoisisatypeofleatherthathasbeenbuffedtocreateasoft,
+meaning_of
+velvetytexture.Itisoftenusedtomakeclothing,shoes,andotheraccessories.
+CLIPpredictions:[’G’,’A’,’C’,’I’,’F’,’E’,’B’,’J’,’H’,’D’]
+Table15: Enhancedphrasesfor"suedechamois"usingGPT-3.
+Greedy Beam
+BLIP BLIP-L GiT GiT-L BLIP BLIP-L GiT GiT-L
+acc. MRR acc. MRR acc. MRR acc. MRR acc. MRR acc. MRR acc. MRR acc. MRR
+Cosinesimilarity-ALIGN
+No-LLM 31.97 50.41 39.52 55.00 36.93 53.51 41.04 57.67 37.37 54.29 46.65 63.21 40.39 57.04 47.30 62.59
+exact 34.99 51.89 38.66 54.51 38.44 54.42 43.41 58.79 39.52 56.05 52.05 66.33 42.55 58.69 46.44 61.49
+what_is 38.23 55.02 41.68 56.75 41.25 57.19 46.44 61.45 40.60 57.80 56.16 70.00 47.52 62.39 51.19 65.76
+describe 39.74 56.14 42.33 57.87 43.20 58.92 48.60 63.49 42.33 59.06 57.02 70.66 50.11 64.65 52.92 67.18
+meaning_of 36.93 53.93 40.82 56.19 41.68 57.33 44.28 60.39 41.90 58.05 54.64 69.22 48.60 63.34 50.11 65.20
+Euclideandistance-ALIGN
+No-LLM 38.88 57.17 44.28 60.60 43.84 61.30 44.92 62.67 45.14 61.17 50.76 67.62 44.92 62.49 50.97 66.23
+exact 43.63 59.57 44.06 59.99 45.14 60.86 51.19 65.38 46.22 62.40 54.86 69.37 47.08 62.81 50.32 65.78
+what_is 47.95 63.83 48.60 63.73 47.52 63.73 52.92 67.55 49.46 65.40 60.69 74.05 51.84 67.11 55.51 70.31
+describe 50.32 65.58 50.11 65.21 52.05 66.61 56.59 70.03 50.11 66.46 62.20 75.35 55.51 69.68 58.75 72.23
+meaning_of 45.57 62.18 47.52 62.91 46.65 63.80 54.21 68.32 50.54 65.78 59.40 73.46 52.48 67.97 57.67 71.28
+Table 16: Continuation of Tab. 4. Additional results on phrase-caption retrieval (with and without GPT-3
+enhancement)fordifferentcaptioningmodelsusingdifferentALIGNfortextembeddings.
+Greedy Beam
+BLIP BLIP-L GiT GiT-L BLIP BLIP-L GiT GiT-L
+acc. MRR acc. MRR acc. MRR acc. MRR acc. MRR acc. MRR acc. MRR acc. MRR
+Manhattandistance-CLIP
+No-LLM 36.50 56.58 41.25 58.18 36.93 55.57 39.09 56.98 41.04 58.45 44.71 61.70 41.68 59.16 43.84 60.14
+exact 45.21 63.28 47.60 63.26 43.41 60.58 45.51 62.14 47.90 64.16 50.60 67.08 48.20 63.93 49.10 64.70
+what_is 44.96 63.88 46.60 63.48 48.01 63.91 48.24 64.68 49.18 65.23 55.04 70.18 51.05 66.74 49.18 65.81
+describe 47.87 65.46 48.82 64.84 48.34 64.90 53.08 67.90 46.92 64.50 57.35 71.63 54.03 68.52 54.98 69.84
+meaning_of 46.78 64.70 46.56 63.47 44.35 62.07 48.34 64.99 46.56 64.01 52.55 68.57 49.00 65.45 50.55 66.27
+Cosinesimilarity-CLIP
+No-LLM 33.26 50.76 28.73 46.64 28.94 47.13 30.02 47.96 31.97 49.96 39.09 55.97 32.40 50.72 30.89 48.48
+exact 37.72 55.34 38.02 54.82 36.83 53.74 35.33 53.07 42.22 58.73 44.31 61.92 40.42 56.99 40.72 55.99
+what_is 37.24 55.91 37.24 54.50 38.41 55.03 38.17 55.40 41.45 58.42 46.14 62.39 41.92 57.88 38.17 55.33
+describe 39.34 57.90 45.02 60.39 44.08 59.27 41.23 57.73 40.76 58.20 50.24 66.27 46.45 62.07 41.71 58.13
+meaning_of 38.14 56.35 34.37 52.59 35.25 53.03 39.02 55.48 39.02 56.91 44.79 61.57 42.79 58.42 38.14 54.77
+Euclideandistance-CLIP
+No-LLM 35.85 53.63 32.40 50.51 32.83 51.61 33.69 51.45 36.93 54.85 43.20 60.12 37.58 55.30 38.88 55.42
+exact 43.41 61.63 44.31 60.05 42.81 59.67 43.11 60.31 46.11 62.86 52.10 67.77 44.91 61.12 48.20 63.25
+what_is 44.26 62.13 44.50 60.57 43.79 60.37 44.26 61.15 47.78 63.67 55.04 69.60 48.95 64.45 46.60 62.91
+describe 48.34 64.95 47.39 62.68 47.87 63.17 49.76 64.50 42.65 61.87 58.29 72.28 53.55 67.52 51.66 67.28
+meaning_of 44.57 62.38 43.02 59.86 40.80 58.94 44.57 61.05 45.90 62.72 52.11 67.36 48.56 64.52 45.90 62.39
+Manhattandistance-CLIP
+L
+No-LLM 38.01 57.95 41.90 60.49 39.96 57.78 45.36 62.24 42.12 60.12 47.52 65.43 44.06 61.20 45.36 62.95
+exact 44.61 62.07 45.21 62.40 43.11 60.71 46.11 63.33 48.80 64.89 51.20 67.12 43.11 61.85 49.70 65.13
+what_is 43.09 61.97 47.31 64.83 44.73 62.32 50.59 66.57 49.41 65.88 54.10 70.17 49.18 65.85 51.05 67.35
+describe 45.97 63.01 48.34 65.36 46.45 63.40 49.29 65.05 46.45 63.57 54.50 70.82 48.82 65.37 52.61 68.64
+meaning_of 45.01 63.42 47.45 64.70 45.68 62.73 50.33 67.02 47.89 65.37 52.55 69.29 45.90 64.44 51.22 67.35
+Cosinesimilarity-CLIP
+L
+No-LLM 32.61 51.28 30.67 48.63 31.97 49.48 31.10 49.30 35.64 52.69 34.56 52.87 37.80 55.75 35.42 52.64
+exact 35.33 53.38 35.93 53.18 36.83 54.49 34.13 52.73 43.11 58.87 36.83 54.83 42.22 59.53 38.92 55.96
+what_is 36.53 55.41 37.00 54.44 38.41 55.33 37.24 55.40 41.22 57.77 39.34 56.80 44.03 61.02 37.70 55.53
+describe 37.91 55.86 39.81 56.24 38.86 57.39 40.76 57.42 40.28 57.13 43.60 59.62 47.39 64.94 40.76 58.52
+meaning_of 38.14 56.00 36.36 53.56 36.81 54.32 36.14 54.69 41.24 57.85 37.25 55.44 42.79 60.02 37.25 54.78
+Euclideandistance-CLIP
+L
+No-LLM 35.85 54.44 32.40 52.91 32.83 54.65 33.69 55.50 36.93 57.62 43.20 62.20 37.58 59.01 38.88 59.30
+exact 43.41 58.78 44.31 57.62 42.81 57.93 43.11 60.52 46.11 62.19 52.10 64.91 44.91 60.55 48.20 62.52
+what_is 44.26 59.58 44.50 60.61 43.79 60.53 44.26 62.60 47.78 62.62 55.04 67.65 48.95 63.89 46.60 63.59
+describe 48.34 60.67 47.39 61.51 47.87 61.35 49.76 62.69 42.65 61.20 58.29 68.81 53.55 62.72 51.66 65.66
+meaning_of 44.57 60.64 43.02 58.67 40.80 60.39 44.57 61.72 45.90 63.40 52.11 67.59 48.56 62.89 45.90 62.13
+Table 17: Additional results on phrase-caption retrieval (with and without GPT-3 enhancement) for different
+captioningmodelsusingdifferentVLtransformersfortextembeddings.
+basedonsimilarityscoresbetweentherepresenta- imageretrieval)didnotproducecompetitiveresults
+tionsofthe10candidatesiandtherepresentations (Tab. 4,5).
+oftheWikipedia/Wikidataimagesi (bothvisual
+w
+representationsareextractedusingCLIP).Ingen-
+eral,theincorporationofmorefeaturescompared
+to the VL-baseline only LTR case (first 2 rows
+ofTab. 19ishelpful,eventhoughthestandalone
+experiments (text-to-text retrieval and image-to-
+Greedy Beam
+BLIP BLIP-L GiT GiT-L BLIP BLIP-L GiT GiT-L
+acc. MRR acc. MRR acc. MRR acc. MRR acc. MRR acc. MRR acc. MRR acc. MRR
+Manhattandistance-distilrobertabase
+exact 39.52 56.71 39.09 57.43 38.66 56.94 41.04 58.99 39.52 57.34 46.22 62.29 37.37 56.04 44.49 60.81
+what_is 40.17 57.96 41.04 59.18 41.25 59.24 42.33 60.21 39.31 57.56 47.52 64.63 40.39 58.35 45.79 62.07
+describe 38.44 57.30 40.39 58.50 42.12 59.68 44.92 61.78 42.12 58.67 47.52 64.47 40.82 58.79 48.38 64.02
+meaning_of 38.23 57.62 42.98 60.57 42.33 60.11 44.49 61.85 43.20 59.84 45.57 63.57 40.39 59.05 47.30 63.38
+Manhattandistance-stsbrobertabase
+exact 38.88 56.84 40.39 58.95 42.33 59.11 40.39 58.95 40.17 57.47 45.36 61.89 43.20 59.87 45.36 61.95
+what_is 40.60 58.51 44.06 61.87 39.74 58.31 44.06 61.87 42.98 59.92 44.71 63.28 44.06 61.24 47.73 64.56
+describe 42.55 60.03 40.17 57.58 42.12 59.63 45.14 62.17 42.98 60.04 47.95 65.14 45.14 62.48 47.73 64.66
+meaning_of 45.14 61.37 40.17 58.30 41.04 59.02 46.65 63.33 43.63 61.02 49.46 66.34 43.20 61.61 49.89 66.24
+Manhattandistance-stsbmpnetbase
+exact 36.50 56.07 41.04 58.82 41.25 59.10 43.63 60.66 40.60 58.75 46.87 64.34 43.41 61.26 46.00 62.31
+what_is 40.39 58.92 42.33 60.80 42.55 60.90 45.14 62.40 43.41 61.05 49.68 66.47 45.14 62.24 49.46 65.19
+describe 42.12 60.14 43.41 60.90 44.06 61.67 49.89 65.66 43.20 61.66 47.08 65.61 47.52 64.19 50.11 66.02
+meaning_of 41.25 59.56 43.84 62.06 44.49 62.28 50.76 66.00 44.06 61.86 50.11 67.09 47.52 64.08 50.76 66.71
+Manhattandistance-allMiniLM-L6
+exact 42.55 59.89 45.36 62.33 41.04 59.53 45.14 61.81 42.98 60.78 49.24 65.45 43.41 61.58 49.24 64.92
+what_is 44.49 61.49 44.71 62.44 45.79 62.51 46.22 63.57 42.55 61.10 48.60 66.17 47.52 64.16 50.76 66.74
+describe 43.41 61.08 44.49 62.29 41.04 59.91 49.03 65.22 43.63 61.43 50.11 66.69 42.55 61.56 49.24 66.29
+meaning_of 42.12 60.09 45.79 63.28 44.92 62.26 45.57 63.12 43.84 61.46 49.03 66.81 45.79 63.37 51.84 67.58
+Manhattandistance-allMiniLM-L12
+exact 39.52 57.99 46.22 62.19 40.60 59.30 42.98 60.83 41.04 60.16 48.81 65.19 42.55 60.67 48.60 64.91
+what_is 40.39 59.02 43.63 61.88 41.68 60.14 46.00 63.36 42.76 61.36 48.81 66.42 44.71 61.97 49.46 66.10
+describe 40.60 59.33 44.28 61.94 41.90 60.48 47.73 64.36 42.12 61.47 48.38 66.11 44.49 62.40 51.40 67.73
+meaning_of 40.60 59.37 43.41 62.00 43.20 61.37 47.52 64.20 42.76 61.46 50.54 67.42 46.44 63.33 49.46 66.37
+Manhattandistance-allmpnetbase
+exact 42.55 60.63 44.71 62.80 42.98 61.06 46.22 63.00 42.98 61.72 50.76 66.84 47.08 63.90 50.32 66.39
+what_is 42.55 61.56 46.22 64.69 45.79 63.20 49.24 66.13 43.41 62.80 54.43 70.45 46.65 64.33 50.97 67.57
+describe 42.76 61.40 46.00 64.07 43.63 61.87 48.60 65.58 44.06 62.54 52.70 68.71 45.36 63.52 52.27 68.36
+meaning_of 43.84 62.12 49.03 66.06 45.57 62.82 48.81 65.87 44.92 63.55 54.43 70.37 48.38 65.30 50.54 67.68
+Manhattandistance-multi-QAdistilbert
+exact 40.60 59.86 43.41 60.81 42.33 60.13 42.55 60.73 42.98 61.53 49.03 65.71 42.98 61.51 49.24 65.35
+what_is 41.47 60.90 44.06 62.50 47.52 63.33 46.22 64.01 44.71 63.42 50.11 67.47 47.73 64.83 49.46 66.49
+describe 41.90 60.71 42.76 61.00 47.73 63.65 46.65 63.76 42.55 61.81 49.24 66.61 46.87 64.17 50.11 66.96
+meaning_of 42.55 61.11 44.71 62.70 45.79 62.61 46.65 64.59 45.57 63.70 50.97 68.08 45.57 63.66 50.76 67.46
+Manhattandistance-multi-QAMiniLM-L6
+exact 39.09 57.37 40.60 58.07 40.39 58.64 41.25 59.06 42.55 60.68 47.52 64.10 39.96 58.96 44.06 61.66
+what_is 40.82 59.40 42.76 60.14 40.82 59.49 43.84 61.65 44.28 62.08 49.24 66.57 41.90 61.13 46.87 64.42
+describe 38.23 57.35 42.33 59.58 39.74 58.84 45.14 62.05 41.68 60.51 48.38 65.32 40.82 59.65 47.30 64.50
+meaning_of 40.39 59.04 42.33 60.46 41.68 60.05 45.57 62.92 42.33 61.35 48.60 65.93 42.33 61.26 49.89 66.55
+Table18:Resultsonphrase-captionretrievalwithGPT-3enhancementfordifferentcaptioningmodelsusingSBERT
+modelsfortextembeddings.
+F QAandChain-of-Thoughtexamples decisionsandhowitcanguidetheLLMtowards
+the correct reasoning path. In this section, we
+provide some additional examples when convert-
+ChainofThought(CoT)promptingprovidedsome
+ingVWSDtoaQAproblem,comparingprompts
+interestinginsightsregardingtheexplainabilityof
+Baseline LLM-enhance Textretrievalfeatures Imageretrievalfeat. Metrics
+p(i) Prompt p(i) Captioner Embedding Similarity Phrase Embedding Similarity Acc. MRR
+- - - - - - - - - 63.93 76.33
+- - - - - - - - 68.90 80.04
+- - - - - - - - 62.85 75.88
+- - - - - - CLIP cosine 70.87 81.36
+- - - - - - CLIP euclidean 70.22 81.09
+- - - - - - CLIP manhattan 69.78 80.95
+- - GiT-L-greedy CLIP cosine t - - 62.85 76.08
+- - GiT-L-beam CLIP cosine t - - 63.07 76.14
+- - GiT-L-beam CLIP euclidean t - - 62.85 75.85
+- - GiT-L-beam CLIP manhattan t - - 62.85 76.11
+- - blip-L-greedy CLIP cosine t - - 61.77 75.48
+- - blip-L-beam CLIP cosine t - - 62.85 75.94
+all - - - - - - 70.37 81.65
+meaning_of - - - - - - - 65.85 78.67
+meaning_of - - - - - - 66.52 79.21
+exact - - 65.57 78.25
+what_is - - - - - - 67.45 79.55
+describe - - - - - - 70.14 80.75
+all - - - - CLIP cosine 72.05 82.81
+all blip-L-beam CLIP cosine t CLIP cosine 72.05 82.61
+all GiT-Lgreedy CLIP cosine t CLIP cosine 70.81 82.28
+all GiT-L-greedy CLIP cosine allt +t CLIP cosine 73.91 83.53
+e
+Ourbest 79.35 87.23
+LTRofDadas(2023)(bestresults) 77.97 85.88
+SemEvalorganizers’baseline 60.48 73.87
+Table19: LTRresultsusingfeaturecombinationsasextractedfromourprevious4approaches(baseline,LLM
+enhancement,textretrieval,imageretrieval). CLIPisemployedastheVLretriever.
+withandwithoutCoT.Ourpresentedresultshigh- 3.5-turbo,guidingittodistinguishhowthephrase
+light particular cases, including the ones where "metalsteel"differsfromthesemanticallysimilar
+CoT fails; we proceed with an analysis on why one "black piece of metal". This fine-grained ca-
+this may happen and whether it is an absolutely pacity is one of the crucial desiderata of VWSD
+justifiedbehavior. Allpresentedexamplesutilize systems,andseemstobesomehowconnectedwith
+the GiT-L captioner with greedy search. There- CoTreasoning.
+fore,onecaptionpercandidateisextracted,andthe
+promptisconstructedappropriately,witheachof Example1
+theanswersforthe10possiblecandidatesforming Q:Whatisthemostappropriatecaptionforthemetalsteel?
+AnswerChoices: (A)achocolatebarwiththreesides(B)
+answerchoicesfromAtoJwithintheprompt.
+[unused0]and[unused0]attheconcertin2007(C)aguitar
+andaguitararedisplayedinfrontofaspeaker. (D)frosty
+Example1 Inthisexample,CoTtriggersthecor-
+patternsonawindow(E)goldintherocks--(F)ablack
+rect reasoning path towards choosing the correct pieceofmetalwithalargeblacksquareinthemiddle. (G)
+caption choice (H) "a close up of a metal plate ajarofhoneyonawoodentable.(H)acloseupofametal
+platewithapatternoflines. (I)alargewhitequartzrock
+withapatternoflines."ofthecorrespondingimage
+withaclearbase.(J)goldjewelryfromthelate19thcentury.
+(Fig. 5),asdemonstratedinTab. 20. Theno_CoT
+prompting case is easily misled by the semanti-
+callysimilarcaption(F)thatincludestheconcept Example 2 There are cases when CoT fails to
+"metal"("ablackpieceofmetalwithalargeblack enhancethegivenphrasewithappropriatecontext.
+square in the middle"). At the same time, CoT InthecaseofFig. 6,themostrelevantimageout
+promptingelicittheappropriatebehaviorofGPT- oftheoptionsofFig. 6tothephrase"tenderem-
+A B C D E
+F G H(Goldimage) I J
+Figure5: Example1. Candidateimagesforthephrase"metalsteel".
+Example1 with respect to the answer choices, it cannot re-
+no_CoT trievetheappropriatechoiceunderCoTprompting.
+Q:Whatisthemostappropriate[...] Therefore,wemarkthiscaseasaninherentfailure
+A:Themostappropriatecaptionforthemetalsteelwould ofCoTdisambiguation.
+be(F)ablackpieceofmetalwithalargeblacksquarein
+themiddle.X
+Example2
+CoT
+Q:Whatisthemostappropriatecaptionforthetenderem-
+Q:Whatisthemostappropriate[...]
+brace? AnswerChoices: (A)asmallboatsittingontopof
+A:Let’sthinkstepbystep.
+adock. (B)agroupofpeoplewalkingonagreenhill. (C)
+First,weneedtounderstandwhatmetalsteelisandwhat
+astudentgetsahugfromastudent. (D)alargeflylaying
+its characteristics are. Steel is a hard and strong metal
+onarockinthewater. (E)thebusstopatthestation(F)a
+alloymademainlyofironandcarbon. Itisoftenusedin
+trainisparkedatastation.(G)acrowdofpeoplewatching
+construction,machinery,andtransportation.Basedonthis
+aconcert.(H)atrainstationwithasignonthesideofit.(I)
+information,themostappropriatecaptionformetalsteel
+ablackandredtrainonatrack.(J)amanlayinginthesand
+wouldbe(H)acloseupofametalplatewithapatternof
+ontopofasurfboard.
+lines.Thiscaptiondescribesthetextureandappearanceof
+steel,whichisoftencharacterizedbyitsdistinctivepattern
+oflines.Theotheroptionsdonotaccuratelydescribesteel
+oritsuniquequalities.
+Example2
+Therefore,amongAthroughJ,theansweris(H)acloseup
+ofametalplatewithapatternoflines." no_CoT
+Q:Whatisthemostappropriate[...]
+Table20: VWSDasQAproblemexample,withCoT A: The most appropriate caption for the tender embrace
+promptingencouragingtheselectionofthecorrectcan- wouldbe:(C)astudentgetsahugfromastudent.
+didate. QuestionsQarepresentedtruncated. CoT
+Q:Whatisthemostappropriate[...]
+A:Let’sthinkstepbystep.
+brace"failstobereturned: whenGPT-3.5-turbois First, weneedtounderstandwhatthetenderembraceis
+promptedwithQ,ithasahardtimeretrievingrele- referringto.Onceweknowthat,wecanlookattheanswer
+choicesandfindtheonethatbestmatchesthesubjectof
+vantknowledge,answeringthatitdoesnotunder-
+thephoto.Therefore,withoutfurtherinformationaboutthe
+standwherethe"tenderembrace"phraserefersto, photo,itisnotpossibletochoosethemostappropriatecap-
+tion.Couldyoupleaseprovidemorecontextorinformation
+andthatmoreinformationisneeded. Byobserving
+aboutthephoto?
+thecaptionscomprisingtheanswerchoicesofthe Therefore,amongAthroughJ,theanswerisnotapplicable
+questionQ,weconfirmthattheextractedcaption withoutmoreinformationaboutthephoto."X
+forthegoldencandidate(C)issensibleandaccu-
+Table21: VWSDasQAproblemexample,withCoT
+rate("astudentgetsahugfromastudent"); thus,
+promptingencouragingtheselectionofthecorrectcan-
+GPT-3.5-turbocannotconnectthephrase"tender
+didate. QuestionsQarepresentedtruncated.
+embrace"withthecorrectcaption(C),leadingto
+failure,asseeninTab. 21. Ontheotherhand,when
+no_CoTpromptingisused,GPT-3.5-turbosuccess- Example3 AnothercasethatCoTpromptingin-
+fullyreturnstherightanswer. Wecanobservethat herentlyfails,whileno_CoTpromptingsucceedsis
+eventhoughthemodeldoesindeedunderstandthe presentedinTab. 22forthephrase"ediblesub"and
+sense of the ambiguous phrase "tender embrace" thecandidatesofFig. 7. Similarlytotheprevious
+A B C(Goldimage) D E
+F G H I J
+Figure6: Example2. Candidateimagesforthephrase"tenderembrace".
+case, CoT prompting fails to retrieve the proper Example3
+caption choice, even though the caption itself is no_CoT
+highly relevant and accurate to the candidate im- Q:Whatisthemostappropriate[...]
+age. Itsreasoningpathoutputssometracesofcor- A:Themostappropriatecaptionfortheediblesubwould
+be(B)"Adelicioussandwichcutinhalfonawhitepaper."
+rectreasoning(itmentionstheword"sandwich"),
+Thiscaptionaccuratelydescribestheimageandhighlights
+eventhoughitcannotproceedfurtherwithdisam- themainfocusofthepicture.
+biguation. At the same time, no_CoT prompting CoT
+succeedsinselectingtherightchoice(B).Italsoin- Q:Whatisthemostappropriate[...]
+creasestheconfidenceinitsanswerbyalsostating A:Let’sthinkstepbystep.
+First,weneedtounderstandwhatthe"ediblesub"isrefer-
+that"Thiscaptionaccuratelydescribestheimage
+ringto.Isitasandwichorsomethingelse?Oncewehave
+andhighlightsthemainfocusofthepicture". thisinformation,wecanconsidertheanswerchoicesand
+determinewhichoneisthemostappropriatecaptionforthe
+Example3 ediblesub. Canyouprovidemoreinformationaboutthe
+"ediblesub"?
+Q:Whatisthemostappropriatecaptionfortheediblesub?
+Therefore,amongAthroughJ,theanswerisunclearwithout
+AnswerChoices:(A)ahamhamwithafewsmallspikesonit
+moreinformationaboutwhatthe"ediblesub"actuallyis."
+(B)asandwichcutinhalfonawhitepaper.(C)candycanes
+X
+-thecandycanecompany(D)awhiteplatewithabunchof
+peanuts.(E)asubmarineonthewater.(F)aplateofmeats,
+Table22: VWSDasQAproblemexample,withCoT
+sausages,andsalad.(G)yellowflowersonagreenfield(H)
+abasketfilledwithapplessittingontopofatable.(I)aman promptingencouragingtheselectionofthecorrectcan-
+eatingahotdoginarestaurant. (J)aplateofsauerkraut didate. QuestionsQarepresentedtruncated.
+withcarrotsandcheese.
+Example 4 There are also cases where both tionsofbothimages(B)and(G)refertotheseman-
+no_CoTandCoTpromptsfailtoprovidetheright tic"horse"withoutfurtherdetailsabouttheanimal,
+answer. For example, given the phrase "trotting eventhoughbyvisuallyobservingthetwoimage
+appendix"andthecandidateimagesofFig. 8,GPT- candidates,thereareobviousdifferencesinterms
+3.5-turbofailstounderstandthecontextoftheam- ofpatternsandcolorsbetweenthedepictedhorses.
+biguouswordwithrespecttothecaptionchoices. Therestoftheconceptsmentionedinthecaptions
+Different answers are returned in each case; the such as "field", "fence", "person", "building" do
+no_CoTpromptconfidentlyreturnsanunsuitable notprovideanyrelevantcontexttotheambiguous
+answer((B)insteadof(G)),whiletheCoTprompt word. Therefore,GPT-3.5-turbocorrectlyreaches
+retainsanuncertainnarrative,statingthatmorecon- atieconditionwhere(B)and(G)captionsequally
+textisneeded. Eveninthatcase,CoTpromptingis match the ambiguous phrase, therefore failure to
+morereliable,notonlybecauseitdoesnotindicate provideanansweristotallyjustified.
+aninappropriatecandidateastherightanswer,but
+also because it better detects the reason why am-
+biguitycannotberesolved: a"trottingappendix" Example5 AnotherexamplethatCoTfailsdue
+horsebreedcontainscertaincharacteristics,which to imperfections in captioning is the one corre-
+howeverwerenotcapturedbythecaptioner. Cap- sponding to the phrase "furry cimarron" and the
+A B(Goldimage) C D E
+F G H I J
+Figure7: Example3. Candidateimagesforthephrase"ediblesub".
+A B(Goldimage) C D E
+F G H I J
+Figure8: Example4. Candidateimagesforthephrase"trottingappendix".
+Example4 Example4
+Q:Whatisthemostappropriatecaptionforthetrottingap- no_CoT
+pendix? AnswerChoices: (A)acloseupofaplantwitha
+Q:Whatisthemostappropriate[...]
+greenflower(B)ahorserunninginafieldwithafenceinthe
+A:Themostappropriatecaptionforthetrottingappendix
+background.(C)acloseupofaflowerinsideaplant(D)a
+wouldbe(B)-"Ahorserunninginafieldwithafencein
+closeupofafish(E)abirdstandingontopofagrasscovered
+thebackground." X
+field.(F)adogandafoxlayingonthegrass.(G)aperson
+holdingahorseinfrontofabrickbuilding.(H)theflowers CoT
+ofthe[unused0](I)aphotoofapetridishwithayellow Q:Whatisthemostappropriate[...]
+substanceonit.(J)abluejellyfishwithalongtail. A:Let’sthinkstepbystep.
+First,weneedtoidentifywhatatrottingappendixis. As
+anintelligentassistant,Idonothaveenoughinformationto
+answerthatquestion.Ifyoucouldprovidemorecontextor
+candidates of Fig. 9. An official description5 of
+clarification,Iwouldbehappytoassistyouinfindingthe
+theterm"cimarron"is"wildsheepofmountainous appropriatecaption.
+regionsofwesternNorthAmericahavingmassive Therefore,amongAthroughJ,theanswerisnotapplica-
+ble."X
+curled horns". However, none of the generated
+captions contains concepts such as "wild sheep" Table23: VWSDasQAproblemexample,withCoT
+or "massive curled horns" which are descriptive promptingencouragingtheselectionofthecorrectcan-
+characteristicsofthisanimal;weassumethatthe didate. QuestionsQarepresentedtruncated.
+selectedcaptionerdoesnotcontaintheknowledge
+needed to fuse the appropriate details in the cap-
+tion. Therefore, GPT-3.5-turbo correctly avoids thereshouldbeaninclinationtowardschoosingthe
+to return an answer. Nevertheless, since the con- answer(A).Erroneouslyhowever,GPT-3.5.turbo
+cepts"goat"(caption(A))and"sheep"(dictionary hintsabouttheanswerchoice(E)"arockycliffface
+descriptionforcimarron)aresemanticallyrelated, with a body of water in the background", pairing
+theterms"mountainousregions"and"rockycliff
+5https://www.vocabulary.com/dictionary/cimarron face"whicharesemanticallyrelated;thechoice(E)
+though does not even describe an animal. There- G Modeldetails
+fore,despitethecaptionbeingdeficientinproperly
+We provide the exact Huggingface model cards
+describing the semantics of the image, the LLM
+usedinourimplementations,orelseAPIsprovided
+as well seems incapable of inferring the related
+bythecreators:
+semantics.
+VLretrievalmodels
+Example5
+Q:Whatisthemostappropriatecaptionforthefurrycimar- • CLIP (ViT-base)
+ron?AnswerChoices:(A)agoatlayingonarockinafield.
+https://huggingface.co/openai/clip-vit-
+(B)astreetthathasalotofbuildingsonit.(C)alargebrick
+buildingwithasignonthefront. (D)aringtailedlemur base-patch32
+inazoo(E)arockyclifffacewithabodyofwaterinthe
+background.(F)yuccatreesinthedesert(G)astreetwitha • CLIP-L (ViT-large)
+personstandinginfrontofit(H)asmalltowninthemoun-
+https://huggingface.co/openai/clip-vit-
+tains.(I)ariverrunningthroughafieldwithafenceinthe
+background.(J)redfoxfurshangfromtheceiling. large-patch14
+• ALIGNhttps://huggingface.co/kakaobrain/align-
+base
+Example5
+no_CoT
+• BLIP (BLIP with ViT base
+C
+Q:Whatisthemostappropriate[...]
+backbone pre-trained on COCO)
+A: The most appropriate caption for the furry cimarron
+would be missing from the answer choices. Could you https://huggingface.co/Salesforce/blip-
+please provide some more information or context about itm-base-coco
+thefurrycimarronthatcouldhelpmesuggestasuitable
+caption?" X
+• BLIP-L (BLIP with ViT large
+C
+CoT
+backbone trained on COCO)
+Q:Whatisthemostappropriate[...] https://huggingface.co/Salesforce/blip-
+A:Let’sthinkstepbystep.
+itm-large-coco
+First,weneedtounderstandwhatthesubjectofthecaption
+is.Thesubjectisafurrycimarron.Next,weneedtothink
+aboutwhatwouldbeanappropriatedescriptionforthefurry • BLIP (BLIP with ViT base back-
+F
+cimarron.Theoptionsprovideddonotseemtofitwiththe bone pre-trained on Flickr30k)
+subject, except for (E) a rocky cliff face with a body of
+https://huggingface.co/Salesforce/blip-
+water in the background. However, this description still
+doesnotaccuratelycapturethefurrycimarron.Therefore, itm-base-flickr
+we need to come up with a new option that specifically
+describesthefurrycimarron.Herearesomeoptions:-"A • BLIP-L (BLIP with ViT large
+F
+majesticcimarronwithathickcoatoffur,baskinginthe
+backbone pre-trained on Flickr30k)
+sun"-"Acuteandcuddlycimarrontakinganaponasoft
+bedofgrass"-"Anindependentandfree-spiritedcimarron https://huggingface.co/Salesforce/blip-
+exploringthegreatoutdoors"Overall,themostappropriate
+itm-base-flickr
+captionwoulddependonthecontextandpurposeofthe
+image.
+LargeLanguageModels
+Therefore,amongAthroughJ,theanswerisNoneofthe
+optionsareappropriatefordescribingafurrycimarron.We
+need to come up with a new option that specifically de- • GPT2-XL(1.5B)https://huggingface.co/gpt2-
+scribesthefurrycimarron."X xl
+Table24: VWSDasQAproblemexample,withCoT
+• BLOOM-1.7B
+promptingencouragingtheselectionofthecorrectcan-
+https://huggingface.co/bigscience/bloom-
+didate. QuestionsQarepresentedtruncated.
+1.7B
+• OPT2.7Bhttps://huggingface.co/facebook/opt-
+2.7b
+• BLOOMZ-3B
+https://huggingface.co/bigscience/bloomz-
+3b
+• OPT6.7Bhttps://huggingface.co/facebook/opt-
+6.7b
+A(Goldimage) B C D E
+F G H I J
+Figure9: Example5. Candidateimagesforthephrase"furrycimarron".
+• Galactica 6.7B
+https://huggingface.co/facebook/galactica-
+6.7b
+• GPT-3text-davinci-003175B(openaiAPI)
+• gpt-3.5-turbo(openaiAPI)
+Imagecaptioning
+• BLIP Captions
+https://huggingface.co/Salesforce/blip-
+image-captioning-base
+• BLIP-L Captions
+https://huggingface.co/Salesforce/blip-
+image-captioning-large
+• GiThttps://huggingface.co/microsoft/git-base
+• GiT-L https://huggingface.co/microsoft/git-
+large
+Sentence Transformers Implementations re-
+garding sentence similarity involve models from
+SentenceTransformershttps://www.sbert.net/.

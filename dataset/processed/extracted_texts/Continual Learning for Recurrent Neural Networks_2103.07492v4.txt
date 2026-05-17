@@ -1,0 +1,2332 @@
+Continual Learning for Recurrent Neural Networks: an
+Empirical Evaluation
+Andrea Cossua,b,1,∗, Antonio Cartaa,1, Vincenzo Lomonacoa, Davide Bacciua
+aUniversity of Pisa, Largo B. Pontecorvo, 3, 56127, Pisa, Italy
+bScuola Normale Superiore, Piazza dei Cavalieri, 7, 56126, Pisa, Italy
+Abstract
+Learning continuously during all model lifetime is fundamental to deploy ma-
+chine learning solutions robust to drifts in the data distribution. Advances in
+Continual Learning (CL) with recurrent neural networks could pave the way to
+a large number of applications where incoming data is non stationary, like nat-
+ural language processing and robotics. However, the existing body of work on
+thetopicisstillfragmented,withapproacheswhichareapplication-specificand
+whoseassessmentisbasedonheterogeneouslearningprotocolsanddatasets. In
+this paper, we organize the literature on CL for sequential data processing by
+providingacategorizationofthecontributionsandareviewofthebenchmarks.
+Weproposetwonew benchmarks forCL withsequential databasedon existing
+datasets, whose characteristics resemble real-world applications.
+We also provide a broad empirical evaluation of CL and Recurrent Neural Net-
+worksinclass-incrementalscenario,bytestingtheirabilitytomitigateforgetting
+with a number of different strategies which are not specific to sequential data
+processing. Ourresultshighlightthekeyroleplayedbythesequencelengthand
+the importance of a clear specification of the CL scenario.
+Keywords: continual learning, recurrent neural networks, benchmarks,
+evaluation
+1. Introduction
+Continual Learning (CL) refers to the ability “to learn over time by accom-
+modating new knowledge while retaining previously learned experiences” [91].
+Traditionally, Machine Learning (ML) models are trained with a large amount
+of data to solve a fixed task. The assumption is that, at test time, the model
+will encounter similar data. Unfortunately, real world scenarios do not satisfy
+this assumption. Non stationary processes produce gradual or abrupt drifts in
+the data distribution [31, 45] and the models must be continuously adapted to
+∗Correspondingauthor
+1Equalcontribution
+Preprint submitted to Elsevier August 3, 2021
+1202
+guA
+2
+]GL.sc[
+4v29470.3012:viXra
+the new changes. The objective of incrementally learn new concepts [116] may
+result in the Catastrophic Forgetting (CF) of previous knowledge [84, 83, 51].
+CF causes a deterioration of the performance on old tasks when acquiring new
+knowledge and it is a direct consequence of the stability-plasticity dilemma
+[51, 43]: the need to maintain adaptive parameters both stable enough to pre-
+serve information and plastic enough to adapt to new tasks. Today, CF is
+considered one of the main problems faced by CL algorithms [108, 87, 30].
+Machine Learning models endowed with CL capabilities would radically change
+the way a model is deployed, removing the need for a separate offline training
+phaseandallowingcontinuoustrainingduringtheentiremodellifetimewithout
+forgetting previous knowledge.
+In this paper we focus on continual learning with Recurrent Neural Networks
+(RNNs) [99]. These are adaptive models that can capture the input history
+within an internal hidden state which is updated iteratively. These models are
+widely used for Sequential Data Processing (SDP) tasks [48], where the input
+is a sequence of items.
+Recurrentmodelsarenottheonlysolutionforsequentialdataprocessing: time-
+delayed neural networks [114] and, more recently, Transformers [112] are feed-
+forward neural networks able to handle sequential patterns. Transformers have
+not been investigated much in the context of Continual Learning (with one no-
+tableexception[105]),whilefeedforwardmodelsuseafixedcontext(e.g. sliding
+windows) to emulate temporal coherence. This may be challenging to imple-
+ment in Continual Learning, since there may not be the opportunity to collect
+enough patterns to build the context before making a prediction.
+Ultimately, recurrent models show important differences with respect to both
+convolutional and feedforward approaches (including Transformers). Recurrent
+models implement a variable number of hidden layers, due to the unrolling
+through the entire length of the input sequence. This is not the case for feed-
+forward and convolutional models, whose number of layers is usually fixed a
+priori. Also, recurrent models leverage weight sharing across time steps. This
+influencesthetrajectoryofthelearningpathofrecurrentmodelswhentraining
+with backpropagation through time. We hypothesize that these two differences
+may impact on the application of CL strategies on recurrent models.
+Sequential data is widespread in fundamental machine learning applications
+suchasNaturalLanguageProcessing[121],HumanActivityRecognition[7,68],
+Speech recognition [48], and Robotics [21]. All these environments are highly
+non stationary and represent perfect examples of real world CL applications
+where data comes in the form of sequences. For example, a robot that learns
+to walk on different terrains or to grasp objects with different shapes will re-
+ceive input patterns from its sensors as time series. During its deployment, the
+robotwillencounternovelenvironments/objectsandwillneedtoadapttothese
+novel settings continuously. It is impossible to pretrain the robot in advance
+on all possible environments/objects. What if, once deployed, it is necessary to
+adapt to a new terrain or to grasp a new object? Retraining from scratch is an
+expensive, unnecessary solution since most of the knowledge needed is already
+2
+contained in the model. Continual Learning represents a better solution which
+canbecombinedwithSDPtechniquestoappropriatelyaddresssequentialdata.
+Human activity recognition [55] is another application in which sequential data
+processing and continual learning interact. The recognition of new classes of
+activities is typically performed from sequential data (e.g. videos, sensors ob-
+servations). Therefore, it is fundamental to study how this setting may impact
+on existing CL strategies.
+As the examples show, sequential data processing may have a strong impact on
+Continual Learning, both at the methodological and application level. A true
+continual learner should be able to deal with temporally correlated patterns,
+since this is the case in many real world scenarios. This advocates for a more
+thoroughunderstandingofthebehaviorofrecurrentmodelsinContinualLearn-
+ing.
+Currently, most of the Continual Learning literature focuses on Computer
+Vision and Reinforcement Learning problems [91, 71], while the study of se-
+quential data processing remains under-documented. The few existing works
+introduce new approaches tailored to specific tasks and use a diverse set of
+learning scenarios and experimental protocols. Therefore: i) it remains unclear
+whether previously existing CL strategies could still work well in SDP environ-
+ments and ii) the heterogeneity of learning scenarios in the literature makes it
+difficult to compare experimental results among different papers. In fact, spe-
+cific continual settings can have different complexity or require domain-specific
+solutions.
+Inthispaper, weprovideasystematizationandcategorizationofcurrentlitera-
+turetohighlightthedifferentcharacteristicofeachspecificCLstrategyandthe
+peculiarities of the data and the continual environment. We adopt the class-
+incremental scenario [111] as a common test-bed for CL strategies. This sce-
+narioinvolvesastreamofdatawherenewstepsgraduallyintroducenewclasses.
+Class-incremental scenarios allow to develop and test generic CL strategies for
+recurrent networks. In our experiments, we verify whether or not CL strate-
+gies which are not specifically tailored for recurrent models are still sufficient
+to endow them with continual learning capabilities. To summarize, our main
+contributions of this work are:
+a) the first comprehensive review of the literature on continual learning in
+RNNs, including a precise categorization of current strategies, datasets and
+continual environments adopted by the literature (Section 3);
+b) the proposal of two novel benchmarks in the class-incremental setting: Syn-
+theticSpeechRecognition,basedonspeechrecognitiondata,andQuickdraw,
+based on hand-drawn sketches (Section 4.2);
+c) anextensiveexperimentalevaluationof6continuallearningstrategiesonsev-
+eral CL environments for sequence classification. To the best of our knowl-
+edge, this is currently the most extensive evaluation of CL strategies for
+recurrent models (Section 5);
+d) an experimental comparison that highlights the effect of the recurrence and
+3
+Task 1 Task 1 Task 1 Task 1 Task 2 Task 3
+Step 1 Step 2 Step 3 Step 1 Step 2 Step 3
+(a)SingleIncrementalTask (b)MultiTask
+Figure1: InSingleIncrementalTask,eachstepbelongstothesametasklabel(whichisthe
+sameasnotprovidingatasklabel). InMultiTask,eachstepbelongstoadifferenttasklabel.
+Suchinformationcanbeusedtoselectdifferentheadsfordifferenttasksbothattrainingand
+testtime. Bestviewedincolor.
+sequence length on catastrophic forgetting (Section 6). Also, a comparison
+between single-head and multi-head models (Section 6.3) which justifies our
+choice of class-incremental scenarios.
+2. Continual Learning framework
+In the rest of the paper, we will refer to the notation and the Continual
+Learning framework defined in this section.
+2.1. Notation and fundamental concepts
+For a formal definition of continual learning environments we follow the
+framework proposed in [71]. For simplicity, here we focus on supervised con-
+tinual learning on a sequence of steps S = (S ,S ,...), where each step S
+1 2 i
+has its own data distribution D and belongs to a specific task with label t .
+i i
+The patterns drawn from each D are input-target pairs (x ,y ). We study
+i j j
+sequence classification problems in which y is the target class corresponding
+j
+to the input sequence x . Each sequence x is composed of T ordered vectors
+j j
+(x1,...,xT), xi ∈ Rd. In sequence classification, the target is provided only at
+j j j
+the end of the entire sequence, that is after seeing the last vector xT. Also, the
+j
+sequence length T may vary from one sequence to another, depending on the
+specific application. Figure 2 provides a representation of a sequence classifica-
+tion task.
+At step i, a new batch of data becomes available. A CL algorithm A executed
+at step i leverages the current model h to learn the new training data TR ,
+i i
+drawnfromD . TheCLalgorithmmayalsouseamemorybufferM andatask
+i i
+label t associated to the training patterns. The model is then updated using
+i
+the new data:
+A : <h ,TR ,M ,t > → <h ,M >, ∀D ∈(D ,D ,...). (1)
+i i−1 i i−1 i i i i 1 2
+NoticethatthebufferM andtasklabelt areoptionalandnotalwaysavailable.
+i i
+For example, it may be impossible to store previous data due to privacy con-
+cerns, while the task labels may not be available in many real-world scenarios.
+Noticethatthefollowingdefinitiondoesnotposeanycomputationalconstraint
+to continual learning algorithms. However, we are often interested in efficient
+4
+algorithms. As a results, most algorithms assume to have bounded memory
+and computational resources. Trivial strategies, such as retraining from scratch
+(cid:83)i
+using TR as training data, are unfeasible due to their excessive compu-
+i=1 i
+tational cost and bad scaling properties with respect to the number of steps.
+Unfortunately, training sequentially on TR ,...,TR will suffer from catas-
+1 n
+trophic forgetting.
+A Continual Learning scenario de-
+fines the properties of the data
+stream, such as the distinction be-
+tween different tasks and the proper-
+tiesofnewdatasamples. Theworkof
+[82]and,subsequently,[71]introduces
+a classification for continual learn- Figure2: Sequenceclassificationexample. The
+input sequence x is composed by T vectors
+ing scenarios according to two prop- j
+(circles). Thetargetlabel(square)isprovided
+erties: the task label sequence and only after the last vector xT. Best viewed in
+j
+the content of incoming data. The color.
+authors distinguished between Multi
+Task (MT) scenarios, where each incoming task is different from the previous
+ones, Single Incremental Task (SIT) in which the task is always the same, and
+Multi Incremental Task (MIT) in which new and old tasks may be interleaved
+andpresentedagaintothemodel. Eachtask,identifiedbyitstasklabel,canbe
+composedby oneormore steps. Figure1compares SITandMT scenarioswith
+respect to the task label information. In addition, data from new steps may
+provide New Classes (NC), New Instances (NI) of previously seen classes or a
+mixofboth,thatisNewInstancesandClasses (NIC).Apreviouscategorization,
+proposed in [111], focused on three main scenarios: Task incremental, Domain
+incremental and Class incremental which can find their place in the framework
+of [82, 71]. Table 1 summarizes and compare these different classifications.
+Task-incremental (MT, MIT) scenarios assume the availability of task labels for
+each sample. Unfortunately, in many real-world applications it is difficult to
+obtain explicit task labels for each sample. While sometimes it may be possible
+to label the data for training, at test time task labels are often not available.
+Thisdistinctionisfundamentalsincetheavailabilityoftasklabelssimplifiesthe
+learning problem (see Section 6.3). For example, in multi-task scenarios it is
+possible to use a multi-head model, in which each task has its own output layer
+(head). At test time, the model uses the task label to choose the appropriate
+head and to compute the output.
+Most CL systems deployed in the real world operate without task labels,
+and therefore it is important to develop algorithms that do not require them.
+Single incremental task scenarios, where the task label is always the same, re-
+quire to use single-head output layers [38]. Single-head models do not partition
+the output space, thus they are more susceptible to catastrophic forgetting (see
+Section 6.3 for an experimental comparison). Even without the availability of
+task label, a model could still leverage a multi-head output layer, but then it
+5
+Single Multi
+Multi Task
+Incremental Task Incremental Task
+Task Class
+New Classes
+incremental incremental
+Domain
+New Instances —
+incremental
+New Instances
+—
+and Classes
+Table1: ComparisonofdifferentCLscenariosclassification. Thetablehighlightsthefactthat
+thethreescenariosforCLintroducedby[111]arenottheonlypossibleonesinCL.Infact,the
+scenarioclassificationin[82]provides7scenarios. Dashesindicateunrealisticscenarios: Multi
+Task is only compatible with New Classes, since new instances would belong to previously
+encounteredtasks. Emptycellsindicatescenarioswhichcouldoccurbutarenotincludedin
+theclassificationof[111].
+would have to infer at test time which head to use [27]. Figure 3 shows the
+difference between multi and single headed models.
+The classification proposed above
+Head 1 Head 2 Head 3 Single Head
+assumes task boundaries are exact
+and provided by the environment.
+Task-free or online CL [101, 53, 5,
+123] removes such assumption by fo- MODEL MODEL
+cusing on a stream of data in which
+a task label is not provided (SIT)
+Figure 3: Multi-head model (left) and single-
+and examples are seen one (or a very
+head model (right). In the multi-head model,
+small number) at a time. Incre- theoutputlayerallocatesadifferentsetofout-
+mental or online learning (see [31] putunits(head)foreachtask. Thesingle-head
+for a review) shares similarities with modelusethesameoutputlayerforeachtask.
+Bestviewedincolor.
+continual learning. However, online
+learningusuallyfocuseslessoncatas-
+trophic forgetting and more on fast learning of new data.
+In this scenario, old knowledge must be preserved to help with the new step.
+However, the old steps are not necessarily revisited. This settings is common
+to many time series applications, such as stock price prediction, or weather and
+energy consumption prediction [31].
+2.2. Taxonomy of Continual Learning Strategies
+Continual learning strategies are traditionally divided into three main fam-
+ilies [91]: regularization strategies, architectural strategies and replay (or re-
+hearsal) strategies.
+6
+Regularizationstrategiesbalanceplasticityandstabilitybyaddingareg-
+ularizationtermtothelossfunction. Forexample,ElasticWeightConsolidation
+(EWC)[64]andSynapticIntelligence[122]estimatetheparametersimportance
+andfosterthemodelstabilitybypenalizinglargechangesinimportantparame-
+ters. Importancevaluescanbeupdatedaftereachstep,asinEWCanditsmore
+efficientversion[102],oronlineaftereachminibatch,asinSynapticIntelligence,
+Memory Aware Synapses [3] and EWC++ [19].
+Theeffectivenessofimportance-basedregularizationapproacheshasbeenques-
+tioned in [72] for class incremental scenarios. The authors showed that this
+family of strategies suffers from complete forgetting.
+Learning without Forgetting (LwF) [75] is a regularization strategy which is
+not based on importance values. LwF retains the knowledge of previous steps
+by using knowledge distillation [58] to encourage the current model to behave
+similarly to the models trained on the previous steps.
+Architectural strategies increment the model plasticity with dynamic mod-
+ifications to its architecture, for example by adding new components [98, 120].
+Forgetting may be mitigated by freezing previous components [98], by reorga-
+nizing the architecture via pruning [61] or by using sparse connections [104].
+Due to the very general idea behind this family of strategies, it is quite chal-
+lenging to organize the existing body of works. Nonetheless, most members of
+thearchitecturalfamilysharesomecommonalities: anincreasingcomputational
+cost with the number of steps due to the incremental model expansion and the
+need to choose a technique to prevent forgetting on the old model components.
+Replay strategiesleverageanexternalmemorytostorepreviousexamplesby
+selecting them randomly or with more ad-hoc criteria [97, 109, 4]. Since the
+amount of storage required for the memory could grow without bounds, several
+approaches use generative replay to avoid the need to explicitly store patterns
+[110, 115]. A generative model replaces the memory, thus bounding the mem-
+ory cost to the storage of the generative model weights. However, catastrophic
+forgetting must be still taken into consideration when training the generative
+model.
+The three aforementioned families of CL strategies do not capture the en-
+tirety of the proposals in CL. Bayesian approaches are increasingly used to
+mitigate CF [123, 86, 73, 37] and they have been successfully combined with
+regularization [33, 2], architectural approaches [85] and replay [67]. Bayesian
+methods in CL consider an initial distribution on the model parameters and
+iterativelyapproximateitsposteriorwhennewtasksarrive. Theapproximation
+usually includes components able to mitigate forgetting of previous tasks: as
+an example, the learning trajectory can be controlled by the uncertainty as-
+sociated to each model parameter, computed from its probability distribution.
+If a parameter has a large uncertainty value, it is deemed not to be relevant
+for the current task. Therefore, to protect important parameters and mitigate
+forgetting, theallowedmagnitudeinparameterchangeissettobeproportional
+to its uncertainty [2, 33].
+Another line of research explores the use of Sparse distributed represen-
+7
+tations [1]. Machine learning models often produce dense, entangled activa-
+tions, where a slight change in one parameter may affect the entire represen-
+tation, causing catastrophic forgetting. In contrast, sparse distributed repre-
+sentations naturally create independent substructures which do not affect each
+other and are less prone to CF [44]. As a result, methods that encourage spar-
+sityproducedisentangledrepresentationswhichdonotinterferewitheachother
+[47,90,25,6]. Themainproblemisthatsparsitybydesignisnotsufficient: the
+model has to learn how to use sparse connections during training.
+Since one of the objectives of CL is to quickly learn new information, it seems
+natural to combine CL and Meta Learning [60]. There are already efforts
+in this direction [12, 62, 16], with a focus on online and task-free scenarios
+[39, 57, 54]. Finally, CL has also been studied through the lens of graph-
+structured data: expressing similarities in the input patterns through graphs
+may help in mitigating forgetting [106]. Also, deep graph networks have been
+successfully combined with CL approaches on a number of class-incremental
+graph benchmarks [17].
+Intheremainderofthissection,wepresentinmoredetailsthemethodsthat
+we decided to use in our experiments. We focus on regularization and replay
+approaches for recurrent networks. Architectural approaches are a promising
+avenue of research but they cannot be easily adapted to different model archi-
+tectures. As a result, none of them has emerged as a standard in the literature.
+Therefore, we decided to focus on model-agnostic methods that can be easily
+adapted to a wide range of models and CL scenarios.
+Elastic Weight Consolidation. Elastic Weight Consolidation (EWC) [64] is one
+ofthemostpopularCLstrategies. Itbelongstotheregularizationfamilyandit
+is based on the estimation of parameters importance. At the end of each step,
+EWC computes an importance vector Ω Θ for parameters Θ. The importance
+n
+vectoriscomputedonthetrainingsetDatstepnbyapproximatingthediagonal
+elements of the Fisher Information Matrix:
+Ω Θ =E (cid:2) diag((∇ logp (y|x))(∇ logp (y|x))T) (cid:3)
+n (x,y)∈D Θ Θ Θ Θ
+(2)
+=E (cid:2) (∇ logp (y|x))2(cid:3) ,
+(x,y)∈D Θ Θ
+wherep istheoutputofthemodelparameterizedbyΘand(x,y)istheinput-
+θ
+target pair.
+By strictly following Eq. 2, the expectation operator would require to compute
+the squared gradient on each data sample and then average the result. Since
+this procedure may be quite slow, a minibatch approach is usually taken. No
+major difference is experienced between these two versions.
+During training, the loss function is augmented with a regularization term R
+which keeps important parameters close to their previous value:
+n−1
+(cid:88) (cid:88)
+R(Θ,Ω)=λ Ω θ(θ −θ )2. (3)
+t t n
+t=1θ∈Θ
+The hyperparameter λ controls the amount of regularization.
+8
+Memory Aware Synapses. Memory Aware Synapses (MAS) [3] is similar to
+EWC since it is an importance-based regularization method. Unlike EWC,
+MAScomputesimportancesonlineinanunsupervisedmanner. Therefore,MAS
+keepsonlyasingleimportancevectorΩΘ andupdatesitwitharunningaverage
+computed after each pattern:
+(cid:12) (cid:12)
+ΩΘN+1 = NΩΘN +(cid:12)∇ Θ (cid:107)p Θ (x k )(cid:107)2 2 (cid:12) , (4)
+N +1
+where N indexes the number of patterns seen so far. To make the update
+faster, the running average in Eq. 4 can be computed after each minibatch.
+The penalization during training is the same of EWC (Eq. 3).
+Learning without Forgetting. LearningwithoutForgetting(LwF)[75]isaregu-
+larizationapproachbasedonknowledgedistillation[58]. Attheendofeachstep,
+a copy of the current model is saved. During training, the previous model pro-
+duces its outputs on the current step input. The learning signal for the current
+model is regularized by a function measuring the distance between the current
+model output and the previous model output. The objective is to keep the two
+output distributions close to each other. Formally, when training on step t, the
+totallossL isthesumoftheclassificationlossCE(e.g. crossentropy)andthe
+t
+distillation penalization:
+L (x ,y ;Θ ,Θ )= CE (x ,y ) +
+t t t t t−1 Θt t t
+(5)
++ λ KL[p (x )||p (x )],
+Θt t Θt−1 t
+where KL[p || q] is the KL-divergence between p and q.
+ThesoftmaxtemperatureT usedinthefinallayerofthepreviousmodelcanbe
+tuned to control the prediction confidence.
+Gradient Episodic Memory. Gradient Episodic Memory (GEM) [79] is a CL
+strategy which mitigates forgetting by projecting the gradient update along a
+direction which does not interfere with previously acquired knowledge. The av-
+eragegradientforeachstepiscomputedusingasmallbufferofsamplescollected
+from previous steps. The steps gradients are used to define a set of constraints
+whichcannotbeviolatedbytheupdatedirection. Findingtheoptimaldirection
+requires solving a quadratic programming problem:
+1
+min (cid:107)g−z(cid:107)2 (6)
+z 2 2
+subject to Gz ≥γ, (7)
+where G is a matrix in which each column is the gradient computed step-wise
+on the memory samples (one column per previous step). The vector g is the
+gradient update and γ is the margin within which the constraints must be
+respected. GEM can work also in online scenarios [79].
+9
+Averaged Gradient Episodic Memory. Average-GEM (A-GEM) [20] is a more
+efficientversionofGEMwherethequadraticprogramsolutionisapproximated
+over a random sample from the memory, thus removing the need to compute a
+constraintforeachpreviousstep. Inthiswaytheconstraintsmaybebrokenfor
+some step, resulting in worse performance.
+The projected gradient gˆ is computed by
+gTg
+gˆ=g− ref g , (8)
+gT g ref
+ref ref
+where g is the gradient computed on the random memory sample and g is
+ref
+the proposed gradient update.
+A-GEM has also been tested in online scenarios [20].
+Replay. Replay strategies store a subset of input patterns from previous steps
+in a separate replay memory. To support the generality of our experiments,
+in this paper we selected patterns at random from the training set, without
+using any specific selection procedure. The memory accepts up to K patterns
+per class. During training, each minibatch is augmented with P patterns per
+previous class, selected at random from the replay memory. We keep P to very
+smallvaluesinordertomaketheapproachreasonableinarealCLenvironment.
+The CL strategies presented above belong to different families and have dif-
+ferent characteristics. In order to choose which strategy is more suitable to a
+specific application, one has to understand their advantages and limitations.
+Regularization strategies like EWC, LwF and MAS are very efficient since they
+operate without keeping a memory of previous pattern. However, their per-
+formance usually deteriorates when observing a large number of steps [72]. In
+contrast, Replay remains effective even on long streams of steps [56], even if
+the storage of previous patterns may be unfeasible for applications with strict
+memory bounds. Finally, GEM and A-GEM share the storage problems of re-
+play, since they keep a buffer of previous samples. However, their performance
+is usually superior to the regularization strategies in class-incremental settings
+[79].
+3. Continual Learning with Recurrent Models
+Theliteratureoncontinuallearningfocusesonfeedforwardandconvolutional
+models,withexperimentsinComputerVisionand,toalesserextent,Reinforce-
+mentLearningapplications. Recently,therehasbeenagrowinginteresttowards
+continuallearningapplicationswithsequentialdata. Inthissection, weprovide
+the first comprehensive review of the literature on recurrent neural networks
+in continual learning settings. In addition, we describe the main datasets and
+benchmarks for sequential data processing used in Continual Learning.
+10
+Deep CL Large
+Paper RNN Application scenario Comparison
+lanimes
+[95] × - - ×
+[42] × - SIT ×
+[9] × - SIT ×
+[8] × - SIT ×
+[26] × - SIT ×
+PLN
+[10] (cid:88) domain adaptation SIT ×
+[74] (cid:88) instruction learning, NMT SIT ×
+[118] (cid:88) language modeling - ×
+[66] × language modeling Online ×
+[81] (cid:88) sentiment analysis - ×
+[107] (cid:88) NMT - ×
+deripsni-oib [28] × - Online ×
+[88] × - Online, SIT ×
+[92] × vision - ×
+[65] × motor control MT ×
+[89] × - Online ×
+gninrael
+peed
+[119] (cid:88) ASR - ×
+[103] (cid:88) - - ×
+[100] (cid:88) synthetic - ×
+[27] (cid:88) generic SIT ×
+[32] (cid:88) neuroscience - ×
+[34] (cid:88) - MT (cid:88)
+this work (cid:88) - SIT (cid:88)
+Table 2: Overview of the literature based on our categorization. Deep RNN refers to the
+use of a learning model attributable to the family of deep recurrent networks (e.g. LSTM).
+Application-agnosticpapershaveadashintheapplicationcolumn. AdashintheCLscenario
+indicates that the paper does not provide its clear indication. Large comparison refers to
+experimentswithatleast3CLbaselinesontwodifferentapplicationdomains.
+3.1. Survey of Continual Learning in Recurrent Models
+We propose a new classification in which each paper is assigned to one of
+4 macro-areas: seminal work, natural language processing applications, bio-
+inspired and alternative recurrent models, and deep learning models.
+Table 2 provides a fine-grained description of our review. For each paper we
+highlight 5 different properties: the group to which the paper belongs to, the
+use of popular deep learning architectures, the application domain, the type of
+CL scenarios and if the paper provides a large experimental comparison. Table
+2showsthatwearetheonlyonetoprovidealargescaleevaluationofrecurrent
+models in SIT+NC scenario. The details of our categorization are discussed in
+the following.
+11
+Seminal Work. Historically, interest in CL and Sequential Data Processing
+traces back to [95] and [42]. The CHILD model [95] represents one of the first
+attempts to deal with sequential data in reinforcement learning environments
+like mazes. Although CHILD lacks an explicit recurrent structure, the author
+discussed about the possibility to include a more powerful memory component
+into the model (i.e. a recurrent neural network) to address tasks with longer
+temporal dependencies. However, the author also recognizes the difficulties in
+this process, due to the challenge of learning very long sequences. Moreover,
+thefixedstructureofaRNNcomparedwithagrowingmodellikeCHILDhigh-
+lighted the need for approaches based on model expansion.
+In the same period, French introduced the pseudo-recurrent connectionist net-
+work [42, 41], a model which makes use of pseudo replay [96] (replay based on
+random,butfixed,inputpatterns),butdidnotaddresssequentialdataprocess-
+ing tasks. Later on, the pseudo recurrent network together with pseudo-replay
+inspired the Reverberating Simple Recurrent Network (RSRN) [9, 8]. This is
+a dual model composed by two auto-associative recurrent networks which ex-
+change information by means of pseudo patterns. In the awake state, the per-
+formance network learns a new pattern through backpropagation. The storage
+network generates a random pseudo pattern and presents it to the performance
+network, interleaved with the real one. Once the loss falls below a certain
+threshold, the system enters the sleep state, in which the performance network
+generates a pseudo pattern and the storage network learns from it. In this way,
+pseudo patterns produced in the awake state carry information about previous
+sequences to the performance network, while pseudo patterns produced in the
+sleepstatecarryinformationabouttherecentlyacquiredknowledgetothestor-
+age network. The authors showed the presence of forgetting on toy sequences
+and the beneficial effect of pseudo patterns in mitigating it. However, from
+their experiments it is not possible to assess the effectiveness of RSRN on more
+realistic benchmarks.
+From the very beginning, sparsity has been a recurring theme in Continual
+Learning[43,40]. TheFixedExpansionLayer[25]introducedtheuseofalarge,
+sparse layer to disentangle the model activations. Subsequently, the Fixed Ex-
+pansion Layer has been applied to recurrent models [26]. However, in order to
+buildthesparselayerinanoptimalway,themodelrequirestosolveaquadratic
+optimization problem (feature-sign search algorithm) which can be problematic
+in real world problems (as we discuss in Section 6).
+Natural Language Processing. NaturalLanguageProcessingisbecomingoneof
+themaintest-bedsforcontinualandonlinesettingsinsequentialdataprocessing
+[13]. Most proposals in this area used modern recurrent architectures and fo-
+cus on specific problems and strategies. Moreover, they rarely compare against
+existing CL techniques. It is therefore challenging to draw general conclusions
+on recurrent networks in CL from this kind of experiments. Examples of ap-
+plications are online learning of language models where new words are added
+incrementally [74, 118, 66], continual learning in neural machine translation on
+multiple languages [107] and sentiment analysis on multiple domains [81].
+12
+Theuseofattentionmechanisms[11],nowwidespreadinNLP,mayprovideap-
+proaches which arewidely applicable, since there isno assumptionson thetype
+ofinformationtoattendto. Asanexample,theProgressiveMemoryBanks[10]
+augments a recurrent neural network with an external memory. The memory
+growsintimetoaccommodateforincominginformation,whileatthesametime
+freezingpreviousmemorycellssuccessfullypreventsforgetting. Inaddition,the
+author showed that finetuning old cells, instead of freezing them, increases for-
+ward transfer on future data. Their experiments are executed on incremental
+domainadaptationtasks,wherethedistributionofwordsshiftsasnewdomains
+are introduced.
+Bio-inspired and Alternative Recurrent Models. There are a number of con-
+tributions that propose customized architectures to address continual learning
+problems and mitigate catastrophic forgetting. Spiking models for CL, such as
+the Hierarchical Temporal Memory [28] and the Spiking Neural Coding Net-
+work [88], are naturally designed to tackle sequential data processing tasks.
+More importantly, they adopt learning algorithms which allow to control more
+efficiently the stability-plasticity trade-off. While promising, these approaches
+are still missing a thorough empirical validation on real world CL benchmarks.
+Echo State Networks [80] are RNNs whose recurrent component, called reser-
+voir, is not trained. Therefore, they are appealing for CL since the reservoir
+cannot suffer from forgetting. One of the drawbacks may be the fact that the
+static connections must be able to learn different tasks without adapting their
+values. The work in [65] tries to overcome the problem by employing a frac-
+tal reservoir combined with an external task vector (based on the task label)
+representing the current task. Different reservoir chunks process different pat-
+terns based on their associated task vector. While the final performance on
+different motor commands for reinforcement learning environments validated
+the approach, the requirement of multi task scenarios limits its applicability.
+The Backpropagation Through Time (BPTT) is the most used algorithm to
+train recurrent networks. The Parallel Temporal Neural Coding Network [89]
+introducedanewlearningalgorithmwhichislesssusceptibletoforgettingthan
+BPTT and other variants in sequential benchmarks like MNIST and language
+modelling.
+Temporal information may also arrive from videos. This is particularly impor-
+tant since it allows to exploit the vast literature on CL and Computer Vision.
+However,itisalsopossibletodevelopspecificsolutions,asithasbeendonewith
+recurrent Self Organizing Maps (SOM) [92]. The authors incorporate temporal
+information into the recurrent SOM and perform object detection from short
+videos with CORe50 dataset [77].
+DeepLearningModels. Recently,therehavebeenanumberofpapersthatstud-
+ied CL applications in sequential domains using recurrent architectures widely
+used in the deep learning literature, such as Elman RNNs [36] and LSTMs [59].
+The advantage of this generic approach is that it can be easily adapted to spe-
+13
+cialized models to solve any sequential problem. As expected, vanilla recurrent
+models such as Elman RNNs and LSTMs suffer from catastrophic forgetting in
+CL scenarios [103, 100].
+The combination of existing CL strategies, like Gradient Episodic Memory [79]
+and Net2Net [22], with RNNs has already showed promising results [103]. Con-
+trary to vanilla LSTM networks, their model was able to mitigate forgetting in
+threesimplebenchmarks. Thisimportantresultsupportstheneedforanexten-
+siveevaluationofRNNsandCLstrategiesnotspecificallytailoredtosequential
+data processing problems.
+Recurrent networks are also inclined to be combined with architectural strate-
+gies, since most of them are model agnostic. The idea behind Progressive net-
+works [98] has been applied to recurrent models [27] and also improved by
+removing the need for task labels at test time with a separate set of LSTM au-
+toencoders, able to recognize the distribution from which the pattern is coming
+from. The resulting model is multi-headed but it is able to automatically select
+theappropriateheadattesttimeinclass-incrementalscenarios. Hypernetworks
+(previouslyusedforCLin[113])areabletomitigateforgettingwhencombined
+with RNNs [34]: this work was the first to provide an extensive comparison of
+traditional CL techniques in several sequential domains. Differently from this
+paper, they use multi-task scenarios with a multi-head (see Section 6.3 for a
+comparison between single-head and multi-head models). Preserving the space
+spannedbytheconnectionsfrombeingcorruptedbytheweightupdateappears
+to be beneficial also to CL [32]. Finance [94] and Automatic Speech Recogni-
+tion [119] applications have been explored as candidate application domains for
+online and continual learning strategies.
+3.2. Sequential Data Processing Datasets for Continual Learning
+Duetothedifferentapplicationdomainsanddifferentresearchcommunities
+interested in continual learning for SDP domains, there are no standard bench-
+marks used to evaluate CL strategies. Existing benchmarks vary greatly in
+terms of complexity. Furthermore, different application domains use a slightly
+different language. In this section, we provide a review of the different datasets
+and continual learning scenarios, following the classification described in Table
+1. Webelievethatthisreviewcanfavorthecross-pollinationbetweenclassicCL
+techniques and sequential domains and between different sequential domains.
+Table 3 provides an overview of the different datasets in literature. For
+each dataset we highlight previous work that used the datasets, the application
+domain of the data, and the CL scenario according to Table 1. Clearly, most
+datasets in literature are used by few, or even just one, paper. This is due
+to the different research questions each paper tries to answer: since few works
+are spread over very different areas, it is natural to find different benchmarks
+and evaluation protocols. Unfortunately, these differences in the experimental
+setups make it impossible to compare different models in the literature or to
+deduce general and task-independent conclusions.
+Different synthetic benchmarks have been adapted to continual scenar-
+ios. The Copy Task [50], a benchmark used to test the short-term memory of
+14
+Dataset Application Scenario
+Copy Task [103, 34] synthetic MT+NI
+Delay/Memory Pro/Anti [32] synthetic, neuroscience MT+NI
+Seq. Stroke MNIST [103, 34] stroke classification SIT+(NI/NC)
+Quick, Draw! † stroke classification SIT+NC
+MNIST-like [27] [26] † object classification SIT+(NI/NC)
+CORe50 [92] object recognition SIT+(NI/NC)
+MNLI [10] domain adaptation SIT+NI
+MDSD [81] sentiment analysis SIT+NI
+WMT17 [14] NMT MT+NC
+OpenSubtitles18 [76] NMT MT+NC
+WIPO COPPA-V2 [63] [107] NMT MT+NC
+CALM [66] language modeling Online
+WikiText-2 [118] language modeling SIT+NI/NC
+Audioset [27, 34] sound classification SIT+NC
+LibriSpeech, Switchboard [119] speech recognition (SIT/MT)+NC
+Synthetic Speech Commands † sound classification SIT+NC
+Acrobot [65] reinforcement learning MT+NI
+Table 3: Datasets used in continual learning for sequential data processing. The scenario
+column indicates in which scenario the dataset has been used (or could be used when the
+related paper does not specify this information). Datasets used on this paper are marked
+with†.
+recurrent models, incrementally increases the sequence lengths in the continual
+setting (SIT+NI). However, the data generating distribution remains constant,
+which means that the drift between the different steps is limited. Pixel-MNIST
+is another popular benchmark for RNN models [69] where MNIST digits are
+presented one pixel at a time, either with the original order or using a fixed
+permutation. Continual learning scenarios based on pixel-MNIST include new
+classes (SIT+NC in [27] and this paper or MT+NC in [35]) or new permutations
+(SIT+NI in this work). Sequential Stroke MNIST [29] represents MNIST digits
+[70] as a sequence of pen strokes, with pen displacements as features (plus pen
+up/down bit). The dataset is adapted to a continual data stream by increasing
+thesequencelength(SIT+NI)orbycreatingnewclasses(SIT+NCin[27]andthis
+paper, or MT+NC in [35]). More realistic CL benchmarks for computer vision,
+like CORe50 [77], can be used also in sequential contexts to leverage temporal
+correlated information from videos.
+In the Natural Language Processing domain a common scenario is the
+domain-incrementalsetting,wherenewinstancesfromdifferenttopicsaregrad-
+ually introduced (SIT+NI). Examples of applications are natural language in-
+ference [117, 10], sentiment analysis [81] and machine translation in a MT+NC
+scenario[107]. Alternatively,[118]studiestheproblemof onlinelearningalan-
+guage model. In this work, EWC is used to keep the previous knowledge when
+the recurrent model is trained with a single sequence. CALM is a benchmark
+15
+specifically designed for online CL in language modeling [66] which provides a
+realistic environment in which to test NLP models.
+The most common CL scenario in the audio signal processing domain
+is the incremental classification (MT/SIT+NC), where new classes are gradually
+introduced [27]. For example, AudioSet [46] is a dataset of annotated audio
+events. Therawaudiosignalsarealreadypreprocessed,generatingsequencesof
+10timestepswith128featureseach. DifferentlyfromSequentialStrokeMNIST
+orCopyTask,AudioSetisareal-worldapplication. However,thesmallsequence
+lengthmayconcealpossibleproblemswhenworkingwithRNNs. Otherdatasets
+in the literature refer to specific applications, like reinforcement learning [65],
+or neuroscience problems [32].
+4. Evaluating Continual Learning Strategies
+In our review, we showed that literature on CL strategies for SDP domains
+isstillinitsearlystages. Theuseofheterogeneousbenchmarksandofdifferent
+jargon is detrimental to the comparison of the various approaches in litera-
+ture. Most of the works focus on customized strategies, often ignoring popular
+techniques widely employed in other domains where CL is more mature, e.g.
+computer vision. Furthermore, benchmarks have large variations in terms of
+complexity. It is for these reasons that we believe of fundamental importance
+to put forward a solid and articulated evaluation of existing CL strategies on
+RNNarchitectures. Tothisend,wedesignanexperimentalsetupwhichiseasily
+reproducible and general enough to be used with all recurrent architectures.
+In this section, we focus on two main points related to our evaluation pro-
+tocol: the choice of the CL scenarios and the application-agnostic nature of the
+benchmarks.
+4.1. Defining the Continual Learning Scenario
+We rely on class-incremental classification (SIT+NC) of sequences as a stan-
+dard and generic scenario to test novel CL techniques for recurrent models.
+Incremental classification is a challenging task - at least in the SIT scenario
+without explicit task labels - and it is directly applicable to many real-world
+problems, such as incremental audio classification.
+We deliberately avoid the use of Multitask scenarios (MT, MIT), in which the
+tasklabelisexplicitlyprovidedforeachpattern,bothattrainingandtesttime.
+Although this assumption may be reasonable in very specific applications (e.g.
+machine translation), in the vast majority of the cases such information is not
+available. We also experimented with a popular benchmark in the Domain in-
+cremental scenario (SIT+NI). This represents a simpler CL problem than class
+incremental. Still, it is compatible with our setup since it does not use knowl-
+edge about task labels.
+16
+4.2. Benchmarks
+We believe there is a necessity for generic CL benchmarks that measure ba-
+sic CL capabilities in sequential domains. This paper contributes to this goal
+by adapting the Synthetic Speech Commands dataset [15] and Quick, Draw!
+dataset[52]totheincrementalclassificationscenario. Thesearetwotaskswhich
+arequiteeasyinanofflinesetting(especiallytheSyntheticSpeechCommands)
+but become challenging in a continual setting, making them ideal as a bench-
+mark. Moreover, they are suitable to evaluate recurrent models since they have
+a sequential nature: feedforward counterparts, although applicable, are more
+expensive in terms of adaptive parameters since there is no weight sharing and
+they do not incorporate any kind of temporal knowledge. In addition to the
+data above, our experimental protocol also includes the Permuted MNIST and
+Split MNIST datasets, since they are two of the most used benchmarks in the
+papers surveyed in our review. Table 4 summarizes the main characteristics of
+the benchmarks used in the experiments, while Figure 4 provides a graphical
+representation of their patterns. Figure 5 highlights how our class-incremental
+benchmarks were created starting from the dataset classes.
+Synthetic Speech Commands (SSC). SSC is a dataset of audio recordings of
+spokenwords[15]. Eachaudiorepresentsasingleword,takenfromavocabulary
+of30words, sampledat16kHz. Wepreprocessedeachsampletoextract40Mel
+coefficients using a sliding window length of 25 ms, with 10 ms stride. The
+resulting sequences have a fixed length of 101 timesteps. We did not apply any
+further normalization. We create a Class Incremental scenario (SIT+NC) from
+SSCbylearningtwoclassesatatime,foratotalnumberof10steps. Formodel
+selection and assessment, we used a total of 16 classes out of the 30 available
+ones.
+AdditionaldetailsontheuseofSSCintheexperimentsarereportedinAppendix
+B.1.
+Quick, Draw! (QD). QDisadatasetofhand-drawnsketches,groupedinto345
+classes [52]. Each drawing is a sequence of pen strokes, where each stroke has
+3 features: x and y displacements with respect to the previous stroke and a bit
+indicating if the pen has been lifted. We adopted a Class-incremental scenario
+(SIT+NC)bytaking2classesatatimeforatotalnumberof10steps. Formodel
+selection and assessment, we used a total of 16 classes out of the 345 available
+ones. Appendix B.2providesdetailsabouttheclassesusedintheexperiments.
+Differently from the previous datasets Quick, Draw! sequences have variable
+length. Since this is often the case in real-world applications, it is important to
+assess the performance of recurrent models in this configuration.
+Permuted MNIST (PMNIST). PMNISTisheavilyusedtotrainrecurrentneu-
+ralnetworksonlongsequences[69]. EachMNISTimageistreatedasasequence
+of pixels and shuffled according to a fixed permutation. Each step of the data
+stream uses a different permutation to preprocess the images and uses all the
+10 MNIST classes. This allows to easily create an unlimited number of steps.
+This configuration corresponds to a Domain incremental scenario (SIT+NI).
+17
+SSC QD SMNIST PMNIST
+CL Steps 10 10 5 10
+Classes per step 2 2 2 2
+Sequence length 101 variable (8-211) 28/196 28/196
+Total number of classes 30 345 10 10
+Input size 40 3 28/4 28/4
+Table 4: Benchmarks used in the experimental evaluation. QuickD, Draw has patterns with
+variable sequencelength,fromaminimumof8stepstoamaximumof211steps
+. Experiments with SMNIST and PMNIST have been conducted with different
+sequence lengths by taking 28 or 4 pixels at a time, resulting in sequences of
+length 28 and 196, respectively.
+Split MNIST (SMNIST). SMNIST is another popular continual adpatation of
+sequential MNIST. In this scenario, MNIST sequences are taken two classes at
+atime. First, all0sand1sarefedtothemodel. Then, all2sand3s. Andsoon
+andsoforthuptothelastpair(8and9). Thisscenarioconsistsofonly5steps.
+The configuration corresponds to a Class Incremental benchmark (SIT+NC).
+5. An Experimental Protocol for CL in SDP Domains
+In the following section we describe the experimental settings that we pro-
+posetorobustlyassessCLstrategieswithinSDPtasksandthatareusedinthe
+experiments discussed in the following2.
+Model Selection. Hyperparametertuningisacriticalphasewhenbuildingsolid
+machine learning based predictors. This process is made considerably more
+difficult in CL scenarios, since we cannot assume to have a separate validation
+setcomprisingtheentirestreamofdatainadvance. Asaresult,itisnotpossible
+tobuildthestandardtrain-validation-splitusedinmodelselection. Tosolvethis
+problem,wefollowthemodelselectionprocedureforCLintroducedin[20]. We
+separate the data stream into validation and test steps. In particular, we hold
+out the first 3 steps from our data stream and use them to perform model
+selection. After selecting the best hyperparameters, we use the remainder of
+the stream (the test stream, composed of 10 unseen steps in our experiments),
+toperformmodelassessment. SinceSplitMNISThasalimitednumberofsteps
+(5), we decided to perform model selection and model assessment on the same
+datastreamforthisparticularbenchmark. Appendix Areportstheparameters
+used in the model selection procedure and the selected configurations for both
+feedforward and recurrent models.
+2Wepublishthecodeandconfigurationfilesneededtoreproduceourexperimentsatthis
+linkhttps://github.com/AndreaCossu/ContinualLearning_RecurrentNetworks
+18
+20
+15
+15
+10
+10
+5
+5
+(a)SSC (b)Quick,Draw!
+(c)RowMNIST (d)PermutedRowMNIST
+Figure 4: Graphical representation of two patterns for each benchmark used in the experi-
+ments. Fig. 4a SSC uses 40 Mel features (columns) for each of the 101 steps (rows). Both
+plots use log values. Fig. 4b provides sketches of images (cat and airplane). Fig. 4c shows
+MNISTdigits,whichareprovidedtothemodelonerowatatimeintheRowMNISTversion.
+PermutedMNIST(Fig. 4d)permutesimagesrow-wise. Bestviewedincolor.
+Data Preprocessing. Preprocessing a dataset in a CL setting suffers from the
+same limitations highlighted for the model selection phase. Computing global
+statistics such as the mean and variance require the entire stream, which is not
+available beforehand. As a result, we cannot operate any kind of normalization
+that needs access to a global statistic, since do not have access to the entire
+stream in advance. For MNIST data we simply divided the pixel value for 255,
+which does not require any prior knowledge about the data stream (only about
+the limits of the data generating device).
+Models. The reference recurrent model that we use in our experiments is the
+popular Long Short-Term Memory network (LSTM) [59] (PyTorch implemen-
+tation [93]). LSTMs are among the most used recurrent models [24] and their
+performance is comparable to other alternatives, like Gated Recurrent Units
+[23]. Therefore, wedecidedtouseLSTMasgeneralrepresentativesofrecurrent
+architectures.
+To provide a means of comparison between feedforward and recurrent models,
+we also consider and experiment with Multi Layer Perceptrons (MLP) with
+ReLU activations. Notice that the feedforward models take as input the entire
+sequence, therefore, they can be viewed as recurrent networks which receive se-
+quences of length 1. This alternative view over these models is useful since we
+19
+Step 1 MODEL 1
+Step 2 MODEL 2
+Step 3 MODEL 3
+Figure 5: Class-incremental benchmark with 3 steps starting from the patterns of Quick,
+Draw! dataset. Eachstepiscomposedby2classes.
+experimented with multiple sequence lengths. On PMNIST and SMNIST, we
+ran experiments with LSTM which takes as input 4 pixels at a time (LSTM-4),
+16 pixels at a time (LSTM-16) and 28 pixels at a time (ROW-LSTM).
+PerformanceMetrics. Inordertoassesstheperformanceofthecontinuallearn-
+ingstrategieswechosetofocusoncatastrophicforgettingbymeasuringtheav-
+erage accuracy over all steps at the end of training on last step T. This metric,
+called ACC [79], can been formalized as:
+T
+1 (cid:88)
+ACC = R , (9)
+T,t
+T
+t=1
+where R is the accuracy on step t after training on step T. In Appendix A.1
+T,t
+we also compare execution times in order to assess the computational efficiency
+of different strategies.
+Strategies. We compare the performances of our models in combination with
+6 CL strategies: EWC [64], MAS [3], LwF [75], GEM [79], A-GEM [20] and
+Replay.
+Inadditiontothecontinuallearningstrategies,weprovidetwobaselines. Naive
+trains the model on the sequence without applying any measure against forget-
+ting. Itisusefultoprovidesalower-boundtoanyreasonableCLstrategy. Joint
+Training trains the model by considering the concatenation of the full stream
+of sequential tasks in a single batch3. Notice that this is not a CL strategy
+since it assumes access to the entire data stream. Joint Training can be used to
+highlight the effect of the continuous training on the model performance.
+3Joint Training is often used as an upper bound performance for CL. However, in the
+presenceofastrongpositiveforwardandbackwardtransferthismaynotbetrue.
+20
+PMNIST MLP ROW-LSTM LSTM-4
+EWC 0.92 0.58 0.29
+±0.02 ±0.09 ±0.05
+LWF 0.82 0.77 0.35
+±0.03 ±0.05 ±0.04
+MAS 0.58 0.64 0.31
+±0.04 ±0.07 ±0.04
+GEM 0.94 0.90 0.71
+±0.01 ±0.01 ±0.02
+A-GEM 0.80 0.58 0.20
+±0.03 ±0.08 ±0.03
+REPLAY 0.92 0.92 0.82
+±0.00 ±0.01 ±0.01
+NAIVE 0.31 0.61 0.30
+±0.04 ±0.06 ±0.03
+Joint Training 0.97 0.96 0.94
+±0.00 ±0.00 ±0.01
+SMNIST MLP ROW-LSTM LSTM-4
+EWC 0.21 0.21 0.19
+±0.01 ±0.02 ±0.00
+LWF 0.70 0.31 0.26
+±0.02 ±0.07 ±0.06
+GEM 0.91 0.93 0.66
+±0.01 ±0.03 ±0.04
+A-GEM 0.20 0.20 0.13
+±0.00 ±0.00 ±0.02
+MAS 0.20 0.20 0.19
+±0.00 ±0.00 ±0.00
+REPLAY 0.82 0.89 0.61
+±0.02 ±0.01 ±0.06
+NAIVE 0.20 0.20 0.19
+±0.00 ±0.00 ±0.00
+Joint Training 0.95 0.97 0.95
+±0.00 ±0.00 ±0.01
+Table 5: Mean ACC and standard deviation over 5 runs on PMNIST and SMNIST bench-
+marks.
+6. Results
+Weranasetofexperimentsaimedatverifying1)whethergeneralCLstrate-
+gies are able to mitigate forgetting in recurrent models and 2) the effect of se-
+quence length on the catastrophic forgetting. Table 5 reports the mean ACC
+and its standard deviation (over 5 runs) computed on PMNIST and SMNIST.
+Table 6 reports the same results computed on SSC and QD.
+6.1. Catastrophic Forgetting with CL strategies
+In Class-incremental scenarios, importance-based regularization strategies
+are subjected to a complete forgetting, as also showed by [72] for feedforward
+models. We confirmed their results also for recurrent models.The effectiveness
+of replay in SIT scenario is also confirmed by our experiments.
+GEM emerges as one of the best performing approaches not only for SM-
+NIST and PMNIST, but also for the more complex SSC and QD. However, its
+computationalcostremainsverylarge(asshowedinAppendix A.1),duetothe
+quadratic optimization requested to find a projecting direction. Unfortunately,
+its more efficient version A-GEM results in complete forgetting. This is caused
+by the fact that A-GEM is not constrained by each previous steps, but instead,
+itcomputesanapproximationoftheconstraintsbysamplingpatternsrandomly
+21
+SSC MLP LSTM
+EWC 0.10 0.10
+±0.00 ±0.00
+LWF 0.05 0.12
+±0.00 ±0.01
+MAS 0.10 0.10
+±0.00 ±0.00
+GEM 0.55 0.53
+±0.00 ±0.01
+A-GEM 0.05 0.09
+±0.00 ±0.01
+REPLAY 0.81 0.73
+±0.03 ±0.04
+NAIVE 0.10 0.10
+±0.00 ±0.00
+Joint Training 0.93 0.89
+±0.00 ±0.02
+QD LSTM
+EWC 0.12
+±0.02
+LWF 0.12
+±0.01
+MAS 0.10
+±0.00
+GEM 0.47
+±0.03
+A-GEM 0.10
+±0.00
+REPLAY 0.49
+±0.02
+NAIVE 0.10
+±0.00
+Joint Training 0.96
+±0.00
+Table6: MeanACCandstandarddeviationover5runsonSyntheticSpeechCommandsand
+Quick,Draw! benchmarks.
+fromthememory. WhilethismaybesufficientinaMTscenario,itdoesnotwork
+appropriately in a SIT scenario.
+LwF has been the most difficult strategy to use, requiring a careful tuning
+ofhyperparameterswhichquestionsitsapplicabilitytoreal-worldenvironment.
+WhileitworksonSMNIST,itsperformancerapidlydecreasesonmorecomplex
+benchmarks like SSC and QD, where it suffers from complete forgetting.
+6.2. Sequence Length affects Catastrophic Forgetting
+Our experiments on PMNIST and SMNIST also allow to draw some con-
+clusions on the effect of sequence length on forgetting. Fig. 6 shows mean
+ACC results for different sequence lengths. The decreasing trends highlights a
+clear phenomenon: long sequences cause more forgetting in recurrent networks.
+Regularization strategies suffer the most when increasing sequence length.
+Figure 7 offers some insights also on replay: although more robust than the
+other strategies in terms of final performance, replay needs more patterns to
+recover from forgetting as sequences become longer.
+The results on PMNIST with MAS may seem to contradict the sequence-
+length effect, since ROW-LSTM performs surprisingly better than MLP. How-
+ever,theperformancehastobemeasuredrelativelytotheNaiveperformance,in
+whichnoCLstrategyisapplied. Whencomparedtothisvalue,theROW-LSTM
+22
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP(
+R
+1)
+O
+W-LST M
+L
+(
+S
+2
+T
+8) M-16(4
+L
+9
+S
+)
+T
+M-4(196)
+Model(SequenceLength)
+CCA
+lwf mas replay-10
+gem ewc replay-1
+agem
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP(
+R
+1)
+O
+W-LST M
+L
+(
+S
+2
+T
+8) M-16(4
+L
+9
+S
+)
+T
+M-4(196)
+Model(SequenceLength)
+(a)PermutedMNIST
+CCA
+lwf replay-10
+gem replay-1
+(b)SplitMNIST
+Figure6: AverageACConallstepsfordifferentsequencelengthsanddifferentCLstrategies.
+Sequencelengthcausesadecreaseinperformancesamongallstrategies. Bestviewedincolor.
+does not perform any better than MLP. Instead it achieves a worse accuracy
+with respect to the Naive, as expected. The MAS-Naive ratio is 1.87 for MLP,
+but only 1.05 for MAS.
+6.3. Comparison between Multi-Head and Single-Head Models
+Although in this work we focused on Class Incremental and Domain Incre-
+mentalscenarios,wealsoprovideacomparisonwithTask-Incrementalscenarios
+(MT + NC). Figure 8 shows results for the same experimental configuration in
+Section 6, but with a multi-head model instead of a single-head. We did not
+test multi-head models in PMNIST since this benchmark always uses the same
+outputunitsforalltasks. Appendix CreportsTableC.13withdetailedresults.
+There is a clear difference between single and multi-head performances. A
+multi-head setting easily prevents CF: even a simple Naive procedure is able to
+retainmostoftheknowledgeinbothclass-incrementalscenarios. Theinfluence
+of sequence length in single-headed models is not reflected in the multi-head
+case. In fact, the LSTM performs better than MLP on SSC: this could be
+related to the fact that, given the already large mitigation of forgetting with
+multi-head, the sequential nature of the problem favours a recurrent network.
+WeconcludedthatMTscenarioswithmulti-headmodelsshouldbeusedonly
+whenthereistheneedtoachievehigh-levelperformancesinenvironmentswhere
+tasks are easily distinguishable. However, task label information should never
+be used to derive general conclusions about the behavior and performance of
+CL algorithms.
+23
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+1 10 20
+Replaypatternsperminibatch
+CCA
+MLP LSTM-16
+LSTM-ROW LSTM-4
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+1 10 20
+Replaypatternsperminibatch
+(a)PermutedMNIST
+CCA
+MLP LSTM-16
+LSTM-ROW LSTM-4
+(b)SplitMNIST
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+1 10 20
+Replaypatternsperminibatch
+CCA
+MLP LSTM
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+1 10 20
+Replaypatternsperminibatch
+(c)SSC
+CCA
+LSTM
+(d)QD
+Figure7: AverageACCfordifferentreplaypatternsperminibatch. Thelongertheinputse-
+quence,themorethepatternsneededtorecovertheperformance. Quick,Draw! performance
+does not change significantly with respect to replay patterns in the minibatch. Best viewed
+incolor.
+7. Research Directions
+The problem of learning continuously on sequential data processing tasks is
+far from being solved. Fortunately, the recent interest in the topic is fostering
+the discovery of new solutions and a better understanding of the phenomena
+at play. We believe that our work could play an important role in sketching
+promising research directions.
+Leveraging existing CL strategies. From our experiments, it is clear that some
+familiesofCLstrategiesarebettersuitedtotheClass-incrementalscenariothan
+others (e.g. GEM mitigates forgetting across all benchmarks while EWC per-
+forms poorly in class-incremental settings). Instead of designing entirely new
+approaches, it could be better to start building from the existing ones. Replay
+offers a simple and effective solution, but storing previous patterns may not be
+possibleinallenvironments. ItwouldbeinterestingtoextendLwFwithknowl-
+edge distillation algorithms specifically designed for recurrent networks. De-
+pending on the effectiveness of the distillation, results could drastically change.
+Even if architectural strategies have not been part of our study, they can be an
+important part of the research. In particular, they may be a valid option when
+24
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+ewc agem naive
+CCA
+MLPmulti-head MLPsingle-head
+LSTM-4multi-head LSTM-4single-head
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+ewc agem naive
+(a)SplitMNIST
+CCA
+MLPmulti-head MLPsingle-head
+LSTMmulti-head LSTMsingle-head
+(b)SyntheticSpeechCommands
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+ewc agem naive
+CCA
+LSTMmulti-head LSTMsingle-head
+(c)Quick,Draw!
+Figure8: Barplotcomparingmulti-headandsingle-headperformances. Bestviewedincolor.
+all other approaches struggle. In fact, task-specific components or freezing of
+previousparameterscanremoveforgettingbydesign. Theusuallylargecompu-
+tational cost can be mitigated by pruning. Combining pruning techniques for
+RNNs with dynamic architectures may open a new topic of research in CL.
+Improving recurrent models. Theroleofsequencelengthincontinuouslearning
+processes can be investigated under different points of view. From the point of
+viewofdynamicalsystems,thelearningtrajectoryfollowedbyarecurrentmodel
+can be studied in terms of different regimes (chaotic, edge-of-chaos, attractors)
+[18]. Longer sequences would produce longer trajectories which could make the
+Continual Learning problem more difficult. Inspecting and interpreting these
+trajectories could in turn foster the design of new regularization strategies to
+constrain the learning path. Instead, from an experimental point of view, the
+optimization problem that has to be solved by recurrent networks is highly
+dependent on the sequence length. For example, the Backpropagation Through
+Time has to propagate information from the end of the sequence to the very
+beginning in order to compute gradients. Some of the obstacles encountered by
+many strategies in our experimental analysis may be overcome by alternative
+learning algorithms, for example Truncated Backpropagation.
+Designofrealisticscenarios. ThecomplexityoftheCLenvironmentsisanother
+important topic to address in future researches. Providing target labels to the
+system each time a new pattern arrives is often too expensive, even unrealistic.
+Instead, sequences are able to work with sparse targets [49]. Sequential data
+processingmayleadtomoreautonomoussystemsinwhichtherequiredlevelof
+25
+supervision is drastically reduced.
+Our proposed benchmarks could contribute to realize such scenario through a
+stream of realistic patterns, resembling what an agent would experience in the
+real world. To build this setting, it could be required to concatenate multiple
+commands from SSC or multiple drawings from QD, possibly interleaved with
+noisypatterns. Thisonlinescenariowouldfreethemodelfromthenecessityto
+learn over multiple passes over the data. Instead, the environment itself would
+providenewinstancesandnewclasses(SIT+NIC)whichcanbeexperiencedone
+(or few) at a time. With this achievement, CL models could seamlessly be
+integrated in many real world applications.
+8. Conclusion
+InthisworkwefocusedonContinualLearninginRecurrentNeuralNetwork
+models. First, we reviewed the literature and proposed a taxonomy of contri-
+butions. We also analysed and organized the benchmarks and datasets used in
+CL for sequential data processing.
+Thenumberofexistingbenchmarkscomparedtotherelativelysmallnumberof
+contributions revealed that most papers proposed their own model and tested
+it on datasets which are almost never reused in subsequent works. Therefore,
+we discussed the opportunity to build standard benchmarks and, in addition,
+we proposed two new CL benchmarks based on existing datasets: Synthetic
+Speech Commands (SSC) and Quick, Draw! (QD). Both datasets are specifi-
+callytailoredtoSequentialDataProcessingandaregeneralenoughtobemodel
+agnostic.
+From the literature review, we also found out that all available works focus on
+newCLstrategieswithcustomizedarchitectures,oftenforaspecializeddomain.
+The different experimental setups prevent a comparison of multiple approaches
+and there is little information about how recurrent networks behave with gen-
+eral CL strategies.
+Tofillthisgap,werananextensiveexperimentalanalysiswithsingle-headmod-
+els focused on Class-Incremental scenarios. We compared traditional LSTMs
+against feedforward networks on 6 popular CL strategies. Our main finding
+shows increasing forgetting as sequences are made artificially longer without
+modifying their content. Even replay strategies, which are the most robust
+among the considered methods, are subjected to this phenomenon. This holds
+also for Domain-incremental scenarios with Permuted MNIST.
+The effect of sequence length on the final performance may be questioned by
+results presented in [34]: the authors found the working memory (the amount
+of features needed to address a task) to be the main driving factor in the per-
+formance of recurrent models. In our work, we showed that, with fixed working
+memory,sequencelengthplaysarole. Thesetwoconclusionsarenotdirectlyin
+contrast with each other, because the experiments of [34] have been conducted
+on either a MT+NC scenarios with multi-head models or on simpler scenarios like
+Domain-incremental. This difficulty in comparing results confirms the need for
+our large-scale evaluation.
+26
+Finally, to justify our choice of Class-incremental scenarios, we ran additional
+experimentswithmulti-headmodelsinTask-incrementalscenarios. Weverified
+that a multi-head approach greatly simplifies the problem in both feedforward
+and recurrent architectures. However, this comes at the cost of a strong as-
+sumption on task label knowledge.
+Concluding, we entered into a discussion of interesting research paths inspired
+by our findings on the topic of Continual Learning in sequential domains. We
+believe that addressing such challenges will make Continual Learning more ef-
+fective in realistic environments, where sequential data processing is the most
+natural way to acquire and process new information across a lifetime.
+Acknowledgments
+WethanktheContinualAIassociationandallofitsmembersforthefruitful
+discussions.
+Funding
+ThisworkhasbeenpartiallysupportedbytheEuropeanCommunityH2020
+programme under project TEACHING (grant n. 871385).
+References
+[1] Subutai Ahmad and Jeff Hawkins. How do neurons operate on sparse
+distributed representations? A mathematical theory of sparsity, neurons
+and active dendrites. arXiv, pages 1–23, 2016.
+[2] Hongjoon Ahn, Sungmin Cha, Donggyu Lee, and Taesup Moon.
+Uncertainty-based Continual Learning with Adaptive Regularization. In
+NeurIPS, pages 4392–4402, 2019.
+[3] Rahaf Aljundi, Francesca Babiloni, Mohamed Elhoseiny, Marcus
+Rohrbach, and Tinne Tuytelaars. Memory Aware Synapses: Learning
+what (not) to forget. In The European Conference on Computer Vision
+(ECCV), 2018.
+[4] Rahaf Aljundi, Eugene Belilovsky, Tinne Tuytelaars, Laurent Charlin,
+Massimo Caccia, Min Lin, and Lucas Page-Caccia. Online Continual
+Learning with Maximal Interfered Retrieval. In NeurIPS, pages 11849–
+11860. Curran Associates, Inc., 2019.
+[5] Rahaf Aljundi, Klaas Kelchtermans, and Tinne Tuytelaars. Task-Free
+Continual Learning. In The IEEE Conference on Computer Vision and
+Pattern Recognition (CVPR), 2019.
+[6] Rahaf Aljundi, Marcus Rohrbach, and Tinne Tuytelaars. Selfless Sequen-
+tial Learning. In ICLR, 2019.
+27
+[7] Giuseppe Amato, Davide Bacciu, Stefano Chessa, Mauro Dragone, Clau-
+dioGallicchio,ClaudioGennaro,HectorLozano,AlessioMicheli,Gregory
+M.P.O’Hare,ArantxaRenteria,andClaudioVairo.Abenchmarkdataset
+for human activity recognition and ambient assisted living. In Helena
+Lindgren, Juan F. De Paz, Paulo Novais, Antonio Fern´andez-Caballero,
+Hyun Yoe, Andres Jim´enez Ram´ırez, and Gabriel Villarrubia, editors,
+Ambient Intelligence- Software and Applications – 7th International Sym-
+posium on Ambient Intelligence (ISAmI 2016), pages 1–9. Springer Inter-
+national Publishing, 2016.
+[8] Bernard Ans, St´ephane Rousset, Robert M. French, and Serban Musca.
+Self-refreshing memory in artificial neural networks: Learning temporal
+sequences without catastrophic forgetting. Connection Science, 16(2):71–
+99, 2004.
+[9] BernardAns,StephaneRousset,RobertM.French,andSerbanC.Musca.
+PreventingCatastrophicInterferenceinMultipleSequenceLearningUsing
+Coupled Reverberating Elman Networks. In Proceedings of the 24th An-
+nual Conference of the Cognitive Science Society, 2002.
+[10] Nabiha Asghar, Lili Mou, Kira A Selby, Kevin D Pantasdo, Pascal
+Poupart, and Xin Jiang. Progressive Memory Banks for Incremental Do-
+main Adaptation. In ICLR, 2019.
+[11] DzmitryBahdanau,KyunghyunCho,andYoshuaBengio.NeuralMachine
+Translation by Jointly Learning to Align and Translate. ICLR, 2015.
+[12] Shawn Beaulieu, Lapo Frati, Thomas Miconi, Joel Lehman, Kenneth O.
+Stanley, Jeff Clune, and Nick Cheney. Learning to Continually Learn. In
+ECAI, 2020.
+[13] Magdalena Biesialska, Katarzyna Biesialska, and Marta R. Costa-juss`a.
+Continual Lifelong Learning in Natural Language Processing: A Survey.
+In Proceedings of the 28th International Conference on Computational
+Linguistics, pages 6523–6541, Barcelona, Spain (Online), 2020. Interna-
+tional Committee on Computational Linguistics.
+[14] Ondˇrej Bojar, Rajen Chatterjee, Christian Federmann, Yvette Graham,
+Barry Haddow, Shujian Huang, Matthias Huck, Philipp Koehn, Qun Liu,
+VarvaraLogacheva,ChristofMonz,MatteoNegri,MattPost,RaphaelRu-
+bino, Lucia Specia, and Marco Turchi. Findings of the 2017 Conference
+on Machine Translation (WMT17). In Proceedings of the Second Con-
+ference on Machine Translation, pages 169–214, Copenhagen, Denmark,
+2017. Association for Computational Linguistics.
+[15] Johannes Buchner. Synthetic Speech Commands: A public dataset for
+single-word speech recognition. Kaggle Dataset, 2017.
+28
+[16] MassimoCaccia,PauRodriguez,OleksiyOstapenko,FabriceNormandin,
+Min Lin, Lucas Caccia, Issam Laradji, Irina Rish, Alexande Lacoste,
+DavidVazquez,andLaurentCharlin. OnlineFastAdaptationandKnowl-
+edgeAccumulation: ANewApproachtoContinualLearning. arXiv,2020.
+[17] AntonioCarta,AndreaCossu,FedericoErrica,andDavideBacciu. Catas-
+trophicForgettinginDeepGraphNetworks: AnIntroductoryBenchmark
+for Graph Classification. The 2021 Web Conference (WWW) Workshop
+on Graph Benchmarks Learning (GLB), 2021.
+[18] Andrea Ceni, Peter Ashwin, and Lorenzo Livi. Interpreting Recurrent
+Neural Networks Behaviour via Excitable Network Attractors. Cognitive
+Computation, 12(2):330–356, 2020.
+[19] Arslan Chaudhry, Puneet K. Dokania, Thalaiyasingam Ajanthan, and
+Philip H. S. Torr. Riemannian Walk for Incremental Learning: Under-
+standing Forgetting and Intransigence. In Proceedings of the European
+Conference on Computer Vision (ECCV), pages 532–547, 2018.
+[20] Arslan Chaudhry, Marc’Aurelio Ranzato, Marcus Rohrbach, and Mo-
+hamed Elhoseiny. Efficient Lifelong Learning with A-GEM. In ICLR,
+2019.
+[21] Dechao Chen, Shuai Li, and Liefa Liao. A recurrent neural network ap-
+pliedtooptimalmotioncontrolofmobilerobotswithphysicalconstraints.
+Applied Soft Computing, 85:105880, December 2019.
+[22] Tianqi Chen, Ian Goodfellow, and Jonathon Shlens. Net2Net: Accelerat-
+ing Learning via Knowledge Transfer. In ICLR, 2016.
+[23] Kyunghyun Cho, Bart van Merri¨enboer, Dzmitry Bahdanau, and Yoshua
+Bengio. On the Properties of Neural Machine Translation: En-
+coder–Decoder Approaches. In Proceedings of SSST-8, Eighth Workshop
+on Syntax, Semantics and Structure in Statistical Translation,pages103–
+111, Doha, Qatar, 2014. Association for Computational Linguistics.
+[24] Junyoung Chung, Caglar Gulcehre, Kyunghyun Cho, and Yoshua Ben-
+gio. Empirical evaluation of gated recurrent neural networks on sequence
+modeling. In NIPS Workshop on Deep Learning, 2014.
+[25] Robert Coop and Itamar Arel. Mitigation of catastrophic interference
+in neural networks using a fixed expansion layer. In 2012 IEEE 55th
+International Midwest Symposium on Circuits and Systems (MWSCAS),
+pages 726–729. IEEE, 2012.
+[26] Robert Coop and Itamar Arel. Mitigation of catastrophic forgetting in
+recurrent neural networks using a Fixed Expansion Layer. In The 2013
+International Joint Conference on Neural Networks (IJCNN), pages 1–7,
+Dallas, TX, USA, 2013. IEEE.
+29
+[27] Andrea Cossu, Antonio Carta, and Davide Bacciu. Continual Learning
+with Gated Incremental Memories for sequential data processing. In Pro-
+ceedings of the 2020 International Joint Conference on Neural Networks
+(IJCNN 2020), 2020.
+[28] Yuwei Cui, Subutai Ahmad, and Jeff Hawkins. Continuous Online Se-
+quence Learning with an Unsupervised Neural Network Model. Neural
+Computation, 28(11):2474–2504, 2016.
+[29] Edwin D. de Jong. Incremental Sequence Learning. arXiv: 1611.03068
+[cs], 2016.
+[30] Matthias De Lange, Rahaf Aljundi, Marc Masana, Sarah Parisot, Xu Jia,
+Ales Leonardis, Gregory Slabaugh, and Tinne Tuytelaars. A continual
+learning survey: Defying forgetting in classification tasks. arXiv, 2019.
+[31] Gregory Ditzler, Manuel Roveri, Cesare Alippi, and Robi Polikar. Learn-
+ing in Nonstationary Environments: A Survey. IEEE Computational In-
+telligence Magazine, 10(4):12–25, 2015.
+[32] Lea Duncker, Laura N Driscoll, Krishna V Shenoy, Maneesh Sahani,
+and David Sussillo. Organizing recurrent network dynamics by task-
+computation to enable continual learning. In NeurIPS, volume 33, 2020.
+[33] Sayna Ebrahimi, Mohamed Elhoseiny, Trevor Darrell, and Marcus
+Rohrbach. Uncertainty-guided Continual Learning with Bayesian Neu-
+ral Networks. In ICLR, 2020.
+[34] Benjamin Ehret, Christian Henning, Maria R Cervera, Alexander Meule-
+mans,JohannesvonOswald,andBenjaminFGrewe. ContinualLearning
+in Recurrent Neural Networks. arXiv, 2020.
+[35] BenjaminEhret,ChristianHenning,MariaR.Cervera,AlexanderMeule-
+mans,JohannesvonOswald,andBenjaminF.Grewe. ContinualLearning
+inRecurrentNeuralNetworkswithHypernetworks. arXiv:2006.12109[cs,
+stat], 2020.
+[36] Jeffrey L. Elman. Finding Structure in Time. Cognitive Science,
+14(2):179–211, 1990.
+[37] SebastianFarquharandYarinGal.AUnifyingBayesianViewofContinual
+Learning. In NeurIPS Bayesian Deep Learning Workshop, 2018.
+[38] Sebastian Farquhar and Yarin Gal. Towards Robust Evaluations of Con-
+tinualLearning.InPrivacyinMachineLearningandArtificialIntelligence
+Workshop, ICML, 2019.
+[39] Chelsea Finn, Aravind Rajeswaran, Sham Kakade, and Sergey Levine.
+Online Meta-Learning. In ICML, 2019.
+30
+[40] Robert French. Using Semi-Distributed Representations to Overcome
+Catastrophic Forgetting in Connectionist Networks. In In Proceedings
+of the 13th Annual Cognitive Science Society Conference, pages 173–178.
+Erlbaum, 1991.
+[41] Robert French. Pseudo-recurrent Connectionist Networks: An Approach
+to the ’Sensitivity-Stability’ Dilemma. Connection Science, 9(4):353–380,
+1997.
+[42] RobertFrench. UsingPseudo-RecurrentConnectionistNetworkstoSolve
+the Problem of Sequential Learning. In Proceedings of the 19th Annual
+Cognitive Science Society Conference, 1997.
+[43] RobertFrench. Catastrophicforgettinginconnectionistnetworks. Trends
+in Cognitive Sciences, 3(4):128–135, 1999.
+[44] Robert M. French. Using Semi-Distributed Representations to Overcome
+Catastrophic Forgetting in Connectionist Networks. In In Proceedings
+of the 13th Annual Cognitive Science Society Conference, pages 173–178.
+Erlbaum, 1991.
+[45] Jo˜ao Gama, Indre˙ Zˇliobaite˙, Albert Bifet, Mykola Pechenizkiy, and Ab-
+delhamid Bouchachia. A survey on concept drift adaptation. ACM Com-
+puting Surveys (CSUR), 46(4):44:1–44:37, 2014.
+[46] J. F. Gemmeke, D. P. W. Ellis, D. Freedman, A. Jansen, W. Lawrence,
+R. C. Moore, M. Plakal, and M. Ritter. Audio Set: An ontology and
+human-labeleddatasetforaudioevents. In2017IEEEInternationalCon-
+ference on Acoustics, Speech and Signal Processing (ICASSP),pages776–
+780, 2017.
+[47] SiavashGolkar,MichaelKagan,andKyunghyunCho. ContinualLearning
+via Neural Pruning. arXiv, 2019.
+[48] Alex Graves. Sequence Transduction with Recurrent Neural Networks.
+arXiv, 2012.
+[49] Alex Graves, Santiago Fern´andez, Faustino Gomez, and Ju¨rgen Schmid-
+huber. Connectionist temporal classification: Labelling unsegmented se-
+quence data with recurrent neural networks. In ICML, ICML ’06, pages
+369–376, New York, NY, USA, 2006. Association for Computing Machin-
+ery.
+[50] Alex Graves, Greg Wayne, and Ivo Danihelka. Neural Turing Machines.
+arXiv:1410.5401 [cs], 2014.
+[51] Stephen Grossberg. How does a brain build a cognitive code? Psycholog-
+ical Review, 87(1):1–51, 1980.
+31
+[52] DavidHaandDouglasEck. ANeuralRepresentationofSketchDrawings.
+In ICLR, 2018.
+[53] Michael Bonnell Harries, Claude Sammut, and Kim Horn. Extracting
+Hidden Context. Machine Learning, 32(2):101–126, 1998.
+[54] JamesHarrison,ApoorvaSharma,ChelseaFinn,andMarcoPavone. Con-
+tinuous meta-learning without tasks. arXiv, 2019.
+[55] Mahmudul Hasan and Amit K. Roy-Chowdhury. A Continuous Learning
+Framework for Activity Recognition Using Deep Hybrid Feature Models.
+IEEE Transactions on Multimedia, 17(11):1909–1922, 2015.
+[56] Tyler L Hayes, Nathan D Cahill, and Christopher Kanan. Memory Ef-
+ficient Experience Replay for Streaming Learning. IEEE International
+Conference on Robotics and Automation (ICRA), 2018.
+[57] XuHe,JakubSygnowski,AlexandreGalashov,AndreiARusu,YeeWhye
+Teh, and Razvan Pascanu. Task Agnostic Continual Learning via Meta
+Learning. arxiv, 2019.
+[58] Geoffrey Hinton, Oriol Vinyals, and Jeffrey Dean. Distilling the Knowl-
+edge in a Neural Network. In NIPS Deep Learning and Representation
+Learning Workshop, 2015.
+[59] Sepp Hochreiter and Jurgen Schmidhuber. Long Short-Term Memory.
+Neural Computation, 9:1735–1780, 1997.
+[60] TimothyHospedales,AntreasAntoniou,PaulMicaelli,andAmosStorkey.
+Meta-LearninginNeuralNetworks: ASurvey.arXiv:2004.05439[cs,stat],
+2020.
+[61] Steven C Y Hung, Cheng-Hao Tu, Cheng-En Wu, Chien-Hung Chen, Yi-
+Ming Chan, and Chu-Song Chen. Compacting, Picking and Growing for
+Unforgetting Continual Learning. In NeurIPS, pages 13669–13679, 2019.
+[62] Khurram Javed and Martha White. Meta-Learning Representations for
+Continual Learning. In NeurIPS, 2019.
+[63] Marcin Junczys-Dowmunt, Bruno Pouliquen, and Christophe Mazenc.
+COPPA V2.0: Corpus of parallel patent applications. Building large par-
+allel corpora with GNU make. In Proceedings of the 4th Workshop on
+ChallengesintheManagementofLargeCorpora, Portoroˇz, Slovenia, May
+23-28, 2016, 2016.
+[64] James Kirkpatrick, Razvan Pascanu, Neil Rabinowitz, Joel Veness, Guil-
+laume Desjardins, Andrei A Rusu, Kieran Milan, John Quan, Tiago Ra-
+malho, Agnieszka Grabska-Barwinska, Demis Hassabis, Claudia Clopath,
+Dharshan Kumaran, and Raia Hadsell. Overcoming catastrophic forget-
+ting in neural networks. PNAS, 114(13):3521–3526, 2017.
+32
+[65] Taisuke Kobayashi and Toshiki Sugino. Continual Learning Exploiting
+StructureofFractalReservoirComputing.InIgorVTetko,VˇeraK˚urkov´a,
+Pavel Karpov, and Fabian Theis, editors, Artificial Neural Networks and
+Machine Learning – ICANN 2019: Workshop and Special Sessions, vol-
+ume 11731, pages 35–47, Cham, 2019. Springer International Publishing.
+[66] Germ´an Kruszewski, Ionut-Teodor Sorodoc, and Tomas Mikolov. Evalu-
+ating Online Continual Learning with CALM. arXiv, 2020.
+[67] RichardKurle,BotondCseke,AlexejKlushyn,PatrickvanderSmagt,and
+StephanGu¨nnemann. ContinualLearningwithBayesianNeuralNetworks
+for Non-Stationary Data. In ICLR, 2020.
+[68] Aditya Kusupati, Manish Singh, Kush Bhatia, Ashish Kumar, Prateek
+Jain, and Manik Varma. FastGRNN: A Fast, Accurate, Stable and Tiny
+Kilobyte Sized Gated Recurrent Neural Network. arXiv:1901.02358 [cs,
+stat], January 2019.
+[69] Quoc V Le, Navdeep Jaitly, and Geoffrey E Hinton. A simple way
+to initialize recurrent networks of rectified linear units. arXiv preprint
+arXiv:1504.00941, 2015.
+[70] YannLeCun,L´eonBottou,YoshuaBengio,andPatrickHaffner.Gradient-
+Based Learning Applied to Document Recognition. Proceedings of the
+IEEE, 86(11):2278–2324, 1998.
+[71] Timoth´ee Lesort, Vincenzo Lomonaco, Andrei Stoian, Davide Maltoni,
+DavidFilliat,andNataliaD´ıaz-Rodr´ıguez.Continuallearningforrobotics:
+Definition, framework, learning strategies, opportunities and challenges.
+Information Fusion, 58:52–68, 2020.
+[72] Timoth´eeLesort, AndreiStoian, andDavidFilliat. RegularizationShort-
+comings for Continual Learning. arXiv, 2020.
+[73] HongLin Li, Payam Barnaghi, Shirin Enshaeifar, and Frieder Ganz. Con-
+tinual Learning Using Bayesian Neural Networks. arXiv, 2019.
+[74] Yuanpeng Li, Liang Zhao, Kenneth Church, and Mohamed Elhoseiny.
+Compositional Language Continual Learning. In ICLR, 2020.
+[75] ZhizhongLiandDerekHoiem. LearningwithoutForgetting. InEuropean
+Conference on Computer Vision, Springer, pages 614–629, 2016.
+[76] PierreLison, J¨orgTiedemann, andMilenKouylekov. OpenSubtitles2018:
+StatisticalRescoringofSentenceAlignmentsinLarge,NoisyParallelCor-
+pora. In Proceedings of the 11th International Conference on Language
+ResourcesandEvaluation(LREC2018),pages1742–1748.EuropeanLan-
+guage Resources Association (ELRA), 2018.
+33
+[77] Vincenzo Lomonaco and Davide Maltoni. CORe50: A New Dataset and
+Benchmark for Continuous Object Recognition. In Sergey Levine, Vin-
+cent Vanhoucke, and Ken Goldberg, editors, Proceedings of the 1st An-
+nual Conference on Robot Learning, volume 78 of Proceedings of Machine
+Learning Research, pages 17–26. PMLR, 2017.
+[78] Vincenzo Lomonaco, Lorenzo Pellegrini, Andrea Cossu, Antonio Carta,
+Gabriele Graffieti, Tyler L. Hayes, Matthias De Lange, Marc Masana,
+JaryPomponi,GidovandeVen,MartinMundt,QiShe,KeilandCooper,
+Jeremy Forest, Eden Belouadah, Simone Calderara, German I. Parisi,
+Fabio Cuzzolin, Andreas Tolias, Simone Scardapane, Luca Antiga, Sub-
+utai Amhad, Adrian Popescu, Christopher Kanan, Joost van de Weijer,
+Tinne Tuytelaars, Davide Bacciu, and Davide Maltoni. Avalanche: An
+End-to-End Library for Continual Learning. In CLVision Workshop at
+CVPR, 2021.
+[79] David Lopez-Paz and Marc’Aurelio Ranzato. Gradient Episodic Memory
+for Continual Learning. In NIPS, 2017.
+[80] MantasLukoˇseviˇciusandHerbertJaeger.Reservoircomputingapproaches
+torecurrentneuralnetworktraining. ComputerScienceReview,3(3):127–
+149, 2009.
+[81] Avinash Madasu and Vijjini Anvesh Rao. Sequential Domain Adaptation
+throughElasticWeightConsolidationforSentimentAnalysis.arXiv,2020.
+[82] Davide Maltoni and Vincenzo Lomonaco. Continuous Learning in Single-
+Incremental-Task Scenarios. Neural Networks, 116:56–73, 2019.
+[83] James L. McClelland, Bruce L. McNaughton, and Andrew K. Lampinen.
+Integration of new information in memory: New insights from a comple-
+mentary learning systems perspective. Philosophical Transactions of the
+Royal Society B: Biological Sciences, 375(1799):20190637, 2020.
+[84] MichaelMcCloskeyandNealJ.Cohen. CatastrophicInterferenceinCon-
+nectionist Networks: The Sequential Learning Problem. In Gordon H.
+Bower, editor, Psychology of Learning and Motivation, volume 24, pages
+109–165. Academic Press, 1989.
+[85] Nikhil Mehta, Kevin J Liang, and Lawrence Carin. Bayesian Nonpara-
+metric Weight Factorization for Continual Learning. arXiv, pages 1–17,
+2020.
+[86] Cuong V Nguyen, Yingzhen Li, Thang D Bui, and Richard E Turner.
+Variational Continual Learning. In ICLR, 2018.
+[87] Hung Nguyen, Xuejian Wang, and Leman Akoglu. Continual Rare-Class
+Recognition with Emerging Novel Subclasses. In ECML, 2019.
+34
+[88] Alexander Ororbia. Spiking Neural Predictive Coding for Continual
+Learning from Data Streams. arXiv, 2020.
+[89] AlexanderOrorbia,AnkurMali,CLeeGiles,andDanielKifer. Continual
+Learning of Recurrent Neural Networks by Locally Aligning Distributed
+Representations. arXiv, 2019.
+[90] Alexander Ororbia, Ankur Mali, Daniel Kifer, and C Lee Giles. Lifelong
+NeuralPredictiveCoding: SparsityYieldsLessForgettingwhenLearning
+Cumulatively. arXiv, pages 1–11, 2019.
+[91] German I Parisi, Ronald Kemker, Jose L Part, Christopher Kanan, and
+Stefan Wermter. Continual lifelong learning with neural networks: A
+review. Neural Networks, 113:54–71, 2019.
+[92] German I Parisi, Jun Tani, Cornelius Weber, and Stefan Wermter. Life-
+longLearningofSpatiotemporalRepresentationsWithDual-MemoryRe-
+current Self-Organization. Frontiers in Neurorobotics, 12, 2018.
+[93] AdamPaszke,SamGross,FranciscoMassa,AdamLerer,JamesBradbury,
+Gregory Chanan, Trevor Killeen, Zeming Lin, Natalia Gimelshein, Luca
+Antiga, Alban Desmaison, Andreas K¨opf, Edward Yang, Zach DeVito,
+Martin Raison, Alykhan Tejani, Sasank Chilamkurthy, Benoit Steiner,
+Lu Fang, Junjie Bai, and Soumith Chintala. PyTorch: An Imperative
+Style, High-Performance Deep Learning Library. NeurIPS, 2019.
+[94] Daniel Philps, Artur d’Avila Garcez, and Tillman Weyde. Making Good
+on LSTMs’ Unfulfilled Promise. arXiv, 2019.
+[95] MarkBRing.CHILD:AFirstStepTowardsContinualLearning.Machine
+Learning, 28(1):77–104, 1997.
+[96] AnthonyRobins. CatastrophicForgetting;CatastrophicInterference;Sta-
+bility; Plasticity; Rehearsal. Connection Science, 7(2):123–146, 1995.
+[97] David Rolnick, Arun Ahuja, Jonathan Schwarz, Timothy P Lillicrap, and
+Greg Wayne. Experience Replay for Continual Learning. In NeurIPS,
+pages 350–360, 2019.
+[98] Andrei A Rusu, Neil C Rabinowitz, Guillaume Desjardins, Hubert Soyer,
+James Kirkpatrick, Koray Kavukcuoglu, Razvan Pascanu, and Raia Had-
+sell. Progressive Neural Networks. arXiv, 2016.
+[99] AntonMaximilianSch¨aferandHansGeorgZimmermann. RecurrentNeu-
+ral Networks Are Universal Approximators. In Stefanos D. Kollias, An-
+dreas Stafylopatis, Wl(cid:32)odzisl(cid:32)aw Duch, and Erkki Oja, editors, Artificial
+Neural Networks – ICANN 2006, Lecture Notes in Computer Science,
+pages 632–640. Springer Berlin Heidelberg, 2006.
+35
+[100] Monika Schak and Alexander Gepperth. A Study on Catastrophic For-
+getting in Deep LSTM Networks. In Igor V Tetko, Vˇera K˚urkov´a, Pavel
+Karpov, and Fabian Theis, editors, Artificial Neural Networks and Ma-
+chine Learning – ICANN 2019: Deep Learning, Lecture Notes in Com-
+puter Science, pages 714–728. Springer International Publishing, Cham,
+2019.
+[101] Jeffrey C. Schlimmer and Richard H. Granger. Incremental learning from
+noisy data. Machine Learning, 1(3):317–354, 1986.
+[102] Jonathan Schwarz, Wojciech Czarnecki, Jelena Luketina, Agnieszka
+Grabska-Barwinska, Yee Whye Teh, Razvan Pascanu, and Raia Hadsell.
+Progress & Compress: A scalable framework for continual learning. In
+ICML, pages 4528–4537, 2018.
+[103] Shagun Sodhani, Sarath Chandar, and Yoshua Bengio. Toward Training
+Recurrent Neural Networks for Lifelong Learning. Neural Computation,
+32(1):1–35, 2019.
+[104] Ghada Sokar, Decebal Constantin Mocanu, and Mykola Pechenizkiy.
+SpaceNet: Make Free Space For Continual Learning. arXiv, 2020.
+[105] Fan-Keng Sun, Cheng-Hao Ho, and Hung-Yi Lee. LAMOL: LAnguage
+MOdeling for Lifelong Language Learning. In ICLR, 2020.
+[106] Binh Tang and David S. Matteson. Graph-Based Continual Learning. In
+ICLR, 2020.
+[107] Brian Thompson, Jeremy Gwinnup, Huda Khayrallah, Kevin Duh, and
+Philipp Koehn. Overcoming Catastrophic Forgetting During Domain
+Adaptation of Neural Machine Translation. In Proceedings of the 2019
+Conference of the North American Chapter of the Association for Com-
+putational Linguistics: Human Language Technologies, Volume 1 (Long
+and Short Papers), pages 2062–2068, Minneapolis, Minnesota, 2019. As-
+sociation for Computational Linguistics.
+[108] Mariya Toneva, Alessandro Sordoni, Remi Tachet des Combes, Adam
+Trischler, Yoshua Bengio, and Geoffrey J Gordon. An Empirical Study
+of Example Forgetting during Deep Neural Network Learning. In ICLR,
+2019.
+[109] Gido M. van de Ven, Hava T. Siegelmann, and Andreas S. Tolias. Brain-
+inspired replay for continual learning with artificial neural networks. Na-
+ture Communications, 11, 2020.
+[110] Gido M. van de Ven and Andreas S. Tolias. Generative replay with feed-
+backconnectionsasageneralstrategyforcontinuallearning. arXiv,2018.
+[111] Gido M van de Ven and Andreas S Tolias. Three scenarios for continual
+learning. In Continual Learning Workshop NeurIPS, 2018.
+36
+[112] Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion
+Jones, Aidan N Gomez, L(cid:32) ukasz Kaiser, and Illia Polosukhin. Attention is
+AllyouNeed. InI.Guyon,U.V.Luxburg,S.Bengio,H.Wallach,R.Fer-
+gus, S. Vishwanathan, and R. Garnett, editors, NIPS, pages 5998–6008.
+Curran Associates, Inc., 2017.
+[113] Johannes von Oswald, Christian Henning, Jo&#xE3, O Sacramento, and
+Benjamin F. Grewe. Continual learning with hypernetworks. In ICLR,
+2019.
+[114] A.Waibel,T.Hanazawa,G.Hinton,K.Shikano,andK.J.Lang.Phoneme
+recognition using time-delay neural networks. IEEE Transactions on
+Acoustics, Speech, and Signal Processing, 37(3):328–339, 1989.
+[115] ZhepeiWang,CemSubakan,EfthymiosTzinis,ParisSmaragdis,andLau-
+rent Charlin. Continual Learning of New Sound Classes using Generative
+Replay. arXiv, 2019.
+[116] GerhardWidmerandMiroslavKubat.Learninginthepresenceofconcept
+drift and hidden contexts. Machine Learning, 23(1):69–101, 1996.
+[117] Adina Williams, Nikita Nangia, and Samuel Bowman. A Broad-Coverage
+Challenge Corpus for Sentence Understanding through Inference. In Pro-
+ceedings of the 2018 Conference of the North American Chapter of the
+Association for Computational Linguistics: Human Language Technolo-
+gies, Volume 1 (Long Papers), pages 1112–1122, New Orleans, Louisiana,
+2018. Association for Computational Linguistics.
+[118] Thomas Wolf, Julien Chaumond, and Clement Delangue. Continuous
+Learning in a Hierarchical Multiscale Neural Network. In ACL, 2018.
+[119] Jiabin Xue, Jiqing Han, Tieran Zheng, Xiang Gao, and Jiaxing Guo. A
+Multi-TaskLearningFrameworkforOvercomingtheCatastrophicForget-
+ting in Automatic Speech Recognition. arXiv, 2019.
+[120] Jaehong Yoon, Eunho Yang, Jeongtae Lee, and Sung Ju Hwang. Lifelong
+Learning With Dynamically Expandable Networks. In ICLR, 2018.
+[121] TYoung,DevamanyuHazarika,SPoria,andECambria.RecentTrendsin
+DeepLearningBasedNaturalLanguageProcessing. IEEE Computational
+Intelligence Magazine, 13:55–75, 2018.
+[122] Friedemann Zenke, Ben Poole, and Surya Ganguli. Continual Learning
+Through Synaptic Intelligence. In ICML, pages 3987–3995, 2017.
+[123] Chen Zeno, Itay Golan, Elad Hoffer, and Daniel Soudry. Task Agnostic
+ContinualLearningUsingOnlineVariationalBayes. InNeurIPSBayesian
+Deep Learning Workshop, 2018.
+37
+Appendix A. Experiment configuration
+Here we report additional details on the experiments configuration.
+Each step is divided into a training set and a test set. We used the default
+train-testsplitofTorchvisionforMNIST-baseddatasets. ForSSCwerandomly
+generate a train-test split for each class, with 20% of patterns for the test set.
+Quick, Draw! already provides separate splits for each class. We changed ran-
+dom seed on each run.
+To make training stabler with RNNs, we used a fixed permutation on SMNIST
+which does not change across steps. This uniformly spreads the information
+along the sequence.
+Following the original paper, A-GEM concatenates a one-hot task vector to the
+input patterns. Since we adopt class-incremental scenarios, we concatenate the
+vector only at training time. On SSC, we leveraged the Avalanche library [78]
+for the GEM implementation.
+We tested a wide range of hyperparameters for the grid search, as showed by
+Table A.7 for PMNIST, Table A.8 for SMNIST, Table A.9 for SSC and Table
+A.10forQD.Thetablesusethefollowingabbreviations: numberoflayersisnl,
+number of hidden units is hs, minibatch size is mbs, optimizer is opt, learning
+rate is lr, patterns per step in GEM memory is pps, sample size from A-GEM
+memory is ss, softmax temperature in LwF is T. MLPs are with ReLU activa-
+tions. LSTMs have 1 layer for MNIST-based benchmarks, 2 layers for SSC and
+Quick, Draw!. LSTM with QD uses 512 hidden units. Multi-head experiments
+use the same configuration.
+All models use gradient clipping at norm 5. The number of epochs is set to
+guarantee convergence except for online methods (GEM, A-GEM) which use 2
+epochs and minibatches of 10 patterns. The default optimizer is Adam with no
+regularization.
+Appendix A.1. Computational Complexity
+We monitored execution times for recurrent architectures with different CL
+strategies. WeranexperimentsonasingleV100GPU,with3threadsatatime
+® ®
+on a Intel Xeon Gold 6140M CPU with 2.30GHz frequency.
+Our results clearly show that the cost of GEM is quite large and may be pro-
+hibitive in realistic applications.
+Appendix B. Benchmarks Description
+Appendix B.1. Synthetic Speech Commands
+WeintroducedtheSyntheticSpeechCommands(SSC)[15]benchmark4 and
+adapted it for a class-incremental setting. We took 2 classes at a time and we
+4The Synthetic Speec Commands Dataset is available at https://www.kaggle.com/
+jbuchner/synthetic-speech-commands-dataset
+38
+PMNIST LSTM MLP
+EWC λ=(0.1, 1, 10, 100), λ=(0.1, 1, 10, 100),
+hs=(256, 512) nl=(1,2), hs=512
+MAS λ=(0.1, 1, 10, 100), λ=(0.1, 1, 10),
+mbs=(64,128), hs=(256, mbs=(32,64,128), lr=(1e-2,
+512) 1e-3), nl=1, hs=512
+GEM pps=(64, 128, 256), pps=(64, 128, 256),
+γ=(0.5, 1), lr=(1e-2, 1e-3), γ=(0.5, 1), lr=(1e-1, 1e-2,
+hs=256 1e-3), nl=(1,2), hs=512
+A-GEM patterns per step i pps=(64, 128, 256),
+memory=(64, 128, 256), ss=(256, 512), lr=(1e-1,
+ss=(256, 512), lr=(1e-2, 1e-2, 1e-3), nl=(1,2),
+1e-3), hs=256 hs=5120
+LwF α=(0.1, 1), hs=256, α=(0.1, 1), nl=(1,2),
+T=(0.5, 1, 1.5, 2), hs=512, T=(0.5, 1, 1.5, 2),
+opt=(sgd, adam), opt=(sgd, adam),
+lr=(1e-3, 1e-4) mbs=(64, 128), lr=(1e-2,
+1e-3)
+Replay lr=(1e-3, 1e-4), hs=(256, lr=(1e-3, 1e-4),
+512) hs=(128,256), nl=1
+Naive hs=(256, 512), lr=(1e-3, hs=(256,512), nl=1
+1e-4)
+Joint Training lr=(1e-2, 1e-3), mbs=128, hs=(256, 512), nl=1
+hs=512
+TableA.7: HyperparameterselectiononPMNIST.Gridsearchhasbeenperformedforallthe
+combinationsinparenthesis. Boldnotationindicatesbesthyperparametervalue. Seethetext
+inAppendix Aforexplanationoftheabbreviationsusedinthistable.
+created sequences of 3 steps for model selection and sequences of 10 steps for
+modelassessment. WepreprocessedeachaudiowithaMelSpectrogramwith10
+ms hop length, 25 ms window size and 40 MFCCs features.
+Table B.11 following, we report statistics for all the 30 classes in the dataset.
+Appendix B.2. Quick, Draw!
+Quick, Draw! dataset has been downloaded from Google Cloud Console, in
+the sketchrnn folder5. All classes have 70,000 patterns for training and 2,500
+5Quick, Draw! details are available at https://github.com/googlecreativelab/
+quickdraw-dataset
+39
+SMNIST LSTM MLP
+EWC λ=(0.1, 1, 10, 100, 1000), λ=(0.1, 1, 10, 100, 1000),
+hs=(128, 256) nl=(1,2) hs=128
+MAS λ=(0.1, 1, 10, 100, 1000), λ=(0.1, 1, 10, 100),
+hs=(128, 256) lr=(1e-2, 1e-3), nl=1,
+hs=128
+GEM pps=(64, 128, 256), pps=(64, 128, 256),
+γ=(0.5, 1), lr=(1e-2, 1e-3), γ=(0.5, 1), lr=(1e-1, 1e-2,
+hs=128 1e-3), hs=128, nl=1
+A-GEM pps=(128, 256, 512), pps=(128, 256, 512),
+ss=(256, 512), lr=(1e-2, ss=(256, 512), lr=(1e-1,
+1e-3), hs=128 1e-2, 1e-3), hs=512, nl=1
+LwF α=([0, 1/2, 2*(2/3), α=([0, 1/2, 2*(2/3),
+3*(3/4), 4*(4/5)], 1), 3*(3/4), 4*(4/5)], 1),
+hs=(256,512), T=(0.5, 1, nl=(1,2), hs=256, T=(0.5,
+1.5, 2), opt=(sgd, adam), 1, 1.5, 2), opt=(sgd,
+lr=(1e-3, 1e-4), adam), mbs=(64, 128),
+mbs=(64,128) lr=(1e-2, 1e-3)
+Replay lr=(1e-3, 1e-4), hs=(128, hs=128, nl=(1,2)
+256)
+Naive hs=128, mbs=(32,64), hs=(128,256), nl=1
+lr=(1e-3, 1e-4)
+Joint Training hs=512, mbs=128, hs=128, nl=(1,2)
+lr=(1e-3, 1e-4)
+TableA.8: HyperparameterselectiononSMNIST.Gridsearchhasbeenperformedforallthe
+combinationsinparenthesis. Boldnotationindicatesbesthyperparametervalue. Seethetext
+inAppendix Aforexplanationoftheabbreviationsusedinthistable.
+for test. Table B.12 summarizes the classes used in the experiments.
+Appendix C. Additional Results
+We provide a set of paired plots showing the relationship between the train-
+ing accuracy at the end of each step and the final test accuracy at the end of
+trainingonallsteps. Theseplotsareusefultocomparetherelativeperformance
+of different CL strategies and different architectures.
+TableC.13showsthemeanACCanditsstandarddeviationfordifferentCL
+strategieswithmulti-headmodelsinMT+NCscenarios. A-GEMconcatenatesthe
+one-hot task vector to each train and test input pattern.
+40
+SSC LSTM MLP
+EWC λ=(0.1, 1, 10, 100, 1000), λ=(0.1, 1, 10, 100, 1000),
+hs=512 lr=(1e-2, 1e-3) nl=1,
+hs=1024
+MAS λ=(0.1, 1, 10, 100), λ=(0.1, 1, 10, 100),
+lr=(1e-3, 1e-4), hs=512, mbs=(32,64,128),
+mbs=(32, 64, 128) lr=(1e-2, 1e-3), nl=1,
+hs=1024
+GEM pps=(256, 512), γ=(0, 0.5, pps=(256, 512), γ=(0, 0.5,
+1) 1)
+A-GEM pps=(64, 128, 256), pps=(64, 128, 256),
+ss=(256, 512), lr=(1e-1, ss=(256, 512), lr=(1e-1,
+1e-2, 1e-3), hs=512 1e-2, 1e-3), nl=1, hs=1024
+LwF α=(0.1, 1), hs=(512, α=(0.1, 1), nl=(1,2),
+1024), T=(0.5, 1, 1.5, 2), hs=1024, T=(0.5, 1, 1.5,
+opt=(sgd, adam), lr=(1e-3, 2), opt=(sgd, adam),
+1e-4), mbs=(64,128) mbs=(64, 128), lr=(1e-2,
+1e-3)
+Replay hs=(512, 1024) lr=(1e-2, 1e-3), hs=1024,
+nl=(1,2)
+Naive hs=(512, 1024) hs=1024, nl=(1,2,3),
+lr=(1e-2, 1e-3)
+Joint Training lr=(0.01, 0.001), hs=(512, hs=1024, nl=(1,2), weight
+1024), layers=2, mbs=128 decay=(0, 1e-4), lr=1e-3,
+mbs=128
+Table A.9: Hyperparameter selection on SSC. Grid search has been performed for all the
+combinationsinparenthesis. Boldnotationindicatesbesthyperparametervalue. Seethetext
+inAppendix Aforexplanationoftheabbreviationsusedinthistable.
+41
+QD LSTM
+EWC λ=(1, 10, 100)
+MAS λ=(1, 10, 100)
+GEM pps=(32, 64), γ=(0, 0.5), lr=(1e-2, 1e-3)
+A-GEM pps=(64, 128, 256), ss=(256, 512), lr=(1e-1, 1e-2)
+LwF α=(0.1, 1), hs=512, T=(0.5, 1, 1.5, 2), opt=(sgd, adam),
+lr=1e-4, mbs=(64,128)
+Replay hs=512, lr=(1e-3, 1e-4)
+Naive hs=512, layers=(1,2), directions=(1, 2)
+Joint Training hs=(256, 512), layers=(1,2), bidirectional=(true, false),
+mbs=512, lr=1e-4
+Table A.10: Hyperparameter selection on QD. Grid search has been performed for all the
+combinationsinparenthesis. Boldnotationindicatesbesthyperparametervalue. Seethetext
+inAppendix Aforexplanationoftheabbreviationsusedinthistable.
+120000
+100000
+80000
+60000
+40000
+20000
+0
+ewc agemgemmaslwf nai
+r
+v
+e
+e play-10
+)s(emiT
+LSTM-ROW LSTM-4
+2000
+1750
+1500
+1250
+1000
+750
+500
+250
+0
+ewc agemgemmaslwf nai
+r
+v
+e
+e play-10
+(a)PermutedMNIST
+)s(emiT
+LSTM-ROW LSTM-4
+(b)SplitMNIST
+3000
+2500
+2000
+1500
+1000
+500
+0
+ewc agemmas lwf naive replay-10
+)s(emiT
+LSTM
+100000
+80000
+60000
+40000
+20000
+0
+ewc agemgemmaslwf naiv
+re
+e play-10
+(c)SSC
+)s(emiT
+LSTM
+(d)QD
+FigureA.9: AverageexecutiontimeofrecurrentmodelsfordifferentCLstrategies. OnSSC,
+wedidnotincludetheGEMstrategysinceithasbeenexecutedwithadifferentframework.
+Bestviewedincolor.
+42
+Class name patterns use Class name patterns use
+bed 1356 S1 off 2244 A3
+bird 1346 S1 one 1276 A4
+cat 1378 S2 on 2228 A4
+dog 1474 S2 right 1276 A5
+down 1188 S3 seven 1411 A5
+eight 1113 S3 sheila 1463 A6
+five 1092 - six 1485 A6
+four 2400 - stop 1485 A7
+go 960 - three 1188 A7
+happy 1481 - tree 1188 A8
+house 2382 A1 two 902 A8
+left 1485 A1 up 1187 A9
+marvel 1253 A2 wow 957 A9
+nine 1144 A2 yes 1244 A10
+no 957 A3 zero 1306 A10
+TableB.11: DetailsofSSCdatasetclasses: nameoftheclass,totalnumberofpatterns,howit
+hasbeenused. Sformodelselection,Aformodelassessment,thefollowingnumberindicates
+whichstepusestheclass. Dashindicatesthattheclasshasnotbeenusedinourexperiments.
+Class name use Class name use
+hot dog S1 octopus A4
+palm tree S1 cloud A5
+moon S2 bicycle A5
+envelope S2 swan A6
+dumbbell S3 picture frame A6
+microwave S3 shorts A7
+drill A1 flying saucer A7
+telephone A1 basketball A8
+airplane A2 harp A8
+dishwasher A2 beard A9
+chair A3 binoculars A9
+grass A3 tiger A10
+rhinoceros A4 book A10
+TableB.12: DetailsofQuick,Draw! datasetclasses: nameoftheclass,howithasbeenused.
+Sformodelselection,Aformodelassessment,thefollowingnumberindicateswhichstepuses
+theclass.
+43
+SMNIST MLP LSTM-4
+EWC 0.99 0.64
+±0.00 ±0.16
+A-GEM 0.73 0.20
+±0.05 ±0.06
+NAIVE 0.97 0.72
+±0.02 ±0.11
+SSC MLP LSTM
+EWC 0.77 0.80
+±0.09 ±0.06
+A-GEM 0.57 0.62
+±0.02 ±0.07
+NAIVE 0.72 0.67
+±0.10 ±0.10
+QD LSTM
+EWC 0.98
+±0.00
+A-GEM 0.56
+±0.16
+NAIVE 0.71
+±0.09
+Table C.13: Multi-head experiments showing average ACC and standard deviation. Naive
+strategyalreadyrecoverslargepartoftheperformance.
+44
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP LSTM-ROW LSTM-4
+CCA
+random S3 S6 S9
+S1 S4 S7 S10
+S2 S5 S8 mean
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP LSTM-ROW LSTM-4
+(a)PMNIST+naive
+CCA
+random S3 S6 S9
+S1 S4 S7 S10
+S2 S5 S8 mean
+(b)PMNIST+ewc
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP LSTM-ROW LSTM-4
+CCA
+random S3 S6 S9
+S1 S4 S7 S10
+S2 S5 S8 mean
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP LSTM-ROW LSTM-4
+(c)PMNIST+mas
+CCA
+random S3 S6 S9
+S1 S4 S7 S10
+S2 S5 S8 mean
+(d)PMNIST+lwf
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP LSTM-ROW LSTM-4
+CCA
+random S3 S6 S9
+S1 S4 S7 S10
+S2 S5 S8 mean
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP LSTM-ROW LSTM-4
+(e)PMNIST+gem
+CCA
+random S3 S6 S9
+S1 S4 S7 S10
+S2 S5 S8 mean
+(f)PMNIST+agem
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP LSTM-ROW LSTM-4
+CCA
+random S3 S6 S9
+S1 S4 S7 S10
+S2 S5 S8 mean
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP LSTM-ROW LSTM-4
+(g)PMNIST+replay-1
+CCA
+random S3 S6 S9
+S1 S4 S7 S10
+S2 S5 S8 mean
+(h)PMNIST+replay-10
+45
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP LSTM-ROW LSTM-4
+CCA
+random S2 S4 mean
+S1 S3 S5
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP LSTM-ROW LSTM-4
+(i)SMNIST+naive
+CCA
+random S2 S4 mean
+S1 S3 S5
+(j)SMNIST+ewc
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP LSTM-ROW LSTM-4
+CCA
+random S2 S4 mean
+S1 S3 S5
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP LSTM-ROW LSTM-4
+(k)SMNIST+mas
+CCA
+random S2 S4 mean
+S1 S3 S5
+(l)SMNIST+lwf
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP LSTM-ROW LSTM-4
+CCA
+random S2 S4 mean
+S1 S3 S5
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP LSTM-ROW LSTM-4
+(m)SMNIST+gem
+CCA
+random S2 S4 mean
+S1 S3 S5
+(n)SMNIST+agem
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP LSTM-ROW LSTM-4
+CCA
+random S2 S4 mean
+S1 S3 S5
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP LSTM-ROW LSTM-4
+(o)SMNIST+replay-1
+CCA
+random S2 S4 mean
+S1 S3 S5
+(p)SMNIST+replay-10
+46
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP LSTM
+CCA
+random S3 S6 S9
+S1 S4 S7 S10
+S2 S5 S8 mean
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP LSTM
+(q)SSC+naive
+CCA
+random S3 S6 S9
+S1 S4 S7 S10
+S2 S5 S8 mean
+(r)SSC+ewc
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP LSTM
+CCA
+random S3 S6 S9
+S1 S4 S7 S10
+S2 S5 S8 mean
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP LSTM
+(s)SSC+mas
+CCA
+random S3 S6 S9
+S1 S4 S7 S10
+S2 S5 S8 mean
+(t)SSC+lwf
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP LSTM
+CCA
+random S3 S6 S9
+S1 S4 S7 S10
+S2 S5 S8 mean
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP LSTM
+(u)SSC+gem
+CCA
+random S3 S6 S9
+S1 S4 S7 S10
+S2 S5 S8 mean
+(v)SSC+agem
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP LSTM
+CCA
+random S3 S6 S9
+S1 S4 S7 S10
+S2 S5 S8 mean
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+MLP LSTM
+(w)SSC+replay-1
+CCA
+random S3 S6 S9
+S1 S4 S7 S10
+S2 S5 S8 mean
+(x)SSC+replay-10
+47
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+LSTM
+CCA
+random S3 S6 S9
+S1 S4 S7 S10
+S2 S5 S8 mean
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+LSTM
+(y)QD+naive
+CCA
+random S3 S6 S9
+S1 S4 S7 S10
+S2 S5 S8 mean
+(z)QD+ewc
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+LSTM
+CCA
+random S3 S6 S9
+S1 S4 S7 S10
+S2 S5 S8 mean
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+LSTM
+(aa)QD+mas
+CCA
+random S3 S6 S9
+S1 S4 S7 S10
+S2 S5 S8 mean
+(ab)QD+lwf
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+LSTM
+CCA
+random S3 S6 S9
+S1 S4 S7 S10
+S2 S5 S8 mean
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+LSTM
+(ac)QD+gem
+CCA
+random S3 S6 S9
+S1 S4 S7 S10
+S2 S5 S8 mean
+(ad)QD+agem
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+LSTM
+CCA
+random S3 S6 S9
+S1 S4 S7 S10
+S2 S5 S8 mean
+1.0
+0.8
+0.6
+0.4
+0.2
+0.0
+LSTM
+(ae)QD+replay-1
+CCA
+random S3 S6 S9
+S1 S4 S7 S10
+S2 S5 S8 mean
+(af)QD+replay-10
+FigureC.10: Pairedplotscomparingaccuracyattheendoftrainingoneachstep(leftpoint)
+and accuracy after training on all steps (right point). Each column represents a different
+model. Red asterisk represents mean performance across all steps. Horizontal dotted line
+represents the performance of a random classifier. The more vertical the line, the larger the
+forgetting. Bestviewedincolor.
+48

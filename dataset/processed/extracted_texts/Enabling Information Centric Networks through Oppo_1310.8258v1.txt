@@ -1,0 +1,622 @@
+3102
+tcO
+03
+]IN.sc[
+1v8528.0131:viXra
+Enabling Information Centric Networks through
+∗
+Opportunistic Search, Routing and Caching
+Guilherme Domingues1, Edmundo deSouza eSilva1, RosaLea˜o1,Daniel S. Menasche´1
+1UniversidadeFederal do RiodeJaneiro (UFRJ)
+Rio deJaneiro, RJ –Brasil
+Abstract. Content dissemination networks are pervasive in todays’ Internet.
+Examples of content dissemination networks include peer-to-peer networks
+(P2P), content distribution networks (CDN) and information centric networks
+(ICN). In this paper, we propose a new system design for information centric
+networks which leverages opportunistic searching, routing and caching. Our
+system design is based on an hierarchical tiered structure. Random walks are
+usedtofindcontentinsideeachtier,andgatewaysacrosstiersareusedtodirect
+requests towards servers placed in thetop tier, which are accessed in case con-
+tent replicas are not found in lower tiers. Then, we proposea model to analyze
+thesysteminconsideration. Themodelyieldsmetricssuchasmeantimeto find
+a content and the load experienced by custodians as a function of the network
+topology. Usingthemodel,weidentifytradeoffsbetweenthesetwometrics,and
+numericallyshowhowto findtheoptimaltimeto liveoftherandomwalks.
+1. Introduction
+In today’s Internet, there is a strong demand for content dissemination networks,
+such as social networks (e.g. Facebook) and video networks (e.g. Youtube and
+RIO [deSouzae Silvaet al. 2006]). To supportthis growingdemand, two broad classes
+ofsolutions,supportedbyIPhost-to-hostcommunications,havebeen proposed: Content
+DeliveryNetworks(CDNs) and Peer-to-Peer Networks (P2P).
+InCDNs,dedicatedserversstorealltheinformationpublished. Copiesofpopular
+contents are placed close to the users within cache servers. Users are automatically and
+transparently re-directed to the most appropriate server by a central authority. Quality of
+Service(QoS)andadvancedmonitoringtechniquesaredeployed,throughproprietaryso-
+lutions,to redirect each userrequests(e.g., AkamaiNetworks). In CDNs, aset oforigin
+servers store a copy of all published content. Popular contents are also stored in cache
+servers close to users, so as to minimizethe service delay experienced by the requesters.
+Requests for content are sent through IP routers to the central authority. Content flows
+back tousers, alongtheIProuters.
+In P2P systems, peers act as both client and servers for contents. Peers’ requests
+are sent to other peers, from where content fragments (chunks) can be retrieved. Bittor-
+rent and Emule are examples of P2P systems. As soon as peers have downloaded all
+desired content chunks, they may either leave the system or remain as future providers
+forchunks(seeders). Whileseeders,P2Pnodescanleavethesystemfordifferentreasons
+(e.g., closing their connection to other peers, power failures, mobility). Indeed, there are
+∗ThisresearchwassupportedinpartbygrantsfromCNPqandFAPERJ.
+no guarantees on the time a seeder will remain present in a P2P system. If peers leave
+thesystemimmediatelyafterconcludingtheirdownloads,contentmightbecomeunavail-
+able which might lead to instability[Menasche´ et al. 2010]. Peers exchange information
+through IP routers, but in contrast to CDNs, there are no dedicated servers to cache con-
+tentclosetousers.
+Accordingto [Ahlgrenet al. 2012],globaltrafficintheInternetwillincreasebya
+factoroffour from2009 to 2014,approaching 64exabytes permonthin 2014,compared
+to approximately 15 exabytes per month in 2009. Global mobile data traffic is expected
+to double every year through 2014. Despite the tremendous success of CDNs and P2P
+systems, they present issues if we consider the scalability and reliability envisioned for
+next generation of content disseminationnetworks. With billionsofmobilenodes claim-
+ingforcontents,centraldecisionpoliciesatCDNstendnottoscale. InP2Pnetworks,the
+absence of dedicated cache servers close to users, as well as the lack of guarantees for a
+peertoremain inthesystemafterobtainingthedesired content,hampersreliability.
+Thescalabilityandreliabilitychallengesformassivedistributioncontentgaverise
+to a new research area: Information Centric Networks (ICN) [Ghodsiet al. 2011]. In
+ICNs, users know the name of a content being searched, before issuing requests. All
+searchedcontentispreviouslystoredinthenetworkthroughsubscriptionstothenetwork.
+Caching at all routers, also referred to as universal caching, is considered. Under uni-
+versal caching, caching is provided to all users, and can be potentially implemented by
+all routers, being pervasive along the entire network. Figure 1 exemplifies this scenario.
+Questionsonhowtodeployefficientalgorithmstoexploreuniversalcachingandonhow
+todefineinter-domainroutingpoliciesgiveriseto importantchallenges.
+Figure1. ICNscenario
+Figure 2 shows some of the most important ICN features. In ICNs, content is
+published without any explicit destination address. Receivers subscribe to the network
+through a query (request) for named contents. Users’ requests are forwarded by struc-
+tured or non-structured topologies. When there is a matching between a query and a
+stored content, content is delivered to the subscribers. During delivery, content might be
+cached and replicated in the network. This strategy is known as in-networking caching.
+Content can be sent to subscribers over TCP/IP transport mechanisms over paths which
+are oblivious to the path taken by the requests. Alternatively, content can be sent in the
+reverse path of requests trails stored across the caches. We reference caches in ICNs
+henceforth ascache-routers.
+In this article, our main contribution is a novel ICN architecture with routers dis-
+Figure2. Publish/subscribeandcontentdistributionmechanisms
+posed along hierarchical tiers domains, without a global lookup service to map names to
+IPaddresses toall contentpresent inthenetwork:
+• System design: We propose an opportunistic search algorithm to be executed
+across hierarchical tiers. Random walks are used to opportunisticallyfind replicas of the
+contentinsideatier. Ifnoreplicasarefound,requestsareforwardedtoanothertierinthe
+direction of publish area servers, which maintain fixed copies of the content. This way,
+we cope with the tradeoff between exploration of new routes to content replicas and ex-
+ploitationofknownroutestofixedreplicas. Inaddition,wealsoproposeanopportunistic
+caching policy using reinforced counters. The content placement and eviction policies
+are targeted towards self-tuned storage mechanism which must distribute content in the
+networktosatisfydemands thatvaryovertime.
+• Analytical model: We propose an analytical model to evaluate ICNs inspired
+by reliability theory concepts. The model yields metrics such as the mean time to find
+a content and the load at the publishing areas as a function of the network topology and
+thetimetolive(TTL)ofrequestsinsidedomains. Ourmodelallowsustostudytradeoffs
+in the choice of the TTL. Smaller values of TTL might lead to a reduction in the time to
+retrieveinformationat thecostofan increasein thesystem’sload at publishingareas.
+The remainder of this paper is organized as follows. Section 2 presents related
+work and a background on Information Centric Networks. Section 3 introduces the pro-
+posed ICN system design, Section 4 contains the analytical model and in Section 5 we
+present numerical results obtained with the proposed model. Section 6 concludes the
+paper.
+2. Related Work
+The literature on ICN can be broadly classified into structured architectures, such as
+[Koponenet al. 2007,Lagutin etal. 2010,2nd NetInfDescription2010]andunstructured
+architectures, such as [Rosensweiget al. 2010,Kakidaet al. 2011]. In what follows, we
+briefly describesomeoftheproposals.
+Dona[Koponenet al. 2007]consistsofanhierarchyofdomains,whereinaresolu-
+tion handler (RH) knows the IP location of all content published in descendent domains.
+RHs placed in the highest domain are aware of all the content published in the entire
+network. Psirp [Lagutinet al. 2010], Netinf [2nd NetInfDescription2010] and Mulit-
+cache [Katsaroset al. 2011] are proposals that deploy Distributed Hash Tables (DHT),
+enabling multiple logical entities to share the knowledge of all content published in the
+network,inadistributedfashion. Eachcontentplacedinthenetworkismappedtoahash
+key,witha hashkeybeing associatedwithasinglenodeoftheDHT.
+DHTstructuresarehighlyscalable,butmayimposeconsiderableoverheadmain-
+tenance costs [Chen etal. 2008]. Whenever a node fails or becomes repaired, requests
+must be sent along the network to reassure the node location in the network. Neigh-
+borhood adjacencies must be reestablished and file-index databases related to a partition
+management must be resettled. Also, many unsolved security vulnerabilities are able to
+disruptthepre-definedoperationofDHTsnodes [Urdanetaet al. 2011]. Atlast,inanet-
+workcomposedofdomainswhereproviderscareaboutadministrativeautonomy,theuse
+ofaglobalhashtableisunfeasible[D’Ambrosioet al. 2011].
+Jacobsonetal.[Jacobson etal. 2009]proposeanonstructuredgeometrytopology
+for routingrequests. Published content is announced through routing protocols, compos-
+ing routing tables supporting name aggregation. Requests are routed towards publishing
+areas leaving a trail called bread crumbs, so content follows the reverse paths set by the
+trails, when sent to users. As content flows to users, the bread crumbs are consumed.
+In general, content replicas will not be stored in the domain they were originally pub-
+lished. Tobeencountered,routesforreplicasshouldbeintheroutingtables. Avoidingan
+explosionofthesizeoftheroutingtablesbecomes an importantchallenge.
+To enhance the discovery of cached contents, Rosensweig et
+al. [Rosensweig et al. 2010] and Kakida et al. [Kakidaet al. 2011] allow bread crumbs
+not to be consumed on the fly, when content traverses the network. This allows trails for
+previously downloaded contents to be preserved. A new user request that reaches a trail
+foradesiredcontentwillbesenttoacache-routerindicatedbythetrail,beforeflowingto
+the publishing areas. Opportunistically downloading content from nearby cache-routers
+may considerably reduce the time users take to retrieve information. Nevertheless, the
+proposals encompassing the preservation of bread crumbs do not explicitly address how
+publishedinformationwillbeannounced tofulfilltheroutingtables.
+In this article, we avoid the drawbacks mentioned in this section, for both struc-
+turedandunstructuredgeometrytopologies. Tothisaim,weproposeanovelarchitecture
+withcache-routersdisposedacrosshierarchicaldomains. Users’requestsflowacrosstiers
+towards the publishing areas. Random walks are issued to explore domains’ vicinity, so
+as to allow opportunistic encounters with the desired content. That way, we avoid the
+drawbacks of structured geometries, as well as the problem of fulfilling routing tables
+whichiscommontotheunstructuredarchitectures discussedabove.
+The model presented in this paper is inspired by reliability met-
+rics [deSouzaeSilvaandMuntz1992]. The performance of random walks for
+search in unstructured hybrid peer-to-peer systems has been analyzed by Ioannidis and
+Marbach [Ioannidisand Marbach 2008]. Nonetheless, Ioannidis and Marbach focus
+on asymptotic results when the number of nodes in the network grows to infinity, and
+considered a single domain (tier). To the best of our knowledge, our work is the first
+to analyze the performance of random walks for search in multi-tiered architectures,
+accounting for the tradeoffs involved in the choice of the time to live of the random
+walks. Existing multicache multi-tier normal cache overlay network either consider
+global knowledge of content placement (CDN, P2P), or single path to the storage area
+(CacheTrees). Noneofthesemethodsexplorethevicinityofacacheinafullydistributed
+way.
+3. System Design
+Our architecture design considers logical hierarchical tiers (also called domains) com-
+posed of cache-routers (i.e., routers that can store content replicas). We consider N
+logical hierarchical tiers, in which tier 1 is the top level tier, and tier N constitutes the
+bottom level. Routers in tier N are the only ones connected to users. Users publish con-
+tent in storage areas connected to tier 1 routers. The interaction among the publishing
+areas and tier 1 routers is better detailed in Figure 3. The figure displays a single pub-
+lishingarea in tier1 and thelogical hierarchy ofcache-routers. Routers forward requests
+towards publishing areas which contain permanent copies of the content. Replicas may
+be cached in the cache-routers in the logical hierarchy. A strategy should be adopted to
+allow opportunistic encounters between requests and replicas in a best-effort manner as
+willbedetailedbelow. Opportunisticencountersare probabilisticinnature.
+Figure3. ICNcontentdistributionmechanisms.
+3.1. Content search: random walksand bread crumbs
+Whenrequestsareissuedbyusersthecache-routersforwardthemtothepublishingareas.
+Each cache-router oftier i is logicallyconnected to asubset of cache-routers in thesame
+tier i and in the parent tier i − 1. When a request first reaches a tier, a random walk is
+issued to find replicas of the content that may have been cached in that tier. The random
+walk lasts for at most T unitsof time, and only traverses cache-routers in the samelevel.
+That is, a counter is set to limit the amount of search time for a content within a level.
+If the desired content is not found when this counter expires, the router (say router k at
+level i) that holds the request at that time transfers it to level i−1, that is, to one of the
+routers in level i− 1 router k is (logically) connected to. A new random walk will then
+be issued, but now at level i−1. If the content been searched is found at a cache-router
+of hierarchy j, it is sent to the user as it will be explained below. Otherwise, the request
+will be forwarded up in the hierarchy until the publishing area (tier 1) is reached where
+the content is guaranteed to be found (otherwise the content was never stored in the first
+place). Note that the search does not generate significant traffic. Each request from a
+usergenerates a singlesearch messagethat performs a random walk at onetier at a time.
+Thetraffic dueto this request messageis negligibleas compared to that generated by the
+contenttobetransferred.
+As the requests are forwarded upwards across the hierarchy, a set of backward
+pointersis maintained. Thosepointersare henceforth referred to as bread crumbs. When
+a content is located in the network, it is delivered to the users following the reverse path
+of the bread crumbs. As the content follows the path of bread crumbs, the trail is erased.
+Random walks within domains do not generate bread crumbs. Therefore, when content
+is delivered to users it does not follow the exact same path as the random walks. This
+meansthatrandomwalksdonotimposeextrahops/sideeffectswhencontentisdelivered
+to users. We usea set of counters, named reinforced counters (RCs), to keep track of the
+load across the network for each content. The placement of replicas will be controlled
+using the reinforced counters, which will be used to decide which and when contents
+should be stored or evicted at each cache-router. Our approach is self-adaptive to users’
+loads.
+3.2. Content placement: reinforced counters
+Each request carries a hash key inf to identify the content being searched for. As men-
+tionedabove, a trail of bread crumbs is left at each cache-router traversed by therequest.
+The trail includes a back pointer to the preceding router visited by the request (the bread
+crumb), the hash key inf to identify the request and an associated counter (called re-
+inforced counter) that is incremented when the request arrives at a cache-router. The
+reinforced counter is used to determine whether the content associated with inf should
+be stored at the cache-router. Each cache-router keeps a reinforced counter rc(inf), asso-
+ciated to each hash key inf. Whenever a request for inf reaches a cache-router, rc(inf)
+is incremented by one. When content is downloaded through the reverse path left by
+the trails, bread crumbs are consumed but the reinforced counters are kept intact. Each
+cache-router periodically decreases the reinforced counter rc(inf) associated to inf and
+thisperiodisaparameter tobeset.
+A reinforced counter rc(inf) for content inf at a cache-router has two thresholds:
+rc-up(inf) andrc-low(inf). Ifrc(inf) reaches theupperthresholdrc-up(inf) thecontent
+inf is cached at that cache-router after it is found and when it traverses the cache-router
+towards to the user. Whenever rc(inf) reaches the lower threshold rc-low(inf) and if inf
+iscachedatthatcache-router, thiscontentisimmediatelyremovedfromthecache-router.
+Weassumethatcache-routers haveenoughstoragecapacitytostoreanycontentthatthey
+are required to maintain. The reinforced counters mechanism allows popular contents to
+betransferred fromthepublishingareas tothecache-routers. That way,theopportunistic
+discovery of popular content is favored at cache-routers. In contrast, if demand is not
+high enough to justify consumption of storage resources, reinforced counters will favor
+theevictionofthecontent.
+Weprovideadditionalinsightsontheconnectionbetweenreinforcedcountersand
+contentplacement. Forsimplicityofexposition,andwithoutlossofgenerality,weassume
+that content is demanded by users at a givenfixed rate. We then showthat the reinforced
+countersfullydeterminecontentplacementatthecache-routers. Tothisaim,weconsider
+a fluid approximation, where content requests arrive according to a flow with a given
+intensity, and the reinforced counters are also approximated as being continuous. Let
+Λ (inf) be the total load for inf arriving from tier l +1 at the m-th cache-router at tier
+m,l
+l. Let γ(inf) be the rate at which the reinforced counters rc(inf) are decremented. We
+assume that the rc(inf) are initialized as rc-low(inf), so that if Λ (inf) = γ(inf) then
+m,l
+contentwillnotbestoredat m.
+Proposition 3.1. Under the fluid approximation and an hierarchical tiered topology, a
+cache-routerstoresa copyof inf ifand onlyif Λ (inf) > γ(inf).
+m,l
+Proof: The proof is inspired by [Rosensweig et al. 2013, Lemma 1]. In an hi-
+erarchical network we define the direction of requests as upstream and the reverse as
+downstream. Acache-routerisaffectedonlybyrequeststhatpassthroughit,andrequests
+passthroughroutersonlyupstream,soupstreamcache-routersdonotimpactcache-router
+m through their requests. Content flows downstream, but only passes through m for re-
+quests that were issued by cache-router m. Therefore, the state and requests of upstream
+routersdo notimpactthestateand requestsissuedby downstreamrouters.
+We can determine if a cache-router will store a content in a bottom-up manner.
+First, consider the leafs of the tiered topology. At such cache-routers, if Λ (inf) >
+m,l
+γ(inf) then rc(inf) will eventuallyreach rc-up(inf), and content will be stored and never
+evicted. IfΛ (inf) ≤ γ(inf),incontrast,rc(inf)willremainequaltoitsinitialvaluerc-
+m,l
+low(inf). rc(inf) will afterwards remain fixed, and the cache-router, marked. Once leafs
+are marked, we proceed upstream. Using the same argument as the one in the paragraph
+above,wedeterminethecontentplacementatthenextcache-routerthathasallitschildren
+marked,and soon, upto reaching routersat tier1, whereallcontent isstored. ✷
+Givenaworkload,proposition3.1canbeusedtodeterminewhichdomainsacross
+the network will hold a copy of each content, if we know the (probabilistic) choice by
+which a router of level i passes requests to routers of level i − 1 at which it is logically
+connected to. In the remainder ofthis paper we will assumethat the probabilitydistribu-
+tionofcontent overcache-routers isfixed and givenforall cache-routers.
+4. System Analysis
+Inthissectionwepresent themodelanalysisforasingledomain(i.e., alogicaltier). Our
+main goals are to derive the key metrics of interest, namely 1) mean time to find content
+and2)thefractionofrequeststhathitthepublishingarea. Thesemetricsareimportantto
+evaluatetheperformanceoftheproposedarchitecture. WeconsideranetworkofC cache-
+routersinadomain. Figure4(a)illustratesadomainwithfivecache-routers. Assumethat
+the desired content is stored at cache-routers 3, 4 and 5. Suppose that a request arrives
+from a downstreamdomain to cache-router 2. Then, cache-router 2 starts a random walk
+in the domain to find the content. Let T be the maximum time a request might spend
+in a domain before being redirected to the upstream domain in the hierarchy. T is also
+referred toas timeto live,orTTL.
+We consider a continuous time random walk in which the time between walker
+movements are exponentially distributed with rate ψ, with the associated infinitesimal
+generating matrix Q. Let ∆(i) be the out-degree of node i and ψ the walker rate. Then,
+all diagonal elements in Q are equal to −ψ, and q = ψ/∆(i) if there is a logical link
+ij
+fromitoj. Weuseuniformization [deSouza eSilvaand Gail2001]toobtainthemetrics
+of interest. Let P be the uniformized matrix, obtained from Q as P = I + Q/Λ, where
+Λ is a positive number greater than the maximum absolute value of the elements in the
+diagonalofQ. Λis alsoreferred to astheuniformizationrate.
+variable description
+C numberofcache-routers in thenetwork
+T timetolive
+H(T) timetohitcontent
+L(T) lifetimeofrandom walkin adomain
+R(T) probabilityofnothittingcontentby T
+T0 timecostforaccessing thepublishingarea
+p probabilitythatcontentis indomain
+Table 1. Table of notation. Time to live, T, is integer when considering discrete
+timerandomwalks,andrealwhenconsideringcontinuoustimerandomwalks.
+Let Ω (k) be the probability that, after k transitions of the uniformized process,
+P
+the random walk had not hit the desired content. To compute Ω (k) we construct a
+P
+modified transition matrix P, assuming that the desired content is placed in a subset of
+cache-routers of the domain. Let ω be a column vector of size C where ω = p and p
+i i i
+is the probability that cachee-router i stores the content, C p = 1. To facilitate the
+i=1 i
+notation, we number the cache-routers where p > 0 with the highest indexes of matrix
+i
+P
+P. In Figure4(a)theyare numbered3,4and 5. Then,P isdefined as
+P = P(I −(diag(ω))) (1)
+e
+where diag(ω) is a matrix with the diagonal elements equal to vector ω and all other
+e
+elements equal to zero. P is a sub-stochastic matrix where the sum of the elements in
+line i is the probability of not finding the content in the domain, in one step, given that
+the random walk starts atecache-router i. The element (i,j) of P is the probability that a
+random walker that starts at cache i moves to cache j in one step and then a cache miss
+occurs atj. e
+(a) (b)
+Figure 4. (a) Example of a domain with five cache-routers and (b) Example of a
+domainwitheightcache-routers.
+Let π(0) be the initial state probability vector indicating from where the search
+starts in the domain. The i-th element of π(0), π (0), corresponds to the probability that
+i
+the random walk starts at cache-router i. The (i,j) entry of matrix Pk characterizes the
+probability of visiting state j after jump k, given that the system starts at state i. Let
+υ e(k) be a vector whose m-entry is the probability that after k steeps a miss occurs at
+P
+cache-router m, given that therandom walk initial stateis π(0). The followingrecursion
+can beusedto computeυ e(k),
+P
+υ e(k) = υ e(k −1)P, k > 0 (2)
+P P
+whereυ
+P
+e(0) = π(0). Then, Ω
+P
+(k) isgivenby
+e
+Ω
+P
+(k) = υ
+P
+e(k)U, k ≥ 0 (3)
+whereUisacolumnvectorwithallelementsequal toone.
+MeanTime toReach Content
+RecallthatT isthemaximumtimetoliveofarandomwalkinadomain,T ∈ R. LetR(T)
+bethe probabilitythat thecontent is not found by T unitsof time. Then, conditioningon
+thenumberoftransitionsintheinterval[0,T],
+∞
+R(T) = ϕ(n,T)Ω (n) (4)
+P
+n=0
+X
+whereϕ(n,T) = exp(−ΛT)(ΛT)n/n!istheprobabilitythatnjumpsoccurintheinterval
+[0,T]. Thenumberofjumpsintheinterval[0,T]isPoissondistributedasweuniformized
+Q.
+Next,ourgoalistocomputetheexpectedhittingtimeofacontent,E[H(T)]. The
+expected hitting time of a content is the sum of two components. The first component
+characterizesthemeantimetohitthecontentgiventhatitisavailableinthedomain,while
+thesecondcomponentcharacterizesthemeantimetohitthecontentifitisunavailablein
+thedomain. Incasethecontentisavailableinthedomain,thelifetimeoftherandomwalk
+inthedomain(i.e.,thesearchingtimeinthedomain),L(T),istheminimumbetweenthe
+timeuntilreaching thecontentand T. Themean ofL(T) isgivenby
+T
+E[L(T)] = R(t)dt (5)
+0
+Z
+wherelim T→∞E[L(T)]isreferred toas meantimetoexit inthereliabilityliterature,and
+can beevaluatedusingstandard techniques [deSouzaeSilvaandGail 2000].
+Let p be the probability that the content is available in the considered domain. If
+the content is available, the probability that the content is not found by time T is R(T).
+If the content is unavailable, the random walk will take time T inside the domain, and
+additional T0 units of time to reach the publishing area. Therefore, the expected hitting
+timeofacontentis
+E[H(T)] = (E[L(T)]+T0R(T))p+(T0 +T)(1−p) (6)
+Replacing(4)into(6),andexchangingtheorderoftheintegrationandsummation,
+yields,after simplification,
+∞ n (ΛT)m
+E[H(T)] = 1− e −ΛT Λ −1 Ω
+P
+(n)+T0R(T) p+(T0 +T)(1−p)
+m!
+n=0 m=0 ! !
+X X (7)
+The analysis above easily handles discrete time random walks, where time be-
+tweenwalkers movementisfixed.
+5. Experimental Results and System Analysis
+In this section we present numerical results for a few examples in order to illustrate our
+proposaland theexistingtradeoffs inthe choiceofparameter values. In thedevelopment
+ofsection3,thetimeintervalsbetweentherandomwalkerstepscanbeeitherindependent
+and exponentiallydistributedrandom variablesorconstant. Forthenumerical studieswe
+considerconstantstepvalues.
+Our goals are to 1) show the impact of different system parameters on the mean
+time to find content and 2) evaluate the average load on publishing area servers, which
+impacts both the time to recover a content and the system’s scalability. We analyze a
+simple two-tier setup wherein the publishing area servers have finite capacity. This sim-
+ple architecture suffices to highlight the key points we want to emphasize in this work
+while keeping the model description short. From this scenario we also indicate how the
+evaluationcouldeasilyconsidermultiplelogicaltiers.
+Our reference topology is that illustrated in Figure 4(a). In this topology, there is
+asinglecontentthat may be cached inone ofthecache-routers 3,4 or5 with equal prob-
+ability of residing in any of these three routers, given it is in this logical tier. Therefore,
+p = 1/3 foru = 3,4,5. With probability1−p = 0.5, thecontent does notresidein the
+u
+tier and it takes and additional T0 = 100 time units to find it in the publishing area. The
+parameter T, the maximum time the random walker is allowed to search for the content
+in a logical tier is varied between 1 and 200. The parameters values may vary according
+totheexperimentalgoals.
+5.1. SingleDomainCase
+We illustrate how the mean time to find the content, E[H(T)], depends on different sys-
+tem parameters. Figure 5(a) shows E[H(T)], obtained using (6), as a function of T, for
+different values of p varying between 0 and 1, with increments of 0.2. The topology and
+the content placement are kept fixed. Let T⋆ be the optimal value of T that minimizes
+E[H(T)]. Astheprobabilitythatthecontentisavailableincreases,T⋆ increases. Clearly,
+whenp = 0,T⋆ = 0,sinceifthecontentisnotavailableinthetieritisbetternottosearch
+forit. On theotherhand, when thecontent is always available(p = 1), T⋆ → ∞. This is
+because, in thisexample,T0 is largecompared to themean timeto find thecontent inthe
+tier(E[H(∞)]). Inthisscenario,itwilltakelesstime,onaverage, fortherandomwalker
+to find the content in the domain, as opposed to find it in the publishing area servers, if
+the walker is given enough time to search for the content in the domain (i.e., if T is very
+large). For values of p between (0,1), the optimum value T⋆ can be obtained from our
+modelas showninFigure 5(a).
+Foranygivenvalueofp,Figure5(a)showsthatE[H(T)]firstdecreases andthen
+increases, except for p = 0 and p = 1, when E[H(T)] always increases and decreases,
+respectively. In any case, E[H(T)]asymptoticallygrowsat rate 1−p, as can be inferred
+from equation (6). The impact of T0 (the time cost for accessing the publishing area
+servers) on E[H(T)] is illustrated in Figure 5(b), which shows E[H(T)] as a function of
+T,forT0 ∈ [100,200,...,600]. AsT0 decreases, thereisasubtledecreaseoftheoptimal
+time to find a content in the domain. This is because, as the time to access publishing
+area servers increases, it is beneficial to remain longer in the domain before forwarding
+therequest tootherdomains.
+(a) (b)
+Figure5. EffectofpandT0 ontheexpectedhittingtime
+Untilnowweanalyzedtheproblemofcontentdiscoveryfromtheclientsperspec-
+tive. The administrators of publishingareas, in turn, might worry about the traffic that is
+incurredintheirservers. Ifcontentisavailableinthecache-routersinatier,theloadfrom
+that domain to the servers (assuming a single tier architecture) is proportional to R(T),
+theprobabilitythatusersdonotfindthecontentinthetierbytimeT. Inmoredetail,letλ
+andΛbetheaverageuserload(numberofrequestsforacontentpertimeunit)thatarrives
+to a tier and the average load flowing from the tier to the next in the hierarchy (or from
+thetierto thepublishingarea), respectively. Thenumberofrequests per unittimeserved
+insidethedomainisclearly λ−Λ andΛ = R(T)λ. Fortheplotsweconsiderλ = 100.
+Figures6(a)and6(b)showhowΛvariesasafunctionofT. Figures6(a)considers
+the reference scenario, modified so that content may be available at caches 2, 3, 4 and 5
+with probability0.25 at each, giventhe desired content is in the domain. Figures 6(b), in
+turn, is generated from the topology with 8 caches shown in Figure 4(b), where content
+may be available at caches 5, 6, 7 and 8 with probability 0.25 at each, given the desired
+contentisin thedomain. Theotherparameters are thesameas in thereference scenario.
+Figures 6(a) and 6(b) indicate that there is a tradeoff between users interests and
+providers time-cost when choosing the optimal value of T. If T is selected so as to min-
+imize E[H(T)], the rate at which the publishing area servers are accessed, Λ might be
+considerably large. However, a slight increase in T and E[H(T)] might yield significant
+reductions in Λ. Therefore, we may minimize E[H(T)] constraining Λ to a given (rela-
+tivelysmall)value,that is,wemay beabletokeep theload at thepublishingarea servers
+atalowvalueandyetavoidingaconsiderableincreaseinthetimetoretrievethesearched
+content.
+Note that in Figure 6(b) Λ is constant for T ≤ 3. This is because we are con-
+sidering a discrete time random walk for the studies. In this case, the probability that
+the content is found inside the domain is zero if T is smaller than the distance between
+the source of the random walker and the cache-router that may have the content. In a
+continuoustimerandomwalk, inturn,R(T) isstrictlydecreasing withrespect toT.
+We may summarize the above findings as follows. If content is available in a tier
+with high probability, it may be advantageous to increase the time the random walker is
+140
+120
+100
+80
+60
+40
+20
+0
+0 10 20 30 40 50 60
+140
+Ε[Η(Τ)]
+Λ
+120
+100
+80
+60
+40
+20
+0
+0 10 20 30 40 50 60
+T
+Ε[Η(Τ)]
+Λ
+T
+(a) (b)
+Figure 6. Probability of not hitting content by time T, E[H(T)], and Λ, for (a) 5
+cachetopology,(b)8cachetopology.
+allowedtosearchforacontentinthetiertoreducetheloadatthepublishingareaservers.
+On the otherhand, theexpected timeto find the content may increase. Quantifyingthese
+tradeoffsis acontributionofourwork.
+5.2. MultipleDomainCase
+IntheprevioussectionweassumedaconstanttimeT0 toretrieveacontentfromthepub-
+lishing area servers. In what follows we consider a scenario where content that is not
+found in a domain is forwarded to publishing area servers with limited capacity. There-
+fore, the time cost to access the publishing area servers, T0 , will now be a function of
+the amount of traffic Λ that is directed to the publishing area servers (which in turn is a
+function of R(T)). To illustrate the impact of the load of users on the publishing area
+servers, let us a consider a simple M/M/1 model for the server, with associated service
+capacity µ. Then, the mean waiting time experienced by users accessing the server is
+W = 1/(µ−Λ). Figure 7(a) shows how W varies as a function of Λ. In what follows,
+forillustrationpurposes,weset µ = 40and T0 = 1000W,
+T0 = 1000/(µ−R(T)λ) (8)
+Figure 7(b) illustrates the impact of the service capacity on the mean waiting time expe-
+rienced by users and shows how E[H(T)] varies as a function of T. The qualitative be-
+havior of E[H(T)] is the same as the one observed previously, and the insights obtained
+in Section 5.1 about the tradeoff in the choice of T still apply. Note that an increase in
+R(T), the probability of not finding the searched content in the tier (not shown in the
+figure) may degrade users performance, as it may lead to server overload. In particular,
+if T is small (e.g., T = 1), E[H(T)] grows unbounded with λ. Due to space limitations
+we were only able to discuss a few examples aiming at describing our proposal and the
+existing design tradeoffs. Our approach, however, can handle multipledomains and user
+loads as we briefly sketch below. From the results of section 4 and given the user loads,
+wecanobtainthedomainsthatholdcopiesofthecontent. R(T)isthenusedtoobtainthe
+loads at each domain as well as at the publisher. Finally, given the loads at the different
+domains,E[H(T)]isobtainedinatopdownfashion,startingfromthetopandmovingto
+thelowestleveldomains.
+1
+0.8
+0.6
+0.4
+0.2
+0
+0 10 20 30 40
+W
+µ=10
+100
+µ=20
+µ=30
+80 µ=40
+60
+40
+20
+0
+0 5 10 15 20 25 30
+Λ
+])T(H[E
+λ=5
+λ=10
+λ=15
+λ=20
+λ=25
+λ=30
+T
+(a) (b)
+Figure7. (a)AverageserverprocessingtimeasafunctionofΛ,(b)meantimeto
+findcontent,accountingforservercapacityµ=40.
+6. Conclusion
+Information centric networks are gaining considerable attention from researchers and
+practitioners due to their scalability and robustness properties. Nonetheless, there are
+still important challenges in the design, modeling and analysis of such networks. From
+the design perspective, one of the challenges is to determine how to fill out the routing
+tables. From the modeling and analysis perspective, the challenges are associated to the
+large number of routers envisioned in ICNs. In this paper, we have proposed a novel de-
+signforICNsthatisbuiltontopofrandomwalksandhierarchicaltiers(domains)tocope
+withtheexplorationversusexploitationtradeoffinvolvedin contentsearch.
+Our model computes metrics such as mean time to find a content and evaluate
+existing tradeoffs to tune the parameters of the architecture we propose. In this present
+work we focus on the performance tradeoffs of the architecture. However, our analytical
+modelcanbeextendedtostudythescalabilityoftheproposedarchitecturewithrespectto
+othersintheliterature. Forinstance,astheuserloadforacontentgrowswhatistheoverall
+increase in the expected time to find a content as compared to a P2P architecture. This
+workalsoopensadditionalavenuesforfutureresearch. Onesuchproblemistodetermine
+theimpactofparallelrandomwalksacrosstiersat thesamelevelofthehierarchyaswell
+as acrossdifferent levels.
+References
+[2ndNetInfDescription2010] 2nd NetInf Description (2010). Netinf.
+http://www.4ward-project.eu/.
+[Ahlgrenet al. 2012] Ahlgren,B., Dannewitz,C., Imbrenda,C., Kutscher,D., andOhlman,
+B. (2012). A survey of information-centricnetworking. IEEE Communications Mag-
+azine,50(7):26–36.
+[Chen et al. 2008] Chen, S., Zhang, Z.,Chen, S., andShi, B. (2008). Efficient filesearch in
+nonDHT P2Pnetworks. ElsevierComputer Communications,31(2):304–317.
+[D’Ambrosioet al. 2011] D’Ambrosio, M., Dannewitz, C., Karl, H., and Vercellone, V.
+(2011). MDHT: A hierarchical name resolution service for information-centric net-
+works. In Proc.ofSIGCOMM workshoponICN, pages 7–12.
+[deSouzaeSilvaand Gail 2000] de Souza e Silva, E. and Gail, H. R. (2000). Transient
+Solutions for Markov Chains. In Grassmann, W., editor, Computational Probability,
+pages 44–79.Kluwer.
+[deSouzaeSilvaand Gail 2001] de Souza e Silva, E. and Gail, H. R. (2001). The Uni-
+formization Method in Performability Analysis. In B. R. Haverkort, R. Marie, G. R.
+andTrivedi,K.S.,editors,PerformabilityModelling: TechniquesandTools,chapter3,
+pages 31–58.Wiley.
+[deSouzaeSilvaet al. 2006] deSouzaeSilva,E.,Lea˜o,R.M.M.,Santos,A.D.,Azevedo,
+J. A., and Netto, B. C. M. (2006). Multimedia Supporting Tools for the CEDERJ
+Distance Learning Initiative applied to the Computer Systems Course. In 22th ICDE
+WorldConferenceon DistanceEducation,pages 1–11.
+[deSouzaeSilvaand Muntz1992] de Souza eSilva, E. and Muntz,R. R. (1992). Me´todos
+Computacionais de Soluc¸a˜o de Cadeias de Markov: Aplicac¸o˜es a Sistemas de
+Computac¸a˜o eComunicac¸a˜o. SBC -EscoladeComputac¸a˜o.
+[Ghodsiet al. 2011] Ghodsi, A., Schenker, S., Koponen, T., Singla, A., Raghavan, B., and
+Wilcox, J. (2011). Information-centric networking: Seeing the forest for the trees. In
+Proc.ofHOTNETS, pages 1–6.
+[Ioannidisand Marbach 2008] Ioannidis, S. and Marbach, P. (2008). On the design of
+hybrid peer-to-peer systems. ACM SIGMETRICS Performance Evaluation Review,
+36(1):157–168.
+[Jacobsonet al.2009] Jacobson, V., Smetters, D. K., Thornton, J. D., Plass, M. F., Briggs,
+N. H., and Braynard, R. L. (2009). Networking named content. In Proc. of CoNEXT,
+pages 1–12.
+[Kakidaet al. 2011] Kakida,M.,Tanigawa,Y.,andTode,H.(2011). Breadcrumbs+: Some
+extensionsofnaivebreadcrumbs for in-network guidancein content centric networks.
+In Proc.ofIEEE IPSJ, pages376–381.
+[Katsaroset al. 2011] Katsaros,K.,Xylomenos,G.,andPolyzos,G.C.(2011). Multicache:
+An overlay architecture for information-centric networking. Elsevier Computer Net-
+works, 55(4):936–947.
+[Koponenet al. 2007] Koponen,T.,Chawla, M.,Chun, B. G.,Ermolinskiy,A.,Kim,K. H.,
+Shenker, S., and Stoica, I. (2007). A data-oriented (and beyond)network architecture.
+In Proc.ofSIGCOMM, pages 181–192.
+[Lagutinetal. 2010] Lagutin,D.,Visala,K.,andTarkoma,S. (2010). Publish/subscribefor
+internet: PSIRP perspective. In Emerging Trends from European Research, (Valencia
+FIA book2010).
+[Menasche´ et al. 2010] Menasche´,D.S.,Rocha,A.A.,deSouzaeSilva,E.,Lea˜o,R.M.M.,
+Towsley, D., and Venkataramani, A. (2010). Estimating self-sustainability in peer-to-
+peerswarmingsystems. Perf.Eval., 67(11):1243–1258.
+[Rosensweiget al. 2010] Rosensweig,E.,Kurose,J.,andTowsley,D.(2010). Approximate
+modelsforgeneral cachenetworks. In Proc.of INFOCOM, pages 1–9.
+[Rosensweiget al. 2013] Rosensweig, E., Menasche´, D., and Kurose, J. (2013). On the
+steady-stateofcache networks. InProc.of INFOCOM, to appear.
+[Urdanetaet al.2011] Urdaneta, G., Pierre, G., and Steen, M. V. (2011). A survey of DHT
+securitytechniques. ACM Comp. Surveys, 43(2).

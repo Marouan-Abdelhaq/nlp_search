@@ -1,0 +1,2957 @@
+Flexible Accuracy for Differential Privacy
+Aman Bansal1, Rahul Chunduru1, Deepesh Data2, and Manoj Prabhakaran1
+1Indian Institute of Technology Bombay, India
+aman0456b@gmail.com, {chrahul,mp}@cse.iitb.ac.in
+2University of California, Los Angeles, USA
+deepesh.data@gmail.com
+Abstract
+Differential Privacy (DP) has become a gold standard in privacy-preserving data analysis. While it
+provides one of the most rigorous notions of privacy, there are many settings where its applicability is
+limited.
+OurmaincontributionisinaugmentingdifferentialprivacywithFlexibleAccuracy,whichallowssmall
+distortionsintheinput(e.g.,droppingoutliers)beforemeasuringaccuracyoftheoutput,allowingoneto
+extendDPmechanismstohigh-sensitivityfunctions. Wepresentmechanismsthatcanhelpinachieving
+this notionfor functionsthat hadno meaningfuldifferentially private mechanisms previously. In partic-
+ular, we illustrate an application to differentially private histograms, which in turn yields mechanisms
+for revealing the support of a dataset or the extremal values in the data. Analyses of our constructions
+exploit new versatile composition theorems that facilitate modular design.
+All the above extensions use our new definitional framework, which is in terms of “lossy Wasserstein
+distance” – a 2-parameter error measure for distributions. This may be of independent interest.
+1 Introduction
+In the era of big data, privacy has been a major concern, to the point that recent legislative moves, like
+General Data Protection Regulation (GDPR) in the European Union, have mandated various measures
+for ensuring privacy. Further, in the face of a global pandemic that has prompted governments to collect
+and share individual-level information for epidemiological purposes, debates on privacy-utility trade-offs
+have been brought to sharper relief. Against this backdrop, mathematical theories of privacy are of great
+importance. Differential Privacy [DMNS06] is by far the most impactful mathematical framework today for
+privacy in statistical databases. It has seen large scale adoption in theory and practice, including machine
+learningapplicationsandlargescalecommercialimplementations(e.g.,[ACG+16,BCS15,BCSZ18,EPK14,
+DPT17]).
+In this work, we make foundational contributions to the area of Differential Privacy (DP), extending its
+applicability. OurmaincontributionisthenotionofFlexible Accuracy –anewframeworkformeasuringthe
+accuracy ofamechanism(whileretainingtheDPframeworkunalteredforquantifyingprivacy). Thisletsus
+develop new DP mechanisms with non-trivial provable (and empirically demonstrable) accuracy guarantees
+in settings involving high-sensitivity functions.
+Motivating Flexible Accuracy (FA). Consider querying a database consisting of integer valued ob-
+servations – say, ages of patients who recovered from a certain disease – for the maximum value. For the
+sake of privacy, one may wish to apply a DP mechanism, rather than output the maximum in the data
+itself. Two possible datasets which differ in only one patient are considered neighbors and a DP mechanism
+needstomaketheoutputsonthesetwosamplesindistinguishablefromeachother. However,thefunctionin
+questionishighly sensitive –twoneighboringdatasetscanhavetheirmaximadifferbyasmuchastheentire
+1
+1202
+tcO
+81
+]RC.sc[
+1v08590.0112:viXra
+range of possible ages1 – and, as we shall see in our empirical evaluations in Section 7, the various kinds of
+mechanisms in the literature [MT07, BNS19, Vad17, DL09, NRS07, BNS16] do not provide a satisfactory
+solution.
+The difficulty in solving this problem is related to another issue. Consider the problem of reporting a
+histogram (again, say, of patients’ ages). Here a standard DP mechanism, of adding a zero-mean Laplace
+noise to each bar of the histogram is indeed reasonable, as the histogram function has low sensitivity in
+each bar. Now, note that maximum can be computed as a function of the histogram. However, even though
+the histogram mechanism was sufficiently accurate in the standard sense, the maximum computed from its
+output is no longer accurate! This is because when a non-zero count is added to a large-valued item which
+originally has a count of 0, the maximum can increase arbitrarily.
+Flexible Accuracy (FA) is a relaxed notion of accuracy that lets us address both of the above issues. In
+particular,itnotonlyenablesnewDPmechanismsformaximum,butalsoallowsonetoderivethemechanism
+from a new DP mechanism for histograms. We provide a general composition theorem that enables such
+transfer of accuracy guarantees that is not applicable to conventional accuracy measures.
+The high-level idea of Flexible Accuracy is to allow for some distortion of the input when measuring
+accuracy. Weshallrequiredistortion tobedefinedusingaquasi-metric overthe inputspace(aquasi-metric
+is akin to a metric, but is not required to be symmetric). A good example of distortion is dropping a few
+items fromthedataset; notethatinthiscase,adding adataitemisnot consideredlowdistortion. Referring
+back to the example of reporting maximum, given a dataset with a single elderly patient and many young
+patients, flexible accuracy with respect to this distortion allows a mechanism for maximum to report the
+maximum age of the younger group.2
+Flexible accuracy needs to account for errors that can be attributed to distortion of the input (input
+error), as well as to inaccuracies in the output (output error). To be able to exploit input distortion while
+retaining privacy, we allow input distortion to be randomized. A side-effect of this is that our measure
+of output accuracy needs to allow the “correct output” to be randomized (i.e., defined by a distribution),
+even if we are interested in only deterministic functions. To generalize the conventional probabilistically
+approximately correct (PAC) guarantees to this setting, we introduce a natural, but new quantity called
+lossy ∞-Wasserstein distance. Our final definition of flexible accuracy is a 3-parameter quantity, with one
+parameter accounting for input distortion, and 2 parameters used for output error measured using lossy
+∞-Wasserstein distance.
+1.1 Our Contributions
+Our contributions are in three parts:
+• Definitions: We present a conceptual enhancement to the framework of DP – flexible accuracy – which
+considers error after allowing for a small distortion of the input; see Definition 3. To account for random-
+ized distortion (and more generally, to be able to consider distributions over inputs and/or randomized
+functions) we need an error measure that compares a mechanism’s output distribution to not a fixed
+“correct value,” but a “correct distribution.” For this, we introduce and use a new measure called lossy
+∞-Wassersteindistance (seeDefinition1),extendingtheclassicalnotionofWassersteindistance(orEarth
+Mover Distance). This also generalizes several existing notions, such as the PAC guarantee, the notion of
+total variation distance, etc.
+• Composition Theorems: We present a composition theorem for flexible accuracy (see Theorem 1), which
+gives an FA guarantee for a composed mechanism from those of the constituent ones. This involves
+identifying new quantities including distortion sensitivity (see Definition 4) and error sensitivity (see
+Definition 5). To be able to use such composed mechanisms for DP, we rely on the well-known post-
+processing theorem of DP, as well as a new pre-processing theorem (see Theorem 2).
+1In fact, all datasets with low maximum values have high sensitivity locally, by considering a neighboring dataset with a
+singleadditionaldataitemwithalargevalue.
+2Ofcourse,itisnotobviouswhatshoulddeterminewhichitemsshouldbedroppedandwithwhatprobability. Thiswillbe
+thesubjectofournewmechanisms.
+2
+• Mechanisms: We give a DP mechanism with FA guarantee for releasing a sanitized histogram (called
+theShifted-Truncated Laplacemechanism; seeAlgorithm1andAlgorithm3), which, viaourcomposition
+theorems,yieldDPmechanismswithFAguaranteesforhistogram-based statistics (seeTheorem5). These
+functions include several high-sensitivity functions, such as maximum and minimum, support of a set,
+range, median, maximum margin separator, etc. (we give concrete bounds for max/min and support).
+We present an empirical comparison against state-of-the-art DP mechanisms, which reveals that apart
+from the theoretical guarantees we obtain (where none were available till now), our mechanisms compare
+favorably with the others in terms of accuracy (flexible and otherwise) empirically as well.
+1.2 The Surprising Power of Flexible Accuracy
+Considerasequenceofn+1neighboringhistograms,suchthatthefirstinthesequencehasallitsnelements
+in the first bar, and the last one has all elements in the last bar, and the first and the last bars are far away
+from each other. In any reasonably accurate (flexible or not) mechanism for a histogram-based statistic like
+max, the answers for these two extremes must be very different with probability almost 1. So, intuitively,
+thereshouldbesomepairofneighborsinthissequenceforwhichtheanswersshouldbesignificantlydifferent
+withprobabilityatleast1/n. Thisseemstoprecludeobtaining((cid:15),δ)-DPforasmallconstant(cid:15)withδ (cid:28)1/n.
+Remarkably, this intuition turns out to be wrong! By carefully calibrating the probability of the responses
+(whilealsomakingsurethattheresponsescanbeattributedtoonlydroppingafewitems–aspermittedby
+flexibleaccuracy),ourmechanismcanobtainthefollowingguaranteeforthemaxfunction(seeCorollary1):
+Informal result for max: Our flexibly-accurate mechanism for max over a bounded range achieves
+(cid:0) (cid:15),(cid:15)e−Ω((cid:15)αn)(cid:1)-DP while incurring an arbitrarily small output error after dropping only αn elements.
+The above result gives a trade-off between the privacy guarantee and number of elements dropped. For
+example: (i) By choosing (cid:15)= 1 and α= √1 , our mechanism is ( 1 ,e−Ω(n1/4))-DP while dropping only
+n1/4 n n1/4
+√
+O( n) elements. (ii) By choosing (cid:15) to be a small constant (say, 0.1) and say, α = log2n, our mechanism is
+n
+(0.1,n−Ω(logn))-DP while dropping only O(log2n) elements. See Section 5.2.3 for several other parameter
+choices that are of interest.
+Significance of the New Mechanisms. Traditional DP literature has largely not addressed functions
+like the maximum function, f . This is in part due to the very high sensitivity of such functions: When
+max
+the database has entries from [0,B], the sensitivity of f is B.3 The same holds for other functions
+max
+like a “thresholded maximum” max which outputs the maximum value that appears at least k times in
+k
+the database. Despite being natural functions about the shape of the data, no DP mechanisms have been
+offered in the literature for these functions. With FA, for the first time, we provide DP mechanisms for
+such functions, with meaningful worst-case accuracy guarantees. We emphasize that we retain the standard
+definitionof((cid:15),δ)-DP,andachievestrongparametersforit(seeabove). Further,theadditionaldimensionof
+inaccuracythatweallow–namely, inputdistortion–isinlinewithwhatapplicationslike(robust)Machine
+Learning often anticipate and tolerate.
+We also remark that, on specific data distributions, some of the existing DP mechanisms may already
+enable empirical FA guarantees (see Section 7 where such guarantees are compared). But crucially, such
+guarantees are not always available in the worst-case, and even on data distributions where they do exist,
+they were not identified previously.
+1.3 Related Work and Paper Organization
+Relatedwork. DP,definedbyDworketal.[DMNS06]hasdevelopedintoahighlyinfluentialframeworkfor
+providing formal privacy guarantees (see [DR14] for more details). The notion of flexible accuracy we define
+3Thesensitivityofareal-valuedfunctionf :X →Risdefinedby∆
+f
+:=max x,x(cid:48)∈X:x∼x(cid:48)|f(x)−f(x(cid:48))|. Inthecaseoffmax,
+there are neighboring databases x,x(cid:48), where the first database x has all the inputs as 0 and the second database has n−1
+inputsas0butoneinputisB,so,∆ =B.
+fmax
+3
+is motivated by the difficulty in handling outliers in the data. Some of the work leading to DP explicitly
+attempts to address the privacy of outliers [CDM+05, CDMT05], as did some of the later works within the
+DP framework [DL09, BNS19, TS13]. These results rely on having a distribution over the data, or respond
+only when the answer is a “stable value”. Blum et al. [BLR13] introduced the notion of usefulness, that is
+motivated by similar limitations of DP as those which motivated flexible accuracy, but as explained later,
+is less generally applicable. Incidentally, Wasserstein distance has been used in privacy mechanisms in the
+Pufferfish framework [KM14, SWC17], but assuming a data distribution.
+Several DP mechanisms for histograms are available with a variety of accuracy guarantees, as discussed
+in Section 7. While these mechanisms do not claim any accuracy guarantees for functions computed from
+histograms, on specific data distributions and for some of these mechanisms, we see that FA can be used to
+empirically capture meaningful accuracy guarantees.
+Paper organization. We define the lossy Wasserstein distance and its properties in Section 2. We define
+flexible accuracy in Section 3, where we also give several examples of distortion measure. In Section 4,
+we present our composition theorems for flexible accuracy and differential privacy. We also motivate and
+define distortion and error sensitivities (with examples) in Section 4.1.1 and Section 4.1.2, respectively. In
+Section 5.1, we present our (bucketed)-histogram mechanism and state its flexible accuracy and privacy
+guarantees, and we post-process that mechanism by any histogram-bases-statistic in Section 5.2. Results
+with distortions other than dropping elements are presented in Section 5.3. All the proofs are presented
+in Section 6. We empirically evaluate our mechanisms with several other mechanisms from literature in
+Section 7. Omitted details are provided in appendices.
+2 Lossy Wasserstein Distance
+Central to the formalization of all the results in this work is a new notion of distance between distributions
+over a metric space, that we call lossy Wasserstein distance. Lossy Wasserstein distance generalizes the
+notion of Wasserstein distance [Vil08], or Earth Mover Distance, which is the minimum cost of transporting
+probability mass (“earth”) of one distribution to make it match the other. Loss refers to the fact that some
+of the mass is allowed to be lost during this transportation. We shall use the “infinity norm” version, where
+the cost paid is the maximum distance any mass is transported.
+Formally, consider a metric space with ground set Ω, and metric d, where Wasserstein distance can be
+defined. For example, one may consider Ω = Rn and the metric d being an (cid:96) -metric. For γ ∈ [0,1], and
+p
+distributionsP,Qoverthemetricspace(Ω,d),4 wedefineΦγ(P,Q), thesetofγ-lossy couplings of P and Q,
+as consisting of joint distributions φ over Ω2 with marginals φ and φ such that ∆(φ ,P)+∆(φ ,Q)≤γ,
+1 2 1 2
+where ∆(P,Q) := 1(cid:82) |P(ω)−Q(ω)|dω denotes the total variation distance between P and Q. Note that
+2 Ω
+Φ0(P,Q) consists of joint distributions with marginals exactly equal to P and Q.
+Definition 1 (γ-Lossy ∞-Wasserstein Distance). Let P and Q be two distributions over a metric space
+(Ω,d). For γ ∈[0,1], the γ-lossy ∞-Wasserstein distance between P and Q is defined as:
+W∞(P,Q)= inf sup d(x,y). (1)
+γ
+φ∈Φγ(P,Q)(x,y)←φ
+For simplicity, we write W∞(p,q) to denote W∞(p,q). We remark that while our definition of W∞ uses
+0 γ
+a worst case notion of distance (as signified by ∞), there is an analogous average case definition, that may
+be of independent interest. We define this in Appendix A.2.
+2.1 Lossy ∞-Wasserstein Distance Generalizes Some Existing Notions
+Now we show that the Lossy ∞-Wasserstein distance generalizes the guarantee of being “Probably Approxi-
+mately Correct” (PAC) and also the definition of total variation distance, as shown below.
+4Wewilluseuppercaseletters(P,Q,X,Y,etc.) todenoterandomvariables(r.v.),aswellastheprobabilitydistributions
+associatedwiththem. Sometimes,wewillalsodenotetheprobabilitydistributionassociatedwithar.v.X byp .
+X
+4
+• Generalizing the PAC guarantee: ThePACguaranteestatesthatarandomizedquantityGis,except
+with some small probability γ, within an approximation radius β of a desired deterministic quantity f:
+i.e., Pr [d(f,g) > β] ≤ γ. For example, when G takes values over R, d can be the standard different
+g←G
+metric over R, i.e., d(f,g) = |f −g|. Representing f by a point distribution F , this can be equivalently
+f
+written as W∞(F ,G) ≤ β, where the underlying metric is d; see Lemma 9 in Appendix A.3 for a proof
+γ f
+of this.
+• Generalizing the total variation distance: It also generalizes the total variation distance ∆(P,Q)
+between two distributions, since W∞(P,Q) = 0 iff ∆(P,Q) ≤ γ; see Lemma 10 in Appendix A.3 for a
+γ
+proof of this.
+2.2 Triangle Inequality for Lossy Wasserstein Distance
+The Lossy ∞-Wasserstein distance satisfies the following triangle inequality.
+Lemma 1. For distributions P, Q, and R over a metric space (Ω,d) and for all γ ,γ ∈[0,1], we have
+1 2
+W∞ (P,R)≤W∞(P,Q)+W∞(Q,R). (2)
+γ1+γ2 γ1 γ2
+We can easily prove Lemma 1 for the special case when γ = γ = 0 using standard tools from [Vil08];
+1 2
+see Lemma 7 in Appendix A.1 for a proof. However, proving Lemma 1 in its full generality requires a
+significantly more involved proof, which we present in Section 6.1.
+3 Flexible Accuracy
+Thehigh-levelideaofflexibleaccuracyistoallowforsomedistortionoftheinput beforemeasuringaccuracy.
+We would like to define “natural” distortions of a database, that are meaningful for the function in question.
+Formanyfunctions,removingafewdatapoints(say,outliers)wouldbeanaturaldistortion,whileforothers,
+perturbing the data points (or a combination of both) is more natural. Note that adding new entries – even
+just one – is often not a reasonable distortion. Therefore, distortion is generally defined not using a metric
+over databases, but a quasi-metric (which is not required to be symmetric).5
+3.1 Measure of Distortion
+We shall use quasi-metrics with range R ∪{∞} to define a measure of distortion, where ∞ indicates
+≥0
+that one database cannot be distorted into another one. As we shall need distortion measure between two
+distributions in our accuracy guarantees and also in the definitions of distortion and error sensitivities, it
+will be useful to extend the distortion measure to distributions. This can be done in same way as W∞, but
+with respect to a quasi-metric rather than a metric.
+Definition 2 (Measure of Distortion). A measure of distortion on a set X is a function ∂ : X ×X →
+R
+≥0
+∪{∞} which forms a quasi-metricover X. Wealso define ∂(cid:98) as the extension to ∂ to distribution, which
+maps a pair of distributions P,Q over X to a real number as
+∂(cid:98)(P,Q):= inf sup ∂(x,y).
+φ∈Φ0(P,Q)(x,y)←φ
+If P is a point distribution with all its mass on a point x, we denote ∂(cid:98)(P,Q) as ∂(cid:98)(x,Q), which can be
+simplified as ∂(cid:98)(x,Q)=sup ∂(x,x(cid:48)). Furthermore, if both P and Q are point distributions on x
+x(cid:48)∈support(Q)
+and y, respectively, then ∂(cid:98)(P,Q)=∂(x,y), and we will write ∂(cid:98)(P,Q) simply by ∂(x,y).
+5A function ∂ : X ×X → [0,∞) is called a quasi-metric, if for every x,y,z, we have (i) ∂(x,y) = 0 ⇔ x = y and (ii)
+∂(x,y)≤∂(x,z)+∂(z,y).
+5
+It is easy to verify that if ∂ is a quasi-metric, so is ∂(cid:98) . We prove this in Lemma 12 in Appendix I.
+Examplesofmeasuresofdistortion. Weformallydefinethreemeasuresofdistortion: ∂ fordropping
+drop
+elements, ∂ for perturbing/moving elements, and ∂η for a combination of dropping and moving
+move drmv
+elements. These are defined when each element in X is a finite multiset over a ground set G. Formally,
+x ∈ X is a function x : G → N (where N denotes the set of all non-negative integers, including zero) that
+outputs the multiplicity of each element of G in x. We denote the size of x by |x|:= (cid:80) x(i).
+i∈G
+1. Dropping elements: Forfinitex,x(cid:48) ∈X,wedefine∂ ,ameasureofdistortionfordroppingelements,
+drop
+as follows:
+(cid:40)(cid:80)
+g∈G
+x(g)−x(cid:48)(g)
+if ∀g ∈G,x(g)≥x(cid:48)(g),
+∂ drop (x,x(cid:48)):= (cid:80) g∈G x(g) (3)
+∞ otherwise.
+That is, ∂ (x,x(cid:48)) measures the fraction of elements in x that are to be dropped for it to become x(cid:48)
+drop
+(unless x(cid:48) cannot be derived thus). It is easy to see that ∂ is a quasi-metric.
+drop
+2. Perturbing/Moving elements: Forfinitex,y∈X,wedefine∂ ,ameasureofdistortionformoving
+move
+elements, as follows:
+(cid:40)
+W∞( x , y ) if |x|=|y|,
+∂ (x,y)= |x| |y| (4)
+move ∞ otherwise,
+where x (similarly, y ) is treated as a probability vector of size |G|, indexed by the elements of G; the
+|x| |y|
+i’th element of x is equal to x(i). We show in that Claim 12 in Appendix I that ∂ is a metric.
+|x| |x| move
+3. Both dropping and moving elements: For finite x,y ∈ X, we define ∂η , a measure of distortion
+drmv
+for both moving and dropping elements, as follows:
+∂η (x,y)=inf(∂ (x,z)+η·∂ (z,y)). (5)
+drmv z drop move
+We show in Claim 13 in Appendix I that ∂η is a quasi-metric.6
+drmv
+Most of the results in this paper are derived w.r.t. the distortion ∂ , but they can also be extended to the
+drop
+distortion ∂η ; see Section 5.3 for the extension.
+drmv
+3.2 Defining Flexible Accuracy
+Informally, flexible accuracy with a distortion bound α guarantees that on an input x, a mechanism shall
+produce an output that corresponds to f(x(cid:48)) for some x(cid:48) such that ∂(x,x(cid:48)) ≤ α. In addition to such input
+distortion, wemayallowtheoutputtobealsoprobablyapproximatelycorrect, withanapproximationerror
+parameter β and an error probability parameter γ. Formally, the probabilistic approximation guarantee of
+the output is given as a bound of β on a γ-lossy ∞-Wasserstein distance.
+Definition 3 ((α,β,γ)-accuracy). Let ∂ be a measure of distortion on a set X and f : X → Y be a
+randomized function such that Y admits a metric. A mechanism M is said to be (α,β,γ)-accurate for f
+with respect to ∂, if
+(cid:32) (cid:33)
+sup inf W∞(M(x),f(X(cid:48))) ≤β. (6)
+γ
+x∈XX(cid:48):∂(cid:98)(x,p
+X(cid:48)
+)≤α
+In other words, for each x∈X, there is a random variable X(cid:48) satisfying ∂(cid:98)(x,p )≤α (i.e., ∂(x,x(cid:48))≤α for
+all x(cid:48) ∈support(X(cid:48))) such that W∞(M(x),f(X(cid:48)))≤β.
+X(cid:48)
+γ
+6While showing that ∂ is a quasi-metric is trivial, it is not always so with other measures of distortion; in particular,
+drop
+showingthat∂η isaquasi-metricisnon-trivial.
+drmv
+6
+See Figure 1a on page 8 for an illustration of flexible accuracy using a pebbling game.
+Flexibleaccuracygeneralizesexistingaccuracydefinitions. Itshouldbenotedthatflexibleaccuracy
+is not a completely disparate notion but a more generalized form of the standard accuracy guarantees. In
+particular:
+• As mentioned in Section 2, (0,β,γ)-accuracy already extends the PAC guarantees. For example, the
+Laplacemechanism(see[DR14,Chapter3])forafunctionf :X →Rthatachieves(cid:15)-DPis(0,∇f ln(1/γ),γ)-
+(cid:15)
+accurate for any γ >0, where ∇ is the sensitivity of f.
+f
+• Blum et al. [BLR13] introduced usefulness to measure accuracy with respect to a “perturbed” function.
+While adequate for the function classes they considered (half-space queries, range queries etc.), it is not
+applicable to queries like maximum. Flexible accuracy generalizes usefulness (see Appendix B).
+As we show later, flexible accuracy lets us develop DP mechanisms for highly sensitive functions (e.g.,
+max), for which existing DP mechanisms offered only limited, if not vacuous, guarantees.
+4 Composition Theorems
+Itisoftenconvenienttodesignamechanismasthefunctioncompositionoftwomechanisms,M=M ◦M .
+2 1
+We present “composition theorems” which yield flexible accuracy and differential privacy guarantees for M
+in terms of those for M and M .
+1 2
+4.1 Flexible Accuracy Under Composition
+Inordertogiveourcompositiontheoremforflexibleaccuracy,weneedtodefinetwonewsensitivitynotions:
+distortion sensitivity for a function and error sensitivity for a mechanism. We give motivation behind each
+of these sensitivity notions when defining them in their respective subsections below.
+4.1.1 Distortion Sensitivity
+WhenwecomposetwoflexiblyaccuratemechanismsM andM forf :A→Bandf :B →C,respectively,
+1 2 1 2
+to obtain the flexible accuracy guarantee of M ◦M for f ◦f :A→C, we would like to attribute all the
+2 1 2 1
+distortionmadeinAandB (formeasuringtheoutputerrorofM andM ,respectively)tothedistortionin
+1 2
+A. ThisrequirestransferringtheinputdistortionfromB backintoA,andthenotionofdistortionsensitivity
+allows us to quantify this. Informally, distortion sensitivity of a function f (denoted by σ ) captures the
+f
+amount of distortion required in the domain of f to capture a certain amount of distortion in the codomain
+of f. We formalize this intuition below.
+Definition 4 (Distortionsensitivity). Letf :A→B bearandomizedfunctionwhereB admitsWasserstein
+distances. Let ∂ ,∂ be measures of distortion on A,B, respectively. Then, the distortion-sensitivity of f
+1 2
+w.r.t. (∂ ,∂ ) is defined as the function σ :R ∪{∞}→R ∪{∞} given by
+1 2 f ≥0 ≥0
+σ
+f
+(α)=
+x
+su
+,Y
+p
+:
+i
+X
+nf
+:
+∂(cid:98)1 (x,p
+X
+) (7)
+f(X)=Y
+∂(cid:98)2(f(x),p
+Y
+)≤α
+wherex∈A,andtherandomvariablesX andY aredistributedoverAandB,respectively. Above,infimum
+over an empty set is defined to be ∞.
+See Figure 1b on page 8 for an illustration of distortion sensitivity using a pebbling game.
+Distortionsensitivityatα=0. Itiseasytoverifythatforanyrandomizedfunctionf,wehaveσ (0)=0.
+f
+We will use this for deriving flexible accuracy guarantees for any histogram-based-statistic in Section 5.2.
+Distortion sensitivity of deterministic bijective functions: When f : A → B is a deterministic
+and bijective map, then for every x,Y such that ∂(cid:98)2 (f(x),p
+Y
+) ≤ α, there is only one choice of X for which
+7
+M
+2
+M
+1 (β ,γ )
+1 1
+α 1 (β 1 ,γ 1 ) α ( β β 2 , = γ 2 τ ) α 2,γ 2(β ,γ )
+f 1 2 2 M 2,f 2 1 1
+f
+2
+Accuracy of M w.r.t. f Error Sensitivity of M w.r.t. f
+1 1 2 2
+M M
+2 M 2 M
+M 1 ( Mβ 1 ,1 γ 1 ) f 1 (β 1 ,γα 11 ) 1 (β 1 ,γ 1 ) 2
+α 1 f 1 (β 1 α,γ 11 ) σ f 1 ( f α 1 ) α 2 ( f β 1 1 ,γ 1 ) f α ( β β 2 2 σ , = f 1 γ ( 2 α α τ ) 2 M 2 α ) 2 2 , , γ f 2 2 (β 1 ,γ 1 ) f f 1 1 α 2 ( β β 2 2 , = γ f 2 2 τ ) M α 2 2 , , γ f 2 2 (β ( 1 β , 2 γ , 1 γ ) 2 )
+2 f
+2
+(a) Flexible Accuracy (b) D D is i t s o t r o ti r o t n i S o e n ns S iti e v n it s y i o t f i vf 1i ty Accuracy of M 2 ∘M 1 w.r.t. f 2 ∘f 1
+Accuracy of M w.r.t. f Error Sensitivity of M w.r.t. f
+1 1 2 2
+Accuracy of M w.r.t. f Error Se(ncsi)tivEitryr oorf MSe nws.ri.tt.i vfi ty
+1 1 2 2
+M M
+Figure 1: An illfustration of the flexible accuracy,1distortion sensi2tivity, anMd error sensitivityM. Dotted arrows
+indicateclosenes 1 sintermsofdistortioαn
+1
+bf
+1
+etweenhis(tβo
+1
+g,γr
+1
+a)ms(ordistributions1thereof),andthe2solidtwo-sided
+a g r u r a o r w a σ n s f 1 ( t α i e n ) e d ( ic a a c t c e ur c a lo c s y e , n e e r s r s o α r in se t n e s r i m ti s vi o ty f t o h r e d l i o s s t s o y r f t 1 W ion as s s e e n rs s t i e ti i v n it d y i ) αst 1 a a s nc a e. pe E ( b β a b2 c , fl h γ in2 ) g fi(gβ g u 1 a ,r m γe 1 ) e s : ho T w h s e t w he hi c t o e r b re o s x p e o s n w di i n th g
+b to la e ck xis p t e , b s b u le c s h c t f o1 h r a re t sp th o e nd gi t v o en σ gfi1v c (α e lo n ) s σ e hf 1 n (is α e t2 s o) s g f
+1
+r r e a l m at s i , o a n f 1 n s d h α t o h ld e α . 2ye T ll h ow σisf
+1
+( b aα o l
+2
+l xf )o 2 e w s s in t d h i o c s a e
+f
+t 1 e b h ox is e t s o α g 2t r o am be s t p h e a b t b
+f
+a le r d e . gu A ( a c β r c a2 , u n γ r t2 a e ) e c d y
+guarantee of M ◦M is derived by first applying the pebbling rule of accu1racy of M (to ob2tain the purple
+2 1 1
+pebblesD),isttohrtieonn Stehnsaittiviotyf otf hf 1 e error sensitivityAocfcu M rac 2 y o(ft Mo 2 g∘eMt 1 wth.r.et. pf 2 i∘nf 1 k pebbles) and finally using the pebbling
+rule of the distortion sensitivityDiostforfti1ont Soenpseitbivbityle oft h f
+1
+e remaining yellow bAocxcu.racy of M
+2
+∘M
+1
+w.r.t. f
+2
+∘f
+1
+f(X) = Y holds, that is X = f−1(Y). Since for any point x ∈ A and distribution P over A, we have
+∂(cid:98)1 (x,P)=sup
+x(cid:48)∈support(P)
+∂
+1
+(x,x(cid:48)), it follows that
+σ
+f
+(α) =
+x
+su
+,Y
+p
+:
+∂(cid:98)1 (x,p
+f−1(Y)
+) =
+x∈A
+su
+,y
+p
+∈B:
+∂
+1
+(x,f−1(y)). (8)
+∂(cid:98)2(f(x),p
+Y
+)≤α ∂2(f(x),y)≤α
+In particular, if f : A → A is an identity function and ∂ = ∂ , then we we have σ (α) ≤ α. Many of our
+1 2 f
+mechanismsinthispaperforwhichwederiveflexibleaccuracyguaranteesaregivenfortheidentityfunction
+over the space of histograms; see, for example, the result for our basic histogram mechanism (Theorem 3),
+the bucking mechanism (see Claim 4), and their composition (Theorem 4), etc.
+Distortion sensitivity of the histogram function w.r.t. (∂ ,∂ ): LetG ={g ,g ,...,g }denote
+drop drop 1 2 k
+a finite set. The histogram function f takes an unordered dataset x = {x ,...,x } (where each x ∈ G
+hist 1 n i
+and the ordering of x ’s does not matter) as input and outputs the histogram of the dataset, i.e., a k-tuple
+i
+(x(g ),...,x(g )) where x(g ) := |{j : x = g }| denotes the multiplicity of g in x. Note that f is a
+1 k i j i i hist
+deterministic bijective function. It is easy to verify (from (8)) that σ (α)≤α w.r.t. (∂ ,∂ ). Later
+on, it will be convenient for us to represent a histogram over a finite s f ehtis G t as a map x:G → dro N p , t d h r a o t p outputs
+the multiplicity of any element from G in the dataset.
+Remark 1. Though the distortion sensitivity is bounded in many circumstances (including all the applica-
+tions we consider in this paper); however, due to the strict requirement of having an X such that f(X)=Y
+(under infimum) in its definition, it may be infinite in other situations where this condition cannot be satis-
+fied. To accommodate more functions, we can relax the definition with more parameters θ ∈[0,1], ω ≥0 as
+follows:
+σ
+f
+γ,ω(α)=
+x
+su
+,Y
+p
+: W∞(f(
+i
+X X
+n
+)
+f
+: ,p )≤ω
+∂(cid:98)1 (x,p
+X
+).
+∂(cid:98)2(f(x),p
+Y
+)≤α γ Y
+All the results in this paper can be extended to work with this more general definition of distortion sensitivity.
+8
+M
+2
+M
+1 (β ,γ )
+1 1
+(
+β ,γ
+)
+α 1 (β ,γ ) 2 2
+1 1
+α β = τ
+α
+2
+,γ
+2(β ,γ )
+f
+1 2
+2 M
+2
+,f
+2
+1 1
+f
+2
+Accuracy of M w.r.t. f Error Sensitivity of M w.r.t. f
+1 1 2 2
+Figure 2: An illustration of the composition
+M M
+1 2 theorem, Theorem 1. Accuracy guarantee of
+f
+1 M ◦M is derived by first applying the peb-
+α 1 (β 1 ,γ 1 ) bli 2 ng ru 1 le of accuracy of M 1 (to obtain the
+f purple pebbles), then that of the error sen-
+σ f(α) α 1 ( β 2 ,γ 2 ) sitivity of M (to get the pink pebbles), and
+1 2
+α finallyusingthepebblingruleofthedistortion
+f 1 σ f 1 (α 2 ) f 2 f sensitivityoff 1 topebbletheremainingyellow
+1 2 box. Thefinalparametersareα=α +σ( α ),
+β =τα2,γ2(β ,γ ), and γ =γ .
+1 f1 2
+M2,f2 1 1 2
+Distortion Sensitivity of f Accuracy of M ∘M w.r.t. f ∘f
+1 2 1 2 1
+4.1.2 Error Sensitivity
+Suppose we want to compose an (α ,β ,γ )-accurate mechanism M for f : A → B with another flexibly
+1 1 1 1 1
+accurate mechanism M for f : B → C to obtain flexible accuracy guarantee of the composed mechanism
+2 2
+M ◦M forf ◦f :A→C. Forthis,onanyinputx∈A,firstwemeasuretheoutputerrorofM oninputx
+2 1 2 1 1
+intermsofW∞(M (x),f (X(cid:48))),whereX(cid:48) isanα -distortionofthesamexonwhichwerunthemechanism
+M ; see (6). N
+γ1ow, 1
+for com
+1
+position, we need to ru
+1
+n M on M (x) and distort f (X(cid:48)) to obtain another r.v.
+1 2 1 1
+Y, and the output error of the composed mechanism is given by W∞(M (M (x)),f (Y)). The problem
+γ 2 1 2
+here is that since the input (distribution) f(X(cid:48)) that we distort is not the same as the input (distribution)
+M (x)thatwerunM on,wecannotdirectlyobtaintheoutputerrorguaranteeofthecomposedmechanism
+1 2
+from that of M . Therefore, we need a way to generalize the measure of accuracy (output error) of a
+2
+flexible accurate mechanism when the input (distribution) to the mechanism is not the same as the input
+(distribution) that we distort, but they are at a bounded distance from each other (as measured in terms
+on the lossy ∞-Wasserstein distance). The notion of error sensitivity formalizes this intuition. Informally,
+it captures the sensitivity of the output error of a flexibly accurate mechanism in such situations.
+Definition 5 (Error sensitivity). Let M:B →C be any mechanism for a function f :B →C, where both
+B andC haveassociatedWassersteindistances. Let∂(cid:98) beameasureofdistortiononB. Then,forα
+2
+,γ
+2
+≥0,
+the error-sensitivity τα2,γ2 :R ×[0,1]→R of M w.r.t. f is defined as:
+M,f ≥0 ≥0
+τα2,γ2(β ,γ )= sup inf W∞(M(X),f(Y)). (9)
+M,f 1 1
+X,X(cid:48): Y:
+γ2
+W
+γ
+∞
+1
+(p
+X
+,p
+X(cid:48)
+)≤β1 ∂(cid:98)(X(cid:48),Y)≤α2
+In other words, if τα2,γ2(β ,γ )=β , then for distributions X,X(cid:48) over A such that W∞(p ,p )≤β ,
+one can α -distort X(cid:48) M to ,f Y in 1 su 1 ch a w 2 ay that W∞(M(X),f(Y)) ≤ β . See Figure 1c γ o1n p X ageX8 (cid:48) for a 1 n
+illustration 2 of err sensitivity using a pebbling game γ .2 2
+Remark 2. As mentioned earlier, the notion of error sensitivity generalizes the definition of flexible accu-
+racy. Inotherwords,ifamechanismMforcomputingafunctionf is(α,β,γ)-accurate,thenβ =τα,γ (0,0).
+M,f
+We can simplify the expression of error sensitivity in some special cases that arise later on in Section 5;
+we discuss these after stating our composition theorem for flexible accuracy in the next subsection.
+4.1.3 Composition Theorem for Flexible Accuracy
+Havingdefinedthedistortionanderrorsensitivities,weshallnowseehowtheyplayinacompositionM ◦M
+2 1
+for f ◦f , where M ,M are mechanisms with flexible accuracy guarantees.
+2 1 1 2
+Theorem 1 (Flexible Accuracy Composition). Let M : A → B and M : B → C be mechanisms,
+1 2
+respectively, with (α ,β ,γ )-accuracy for f : A → B and τ error sensitivity for f : B → C, w.r.t.
+1 1 1 1 M2,f2 2
+measures of distortion ∂ , ∂ defined on A,B and metrics d ,d defined on B,C, respectively. Suppose f ,α
+1 2 1 2 1 2
+are such that σ (α ) is finite. Then, for any α ≥ 0 and γ ∈ [0,1], the mechanism M ◦M : A → C is
+f1 2 2 2 2 1
+9
+(α,β,γ)-accurate for the function f ◦f w.r.t. ∂ and d , where α=α +σ (α ), β =τα2,γ2 (β ,γ ), and
+2 1 1 2 1 f1 2 M2,f2 1 1
+γ =γ .
+2
+We prove Theorem 1 in Section 6.2. An illustration of how the composition theorem works is given as a
+pebbling game in Figure 2.
+Theorem 1 requires computing/bounding the error sensitivity of M in order to compute the flexible
+2
+accuracy parameter β of the composed mechanism M ◦M . Now we show that the expression of error
+2 1
+sensitivity can be simplified in some important special cases.
+• When M ,f are deterministic maps and M is (0,β ,0)-accurate. This setting arises when we
+1 1 1 1
+computetheflexibleaccuracyparametersofourbucketedhistogrammechanismM =M ◦M
+BucHist STLap buc
+(Algorithm 3) while proving Theorem 4.
+In this case, for any x ∈ A, both M (x),f (x) are point distributions. This means that in order to
+1 1
+compute the error sensitivity of M , we only need to take the supremum in (9) over point distributions
+2
+p ,p overB (wherep ,p canbethoughtofbeingsupportedonx:=M (x)andx(cid:48) :=f (x),respectively)
+su x chxt (cid:48) hat W∞(p ,p ) x ≤β x(cid:48) . Since W∞(p ,p )=d (x,x(cid:48)), we only need 1 to take the supr 1 emum in (9) over
+x,x(cid:48) ∈B such th
+x
+at d
+x(cid:48)
+(x,x(cid:48)
+1
+)≤β .
+x x(cid:48) B
+B 1
+• When M ,f are deterministic maps and M is (α ,β ,0)-accurate and α =γ =0. Thissetting
+2 2 1 1 1 2 2
+arises in the case of histogram-based-statistics (denoted by a deterministic function f ) in Section 5.2,
+HBS
+in which we use the composed mechanism f ◦ M for computing f , where M is our
+HBS BucHist HBS BucHist
+final histogram mechanism that is (α,β,0)-accurate (see Theorem 4) and f (as a mechanism) is (0,0,0)-
+HBS
+accurate for computing f .
+HBS
+Upon substituting these parameters in (9), the expression for the error sensitivity reduces to computing
+τ0,0 (β ,0) = sup W∞(M (X),f (X(cid:48))), which can be simplified further as shown in
+th M e 2 l , e f2 mm 1 a below, w X h , i X ch (cid:48):W we ∞( p p rXo , v p eX(cid:48) in )≤ A β1 ppendix C 2 . 2
+Lemma 2. Let M:B →C be a deterministic mechanism for a deterministic function f :B →C. Then, for
+any β ≥0, we have
+1
+τ0,0 (β ,0) = sup W∞(M(X),f(X(cid:48))) = sup d (M(x),f(x(cid:48))). (10)
+M,f 1 C
+X,X(cid:48): x,x(cid:48)∈A:
+W∞(p
+X
+,p
+X(cid:48)
+)≤β1 dB(x,x(cid:48))≤β1
+4.2 Differential Privacy Under Composition
+First we formally define the notion of differential privacy.
+Differential Privacy. Let X denote a universe of possible “databases” with a symmetric neighborhood
+relation ∼. In typical applications, two databases x and x(cid:48) are considered neighbors if one is obtained
+from the other by removing the data corresponding to a single “individual.” A mechanism M over X is an
+algorithm which takes x ∈ X as input and samples an output from an output space Y, according to some
+distribution. We shall denote this distribution by M(x).
+Definition 6 (Differential Privacy [DMNS06, DKM+06]). A randomized algorithm M : X → Y is ((cid:15),δ)-
+differentially private (DP), if for all neighboring databases x,x(cid:48) ∈X and all measurable subsets S ⊆Y, we
+have Pr[M(x)∈S]≤e(cid:15)Pr[M(x(cid:48))∈S]+δ.
+Asimplebutveryusefulresultindifferentialprivacyisthe“post-processing” theoremforDP(see[DR14,
+Proposition2.1]),whichstatesthatifM is((cid:15),δ)-DP,thenforanymechanismM ,thecomposedmechanism
+1 2
+M ◦M wouldremain((cid:15),δ)-DP.Weprovea“pre-processing” theoremfordifferentialprivacy, whichcanbe
+2 1
+viewed as complementing the “post-processing” theorem for DP. Our pre-processing theorem for DP states
+that if M is private, then so would M ◦M be (i.e., pre-processing does not hurt privacy), provided that
+2 2 1
+M is well-behaved. The following notion of being well-behaved suffices for our purposes.
+1
+Definition 7 (Neighborhood preserving Mechanism). A mechanism M:A→B is neighborhood preserving
+w.r.t. neighborhood relations ∼ over A and ∼ over B, if for all x,y ∈ A s.t. x ∼ y, there exists a pair
+A B A
+of jointly distributed random variables (X,Y) s.t. p =M(x), p =M(y), and Pr[X ∼ Y]=1.
+X Y B
+10
+The following theorem states our pre-processing theorem for DP, which we prove in Appendix E.
+Theorem2(DifferentialPrivacyComposition). LetM :A→B andM :B →C beanytwomechanisms.
+1 2
+If M is neighborhood-preserving w.r.t. neighborhood relations ∼ and ∼ over A and B, respectively, and
+1 A B
+M is ((cid:15),δ)-DP w.r.t. ∼ , then M ◦M :A→C is ((cid:15),δ)-DP w.r.t. ∼ .
+2 B 2 1 A
+It is important to note here is that we are not releasing the output of the neighboring-preserving mech-
+anism M ; we only release the output of M ◦M .
+1 2 1
+Lookingahead,wewillrequireTheorem2toestablishtheDPguaranteeofourbucketed-histogrammech-
+anism (Algorithm 3) which is obtained by pre-processing our ((cid:15),δ)-DP histogram mechanism (Algorithm 1)
+with the neighborhood-preserving bucketing mechanism (Algorithm 2).
+5 Mechanisms That Exploit Flexible Accuracy
+In this section, we propose and analyze concrete mechanisms for several important functions. First, we
+present a new DP mechanism for the histogram function with flexible accuracy in Section 5.1 and then
+extend it to any “histogram based statistic” (e.g., max and support) in Section 5.2. In Section 5.3, we show
+our results for other measures of distortion, beyond just dropping elements. Also, in Appendix B, we note
+that the mechanisms (e.g., for half-space queries) which required [BLR13] to introduce the accuracy notion
+of usefulness can be cast in the framework of flexible accuracy.
+5.1 A Private Mechanism for Releasing Histograms with Flexible Accuracy
+Beforedescribingournewmechanismforreleasinghistogramswithflexibleaccuracy,letusconsiderasimpler
+Boolean task of privately reporting whether a given set is empty or not. Deriving a solution to this simpler
+problem will pave a way towards our new histogram mechanism.
+Private mechanism for determining whether a given set is empty or not. For this, the only
+inputdistortionweareallowedistodropsomeelements–i.e., wecannotreportanemptysetasnon-empty.
+Since we seek to limit the extent of distortion, let us add a constraint that if a set has q or more elements,
+then with probability 1 (or very close to 1) we should report the set as being non-empty. Let p denote the
+k
+probability that a set of size k ∈[0,q] is reported as being non-empty, so that p =0 and p =1.
+0 q
+For our scheme to be ((cid:15),δ)-differential private, we require
+p ≤p e(cid:15)+δ, p ≤p e(cid:15)+δ,
+k k+1 k+1 k
+(1−p )≤(1−p )e(cid:15)+δ, (1−p )≤(1−p )e(cid:15)+δ,
+k k+1 k+1 k
+for 0≤k <q, with boundary conditions p =0 and p =1. We are interested in simultaneously reducing (cid:15)
+0 q
+(cid:16) (cid:17)
+and δ subject to the above constraints. The pareto-optimal ((cid:15),δ) turn out to be given by δ e(q/2)(cid:15)−1 = 1,
+e(cid:15)−1 2
+with corresponding values of p being given by
+k
+(cid:18) ek(cid:15)−1 (cid:19)
+p
+k
+=δ
+e(cid:15)−1
+for k ≤q/2 and p
+k
+=1−p
+q−k
+for k ≥q/2. (11)
+(cid:16) (cid:17)
+Theconditionδ e(q/2)(cid:15)−1 = 1 impliesthatwecanachieve((cid:15),(cid:15)e−Ω((cid:15)q))-differentialprivacy. Inparticular,
+e(cid:15)−1 2
+(cid:16) (cid:17) (cid:18) e− √ q/2(cid:19)
+wemaychoose(cid:15)=O √ 1 ,andδ =O √ ,providingausefulprivacyguaranteewhenqissufficiently
+q q
+large.
+In Figure 3, on the left, we plot the probabilities p
+k
+against k/q for this choice of ((cid:15),δ).
+Towards a private mechanism for histograms. TogeneralizethisBooleanmechanismtoafull-fledged
+histogram mechanism, we reinterpret it. In a histogram mechanism, where again, the distortion allowed in
+the input is to only drop elements, we can add a negative noise to the count in each “bar” of the histogram.
+11
+Figure 3: The probability function in the optimal mechanism for reporting whether a set is empty or not
+(left), which can be interpreted as adding a noise according to a truncated Laplace distribution with a
+negative mean (right).
+(If the reduced count is negative, we report it as 0.) We seek a noise function such that the probability of
+the reported count being 0 (when the actual count is k ∈[0,q]) is the same as that of the above mechanism
+reporting that a set of size k is empty. That is, the probability of adding a noise ν ≤−k should be 1−p .
+k
+That is, if the noise distribution is given by the density function σ, we require that
+(cid:90) −k
+σ(t)·dt=1−p and σ(t)=0 for t(cid:54)∈[−q,0].
+k
+−q
+Substituting the expression for p from (11), and then differentiating this identity with respect to k, we
+k
+obtain the following expression for σ(t):
+(cid:40)
+1 Lap(t|−q,1), if t∈[−q,0],
+σ(t)= 1−e−(cid:15)q/2 2 (cid:15) (12)
+0, otherwise,
+whereLapistheLaplacenoisedistributionwithmean−q andscaleparameter1/(cid:15) .7 Wecallσ(t)theshifted-
+2
+truncated Laplace distribution, which is equal to the (normalized) Laplace distribution with mean −q and
+2
+scale parameter 1 when t∈[−q,0], and equal to zero when t∈/ [−q,0].
+(cid:15)
+Algorithm 1 Shifted and Truncated Laplace Mechanism, Mτ,(cid:15),G
+STLap
+Parameter: Threshold τ ∈[0,1); ground set G; and (cid:15)>0.
+Input: A histogram, x:G →N.
+Output: A histogram, y:G →N.
+1: for all g ∈G do
+(cid:40)
+1 Lap(z |−q,1) if z ∈[−q,0],
+2: z g ←π q , where q :=τ|x| and π q (z)= 0 1−e−(cid:15)q/2 2 (cid:15) otherwise.
+3: y(g):=max(0,(cid:98)x(g)+z g (cid:101)) (cid:46) z g need not be computed for g s.t. x(g)=0
+4: end for
+5:
+Return y.
+The shifted-truncated Laplace mechanism for releasing histograms with flexible accuracy. Our
+final histogram mechanism is derived by adding the noise distributed according to σ(t) from (12) with
+7TheLaplacedistributionoverR,withscalingparameter b>0andmeanµ,isdefinedbythedensityfunctionLap(x|µ,b):=
+1e −|x b −µ| forallx∈R. WedenotearandomvariablethatisdistributedaccordingtotheLaplacedistributionwiththescaling
+2b
+parameterbandmean0byLap(b).
+12
+appropriate parameter q to each bar of the histogram, followed by rounding to the nearest integer (or to 0,
+if it is negative). Before describing the mechanism, we need some notation.
+Datasets can be abstractly represented by multi-sets, and each element in the multi-set belongs to a
+ground set G. Formally, a multi-set x over the ground set G is a function x : G → N that outputs the
+multiplicity of elements in G. The size and support of x are defined as |x| := (cid:80) x(i) and support(x) :=
+i∈G
+{i ∈ G : x(i) (cid:54)= 0}, respectively. We shall be interested in finite-sized multi-sets, which we refer to as
+histograms. We denote the domain of all histograms over G by H . For DP, the standard notion of
+G
+neighborhood among histograms is defined as x ∼ x(cid:48) iff (cid:80) |x(i)−x(cid:48)(i)| ≤ 1. Later, we shall also
+hist i∈G
+require G to be a metric space, endowed with a metric d.
+We describe our shifted-truncated Laplace mechanism for the identity function (which maps histograms
+tohistogramsandisdenotedbyMτ,(cid:15),G :H →H )inAlgorithm1. Itsimplydecreases themultiplicityof
+STLap G G
+each element by adding a bounded quantity sampled from the shifted-truncated Laplace distribution. The
+following theorem, proven in Section 6.3, summarizes the privacy and flexible accuracy guarantees achieved
+by Mτ,(cid:15),G for a particular choice of (cid:15).
+STLap
+Theorem 3. On inputs x of size n, Mτ,(cid:15),G from Algorithm 1 satisfies the following guarantees:
+STLap
+• Privacy: For any (cid:15),τ such that (cid:15)τn≥2, Mτ,(cid:15),G is (cid:0) (cid:15),(cid:15)e−Ω((cid:15)τn)(cid:1) -DP w.r.t. ∼ .
+STLap hist
+• Flexible accuracy: If |support(x)| ≤ t, then for any (cid:15) > 0, Mτ,(cid:15),G is (τt,0,0)-accurate for the identity
+STLap
+function, w.r.t. the distortion measure ∂ .
+drop
+Remark 3. There are many choices of (cid:15),τ for which we get favorable privacy parameters in Theorem 3.
+(cid:16) √ (cid:17) √
+For instance, choosing (cid:15)= √1 gives that Mτ,(cid:15),G is √1 ,e− √ Ω( τn) -DP, provided τ is such that τn≥2.
+τn STLap τn τn
+Note that τ is the maximum overall fraction of elements we drop from each bar of the histogram. For
+(cid:18) (cid:19)
+example, by choosing τ = 1 , we get that Mτ,(cid:15),G is 1 ,e−Ω(n1/4) -DP and ( t ,0,0)-accurate. See
+n1/2 STLap n1/4 n1/4 n1/4
+also Section 5.2.3 for more discussion.
+Remark 3 shows that the privacy parameters of Mτ,(cid:15),G improve as the database size |x| grows, by
+STLap
+dropping only a small number of elements, provided that the support size t is small. To handle larger
+supports, this mechanism can be composed with a simple fixed width w bucketing mechanism to give small
+support size, as described next.
+Bucketed shifted-truncated Laplace mechanism. In order to explain the idea behind our bucketing
+mechanism, for simplicity, we consider the ground set G = [0,B).8 In our bucketing mechanism, we divide
+theinterval[0,B)intot=(cid:100)B(cid:101)sub-intervals(buckets)oflengthw,andmapeachinputpointtothecenterof
+w
+thenearestsub-interval(bucket). Thismappingofinputpointstothenearestbucketintroduceserrorinthe
+output space, and the value of w depends on the amount of error we want to tolerate in the output space.
+In our bucketed shifted-truncated Laplace mechanism, we run our shifted-truncated Laplace mechanism
+(Algorithm 1) on the bucketed histogram.
+OurbucketingmechanismMw,[0,B)andthefinalbucketed-histogrammechanismMα,β,[0,B)arepresented
+buc BucHist
+in Algorithm 2 and Algorithm 3, respectively.
+SinceMw,[0,B)introduceserrorintheoutputspace,weneedametricoverH toanalyzeitsflexibleac-
+buc [0,B)
+curacy. Weusethefollowingnaturalmeticd overH ,whichisdefinedasd (y,y(cid:48)):=W∞( y , y(cid:48) ).
+hist [0,B) hist |y| |y(cid:48)|
+Here, y is treated as a probability distribution and the underlying metric for W∞ is the standard distance
+|y|
+metric over R.
+The following theorem presents the accuracy and privacy guarantees of Mα,β,[0,B), which we prove in
+BucHist
+Section 6.4.
+8WealsopresentthegeneralresultsforG=[0,B)d(whichisad-dimensionalcubewithside-lengthequaltoB)inAppendixH.
+AlsoseeRemark5inSection5.3.
+13
+Algorithm 2 Bucketing Mechanism, Mw,[0,B)
+buc
+Parameter: Bucket width w; ground set [0,B).
+Input: A histogram x over [0,B).
+Output: A histogram y over S ={w(i− 1):i∈[t],t=(cid:100)B(cid:101)}, and |y|=|x|.
+2 w
+1: for all s∈S do
+(cid:80)
+2: y(s):= g:g−s∈[−w,w) x(g)
+2 2
+3: end for
+4: Return y
+Algorithm 3 BucketHist Mechanism, Mα,β,[0,B)
+BucHist
+Parameter: Accuracy parameters α,β; ground set [0,B).
+Input: A histogram x over [0,B).
+Output: A histogram y over [0,B).
+1: w :=2β, t:=(cid:100)B(cid:101), τ :=α/t
+w
+2: Return Mτ,(cid:15),[0,B)◦Mw,[0,B)(x) (cid:46) where Mw,[0,B) is in Algorithm 2
+STLap buc buc
+Theorem 4. On inputs of size n, Mα,β,[0,B) is (α,β,0)-accurate for the identity function, w.r.t. the distor-
+BucHist
+tion measure ∂ and metric d . Furthermore, for any (cid:15)>0, and τ =α(2β), if (cid:15)τn≥2, then Mα,β,[0,B)
+drop hist B BucHist
+is
+(cid:0) (cid:15),(cid:15)e−Ω((cid:15)τn)(cid:1)
+-DP w.r.t. ∼ .
+hist
+We can instantiate Theorem 4 with different parameter settings to achieve favorable privacy-accuracy
+tradeoffs. See Section 5.2.3 for more details.
+5.2 Histogram-Based-Statistics
+Theorem4providesapowerfultooltoobtainaDPmechanismforanydeterministichistogram-based-statistic
+f :H →A, simply by defining
+HBS [0,B)
+Mα,β,[0,B) =f ◦Mα,β,[0,B). (13)
+fHBS HBS BucHist
+To analyze the flexible accuracy of M , we define the metric sensitivity function of f .
+fHBS HBS
+Definition 8. The metric sensitivity of a histogram-based-statistic f :H →A, is given by ∆ :
+HBS [0,B) fHBS
+R →R , in terms of a metric d over A,
+≥0 ≥0 A
+∆ (β)= sup d (f (x),f (x(cid:48))). (14)
+fHBS A HBS HBS
+x,x(cid:48)∈H[0,B):
+dhist(x,x(cid:48))≤β
+The privacy and accuracy guarantees of our HBS mechanism are stated in the following theorem, which
+we prove in Section 6.5.1.
+Theorem 5. On inputs of size n, Mα,β,[0,B) is (α,∆ (β),0)-accurate for f w.r.t. distortion ∂
+fHBS fHBS HBS drop
+andmetricd . Furthermore, forany(cid:15)>0, andτ =α(2β), if(cid:15)τn≥2, thenMα,β,[0,B) is (cid:0) (cid:15),(cid:15)e−Ω((cid:15)τn)(cid:1) -DP.
+A B fHBS
+We can instantiate Theorem 5 with different parameter settings to achieve favorable privacy-accuracy
+tradeoffs. See Section 5.2.3 for more details.
+Theorem 5 has direct applications to functions which have high sensitivity (defined w.r.t. the neighbor-
+hood relation ∼), but low metric sensitivity. We point out two such examples, for which no solutions with
+non-trivial guarantees were previously offered.
+14
+5.2.1 Computing the Maximum or Minimum Element of a Multi-set
+Wedefinef (orsimplymax)forhistogramsoverrealnumbersasf (x):=max{g :x(g)>0}. Similarly,
+max max
+we can define f (or simply min) as f (x) := min{g : x(g) > 0}. We give our result for f only; the
+min min max
+same result holds for f as well.
+min
+Corollary 1. Oninputsofsizen, Mα,β,[0,B) is(α,β,0)-accurateforf w.r.t.thedistortion∂ andthe
+max max drop
+standard distance metric over R. Furthermore, for any (cid:15)>0, and τ =α(2β), if (cid:15)τn≥2, then Mα,β,[0,B) is
+B max
+(cid:0) (cid:15),(cid:15)e−Ω((cid:15)τn)(cid:1)
+-DP.
+The proof of Corollary 1 is straight-forward, and we prove it in Section 6.5.2.
+5.2.2 Computing the Support of a Multi-set
+f (or simply support) is defined as f (x) := {g : x(g) > 0}, which maps a multiset to the set that
+supp supp
+forms its support. To measure accuracy, we use a metric d over the set of finite subsets of R: for any
+supp
+two finite subsets S ,S ⊆R, define
+1 2
+(cid:26) (cid:27)
+d (S ,S ):=max max min |s −s |, max min |s −s | .
+supp 1 2 1 2 2 1
+s1∈S1s2∈S2 s2∈S2s1∈S1
+d measures the farthest that a point in one of the sets is from any point on the other set. For example,
+supp
+if smin := min {s} and smax := max {s} denote the minimum and the maximum elements of the set
+i s∈Si i s∈Si
+S (for i=1,2), respectively, then it can be verified that d (S ,S )=max{|smin−smin|,|smax−smax|}.
+i supp 1 2 1 2 1 2
+Corollary 2. On inputs of size n, Mα,β,[0,B) is (α,β,0)-accurate for f w.r.t. the distortion ∂ and
+supp supp drop
+metric d . Furthermore, for any (cid:15)>0, and τ =α(2β), if (cid:15)τn≥2, then Mα,β,[0,B) is (cid:0) (cid:15),(cid:15)e−Ω((cid:15)τn)(cid:1) -DP.
+supp B supp
+The proof of Corollary 2 is straight-forward, and we prove it in Section 6.5.3.
+5.2.3 Choosing the Parameters
+As mentioned in Remark 3 for Theorem 3, there are many choices of (cid:15),τ for which we can get favorable
+privacy, accuracy parameters in Theorems 4, 5, and Corollaries 1, 2. For concreteness, in the following, we
+illustratetheprivacyaccuracytrade-offbychoosingparametersfortheMα,β,[0,B) mechanisminCorollary1;
+max
+the same result applies to Theorems 4, 5, and Corollary 2 as well.
+√
+If we choose (cid:15)= √1 and τ is such that 1 = τn≥2, then by dropping only αn= 1 2β elements from
+τn (cid:15) (cid:15)2 B
+(cid:16) √ (cid:17)
+theentiredataset,themechanismMα m , a β x ,[0,B) achieves √1 τn ,e− √ Ω( τn τn) -differentialprivacy. Ifβ/B isasmall
+constant (say, 1/100), which corresponds to perturbing the output by a small constant fraction of the whole
+range B, then by dropping only αn √ = O( (cid:15) 1 2 ) elements, Mα m , a β x ,[0,B) achieves ((cid:15),(cid:15)e−Ω(1 (cid:15) ))-differential privacy.
+We can set any τ that satisfies 1 = τn≥2 in this result. For example,
+(cid:15)
+By setting (cid:15) = 1 , we get that by dropping only O((logn)4) elements from the entire dataset,
+(logn)2
+Mα,β,[0,B) achieves ( 1 ,n−Ω(logn))-differential privacy while incurring only a small constant error
+max (logn)2 (logn)2
+(of the entire range) in the output.
+Note that in the above setting of parameters, we take (cid:15) = √1 , which implies that the bound on δ can at
+τn √
+best be a small constant for any constant (cid:15). This is because (cid:15)τn = τn = 1 is a constant, which implies
+(cid:15)
+thatδ =(cid:15)e−Ω(1
+(cid:15)
+) willbeaconstanttoo. Therefore,forgettingprivacyguaranteeswithsmallconstant(cid:15)such
+that δ (exponentially) decays with n, we will work with the general privacy result of ((cid:15),(cid:15)e−Ω((cid:15)τn))-DP as in
+Corollary 1. For example,
+15
+Bysetting(cid:15)=0.1andτ = 1 (foranyc∈(0,1)),wegetthatbydroppingonlyαn=τnB =O(n1−c)
+nc 2β
+elements from the entire dataset, Mα,β,[0,B) achieves (0.1,e−Ω(n1−c))-differential privacy while incur-
+max
+ring only a small constant error (of the entire range) in the output.
+For other parameter settings, see the result on page 3 after we stated our informal result for max.
+5.3 Further Applications: Beyond ∂
+drop
+Useful variants of Theorem 5 can be obtained with measures of distortion other than ∂ . In particular, in
+drop
+(4) and (5), we defined the distortions ∂ and ∂η , respectively, where ∂ allows moving/perturbing
+move drmv move
+of data points and ∂η allows both dropping and moving.
+drmv
+ThefollowingtheoremprovidestheprivacyandaccuracyguaranteesofMα,β,[0,B) (definedin(13))w.r.t.
+the distortion measure ∂η , and we prove it in Section 6.6.
+fHBS
+drmv
+Theorem 6. On inputs of size n, Mα,β,[0,B) is (α+ηβ,0,0)-accurate for f w.r.t. the distortion measure
+fHBS HBS
+∂η . Furthermore, for any (cid:15)>0, and τ =α(2β), if (cid:15)τn≥2, then Mα,β,[0,B) is (cid:0) (cid:15),(cid:15)e−Ω((cid:15)τn)(cid:1) -DP.
+drmv B fHBS
+Remark 4. This is analogous to Theorem 5, but with the important difference that it does not refer to the
+metric sensitivity of the function f , and does not even require a metric over its codomain A. This makes
+HBS
+this result applicable to complex function families like maximum-margin separators or neural net classifiers.
+However, the accuracy notion uses a measure of distortion that allows dropping a (small) fraction of the data
+and (slightly) moving all data points, which may or may not be acceptable to all applications.
+Remark 5 (Extending the results from [0,B) to [0,B)d). Note that the bucketing mechanism Mw,[0,B)
+buc
+(Algorithm 2) and the bucketed-histogram mechanism Mα,β,[0,B) (Algorithm 3) are given for the ground set
+BucHist
+G = [0,B). However, as mentioned in Footnote 8, they can easily be extended to the d-dimensional ground
+setG =[0,B)d, andwepresentthed-dimensionalanaloguesoftheabovetwomechanismsinAppendixH. All
+our results in Theorem 4, Theorem 5, and Theorem 6 will hold verbatim with these generalized mechanisms,
+except for the value of τ, which will be replaced by τ =α( 2 √ β )d; see Appendix H for a proof of this.
+B d
+6 Proofs
+Inourproofs,whendealingwithinfimum/supremum(forexample,inthedefinitionsofthelossyWasserstein
+distance, measure of distortion, distortion and error sensitivities, etc.), for simplicity, we assume that the
+infimum/supremumisalwaysachieved;allourproofscanbeeasilyextendedtoworkwithoutthisassumption
+by taking appropriate limits when working with infinitesimal quantities.
+6.1 Proof of Lemma 1 – Triangle Inequality for W∞
+γ
+In this section we prove Lemma 1, and along the way derive useful properties about lossy Wasserstein
+distance, that may be of independent interest.
+The following lemma is crucial to proving Lemma 1.
+Lemma 3. Let P and Q be any two distributions over a metric space (Ω,d). If W∞(P,Q)=β, then for all
+γ
+γ ∈[0,γ], there exist distributions P(cid:48) and Q(cid:48) s.t. ∆(P,P(cid:48))≤γ , ∆(Q,Q(cid:48))≤γ−γ , and W∞(P(cid:48),Q(cid:48))=β.
+1 1 1
+Proof: Let P and Q be any two distributions over a metric space (Ω,d). Let us assume that the optimal
+W∞(P,Q)(=β)isobtainedatthejointdistributionφ . Letthefirstandthesecondmarginaldistributions
+γ opt
+of φ be P and Q , respectively. Let ∆(P,P ) = γ , which implies that ∆(Q,Q ) ≤ γ −γ .
+opt opt opt opt opt opt opt
+Define a function R :Ω→R as R (ω):=P (ω)−P(ω) for all ω ∈Ω. Clearly, (cid:82) R (ω)dω =0 and
+(cid:82) |R (ω)|dω =2γ opt . opt opt Ω opt
+Ω opt opt
+16
+In the discussion below, we shall take a general γ ∈ [0,γ ) and construct distributions P(cid:48) and Q(cid:48) s.t.
+1 opt
+∆(P,P(cid:48))≤γ , ∆(Q,Q(cid:48))≤γ−γ , and W∞(P(cid:48),Q(cid:48))=β, as required in the conclusion of Lemma 3. We can
+1 1
+show a similar result for the other case also when γ ∈ (γ ,γ] (by swapping the roles of P and Q in the
+1 opt
+above as well as in the argument below). This will complete the proof of Lemma 3.
+Define a function R(cid:48) : Ω → R as R(cid:48)(ω) := γ1 R (ω). For any ω ∈ Ω, let P(cid:48)(ω) = P(ω)+R(cid:48)(ω).
+γopt opt
+(cid:16) (cid:17)
+After substituting the value of R (ω) = P (ω)−P(ω), we get P(cid:48)(ω) = γ1 P (ω)+ 1− γ1 P(ω).
+opt opt γopt opt γopt
+Since P(cid:48) is a convex combination of two distributions, it is also a valid distribution. It is easy to see that
+∆(P,P(cid:48))=γ . Define a joint distribution φ(cid:48) as follow: for every (x,y)∈Ω×Ω, define
+1
+(cid:40) φ (x,y) P(cid:48)(x) if P (x)>0
+φ(cid:48)(x,y):= opt Popt(x) opt
+P(cid:48)(x)δ(x−y) otherwise
+whereδ(·)istheDiracdeltafunction. Itfollowsfromthedefinitionthat(cid:82) φ(cid:48)(x,y)dy =P(cid:48)(x), i.e., thefirst
+Ω
+marginal of φ(cid:48) is P(cid:48)(·). This also implies that φ(cid:48) is a valid joint distribution because (i) φ(cid:48)(x,y) ≥ 0 for all
+(x,y)∈Ω×Ω, and (ii) (cid:82) φ(cid:48)(x,y)dxdy = (cid:82) P(cid:48)(x)dx=1.
+Ω×Ω Ω
+Let the second marginal of φ(cid:48) be Q(cid:48). We show in Claim 8 in Appendix A.1 that ∆(Q,Q(cid:48))≤γ−γ .
+1
+The only thing left to prove is to show that W∞(P(cid:48),Q(cid:48))=β for the above constructed P(cid:48) and Q(cid:48). First
+we show W∞(P(cid:48),Q(cid:48))≥β and then show W∞(P(cid:48),Q(cid:48))≤β.
+• Showing W∞(P(cid:48),Q(cid:48))≥β: This follows from the following claim, which we prove in Appendix A.1.
+Claim 1. For distributions P and Q over a metric space (Ω,d) and γ ∈[0,1], we have
+W∞(P,Q) = inf W∞(Pˆ,Qˆ). (15)
+γ
+Pˆ,Qˆ:
+∆(P,Pˆ)+∆(Q,Qˆ)≤γ
+Now,sinceP(cid:48),Q(cid:48) satisfy∆(P,P(cid:48))+∆(Q,Q(cid:48))≤γ,wehaveW∞(P,Q)≤W∞(P(cid:48),Q(cid:48)). SinceW∞(P,Q)=
+γ γ
+β, we have shown that W∞(P(cid:48),Q(cid:48))≥β.
+• Showing W∞(P(cid:48),Q(cid:48)) ≤ β: For the sake of contradiction, let us assume that W∞(P(cid:48),Q(cid:48)) > β. Then
+thereisapair(x,y)∈Ω2 suchthatφ(cid:48)(x,y)>0andd(x,y)>β. Thisimpliesthatφ (x,y)=0,because,
+opt
+otherwise, we would have W∞(P,Q) > β, which contradicts our hypothesis that W∞(P,Q) = β. So, we
+γ γ
+know that φ(cid:48)(x,y) > 0 and φ (x,y) = 0. From the definition of φ(cid:48), this is only possible if P (x) = 0
+opt opt
+and P(cid:48)(x)δ(x−y) > 0. This can happen only if x = y, but this implies d(x,y) = 0 ≤ β, which is a
+contradiction. Hence W∞(P(cid:48),Q(cid:48))≤β.
+This completes the proof of Lemma 3. (cid:3)
+NowwearereadytoproveLemma1. LetW∞(P,Q)=β andW∞(Q,R)=β . ItfollowsfromLemma3
+that there exists a distribution P(cid:48) such that ∆ γ ( 1 P,P(cid:48)) ≤ γ 1 and W∞ γ2 (P(cid:48),Q) = β 2 . Similarly, there exists a
+1 1
+distribution R(cid:48) such that ∆(R,R(cid:48)) ≤ γ and W∞(Q,R(cid:48)) = β . Using these, we have from Lemma 7 that
+2 2
+W∞(P(cid:48),R(cid:48))≤β +β .
+1 2
+Now, the result follows from the following set of inequalities.
+W∞ (P,R) ( = d) inf W∞(Pˆ,Rˆ) ( ≤ e) W∞(P(cid:48),R(cid:48)) ≤ β +β = W∞(P,Q)+W∞(Q,R),
+γ1+γ2
+Pˆ,Rˆ:
+1 2 γ1 γ2
+∆(P,Pˆ)+∆(R,Rˆ)≤γ1+γ2
+where (d) follows from Claim 1 and (e) follows because P(cid:48),R(cid:48) satisfy ∆(P,P(cid:48))+∆(R,R(cid:48))≤γ +γ .
+1 2
+This concludes the proof of Lemma 1.
+17
+6.2 Proof of Theorem 1 – Composition Theorem for Flexible Accuracy
+ThefollowinglemmawillbeusefulinprovingTheorem1. Ittranslatesthedefinitionofdistortionsensitivity
+(Definition 4) to apply to distortion of input distributions. We prove it in Appendix D.
+Lemma 4. Suppose f : A → B has distortion sensitivity σ w.r.t. (∂ ,∂ ). For all r.v.s X over A and Y
+f 1 2 0
+over B such that ∂(cid:98)2 (f(X
+0
+),p
+Y
+)≤α for some α ≥0, there must exist a r.v. X over A such that Y =f(X)
+and ∂(cid:98)1 (p
+X0
+,p
+X
+)≤σ
+f
+(α), provided σ
+f
+(α) is finite.
+Now we prove Theorem 1, which is essentially formalizing the pictorial proof given in Figure 2.
+Foragivenelementx∈A,sinceM is(α ,β ,γ )-accuratemechanismforf ,wehavefromDefinition3
+1 1 1 1 1
+that there exists a r.v. X(cid:48) such that
+∂(cid:98)1 (x,p
+X(cid:48)
+)≤α
+1
+, (16)
+W∞(f (X(cid:48)),M (x))≤β . (17)
+γ1 1 1 1
+Now, applying the mechanism M on M (x), we incur an overall error of at most τα2,γ2 (β ,γ ) to the
+output of function f over a distort 2 ed inpu 1 t (see Definition 5). Therefore, there exists a M r.2v ,f .2 Y∗ 1 su 1 ch that,
+2
+∂(cid:98)2 (f
+1
+(X(cid:48)),p
+Y∗
+)≤α
+2
+, (18)
+W∞(f (Y∗),M (M (x)))≤τα2,γ2 (β ,γ ). (19)
+γ2 2 2 1 M2,f2 1 1
+Since σ (α ) is finite (by assumption), it follows from (18) and Lemma 4 that there exists a r.v. X over A
+such th f a1t 2
+∂(cid:98)1 (p
+X(cid:48)
+,p
+X
+)≤σ
+f1
+(α
+2
+), (20)
+Y∗ =f (X). (21)
+1
+Since ∂
+1
+is a quasi-metric, it follows that ∂(cid:98)1 is also a quasi-metric; see Lemma 12 in Appendix D for a proof.
+This, together with (16) and (20), implies that
+∂(cid:98)1 (x,p
+X
+)≤α
+1
++σ
+f1
+(α
+2
+). (22)
+Substituting Y∗ =f (X) from (21) into (19) gives
+1
+W∞(f (f (X)),M (M (x)))≤τα2,γ2 (β ,γ ). (23)
+γ2 2 1 2 1 M2,f2 1 1
+(22) and (23) imply that M ◦M is (α,β,γ)-accurate for f ◦f w.r.t. the distortion measure ∂ on A and
+2 1 2 1 1
+metric d on C, where α=α +σ (α ), β =τα2,γ2 (β ,γ ), and γ =γ .
+This 2 concludes the proof o 1 f Th f e1ore 2 m 1. M2,f2 1 1 2
+6.3 Proof of Theorem 3 – Truncated Laplace Mechanism for Histograms
+Firstweprovetheflexibleaccuracypart,whichiseasy,andthenwewillmoveontoprovingtheprivacypart,
+whichismoreinvolvedthantheexistingprivacyanalysisofdifferentially-privatehistogrammechanisms. We
+also note that the requirement of |support(x)|≤t is only needed the accuracy result.
+Flexible accuracy. Note that the noise added by Mτ,(cid:15),G in each bar of the histogram is bounded by
+STLap
+−q = −τ|x|, which can lead to a drop of at most τ fraction of total number of elements from each bar.
+Combined with the fact that |support(x)|≤t, the fraction of the maximum fraction of elements that can be
+dropped is τt. Hence, Mτ,(cid:15),G is (τt,0,0)-accurate.
+STLap
+Differential privacy. Our proof of the privacy part of Theorem 3 depends on the following lemma.
+18
+Lemma5. Foranyν ≥0,(cid:15)>0andoninputsxs.t.|x|≥ 2 ln (cid:16) 1+ 1−e−(cid:15) 2 τ (cid:17) ,Mτ,(cid:15),G is (cid:16) (1+ν)(cid:15), e(cid:15)−1 (cid:17) -
+(cid:15)τ e(cid:15)(ν+τ 2)−1 STLap 2(e(cid:15)q/2−1)
+DP w.r.t. ∼ , where q =τ|x|.
+hist
+Proof: We shall in fact prove that a mechanism that outputs yˆ with yˆ(i) := x(i)+z (without rounding,
+i
+and without replacing negative values with 0) is already differentially private as desired. Then, since the
+actual mechanism is a post-processing of this mechanism, it will also be differentially private with the same
+parameters.
+Let x and x(cid:48) be two neighbouring histograms. For simplicity, for every i ∈ G, define x := x(i) and
+i
+x(cid:48) := x(cid:48)(i). Since x ∼ x(cid:48), there exists an i∗ ∈ G such that |x −x(cid:48) | = 1 and that x = x(cid:48) for every
+i i∗ i∗ i i
+i∈G\{i∗}. Without loss of generality, assume that x =x(cid:48) +1, which implies |x|=|x(cid:48)|+1=n+1. Let
+i∗ i∗
+q =τ(n+1) and q(cid:48) =τn. For simplicity of notation, we will denote support(y) by G for any y∈{x,x(cid:48)}.
+y
+In order to prove the lemma, for every subset S ⊆H , we need to show that
+G
+Pr[Mτ,(cid:15),G (x(cid:48))∈S]≤e(1+ν)(cid:15)Pr[Mτ,(cid:15),G (x)∈S]+δ, (24)
+STLap STLap
+Pr[Mτ,(cid:15),G (x)∈S]≤e(1+ν)(cid:15)Pr[Mτ,(cid:15),G (x(cid:48))∈S]+δ, (25)
+STLap STLap
+where δ = e(cid:15)−1 . We only prove (24); (25) can be shown similarly.
+2(e(cid:15)q/2−1)
+Fix an arbitrary subset S ⊆ H . Since Mτ,(cid:15),G adds independent noise to each bar of the histogram
+G STLap
+accordingtoπ (z),wehavethatforeverys∈H ,wehavep (s)= (cid:81) π (s −x )wheres =s(i).
+Thus, we have q G Mτ S , T (cid:15) L ,G ap(x) i∈Gx q i i i
+(cid:90)
+Pr[Mτ,(cid:15),G (x)∈S]= (cid:2) (cid:89) π (s −x ) (cid:3) ds, (26)
+STLap q i i
+S i∈Gx
+(cid:90)
+Pr[Mτ,(cid:15),G (x(cid:48))∈S]= (cid:2) (cid:89) π (s −x(cid:48)) (cid:3) ds. (27)
+STLap q(cid:48) i i
+S i∈G x(cid:48)
+Now, using the fact that ∀k (cid:54)=i∗,x =x(cid:48) and x =x(cid:48) +1, we partition S into three disjoint sets:
+k k i∗ i∗
+1. S :={s∈H :s −x(cid:48) <−q(cid:48)}∪{s∈H :0<s −x(cid:48) }.
+0 G i∗ i∗ G i∗ i∗
+2. S :={s∈H :−q(cid:48) ≤s −x(cid:48) <−q(cid:48)+(1−τ)}.
+1 G i∗ i∗
+3. S :={s∈H :−q(cid:48)+(1−τ)≤s −x(cid:48) ≤0)}.
+2 G i∗ i∗
+The proof of (24) is a simple corollary of the following two claims, which we prove in Appendix F.
+Claim 2. Pr[Mτ,(cid:15),G (x(cid:48))∈S ∪S ]≤e(1+ν)(cid:15)Pr[Mτ,(cid:15),G (x)∈S ∪S ], provided n≥ 2 ln (cid:16) 1+ 1−e−(cid:15) 2 τ (cid:17) .
+STLap 0 2 STLap 0 2 (cid:15)τ e(cid:15)(ν+τ 2)−1
+Claim 3. Pr[Mτ,(cid:15),G (x(cid:48))∈S ]≤δ, where δ = e(cid:15)−1 .
+STLap 1 2(e(cid:15)q/2−1)
+The above two claims together imply (24) as follows:
+Pr[Mτ,(cid:15),G (x(cid:48))∈S]=Pr[Mτ,(cid:15),G (x(cid:48))∈S ∪S ]+Pr[Mτ,(cid:15),G (x(cid:48))∈S ]
+STLap STLap 0 2 STLap 1
+≤e(1+ν)(cid:15)Pr[Mτ,(cid:15),G (x)∈S ∪S ]+δ
+STLap 0 2
+≤e(1+ν)(cid:15)Pr[Mτ,(cid:15),G (x)∈S]+δ. (Since S ∪S ⊆S)
+STLap 0 2
+This completes the proof of Lemma 5. (cid:3)
+In Lemma 5, ν is a free variable. By taking ν = 0, we get the following result in Corollary 3. We can
+also get different guarantees by restricting to ν >0; see Remark 6 below for this.
+(cid:16) (cid:17)
+Corollary 3. For any (cid:15),τ,x such that τ|x|(cid:15)≥2, Mτ,(cid:15),G is (cid:15), e(cid:15)−1 -DP w.r.t. ∼ , where q =τ|x|.
+STLap 2(e(cid:15)q/2−1) hist
+19
+Proof: Substituting ν = 0 in Lemma 5 gives that when x satisfies |x| ≥ 2 ln
+(cid:16)
+1+
+1−e−(cid:15)
+2
+τ (cid:17)
+, we have
+(cid:15)τ e (cid:15) 2 τ −1
+(cid:16) (cid:17)
+that Mτ S , T (cid:15), L G ap is (cid:15), 2(e(cid:15) e n (cid:15) τ − /2 1 −1) -DP w.r.t. ∼ hist . Now, the corollary follows because (cid:15) 2 τ ≥ (cid:15) 2 τ e−(cid:15) 2 τ ≥
+(cid:15) 2 τ ln (cid:0) 1+e−(cid:15) 2 τ(cid:1) = (cid:15) 2 τ ln (cid:16) 1+ 1 e − (cid:15) 2 e τ − − (cid:15) 2 1 τ (cid:17) , where the first inequality uses x≥ln(1+x) for x>0. (cid:3)
+Remark 6. WeshowinLemma11inAppendixFthatbyrestrictingLemma5toν >0, wecangetaweaker
+condition than what we have in Corollary 3 with a slight increase in the privacy parameter (cid:15). In particular,
+(cid:16) (cid:17) (cid:16) (cid:17)
+we show that for all (cid:15),x such that (cid:15)ν ≥ ln 1+ 1 , Mτ,(cid:15),G is (1+ν)(cid:15), e(cid:15)−1 -DP w.r.t. ∼ . We
+|x| STLap 2(e(cid:15)q/2−1) hist
+can take ν =1 here.
+Now the privacy part of Theorem 3 follows because q = τ|x| and τ|x|(cid:15) ≥ 2 (note that τ|x|(cid:15) is typically
+a much bigger number than 2 as it scales with the size of the dataset), which implies that e(cid:15)−1 =
+2(e(cid:15)q/2−1)
+(cid:15)e−Ω((cid:15)τ|x|). Hence, Mτ,(cid:15),G is ((cid:15),(cid:15)e−Ω((cid:15)τ|x|))-DP.
+STLap
+This completes the proof of Theorem 3.
+6.4 Proof of Theorem 4 – Bucketed Truncated Laplace Mechanism
+Note that Mα,β,[0,B) = Mτ,(cid:15),[0,B) ◦ Mw,[0,B), with w = 2β and τ = α, where t = (cid:100)B(cid:101). We will use
+BucHist STLap buc t 2β
+Theorem 2 to show the DP guarantee and Theorem 1 to show the flexible accuracy guarantee of Mα,β,[0,B).
+BucHist
+Differential privacy. First note that Mw,[0,B)d is a neighborhood-preserving mechanism w.r.t. the neigh-
+buc
+borhoodrelation∼ . Thisfollowsbecauseadding/removinganyoneelementchangestheoutputofbucket-
+hist
+ingbyatmostoneelement;hence,neighborsremainneighborsafterbucketing. Now,sinceMw,[0,B) outputs
+buc
+a histogram whose support size is at most t=(cid:100)B(cid:101), and Mτ,(cid:15),[0,B) on input histograms with support size at
+w STLap
+most t is (cid:0) (cid:15),(cid:15)e−Ω((cid:15)τn)(cid:1)-differentially private w.r.t. ∼ , it follows from Theorem 2 that Mα,β,[0,B) is also
+hist BucHist
+differentially private w.r.t. ∼ with the same parameters.
+hist
+Flexible accuracy. First we show in the following claim that the flexible accuracy guarantee of the
+bucketing mechanism Mw,[0,B)(x), and we prove it in Appendix G.
+buc
+Claim 4. Mw,[0,B) is (cid:0) 0,w,0 (cid:1) -accurate for the identity function f over H w.r.t the metric d .
+buc 2 id [0,B) hist
+NotethatwhenweapplyTheorem3tocomputetheflexibleaccuracyparametersofthecomposedmech-
+anismMτ,(cid:15),[0,B)◦Mw,[0,B),theparametersofthecomposedmechanismdependonthedistortionsensitivity
+STLap buc
+σ (α ) and the error sensitivity of Mτ,(cid:15),[0,B). We compute them below.
+f1 2 STLap
+• Distortion sensitivity of f : Since f is the identity function f over H , we have (as noted in the first
+1 1 id [0,B)
+example in Section 4.1.1) that σ (α )≤α .
+f1 2 2
+• Error sensitivity of Mτ,(cid:15),[0,B): Note that the bucketing mechanism Mw,[0,B) :H →H is a deter-
+STLap buc [0,B) [0,B)
+ministic map, and is (0,β,0)-accurate (see Claim 4) for computing the identity function f , where β = w.
+id 2
+As mentioned in the first bullet after the statement of Theorem 1, this implies that when computing the
+error sensitivity of Mτ,(cid:15),[0,B) (which is required for calculating the output error β of the composed mecha-
+STLap
+nism Mτ,(cid:15),[0,B)◦Mw,[0,B)), we only need to take supremum in (9) over point distributions x,x(cid:48) such that
+STLap buc
+d (x,x(cid:48))≤β,whered (,)isthemetricthatweuseoverH . Inotherwords,inordertocomputethe
+hist hist [0,B)
+error sensitivity of Mτ,[0,B), we only need to bound sup inf W∞(Mτ,(cid:15),G (x),p ).
+STLap x,x(cid:48):dhist(x,x(cid:48))≤β Y:∂(cid:98)(x(cid:48),Y)≤α STLap Y
+We bound this in Lemma 6 below.
+Lemma 6. For any α,β ≥0, we have
+τα,0 (β,0) = sup inf W∞(Mτ,(cid:15),G (x),p )≤β
+Mτ S , T (cid:15) L ,[ a 0 p ,B),fid x,x(cid:48): Y: STLap Y
+dhist(x,x(cid:48))≤β
+∂(cid:98)(x(cid:48),Y)≤α
+20
+w.r.t. the distortion ∂ and the metric d . Here, input histograms to the mechanism Mτ,(cid:15),G are
+drop hist STLap
+restricted to t bars and τ =α/t.
+Proof: For simplicity, we denote [0,B) by G. For any two histograms x,x(cid:48) ∈H such that d (x,x(cid:48))≤β,
+G hist
+we will construct a r.v. Y over H
+G
+such that ∂(cid:98)drop (x(cid:48),p
+Y
+) ≤ α and W∞(Mτ
+S
+,
+T
+(cid:15),
+L
+G
+ap
+(x),p
+Y
+) ≤ β. The claim
+then immediately follows from this. Details follow.
+Consider any two histograms x,x(cid:48) ∈ H such that d (x,x(cid:48)) ≤ β. Let d (·,·) denote the underlying
+G hist G
+metric over G (consists of t elements) and |x| denote number of elements in the histogram x. By definition
+of d (·,·), we have d (x,x(cid:48))=W∞( x , x(cid:48) ). Let φ be an optimal coupling of x and x(cid:48) such that
+hist hist |x| |x(cid:48)| |x| |x(cid:48)|
+x x(cid:48)
+d (x,x(cid:48))=W∞( , )= sup d (a,b)≤β. (28)
+hist |x| |x(cid:48)| G
+(a,b)←φ
+Using φ we define a transformation f , which, when given a histogram z that is α-distorted from x,
+φ
+returns f (z) that is an α-distorted histogram from x(cid:48). Recall that for a histogram x and a∈G, we denote
+φ
+by x(a) the multiplicity of a in x. Now, for any b∈[0,B), we define f (z)(b) as follows:
+φ
+(cid:88) z(a)φ(a,b)
+f (z)(b):=|x(cid:48)| .
+φ x(a)
+a∈G
+The following claim is proved in Appendix G.
+Claim 5. For any x∈H , if z is α-distorted from x, then f (z) is α-distorted from x(cid:48).
+G φ
+Recall that Mτ,(cid:15),G (x) outputs α-distorted histograms from x. This suggests defining a r.v. Y :=
+STLap
+(cid:16) (cid:17)
+f Mτ,(cid:15),G (x) over H , whose distribution is given as follows:
+φ STLap G
+For y∈H , define Pr[Y =y]:=Pr[Mτ,(cid:15),G (x)∈f−1(y)],
+G STLap φ
+where f−1(y):={z∈H :f (z)=y} is the inverse mapping of f .
+φ G φ φ
+In the following two claims (which we prove in Appendix G), we show that the above defined Y satisfies
+∂(cid:98)drop (x(cid:48),p
+Y
+)≤α and W∞(Mτ
+S
+,
+T
+(cid:15),
+L
+G
+ap
+(x),p
+Y
+)≤β.
+Claim 6. ∂(cid:98)drop (x(cid:48),p
+Y
+)≤α.
+Claim 7. W∞(Mτ,(cid:15),G (x),p )≤β.
+STLap Y
+It follows from Claim 6 and Claim 7 that inf W∞(Mτ,(cid:15),G (x),p ) ≤ β. Since this holds for
+Y:∂(cid:98)(x(cid:48),Y)≤α STLap Y
+any two histograms x,x(cid:48) ∈H such that d (x,x(cid:48))≤β, we have proved Lemma 6. (cid:3)
+G hist
+Now, applying Theorem 1 to Mα,β,[0,B) = Mτ,(cid:15),[0,B) ◦ Mt,[0,B), we get that Mα,β,[0,B) is (α,β,0)-
+BucHist STLap buc BucHist
+accurate.
+This completes the proof of Theorem 4.
+6.5 Omitted Proofs from Section 5.2
+In this section, we will prove Theorem 5, Corollary 1, and Corollary 2.
+6.5.1 Proof of Theorem 5 – Any Histogram-Based-Statistic
+First we show the flexible accuracy and then the differential privacy guarantee of our composed mechanism
+Mα,β,[0,B) =f ◦Mα,β,[0,B).
+fHBS HBS BucHist
+21
+Flexible accuracy. Notethatf (asamechanism)forcomputingf is(0,0,0)-accurate,andwehave
+HBS HBS
+fromTheorem4thatMα,β,[0,B) is(α,β,0)-accuratefortheidentityfunctionf w.r.t.thedistortionmeasure
+BucHist id
+∂ and the metric d . Applying Theorem 1, we get that Mα,β,[0,B) is (α+σ (0),τ0,0 (0,β),0)-
+ac d c ro u p rate. Itfollowsfrom hist (10)(bysubstitutingM=f asamec f hHBaSnismforf =f fid )an f dHBtSh , e fHdBeSfinitionof
+HBS HBS
+themetricsensitivity(14),thatτ0,0 (0,β)=∆ (β). Wehavealsonotedafter(7)thatthedistortion
+sensitivity of any randomized fun
+f cHtBioS,
+n
+fHaBtSzero
+is equ
+f
+a
+H
+l
+B
+t
+S
+o zero; in particular, σ (0)=0. Substituting these
+fid
+intheflexibleaccuracyparametersofMα,β,[0,B),wegetthatMα,β,[0,B) is(α,∆ (β),0)-accurateforf
+w.r.t. distortion ∂ and metric d .
+fHBS fHBS fHBS HBS
+drop A
+Differential privacy. Since M is (cid:0) (cid:15),(cid:15)e−Ω((cid:15)τn)(cid:1)-DP, and M is a post-processing of M ,
+it follows that M is also differ B e u n c t H i i a s l t ly private with the same para f mHBeSters. BucHist
+This complete f sHtBhSe proof of Theorem 5.
+6.5.2 Proof of Corollary 1 – Computing the Maximum
+Foranytwohistogramsy,y(cid:48),bydefinitionofd (y,y(cid:48))=W∞( y , y(cid:48) )andf ,itfollowsthat|f (y)−
+hist |y| |y(cid:48)| max max
+f (y(cid:48))| ≤ d (y,y(cid:48)). Using this in (14) implies that ∆ (β) ≤ β for every β ≥ 0. Then, the corollary
+max hist fmax
+follows from Theorem 5, with f =f .
+HBS max
+6.5.3 Proof of Corollary 2 – Computing the Support
+Since d (S ,S ) is the difference between the maximum or the minimum elementsof S and S , it follows
+supp 1 2 1 2
+thatforanytwohistogramsyandy(cid:48),wehaved (f (y),f (y(cid:48)))≤max{|f (y)−f (y(cid:48))|,|f (y)−
+supp supp supp max max min
+f (y(cid:48))|}, where|f (y)−f (y(cid:48))|≤d (y,y(cid:48))(fromCorollary1), andsimilarly, |f (y)−f (y(cid:48))|≤
+min max max hist min min
+d (y,y(cid:48)). Using this in (14) implies that ∆ (β)≤β for every β ≥0. Then, the corollary follows from
+hist fsupp
+Theorem 5, with f =f .
+HBS supp
+6.6 Proof of Theorem 6
+Since Mα,β,[0,B) is the same mechanism for which the results in Theorem 4 hold, the same privacy results
+as in The f oHrBeSm 4 will also hold here. In the rest of this proof, we prove the flexible accuracy part.
+Sincef isa(0,0,0)-accuratemechanismforf (whichimpliesthat∆ (0)=0),inordertoprove
+HBS HBS fHBS
+theaccuracyguaranteeofMα,β,[0,B),itsufficestoshowthatMα,β,[0,B) is(α+ηβ,0,0)-accuratew.r.t.∂η .
+fHBS BucHist drmv
+Note that Mα,β,[0,B) = Mτ,(cid:15),[0,B) ◦Mw,[0,B). On any input x, first we produce an intermediate bucketed
+fHBS STLap buc
+outputz:=Mw,[0,B)(x)andthenproducey:=Mτ,(cid:15),[0,B)(z)asthefinaloutput. WehaveshowninClaim4
+buc STLap
+in the proof of Theorem 4 that the output z produced by Mw,[0,B) on input x satisfies W∞(x,z) ≤ β.
+buc
+This, by definition of the distortion ∂ , implies ∂ (x,z) ≤ β. We have also shown in the proof of
+move move
+Theorem 3 that the output y produced by Mτ,(cid:15),[0,B) on input z satisfies ∂ (z,y) ≤ α. So, we have
+STLap drop
+∂ (x,z) ≤ β and ∂ (z,y) ≤ α. This, together with Lemma 13, implies an existence of a histogram
+move drop
+s such that ∂ (x,s) ≤ α and ∂ (s,y) ≤ β. Using these in the definition of ∂η in (5) implies that
+drop move drmv
+∂η (x,y) ≤ α+ηβ. Since we have attributed all the error to the input distortion, we have shown that
+drmv
+Mα,β,[0,B) is (α+ηβ,0,0)-accurate w.r.t. the distortion ∂η .
+BucHist drmv
+This completes the proof of Theorem 6.
+7 Experimental Evaluations
+We empirically compare our basic mechanism Mτ,(cid:15),G (Algorithm 1) on a ground set G = {1,··· ,B},
+STLap
+against various competing mechanisms, for accuracy on a few histogram-based statistics computed on it.
+We plot average errors (actual and flexible), on different histogram distributions9 for functions max (x):=
+k
+9Foreachdatadistribution,theplotswereaveragedover100datasets,with100runseachforeachmechanism.
+22
+max{i | x(i) ≥ k}, max := max , and mode(x) := argmax x(i); note that mode(x) is equal to the most
+1 i
+frequently occurring data item in x. The parameters for Mτ,(cid:15),G that we will use in the section are given in
+STLap
+Corollary 3.
+Weemphasizethattheplotsareonlyindicativeoftheperformanceofouralgorithmonspecifichistograms,
+and do not suggest worst-case accuracy guarantees. On the other hand, our theorems do provide worst-case
+accuracy guarantees.
+We will empirically compare our results against the Exponential Mechanism [MT07], Propose-Test-
+Release Mechanism [DL09], Smooth-sensitivity Mechanism [NRS07], Stability-Based Sanitized Histogram
+[BNS19], and Choosing-Based Histogram Mechanism [BNS16]. First we present the comparison of our
+mechanisms against all these on different data distributions in Section 7.1 and then described these mecha-
+nisms briefly in Section 7.2. We point out one notable omission from our plots: the Encode-Shuffle-Analyze
+histogram mechanism [EFM+20], which appeared independently and concurrently to our mechanism,10 also
+uses a shifted (but not truncated) Laplace mechanism, and in all the examples plotted, yields a behavior
+that is virtually identical to our mechanism’s. However, we emphasize that [EFM+20] claim accuracy only
+for the histogram itself, and indeed, for the functions that we consider, it does not enjoy the worst-case
+accuracy guarantees that we provide.
+7.1 Evaluations Carried Out
+In each of the following empirical evaluations, a histogram distribution and one of the following functions
+were fixed: max (x):=max{i|x(i)≥k}, max:=max , and mode(x):=argmax x(i).
+k 1 i
+(1) Function max. Histogram of about 10,000 items drawn i.i.d. from a Cauchy distribution with median 45
+and scale 4, restricted to 100 bars, with the last 10 set to empty bars.
+(2) Function max. Step histogram with two steps (height × width) : [1000×50, 1×50].
+(3) Function max . Same histogram distribution as in (1) above, but without zeroing out the right-most
+500
+bars.
+(4) Function max . Step histogram with 100 bars, with two steps (height × width) : [540×50, 490×50].
+500
+(5) Function mode. Histogram of 30 bars, each bar has height drawn from i.i.d. Poisson with mean 250.
+(6) Function mode. Noisy step histogram, with steps [130×120, 200×5, 185×85, 190×10, 130×80].
+The results are shown in Figure 4. In each experiment, a range of values for (cid:15) are chosen, while we fixed
+δ =2−20. Errorsareshowninthey-axisasapercentageofthefullrange[0,B). Inallexperiments, foreach
+mechanism we also compute flexible accuracy allowing distortion of ∂ =0.005.
+drop
+7.2 Description of the Compared Mechanisms
+Exponential Mechanism. The Exponential Mechanism [MT07] can be tailored for an abstract utility
+function. We consider the negative of the error as the utility of a response y on input histogram x, i.e.,
+q(x,y) = −err(x,y) = −|max(x)−y|. However, for both max and mode, error has high sensitivity –
+k
+changing a single element in the histogram can change the error by as much as the number of bars in the
+histogram. Since the mechanism produces an output r with probability proportional to e (cid:15) 2 q ∆ (x e , r r r ), where ∆ err
+is the sensitivity of err(·,·), having a large sensitivity has the effect of moving the output distribution close
+to a uniform distribution. This is reflected in the performance of this mechanism in all our plots.
+Propose-Test-ReleaseMechanism(PTR). WeconsiderthecommonlyusedformofthePTRmechanism
+of Dwork and Lei [DL09], namely, “releasing stable values” (see [Vad17, Section 3.3]). On input x, the
+mechanism either releases the correct result f(x) or refuses to do so (replacing it with a random output
+value), depending on whether the radius of the neighborhood of x where it remains constant is sufficiently
+large (after adding some noise). For computing a function f and a setting of parameter β = 0 and privacy
+10Preliminaryversionsofthecurrentworkwereavailableonlineandhadbeenpresentedpublicly(asaninvitedtalk[BCDP19])
+before[EFM+20]wasavailable.
+23
+(1) max (2) max
+ϵ ϵ
+(3) max (4) max
+k k
+ϵ ϵ
+(5) mode (6) mode
+ϵ ϵ
+actual flexible
+SanPoints
+BNS
+New
+)%(rorrE
+)%(rorrE
+)%(rorrE
+actual flexible
+Exp
+PTR
+SS
+Figure 4: For each evaluation, a typical histogram used is shown in inset. The different data distributions
+elicit a variety of behaviors of the different mechanisms. Experiment (2) shows an instance which is hard
+for all the mechanisms without considering flexible accuracy; on the other hand, in Experiment (3), flexible
+accuracy makes no difference (the plots overlap). In these two experiments, BNS and our new mechanism
+match each other. In all the other experiments, our new mechanism dominates the others, with or without
+considering flexible accuracy.
+24
+parameters(cid:15),δ,themechanismcalculatesthisradiusforaninputxas,r =d(x,{x(cid:48) :LS
+f
+(x(cid:48))>0})+Lap(1/(cid:15)),
+where d(x,S) is the minimum Hamming distance between x and any point in the set S and LS (y) :=
+f
+max{|f(y)−f(z)|:y∼z} is local sensitivity of function f at y. If this radius r is greater than ln(1/δ)/(cid:15) , the
+mechanism will output the exact answer f(x), otherwise it outputs a random value from the domain. For
+the functions we consider, this radius of stable region can be computed efficiently and is typically small or
+even zero for input distributions considered which is reflected in our plots.
+Smooth-sensitivity Mechanism (SS). This mechanism, due to Nissim et al. [NRS07], uses the smooth
+sensitivityofafunctionf,definedasSS(cid:15)(x)=max{LS (x(cid:48))e−(cid:15)d(x,x(cid:48))|x(cid:48) ∈H },whereLS (x(cid:48))denotesthe
+f f G f
+local sensitivity of f at x(cid:48), and d(·,·) is the Hamming distance. Given an input histogram x, the mechanism
+adds noise O(SSβ(x)/α) to f(x) for appropriate values of α and β to obtain ((cid:15),δ)-DP. For functions like
+f
+max and mode, like sensitivity, local sensitvity (and hence smooth sensitivity) also tends to be large on
+k
+many histograms, which leads this mechanism to add a large noise.
+Stability-Based Sanitized Histogram Mechanism. This mechanism was proposed by Bun et al.
+[BNS19](alsosee[Vad17,Theorem3.5])forreleasinghistogramswithprovableworst-caseguarantees. How-
+ever, these guarantees are in terms of the errors in the individual bar heights of the histogram, and does
+not necessarily translate to the histogram based functions, as we consider. Nevertheless, this mechanism
+provides a potential candidate for a mechanism for any histogram based statistic.
+For each bar of the histogram, the mechanism adds Laplace noise to the bar height, and the resulting
+value is reported only if it is more than a threshold, and otherwise a 0 is reported. By treating empty
+bars differently, this mechanism achieves comparable flexible accuracy as our mechanism in the case of max.
+However, this does not generalize to max . In particular, in the example in (4) in Figure 4, by adding
+k
+(possibly positive) noise to histogram bars of height lower than k, the mechanism is very likely to find a bar
+which is much further to the right than the point where the bar heights cross k.
+Choosing-Based Histogram Mechanism. Beimel et al. [BNS16] presented a mechanism SanPoints for
+producing a sanitized histogram, with formal PAC-guarantees for the height of each bar of the histogram.
+Themechanisminvolvesiterativelychoosingbarsfromthehistogram,withoutreplacement,andaddingsome
+noisetothebarheights. ThebarsarechosenaccordingtoaDPmechanismforpickingthetallestbar(which
+in turn uses the exponential mechanism).
+For the functions we consider, SanPoints yields mixed results, but is dominated by BNS and our new
+mechanism.
+Acknowledgements
+The work of Deepesh Data was supported in part by NSF grants #1740047, #2007714, and UC-NL grant
+LFR-18-548554. The work of Manoj Prabhakaran was supported in part by the Joint Indo-Israel Project
+DST/INT/ISR/P-16/2017 and the Ramanujan Fellowship of Dept. of Science and Technology, India.
+References
+[ACG+16] MartinAbadi,AndyChu,IanGoodfellow,BrendanMcMahan,IlyaMironov,KunalTalwar,and
+Li Zhang. Deep learning with differential privacy. In CCS, pages 308–318, 2016.
+[BCDP19] Aman Bansal, Rahul Chunduru, Deepesh Data, and Manoj M. Prabhakaran. Extending the
+foundations of differential privacy: Flexibility and robustness. Available from https://www.
+cse.iitb.ac.in/~mp/research.html, 2019. Invited Talk at INDOCRYPT 2019.
+[BCS15] ChristianBorgs,JenniferT.Chayes,andAdamD.Smith. Privategraphonestimationforsparse
+graphs. In NIPS, pages 1369–1377, 2015.
+25
+[BCSZ18] Christian Borgs, Jennifer T. Chayes, Adam D. Smith, and Ilias Zadik. Revealing network struc-
+ture, confidentially: Improved rates for node-private graphon estimation. In FOCS, pages 533–
+543, 2018.
+[BLR13] Avrim Blum, Katrina Ligett, and Aaron Roth. A learning theory approach to noninteractive
+database privacy. J. ACM, 60(2):12:1–12:25, 2013.
+[BNS16] Amos Beimel, Kobbi Nissim, and Uri Stemmer. Private learning and sanitization: Pure vs.
+approximate differential privacy. Theory of Computing, 12(1):1–61, 2016.
+[BNS19] MarkBun,KobbiNissim,andUriStemmer. Simultaneousprivatelearningofmultipleconcepts.
+Journal of Machine Learning Research, 20:94:1–94:34, 2019.
+[CDM+05] Shuchi Chawla, Cynthia Dwork, Frank McSherry, Adam D. Smith, and Hoeteck Wee. Toward
+privacy in public databases. In TCC, pages 363–385, 2005.
+[CDMT05] Shuchi Chawla, Cynthia Dwork, Frank McSherry, and Kunal Talwar. On privacy-preserving
+histograms. In UAI, 2005.
+[DKM+06] Cynthia Dwork, Krishnaram Kenthapadi, Frank McSherry, Ilya Mironov, and Moni Naor. Our
+data,ourselves: Privacyviadistributednoisegeneration. InEUROCRYPT,pages486–503,2006.
+[DL09] CynthiaDworkandJingLei. Differentialprivacyandrobuststatistics. InSTOC,pages371–380,
+2009.
+[DMNS06] Cynthia Dwork, Frank McSherry, Kobbi Nissim, and Adam D. Smith. Calibrating noise to
+sensitivity in private data analysis. In TCC, pages 265–284, 2006.
+[DPT17] Apple Differential Privacy Team. Learning with privacy at scale. Apple Machine Learn-
+ing Journal, December 2017. Available online: https://machinelearning.apple.com/docs/
+learning-with-privacy-at-scale/appledifferentialprivacysystem.pdf.
+[DR14] Cynthia Dwork and Aaron Roth. The algorithmic foundations of differential privacy. Found.
+Trends Theor. Comput. Sci., 9(3-4):211–407, Aug 2014.
+[EFM+20] Úlfar Erlingsson, Vitaly Feldman, Ilya Mironov, Ananth Raghunathan, Shuang Song, Kunal
+Talwar, and Abhradeep Thakurta. Encode, shuffle, analyze privacy revisited: Formalizations
+and empirical evaluation. arXiv preprint arXiv:2001.03618, 2020.
+[EPK14] Úlfar Erlingsson, Vasyl Pihur, and Aleksandra Korolova. Rappor: Randomized aggregatable
+privacy-preserving ordinal response. In CSS, pages 1054–1067, 2014.
+[KM14] Daniel Kifer and Ashwin Machanavajjhala. Pufferfish: A framework for mathematical privacy
+definitions. ACM Trans. Database Syst., 39(1):3:1–3:36, 2014.
+[MT07] Frank McSherry and Kunal Talwar. Mechanism design via differential privacy. In FOCS, pages
+94–103, 2007.
+[NRS07] Kobbi Nissim, Sofya Raskhodnikova, and Adam D. Smith. Smooth sensitivity and sampling in
+private data analysis. In STOC, pages 75–84, 2007.
+[SWC17] Shuang Song, Yizhen Wang, and Kamalika Chaudhuri. Pufferfish privacy mechanisms for corre-
+lated data. In SIGMOD, pages 1291–1306, 2017.
+[TS13] Abhradeep Thakurta and Adam D. Smith. Differentially private feature selection via stability
+arguments, and the robustness of the lasso. In COLT, volume 30, pages 819–850, 2013.
+26
+[Vad17] Salil P. Vadhan. The complexity of differential privacy. In Tutorials on the Foundations of
+Cryptography, pages 347–450. Springer International Publishing, 2017.
+[Vil08] Cedric Villani. Optimal transport: old and new. Springer Verlag, 2008.
+27
+A Details Omitted from Section 2
+A.1 Lossy ∞-Wasserstein Distance
+Lemma 7 (Lemma 1 at γ =γ =0). For distributions P, Q, and R over a metric space (Ω,d), we have
+1 2
+W∞(P,R)≤W∞(P,Q)+W∞(Q,R).
+Proof: Let φ ∈ Φ(P,Q) and φ ∈ Φ(Q,R) denote the optimal couplings for W∞(P,Q) and W∞(Q,R),
+2 3
+respectively, i.e., W∞(P,Q)=sup d(x,y) and W∞(Q,R)=sup d(y,z). It follows from the
+(x,y): (y,z):
+φ2(x,y)(cid:54)=0 φ3(y,z)(cid:54)=0
+Gluing Lemma [Vil08] that we can find a coupling φ(cid:48) over Ω×Ω×Ω such that the projection of φ(cid:48) onto its
+first two coordinates is equal to φ and its last two coordinates is equal to φ . Let φ denote the projection
+2 3 1
+ofφ(cid:48) ontoitsfirstandthethirdcoordinates. Notethatφ ∈Φ(P,R), butitmaynotbeanoptimalcoupling
+1
+for W∞(P,R). Now the triangle inequality follows from the following set of inequalities:
+W∞(P,R)= inf sup d(x,z) ≤ sup d(x,z) = sup d(x,z)
+φ∈Φ(P,R) (x,z): (x,z): (x,y,z):
+φ(x,z)(cid:54)=0 φ1(x,z)(cid:54)=0 φ(cid:48)(x,y,z)(cid:54)=0
+(a)
+≤ sup d(x,y)+d(y,z)
+(x,y,z):
+φ(cid:48)(x,y,z)(cid:54)=0
+= sup d(x,y) + sup d(y,z)
+(x,y,z): (x,y,z):
+φ(cid:48)(x,y,z)(cid:54)=0 φ(cid:48)(x,y,z)(cid:54)=0
+= sup d(x,y) + sup d(y,z)
+(x,y): (y,z):
+φ2(x,y)(cid:54)=0 φ3(y,z)(cid:54)=0
+=W∞(P,Q)+W∞(Q,R),
+where (a) follows from the fact that d is a metric, and so it satisfies the triangle inequality. (cid:3)
+Claim 8. ∆(Q,Q(cid:48))≤γ−γ .
+1
+Proof: The claim follows from the following set of inequalities.
+∆(Q,Q(cid:48))≤∆(Q,Q )+∆(Q ,Q(cid:48))
+opt opt
+1(cid:90)
+≤γ−γ + |Q (y)−Q(cid:48)(y)| dy (Since ∆(Q,Q )≤γ−γ )
+opt 2 opt opt opt
+Ω
+= 2
+1(cid:90) (cid:12)
+(cid:12) (cid:12) (cid:12)
+(cid:90)
+φ opt (x,y)dx−
+(cid:90)
+φ(cid:48)(x,y)dx
+(cid:12)
+(cid:12) (cid:12) (cid:12) dy+(γ−γ opt )
+Ω Ω Ω
+1(cid:90) (cid:90)
+≤ |φ (x,y)−φ(cid:48)(x,y)| dxdy+(γ−γ )
+2 opt opt
+Ω Ω
+Define Ω :={x∈Ω:P (x)>0} and Ω :=Ω\Ω . Since P (x)=0 for all x∈Ω and P () is the first
+1 opt 1 1 opt 1 opt
+marginal of φ , we have that φ (x,y)=0 for all x∈Ω and y ∈Ω. Now, continuing from above, we get
+opt opt 1
+1(cid:90) (cid:90) 1(cid:90) (cid:90)
+∆(Q,Q(cid:48))≤ |φ (x,y)−φ(cid:48)(x,y)| dxdy+ |φ (x,y)−φ(cid:48)(x,y)| dxdy+(γ−γ )
+2 opt 2 opt opt
+Ω x∈Ω1 Ω x∈Ω1
+= 2 1(cid:90) (cid:90) φ opt (x,y) (cid:12) (cid:12) (cid:12) (cid:12) 1− P P(cid:48)( ( x x ) ) (cid:12) (cid:12) (cid:12) (cid:12) dxdy+ 2 1(cid:90) (cid:90) |φ(cid:48)(x,y)| dxdy+(γ−γ opt )
+Ω Ω1 opt Ω Ω1
+= 2 1(cid:90) (cid:12) (cid:12) (cid:12) (cid:12) 1− P P(cid:48)( ( x x ) ) (cid:12) (cid:12) (cid:12) (cid:12) dx (cid:90) φ opt (x,y)dy+ 1 2 (cid:90) (cid:90) P(cid:48)(x)δ(x−y)dxdy+(γ−γ opt )
+Ω1 opt Ω Ω Ω1
+(Since φ(cid:48)(x,y)=P(cid:48)(x)δ(x−y) for x∈Ω )
+1
+28
+1(cid:90) 1(cid:90)
+= |P (x)−P(cid:48)(x)| dx+ P(cid:48)(x)dx+(γ−γ )
+2 opt 2 opt
+Ω1 (Sinc Ω e 1(cid:82) φ (x,y)dy =P (x) and (cid:82) δ(x−y)dy =1 for any x)
+Ω opt opt Ω
+1(cid:90) 1(cid:90)
+= |P (x)−P(cid:48)(x)| dx+ |P (x)−P(cid:48)(x)| dx+(γ−γ )
+2 opt 2 opt opt
+Ω1 Ω1
+(Since P (x)=0 whenever x∈Ω )
+opt 1
+1(cid:90)
+= |P (x)−P(cid:48)(x)| dx+(γ−γ )
+2 opt opt
+Ω
+( = a) 1 2 (cid:90) (cid:12) (cid:12) (cid:12) (cid:12) (cid:16) 1− γ γ 1 (cid:17) R opt (x) (cid:12) (cid:12) (cid:12) (cid:12) dx+(γ−γ opt )
+Ω opt
+(γ −γ )(cid:90)
+= opt 1 |R (x)| dx+(γ−γ )
+2γ opt opt
+opt Ω
+=γ −γ +(γ−γ ) (Since (cid:82) |R (ω)|dω =2γ )
+opt 1 opt Ω opt opt
+=γ−γ (29)
+1
+Here(a)followsbecauseforeveryx∈Ω,wehaveP (x)−P(cid:48)(x)=R (x)+P(x)−P(cid:48)(x)=R (x)−R(cid:48)(x)=
+opt opt opt
+R (x)− γ1 R (x). (cid:3)
+opt γopt opt
+Claim (Restating Claim 1). For distributions P and Q over a metric space (Ω,d) and γ ∈[0,1], we have
+W∞(P,Q) = inf W∞(Pˆ,Qˆ).
+γ
+Pˆ,Qˆ:
+∆(P,Pˆ)+∆(Q,Qˆ)≤γ
+Proof: This claim simply follows by by viewing the infimum set in the definition of γ-Lossy ∞-Wasserstein
+distance differently.
+W∞(P,Q) ( = a) inf max d(x,y)
+γ
+φ∈Φγ(P,Q)(x,y)←φ
+(b)
+= inf inf max d(x,y)
+Pˆ,Qˆ: φ∈Φ0(Pˆ,Qˆ)(x,y)←φ
+∆(P,Pˆ)+∆(Q,Qˆ)≤γ
+( = c) inf W∞(Pˆ,Qˆ).
+Pˆ,Qˆ:
+∆(P,Pˆ)+∆(Q,Qˆ)≤γ
+where (a) follows from the definition of γ-Lossy ∞-Wasserstein distance; (b) trivially holds by viewing the
+infimum set differently; in (c) we substituted the definition of W ; and (d) follows because P(cid:48),Q(cid:48) satisfies
+∞
+∆(P,P(cid:48))+∆(Q,Q(cid:48))≤γ. (cid:3)
+A.2 Average Version of Lossy Wasserstein Distance
+Our definition of W∞ uses a worst case notion of distance. Many of the results using this notion have
+θ
+analogues using an average case version. We formally present this definition below, as it may be of interest
+elsewhere.
+Definition 9 (θ-Lossy Average Wasserstein Distance). Let P and Q be two probability distributions over a
+metric space (Ω,d), and let θ ∈[0,1]. The θ-lossy average Wasserstein distance between P and Q is defined
+as:
+W (P,Q)= inf E [d(x,y)]. (30)
+θ
+φ∈Φθ(P,Q)(x,y)←φ
+The following lemma relates lossy average Wasserstein and lossy ∞-Wasserstein distances.
+29
+Lemma 8. For any two distributions P,Q, and 0≤β(cid:48) <β ≤1,
+W (P,Q)
+W (P,Q)≤W∞(P,Q)≤ β(cid:48) .
+β β (β−β(cid:48))
+Proof: Clearly from the definitions, W (P,Q)≤W∞(P,Q).
+β β
+SupposeW (P,Q)=γ andφ∈Φβ(cid:48)(P,Q)isanoptimalcouplingthatrealizesthis. Then, inφ, thetotal
+β(cid:48)
+massthatistransportedmorethanadistanceγ(cid:48) isatmostγ/γ(cid:48) andthetotalmassthatislostisatmostβ(cid:48).
+By choosing to simply not transport this mass at all, one loses β(cid:48)+γ/γ(cid:48) mass, but no mass is transported
+more than a distance γ(cid:48). Choosing γ(cid:48) = γ/(β−β(cid:48)) this upper bound on loss is β, and hence this modified
+coupling shows that W∞(P,Q)≤γ(cid:48). (cid:3)
+β
+A.3 γ-Lossy ∞-Wasserstein Distance Generalizes Existing Notions
+Lemma9. Let(Ω,d)beametricspace. LetF beapointdistributiononsomef ∈ΩandGbeadistribution
+f
+over Ω. Then for any γ ∈[0,1] and β ≥0, we have
+W∞(F ,G)≤β ⇐⇒ Pr [d(f,g)>β]≤γ.
+γ f
+g←G
+Proof: We show both the directions below.
+• Only if part (⇒): SupposeW∞(F ,G)≤β. ItfollowsfromLemma3thatthereexistsadistributionG(cid:48)
+γ f
+suchthat∆(G(cid:48),G)≤γandW∞(F ,G(cid:48))≤β. SinceF isapointdistribution,allcouplingsφ∈Φ0(F ,G(cid:48))
+f f f
+will be such that φ =F and φ =G(cid:48), which implies that W∞(F ,G(cid:48))=sup d(f,g(cid:48))≤β. Now we
+1 f 2 f g(cid:48)←G(cid:48)
+show that, together with ∆(G(cid:48),G)≤γ, this implies Pr [d(f,g)>β]≤γ:
+g←G
+Pr [d(f,g)>β]= Pr [d(f,g)>β | g ∈support(G(cid:48))] Pr [g ∈support(G(cid:48))]
+g←G g←G g←G
+(cid:124) (cid:123)(cid:122) (cid:125)
+= 0
++ Pr [d(f,g)>β | g ∈/ support(G(cid:48))] Pr [g ∈/ support(G(cid:48))]
+g←G g←G
+(cid:124) (cid:123)(cid:122) (cid:125)
+≤ 1
+≤ Pr [g ∈/ support(G(cid:48))]
+g←G
+(cid:90)
+= p (g)dg
+G
+g∈Ω: pG(g)>0 & p G(cid:48)(g)=0
+(cid:90)
+= (p (g)−p (g))dg
+G G(cid:48)
+g∈Ω: pG(g)>0 & p G(cid:48)(g)=0
+(a)(cid:90)
+≤ (p (g)−p (g))dg
+G G(cid:48)
+g∈Ω: pG(g)>p G(cid:48)(g)
+( = b) ∆(G,G(cid:48))≤γ,
+where (a) follows because {g ∈ Ω : p (g) > 0 & p (g) = 0} ⊆ {g ∈ Ω : p (g) > p (g)}, and (b) follows
+G G(cid:48) G G(cid:48)
+from the reasoning given below.
+Define Ω+ := {g ∈ Ω : p (g) > p (g)} and Ω− := {g ∈ Ω : p (g) < p (g)}. Since (cid:82) p (g)dg =
+G G G(cid:48) G G G(cid:48) g∈Ω G
+(cid:82) p (g)dg, it follows that (cid:82) (p (g)−p (g))dg = (cid:82) (p (g)−p (g))dg. Substituting this in
+g∈Ω G(cid:48) g∈Ω+ G G(cid:48) g∈Ω− G(cid:48) G
+the definition of ∆(G,G(cid:48)), we get ∆ G (G,G(cid:48))= (cid:82) (p (g)−p G (g))dg.
+g∈Ω+ G G(cid:48)
+G
+• If part (⇐): Suppose Pr [d(f,g) > β] ≤ γ. Let Ω(cid:48) = {g ∈ Ω : d(f,g) ≤ β} and G(cid:48) be a distribution
+g←G
+supportedonΩ(cid:48) suchthatp (g)= 1p (g)wheng ∈Ω(cid:48), otherwisep (g)=0. Hereη = (cid:82) p (g)dg ≥
+G(cid:48) η G G(cid:48) g∈Ω(cid:48) G
+(1−γ) is the normalizing constant. First we show that ∆(G,G(cid:48))≤γ.
+1(cid:90)
+∆(G,G(cid:48))= |p (g)−p (g)|dg
+2 G(cid:48) G
+g∈Ω
+30
+1(cid:90) 1(cid:90)
+= |p (g)−p (g)|dg+ p (g)dg (Since p (g)=0 when g ∈Ω\Ω(cid:48))
+2 G(cid:48) G 2 G G(cid:48)
+g∈Ω(cid:48) g∈Ω\Ω(cid:48)
+1(cid:90) 1 1(cid:90)
+= p (g)( −1)dg+ p (g)dg
+2 G η 2 G
+g∈Ω(cid:48) g∈Ω\Ω(cid:48)
+= 1 ( 1 −1)η+ 1 (1−η) (Since (cid:82) p (g)dg =η)
+2 η 2 g∈Ω(cid:48) G
+=1−η ≤γ. (31)
+Nowdefineajointdistributionφ,whosefirstmarginalisthepointdistributionF andthesecondmarginal
+f
+is G(cid:48), which implies that sup d(x,y) = sup d(f,g(cid:48)). It follows from the argument above that
+(x,y)←φ g(cid:48)∈Ω(cid:48)
+φ∈Φγ(F ,G), which implies that W∞(F ,G)≤sup d(x,y)=sup d(f,g(cid:48))≤β, where the last
+f γ f (x,y)←φ g(cid:48)∈Ω(cid:48)
+inequality is by definition of Ω(cid:48). Hence, we get W∞(F ,G)≤β.
+γ f
+This completes the proof of Lemma 9. (cid:3)
+Lemma 10. For any two distributions P,Q over a metric space (Ω,d) and γ ∈[0,1], we have
+W∞(P,Q)=0 ⇐⇒ ∆(P,Q)≤γ.
+γ
+Proof: We show both the directions below.
+• Only if part (⇒): Suppose W∞(P,Q) = 0. This implies that there exists a joint distribution φ ∈
+γ
+Φγ(P,Q) such that sup d(x,y) = 0. Since d is a metric, this implies that for all (x,y) ← φ, we
+(x,y)←φ
+have x = y. Hence, the first marginal φ and the second marginal φ of φ are equal, which implies that
+1 2
+∆(φ ,P)+∆(φ ,Q)≤γ. Then, by triangle inequality and that φ =φ , we get ∆(P,Q)≤γ.
+1 2 1 2
+• If part (⇐): Suppose ∆(P,Q)≤γ. Define a joint distribution φ:=P ×P. Since φ =φ =P, we have
+1 2
+φ∈Φγ(P,Q). This, by definition, implies W∞(P,Q)≤sup d(x,y). Since both the marginals of φ
+γ (x,y)←φ
+are the same, we have d(x,y) = 0 for every (x,y) ← φ. This, by the non-negativity of W∞(P,Q), gives
+γ
+W∞(P,Q)=0.
+γ
+(cid:3)
+B Details Omitted from Section 3.2 – Usefulness [BLR13] vs. Flex-
+ible Accuracy
+To express accuracy guarantees of their mechanisms, Blum et al. [BLR13] introduced a notion of (β,γ,ψ)-
+usefulness that parallels (α,β,γ)-accuracy, except that ψ measures perturbation of the function rather than
+input distortion. Note that this is a reasonable notion for the function classes they considered (half-space
+queries, range queries etc.), but it is not applicable to queries like maximum.
+Flexible accuracy generalizes the notion of usefulness. Firstly, mechanisms which are (β,γ,0)-useful are
+(0,β,γ)-accurate(in[BLR13],suchmechanismsweregivenforintervalqueries). Butevengeneralusefulness
+canbetranslatedtoflexibleaccuracygenerically,byredefiningthefunctiontohaveanextrainputparameter
+that specifies perturbation. Further, the specific (β,γ,ψ)-useful DP mechanism of [BLR13] for half-space
+counting queries – with data points on a unit sphere, and the perturbation of the function corresponded to
+rotatingthehalf-spacebyψ radians–is(ψ,β,γ)-accurateforthesamefunctions,w.r.t.thedistortion∂ .
+move
+This is because, the rotation of the half-space can be modeled as moving all the points on the unit sphere
+by a distance of at most ψ.
+C Details Omitted from Section 4.1.3 – Proof of Lemma 2
+For convenience, we write the lemma statement below.
+31
+Lemma (Restating Lemma 2). Let M : B → C be a deterministic mechanism for a deterministic function
+f :B →C. Then, for any β ≥0, we have
+1
+τ0,0 (β ,0) = sup W∞(M(X),f(X(cid:48))) = sup d (M(x),f(x(cid:48))).
+M,f 1 C
+X,X(cid:48): x,x(cid:48)∈A:
+W∞(p
+X
+,p
+X(cid:48)
+)≤β1 dB(x,x(cid:48))≤β1
+Proof: The first equality follows from the definition of error sensitivity. We only need to prove the second
+equality.
+• LHS ≥ RHS: This is the easy part.
+sup W∞(M(X),f(X(cid:48))) ≥ sup W∞(M(x),f(x(cid:48))) = sup d (M(x),f(x(cid:48))),
+C
+X,X(cid:48): x,x(cid:48)∈B: x,x(cid:48)∈B:
+W∞(p
+X
+,p
+X(cid:48)
+)≤β1 W∞(p
+x
+,p
+x(cid:48)
+)≤β1 dB(p
+x
+,p
+x(cid:48)
+)≤β1
+wheretheinequalityholdsbecauseconsideringonlypointdistributionsrestrictsthesetoverwhichwetake
+supremumandtheequalityholdsbecausethe∞-Wassersteindistancebetweenanytwopointdistributions
+inanymetricisjustthedistancebetweenthepointsonwhichthedistributionsaresupportedinthatmetric.
+• LHS ≤ RHS: Consider any two distributions p ,p over B s.t. W∞(p ,p )≤β. Let φ be the optimal
+coupling between p ,p such that
+X X(cid:48) X X(cid:48) 1
+X X(cid:48)
+W∞(p ,p ) = sup d (x,x(cid:48))≤β .
+X X(cid:48) B 1
+(x,x(cid:48))←φ1
+Using φ ,M,f, we define a joint distribution φ over C×C as follows: For any a,b∈C, define
+1 2
+(cid:88)
+φ (a,b) := φ (x,x(cid:48)).
+2 1
+x,x(cid:48):
+M(x)=a,f(x(cid:48))=b
+It can be verified that φ ∈Φ(M(X),f(X(cid:48))), i.e., φ is a valid coupling between M(X),f(X(cid:48)). Now
+2 2
+W∞(M(X),f(X(cid:48))) ≤ sup d (a,b) = sup d (M(x),f(x(cid:48))) ≤ sup d (M(x),f(x(cid:48))),
+C C C
+(a,b)←φ2 (x,x(cid:48))←φ1 x,x(cid:48)∈B:
+dB(x,x(cid:48))≤β1
+where the last inequality holds because {(x,x(cid:48)):(x,x(cid:48))←φ }⊆{(x,x(cid:48)):d (x,x(cid:48))≤β }.
+1 B 1
+Note that the RHS of the last inequality does not depend on X,X(cid:48). So, taking supremum over all
+distributions X,X(cid:48) such that W∞(p ,p )≤β gives the required result.
+X X(cid:48) 1
+This completes the proof of Lemma 2. (cid:3)
+D Omitted Details from Section 6.2 – Flexible Accuracy Under
+Composition
+In this section, we prove Lemma 4.
+Lemma (Restating Lemma 4). Suppose f :A→B has distortion sensitivity σ w.r.t. (∂ ,∂ ). For all r.v.s
+f 1 2
+X
+0
+over A and Y over B such that ∂(cid:98)2 (f(X
+0
+),p
+Y
+) ≤ α for some α ≥ 0, there must exist a r.v. X over A
+such that Y =f(X) and ∂(cid:98)1 (p
+X0
+,p
+X
+)≤σ
+f
+(α), provided σ
+f
+(α) is finite.
+Proof: Fix random variables X
+0
+over A and Y over B such that ∂(cid:98)2 (f(X
+0
+),p
+Y
+) ≤ α. Let φ be an optimal
+coupling that achieves the infimum in the definition of ∂(cid:98)2 (f(X
+0
+),p
+Y
+), i.e.,
+∂(cid:98)2 (f(X
+0
+),p
+Y
+)= sup ∂
+2
+(u,y)≤α. (32)
+(u,y)←φ
+32
+For each x ∈ support(X ), consider the conditional distribution φ = φ|{X = x }. Clearly, the first
+0 0 x0 0 0
+marginalofφ isapointdistributionsupportedatf(x ). Letitssecondmarginalbedenotedbyp . First
+x0 0 Yx0
+we show that for each x
+0
+∈support(X
+0
+), we have ∂(cid:98)2 (f(x
+0
+),p
+Yx0
+)≤α.
+(a) (b)
+∂(cid:98)2 (f(x
+0
+),p
+Yx0
+)=
+φ∈Φ0(f
+i
+(
+n
+x
+f
+0),p Yx0 )(u
+s
+,y
+u
+)
+p
+←φ
+∂
+2
+(u,y)≤
+(u,y
+s
+)
+u
+←
+p
+φx0
+∂
+2
+(u,y) ≤
+(u
+s
+,y
+u
+)
+p
+←φ
+∂
+2
+(u,y) ≤ α.
+Here (a) follows from the fact that support(φ ) ⊆ support(φ) and (b) follows from (32). Thus for each
+x0
+x
+r.
+0
+v.
+∈
+X
+supp
+su
+o
+c
+r
+h
+t(X
+th
+0
+a
+)
+t
+, we have ∂(cid:98)2 (f(x
+0
+),p
+Yx0
+) ≤ α. Since σ
+f
+(α) is finite, by the definition of σ
+f
+, there exist a
+x0
+Y =f(X ), (33)
+x0 x0
+∂(cid:98)1 (x
+0
+,p
+Xx0
+)≤σ
+f
+(α). (34)
+Define X = (cid:80)
+x0∈support(X0)
+p
+X0
+(x
+0
+)X
+x0
+. Now we show that Y =f(X) and ∂(cid:98)1 (p
+X0
+,p
+X
+)≤σ
+f
+(α).
+• ShowingY =f(X): NotethatY = (cid:80) p (x )Y andf(X)= (cid:80) p (x )f(X ).
+x0∈support(X0) X0 0 x0 x0∈support(X0) X0 0 x0
+Now the claim follows because because Y =f(X ) for each x ∈support(X ) (from (33)).
+x0 x0 0 0
+• Showing ∂(cid:98)1 (p
+X0
+,p
+X
+)≤σ
+f
+(α): For each x
+0
+∈support(X
+0
+), let ψ
+x0
+be the optimal coupling that achieves
+s th u e p infimum ∂ in ( t a h , e b) d . efi L n e it t io ψ n o b f e ∂(cid:98) d 1 e (x fi 0 n , e p d Xx b0y ). ψ T (a h , a b t ) is = , fo p r ea ( c x h ) x ψ 0 , ψ (a x , 0 b ∈ ). Φ I 0 t (x i 0 s ,p ea X s x y0 ) t a o nd ve ∂ r (cid:98) i 1 f ( y x 0 t , h p a X t x0 ψ )= ∈
+(a,b)←ψx0 1 X0 0 x0
+Φ0(p ,p ). Further,
+X0 X
+∂(cid:98)1 (p
+X0
+,p
+X
+)≤
+(a,
+s
+b
+u
+)←
+p
+ψ
+∂
+1
+(a,b)=
+x0
+s
+←
+u
+p
+p
+X0
+(a,b
+s
+)
+u
+←
+p
+ψx0
+∂
+1
+(a,b)=
+x0
+s
+←
+u
+p
+p
+X0
+∂(cid:98)1 (x
+0
+,p
+Xx0
+)≤σ
+f
+(α),
+where the last inequality follows from (34).
+This completes the proof of Lemma 4. (cid:3)
+E Proof of Theorem 2 – Differential Privacy Under Composition
+Theorem (Restating Theorem 2). Let M : A → B and M : B → C be any two mechanisms. If M
+1 2 1
+is neighborhood-preserving w.r.t. neighborhood relations ∼ and ∼ over A and B, respectively, and M is
+A B 2
+((cid:15),δ)-DP w.r.t. ∼ , then M ◦M :A→C is ((cid:15),δ)-DP w.r.t. ∼ .
+B 2 1 A
+Proof: Forsimplicity,weconsiderthecasewhenBisdiscrete. Theproofcanbegeneralizedtothecontinuous
+setting.
+Since the mechanism M is neighborhood preserving, for x,x(cid:48) ∈ A s.t. x ∼ x , there exists a pair of
+1 1 A 2
+jointly distributed random variables (X ,X ) over B×B s.t, p = M (x), p = M (x(cid:48)) and Pr[X ∼
+X ] = 1. So, for all (x ,x ) such that
+1
+p
+2
+(x ,x ) > 0, we
+X1have
+x
+1
+∼ x
+X2
+and h
+1
+ence, by the (
+1
+(cid:15),δ)
+B
+-
+di 2 fferential privacy of the 1 m 2 echanism M , X fo1, r X a2ll s 1 ubs 2 ets S ⊆C, we have 1 , B 2
+2
+Pr(M (x )∈S)≤e(cid:15)Pr(M (x )∈S)+δ.
+2 1 2 2
+Thus, if x∼ x(cid:48), then for any subset S ⊆C, we have,
+A
+(cid:88)
+Pr[M (M (x))∈S]= p (x )Pr[M (x )∈S]
+2 1 X1 1 2 1
+x1
+(cid:88)
+= p (x ,x )Pr[M (x )∈S]
+X1,X2 1 2 2 1
+(x1,x2)
+33
+(cid:88)
+≤ p (x ,x )(e(cid:15)Pr[M (x )∈S]+δ)
+X1,X2 1 2 2 2
+(x1,x2)
+ 
+(cid:88)
+=e(cid:15)  p X1,X2 (x 1 ,x 2 )Pr[M 2 (x 2 )∈S]+δ
+(x1,x2)
+(cid:32) (cid:33)
+(cid:88)
+=e(cid:15) p (x )Pr[M (x )∈S] +δ
+X2 2 2 2
+x2
+=e(cid:15)Pr[M (M (x(cid:48)))∈S]+δ
+2 1
+This completes the proof of Theorem 2. (cid:3)
+F Details Omitted from Section 6.3 – Shifted-Truncated Laplace
+Mechanism
+Claim (Restating Claim 2). Pr[Mτ,(cid:15),G (x(cid:48)) ∈ S ∪S ] ≤ e(1+ν)(cid:15)Pr[Mτ,(cid:15),G (x) ∈ S ∪S ], provided n ≥
+STLap 0 2 STLap 0 2
+2 ln
+(cid:16)
+1+
+1−e−(cid:15)
+2
+τ (cid:17)
+.
+(cid:15)τ e(cid:15)(ν+τ 2)−1
+Proof: First we show that for s ∈ S ∪ S , we have, π (s − x(cid:48) ) ≤ e(1+ν)(cid:15)π (s − x ), provided
+0 2 q(cid:48) i∗ i∗ q i∗ i∗
+n≥ 2 ln
+(cid:16)
+1+
+1−e−(cid:15)
+2
+τ (cid:17)
+, and then we show how this implies the result.
+(cid:15)τ e(cid:15)(ν+τ 2)−1
+For s ∈ S , π (s −x(cid:48) ) = 0 so the inequality trivially holds. For s ∈ S , both π (s −x(cid:48) ) > 0 and
+0 q(cid:48) i∗ i∗ 2 q(cid:48) i∗ i∗
+π (s −x )>0; hence, we will be done if we show that π q(cid:48)(si∗−x(cid:48) i∗) ≤e(1+ν)(cid:15). Note that we are given the
+fo
+q
+llow
+i∗
+ing i
+i
+n
+∗
+equality:
+πq(si∗−xi∗)
+2 (cid:18) 1−e−(cid:15)τ 2 (cid:19)
+n≥ ln 1+ ,
+(cid:15)τ e(cid:15)(ν+τ
+2
+)−1
+which can be rewritten as (which we show in Claim 9 after this proof):
+(cid:32) (cid:33)
+ln
+1−e−(cid:15)τ(n
+2
++1)
+≤(cid:15)(ν+ τ ). (35)
+1−e−(cid:15)τ
+2
+n 2
+By substituting q =τ(n+1) and q(cid:48) =τn, (35) is equivalent to
+1 (cid:18) 1−e−(cid:15)q 2 (cid:19) τ
+ln +(1− )≤1+ν.
+(cid:15) 1−e−(cid:15)q
+2
+(cid:48) 2
+This, using the triangle inequality, implies that
+1 ln (cid:18) 1−e−(cid:15)q 2 (cid:19) + (cid:12) (cid:12)s −x + q(cid:12) (cid:12)− (cid:12) (cid:12)s −x + q +(1− τ ) (cid:12) (cid:12)≤1+ν.
+(cid:15) 1−e−(cid:15)q
+2
+(cid:48) (cid:12) i∗ i∗ 2(cid:12) (cid:12) i∗ i∗ 2 2 (cid:12)
+Putting q(cid:48) =q−τ and x(cid:48) =x −1, we get
+i∗ i∗
+1 (cid:15) ln (cid:18) 1 1 − − e e − − (cid:15) (cid:15) q q 2 2 (cid:48) (cid:19) + (cid:12) (cid:12) (cid:12) s i∗ −x i∗ + 2 q(cid:12) (cid:12) (cid:12) − (cid:12) (cid:12) (cid:12) (cid:12) s i∗ −x(cid:48) i∗ + q 2 (cid:48)(cid:12) (cid:12) (cid:12) (cid:12) ≤1+ν.
+By taking exponents of both sides, this is equivalent to showing
+(1−e−(cid:15)q 2) e−(cid:15)|si∗−x(cid:48) i∗+q 2 (cid:48) | ≤e(1+ν)(cid:15)
+(1−e−(cid:15)q 2 (cid:48) ) e−(cid:15)|si∗−xi∗+q 2 |
+34
+By substituting the values of π (s −x ) and π (s −x(cid:48) ), this can be equivalently written as
+q i∗ i∗ q(cid:48) i∗ i∗
+π (s −x(cid:48) )
+q(cid:48) i∗ i∗ ≤e(1+ν)(cid:15). (36)
+π (s −x )
+q i∗ i∗
+Now we show Pr[Mτ,(cid:15),G (x(cid:48)) ∈ S ∪S ] ≤ e(1+ν)(cid:15)Pr[Mτ,(cid:15),G (x) ∈ S ∪S ]. Recall that G = support(x)
+STLap 0 2 STLap 0 2 x
+for any histogram x∈H .
+G
+(cid:90)
+Pr[Mτ,(cid:15),G (x(cid:48))∈S ∪S ]= (cid:2) (cid:89) π (s −x(cid:48)) (cid:3) ds
+STLap 0 2 q(cid:48) i i
+S0∪S2 i∈G x(cid:48)
+(cid:90)
+= (cid:2) (cid:89) π (s −x(cid:48)) (cid:3) π (s −x(cid:48) )ds
+q(cid:48) i i q(cid:48) i∗ i∗
+S0∪S2 i∈G x(cid:48):i(cid:54)=i∗
+(cid:90)
+≤ (cid:2) (cid:89) π (s −x ) (cid:3) e(1+ν)(cid:15)π (s −x )ds
+q i i q i∗ i∗
+S0∪S2 i∈Gx:i(cid:54)=i∗
+(Using (36) and that x =x(cid:48),∀i(cid:54)=i∗)
+i i
+(cid:90)
+=e(1+ν)(cid:15) (cid:2) (cid:89) π (s −x ) (cid:3) ds
+q i i
+S0∪S2 i∈Gx
+=e(1+ν)(cid:15)Pr[Mτ,(cid:15),G (x)∈S ∪S ]
+STLap 0 2
+This completes the proof of Claim 2. (cid:3)
+Claim 9.
+2 (cid:18) 1−e−(cid:15)τ 2 (cid:19) (cid:32) 1−e−(cid:15)τ(n 2 +1) (cid:33) τ
+n≥ ln 1+ ⇐⇒ ln ≤(cid:15)(ν+ ).
+(cid:15)τ e(cid:15)(ν+τ
+2
+)−1 1−e−(cid:15)τ
+2
+n 2
+Proof: We will start with the RHS and show that it is equivalent to the LHS.
+1
+1
+−
+−
+e−
+e
+(cid:15)
+−
+τ
+(cid:15)
+(n
+τ
+2
+2 n
++1) ≤e(cid:15)(ν+τ
+2
+)
+⇐⇒1−e−(cid:15)τ(n
+2
++1) ≤e(cid:15)(ν+τ
+2
+)−e(cid:15)(ν+τ
+2
+)e−(cid:15)τ
+2
+n
+⇐⇒1−e−(cid:15)τ
+2
+ne−(cid:15)τ
+2
+≤e(cid:15)(ν+τ
+2
+)−e(cid:15)(ν+τ
+2
+)e−(cid:15)τ
+2
+n
+(cid:16) (cid:17)
+⇐⇒e−(cid:15)τ
+2
+n e(cid:15)(ν+τ
+2
+)−e−(cid:15)τ
+2
+≤e(cid:15)(ν+τ
+2
+)−1
+⇐⇒e(cid:15)τ 2 n ≥
+e(cid:15)(ν+τ
+2
+)−e−(cid:15)τ
+2
+e(cid:15)(ν+τ
+2
+)−1
+⇐⇒e(cid:15)τ 2 n ≥1+
+1−e−(cid:15)τ
+2
+e(cid:15)(ν+τ
+2
+)−1
+2 (cid:18) 1−e−(cid:15)τ 2 (cid:19)
+⇐⇒n≥ ln 1+ .
+(cid:15)τ e(cid:15)(ν+τ
+2
+)−1
+(cid:3)
+Claim (Restating Claim 3). Pr[Mτ,(cid:15),G (x(cid:48))∈S ]≤ e(cid:15)−1 .
+STLap 1 2(e(cid:15)q/2−1)
+Proof: Observethat,foreverys∈S ,wehave−q(cid:48) ≤s −x(cid:48) <−q(cid:48)+(1−τ). RecallthatG =support(x(cid:48))
+1 i∗ i∗ x(cid:48)
+and |x(cid:48)| = n. Let |G | = t for some t ≤ n, and, for simplicity, assume that G = {1,2,...,t}. For i ∈ [t],
+x(cid:48) x(cid:48)
+define S (i) := {sˆ : ∃s ∈ S s.t. sˆ = s }, which is equal to the collection of the multiplicity of i in the
+1 i 1 i i
+histograms in S .
+1
+(cid:90) t
+Pr[Mτ,(cid:15),G (x(cid:48))∈S ]= (cid:2)(cid:89) π (s −x(cid:48)) (cid:3) ds
+STLap 1 q(cid:48) i i
+S1 i=1
+35
+(cid:90) (cid:90) (cid:90) t
+= ... ... (cid:2)(cid:89) π (s −x(cid:48)) (cid:3) ds ... ds ... ds
+q(cid:48) i i t i∗ 1
+S1(1) S1(i∗) S1(t) i=1
+(cid:90) (cid:18)(cid:90) (cid:90) t (cid:19)
+= π (s −x(cid:48) ) ... (cid:2) (cid:89) π (s −x(cid:48)) (cid:3) ds ... ds ds
+q(cid:48) i∗ i∗ q(cid:48) i i t 1 i∗
+S1(i∗) S1(1) S1(t) i=1:i(cid:54)=i∗
+(cid:124) (cid:123)(cid:122) (cid:125)
+≤ 1
+(cid:90)
+≤ π (s −x(cid:48) )ds
+q(cid:48) i∗ i∗ i∗
+S1(i∗)
+(cid:90) q(cid:48)+(1−τ)
+= π (z)dz (Since ∀s∈S , (s −x(cid:48) )∈[−q(cid:48),−q(cid:48)+(1−τ)))
+q(cid:48) 1 i∗ i∗
+q(cid:48)
+e(1−τ)(cid:15)−1
+= e−(cid:15)q/2
+2(1−e−(cid:15)q/2)
+e(cid:15)−1
+≤ . (Since τ >0)
+2(e(cid:15)q/2−1)
+This proves Claim 3. (cid:3)
+(cid:16) (cid:17) (cid:16) (cid:17)
+Lemma 11. For any ν,(cid:15)>0 and x such that (cid:15)ν >ln 1+ 1 , Mτ,(cid:15),G is (1+ν)(cid:15), e(cid:15)−1 -DP w.r.t.
+|x| STLap 2(e(cid:15)q/2−1)
+∼ , where q =τ|x|.
+hist
+Proof: We use Lemma 5 and put a restriction that ν should be > 0. We will analyze the effect of this
+restriction on the bound of |x|. We restate the bound on |x| here again for convenience:
+2 (cid:18) 1−e−(cid:15)τ 2 (cid:19)
+|x|≥ ln 1+
+(cid:15)τ e(cid:15)(ν+τ
+2
+)−1
+It can be easily checked that for any fixed (cid:15),ν > 0, the RHS is a decreasing function of τ. Hence, if we set
+τ to its minimum value, we get a lower bound on |x| which is independent of τ. Since this expression is not
+defined at τ =0, we will take its one-sided limit as τ →0+, i.e.,
+2 (cid:18) 1−e−(cid:15)τ 2 (cid:19)
+lim ln 1+
+τ→0+ (cid:15)τ e(cid:15)(ν+τ 2 )−1
+We will replace (cid:15)τ with l. As τ →0+, l→0+, and we get
+2
+2 (cid:18) 1−e−(cid:15)τ 2 (cid:19) 1 (cid:18) 1−e−l (cid:19)
+lim ln 1+ = lim ln 1+
+τ→0+ (cid:15)τ e(cid:15)(ν+τ 2 )−1 l→0+ l e(cid:15)ν+l−1
+1 (cid:18) 1−e−l (cid:19)(cid:18) 1−e−l (cid:19)(cid:18) e(cid:15)ν+l−1 (cid:19)
+= lim ln 1+
+l→0+ l e(cid:15)ν+l−1 e(cid:15)ν+l−1 1−e−l
+(cid:18)
+1
+(cid:19)(cid:18) 1−e−l(cid:19)  ln (cid:16) 1+
+e
+1
+(cid:15)ν
+−
++
+e
+l
+−
+−
+l
+1
+(cid:17)
+= lim  
+l→0+ e(cid:15)ν+l−1 l 1−e−l
+e(cid:15)ν+l−1
+1
+= (lim 1−e−x =1; lim ln(1+x) =1)
+e(cid:15)ν −1 x→0+ x x→0+ x
+(cid:16) (cid:17)
+Wehaveprovedthatoninputsxs.t.|x|> 1 ,whichisequivalenttotheconditionthat(cid:15)ν >ln 1+ 1 ,
+e(cid:15)ν−1 |x|
+(cid:16) (cid:17)
+Mτ,(cid:15),G is (1+ν)(cid:15), e(cid:15)−1 -DP w.r.t. ∼ , where q =τ|x|. (cid:3)
+STLap 2(e(cid:15)q/2−1) hist
+36
+G Details Omitted from Section 6.4 – Bucketed Histogram Mech-
+anism
+Claim (RestatingClaim4). Mw,[0,B) is (cid:0) 0,w,0 (cid:1) -accuratefortheidentityfunctionf overH w.r.t the
+buc 2 id [0,B)
+metric d .
+hist
+Proof: Since both f and Mw,[0,B) are deterministic maps, on any input x ∈ H , we denote x (as the
+id buc [0,B)
+outputoff (x))andMw,[0,B) aspointdistributionsoverH . Now, inordertoprovetheclaim, weneed
+id buc [0,B)
+to show that W∞(Mw,[0,B)(x),x)≤ w holds for any x∈H .
+buc 2 [0,B)
+Fix any x ∈ H and define y := Mw,[0,B)(x). Since x,y are point distributions and the underlying
+[0,B) buc
+metric is d , we have W∞(y,x) = d (y,x), where d is defined as d (y,x) = W∞( y , x ). Since
+hist hist hist hist |y| |x|
+y is a deterministic function of x, W∞( y , x ) is upper bounded by the maximum distance any point in x
+|y| |x|
+moves to form y, which is equal to the the maximum distance of the center of a bucket from any point in
+that bucket, which is w. (cid:3)
+2
+Claim (Restating Claim 5). For any x∈H , if z is α-distorted from x, then f (z) is α-distorted from x(cid:48).
+G φ
+Proof: We need to show two things: (i) f (z)(b) ≤ x(cid:48)(b) holds for every b ∈ G, and (ii) (cid:80) f (z)(b) ≥
+φ b∈G φ
+(1−α) (cid:80) x(cid:48)(b). The first condition holds because z(a) ≤ x(a),∀a ∈ G (since z is α-distorted from x)
+b∈G
+and that (cid:80) φ(a,b)= x(cid:48)(b). For the second condition,
+a∈G |x(cid:48)|
+(cid:88) f (z)(b)= (cid:88) |x(cid:48)| (cid:88) z(a)φ(a,b) =|x(cid:48)| (cid:88) z(a) (cid:88) φ(a,b) ( = a) |x(cid:48)| (cid:88) z(a) ( ≥ b) (1−α)|x(cid:48)|, (37)
+φ x(a) x(a) |x|
+b∈G b∈G a∈G a∈G b∈G a∈G
+where (a) follows from (cid:80) φ(a,b) = x(a) and (b) follows because z is α-distorted from x, which implies
+b∈G |x|
+that (cid:80) z(a)=|z|≥(1−α)|x|. Therefore, f (z) is α-distorted from x(cid:48). (cid:3)
+a∈G φ
+Claim (Restating Claim 6). ∂(cid:98)drop (x(cid:48),p
+Y
+)≤α.
+Proof: Note that the support of Mτ,(cid:15),G (x) is the set of all α-distorted histograms from x. We have shown
+STLap
+in Claim 5 that for any z ∈ H such that ∂ (x,z) ≤ α, we have ∂ (x(cid:48),f (z)) ≤ α. This implies that
+G drop drop φ
+sup
+y∈support(fφ(Mτ
+S
+,
+T
+(cid:15)
+L
+,G
+ap
+(x)))
+∂
+drop
+(x(cid:48),y)≤α, which in turn implies that ∂(cid:98)drop (x(cid:48),p
+Y
+)≤α. (cid:3)
+Claim (Restating Claim 7). W∞(Mτ,(cid:15),G (x),p )≤β.
+STLap Y
+Proof: Define a coupling φ of Mτ,(cid:15),G (x) and p over H ×H as follows:
+x STLap Y G G
+(cid:40)
+Pr[Mτ,(cid:15),G (x)=z] if y=f (z),
+φ (z,y):= STLap φ
+x 0 otherwise.
+It is easy to verify that the above defined φ is a valid coupling of Mτ,(cid:15),G (x) and p , i.e., its first marginal
+x STLap Y
+is equal to Mτ,(cid:15),G (x) and the second marginal is equal to p . Note that φ (z,y) is non-zero only when
+STLap Y x
+y=f (z). This implies that
+φ
+W∞(Mτ,(cid:15),G (x),p )≤ sup d (z,y)= sup d (z,f (z))≤β,
+STLap Y hist hist φ
+(z,y)←φx (z,fφ(z))←φx
+where the last inequality follows from Claim 10 (stated and proven below) and using the fact that z ∼
+Mτ,(cid:15),G (x) is α-distorted from x. (cid:3)
+STLap
+37
+Claim 10. Let x,x(cid:48) ∈H be such that d (x,x(cid:48))≤β. Then, for any z that is α-distorted from x, we have
+G hist
+d (z,f (z))≤d (x,x(cid:48))≤β.
+hist φ hist
+Proof: Define φ(cid:48)(a,b)= z(a)|x|φ(a,b). For any a∈G, its first marginal is equal to (cid:80) φ(cid:48)(a,b)= z(a). For
+x(a)|z| b∈G |z|
+any b ∈ G, its second marginal is equal to (cid:80) φ(cid:48)(a,b) = |x|(cid:80) z(a)φ(a,b) = |x| f (z)(b). We would
+a∈G |z| a∈G x(a) |x(cid:48)||z| φ
+like to say that the quantity on the RHS is equal to fφ(z)(b). We show this as follows: Since |z|≥(1−α)|x|,
+|fφ(z)|
+there exists c≥0 such that |z|=(1−α+c)|x|. If we put this instead of |z|≥(1−α)|x| in (37), we would
+get (cid:80) f (z)(b) = (1−α+c)|x(cid:48)|. With these substitutions, we get |x| f (z)(b) = fφ(z)(b) , which
+b∈G φ |x(cid:48)||z| φ (cid:80)
+b∈G
+fφ(z)(b)
+implies that the second marginal of φ(cid:48) is equal to (cid:80) φ(cid:48)(a,b)= fφ(z)(b) for any b∈G.
+a∈G |fφ(z)|
+This means that φ(cid:48)(a,b) is a valid coupling of z,f (z). This implies that
+φ
+(c)
+d (z,f (z))=W∞(z,f (z))≤ sup d (a(cid:48),b(cid:48)) ≤ sup d (a(cid:48),b(cid:48))=d (x,x(cid:48))≤β,
+hist φ φ G G hist
+(a(cid:48),b(cid:48))←φ(cid:48) (a(cid:48),b(cid:48))←φ
+where (c) holds because support(φ(cid:48))⊆support(φ) (by the definition of φ(cid:48)). (cid:3)
+H d-Dimensional Analogues of our Mechanisms/Results
+In our d-dimensional bucketing mechanism for G = [0,B)d, we divide [0,B)d into t = (cid:100)B(cid:101)d d-dimensional
+w
+cubes (buckets), each of side length w, and map each input point to the center of the nearest cube (bucket).
+√
+Note that the distance between any point in [0,B)d to the center of the nearest bucket is w d. In the
+2
+following, we will ignore the ceil/floor for simplicity.
+Algorithm 4 Bucketing Mechanism over [0,B)d, Mw,[0,B)d
+buc
+Parameter: Bucket (which is d-dimensional cube) side length w, ground set [0,B)d.
+Input: A histogram x over [0,B).
+Output: A histogram y over S =Td where T ={w(i− 1):i∈[t],t=(cid:100)B(cid:101)}, and |y|=|x|.
+2 w
+1: for all s∈S do
+(cid:80)
+2: y(s):= g:g−s∈[−w,w)d x(g)
+2 2
+3: end for
+4: Return y
+Algorithm 5 BucketHist Mechanism over [0,B)d, Mα,β,[0,B)d
+BucHist
+Parameter: Accuracy parameters α,β; ground set [0,B)d.
+Input: A histogram x over [0,B)d.
+Output: A histogram y over [0,B)d.
+1: w :=2β, t:=(cid:100)B(cid:101)d, τ :=α/t
+w
+2: Return Mτ,(cid:15),[0,B)d ◦Mw,[0,B)d (x) (cid:46) where Mw,[0,B) is in Algorithm 4
+STLap buc buc
+Ourd-dimensionalbucketingmechanismMw,[0,B)d andthefinald-dimensionalbucketed-histogrammech-
+buc
+anism Mα,β,[0,B)d are presented in Algorithm 4 and Algorithm 5, respectively.
+BucHist
+As mentioned in Remark 5 in Section 5.3, with these modified mechanisms, all our results in Theorem 4,
+Theorem 5, and Theorem 6 will hold verbatim, except for the value of τ, which will be replaced by τ =
+α( 2 √ β )d. Note that for the one dimensional case, we have τ = α =α(w), where w =2β, which comes from
+B d t B
+38
+the (0,w,0)-accuracy of the bucketing mechanism Mw,[0,B) (see Claim 4 in Section 6.4). The d-dimensional
+2 buc
+analogue of that result is stated in the following claim which can be proven along the lines of the proof of
+Claim 4..
+Claim 11. Mw,[0,B)d is (cid:16) 0,w √ d,0 (cid:17) -accurate for the identity function f over H w.r.t the metric
+buc 2 id [0,B)d
+d .
+hist
+√
+It follows from Claim 11 that the output error of Mw,[0,B)d is β = w d. This implies τ = α =α(w)d =
+buc 2 t B
+α( 2 √ β )d.
+B d
+I Details Omitted from Section 3.1
+In this section, first we prove that ∂(cid:98) is a quasi-metric (assuming that ∂ is a quasi-metric), and then prove
+that our two distortions ∂ and ∂η (defined in (4) and (5), respectively) are metric and quasi-metric,
+move drmv
+respectively.
+Lemma 12. If ∂ is a quasi-metric, then ∂(cid:98)is a quasi-metric.
+Proof: We need to show that for any three distributions P, Q, and R over the same space A, we have
+(i) ∂(cid:98)(P,Q) ≥ 0, where the equality holds if and only if P = Q, and (ii) ∂(cid:98) satisfies the triangle inequality:
+∂(cid:98)(P,Q)≤∂(cid:98)(P,R)+∂(cid:98)(R,Q). We show them one by one below:
+1. The first property follows from the definition of ∂(cid:98) (see Definition 2): If ∂(cid:98)(P,Q) = 0, then the optimal
+φ ∈ Φ(P,Q) is a diagonal distribution, which means that P = Q. On the other hand, if P = Q, then
+there exists a coupling φ in Φ(P,Q), which is a diagonal distribution and hence ∂(cid:98)(P,Q)=0.
+2. Since the definition of ∂(cid:98) is the same as that of W∞, except for that the former is defined w.r.t. a quasi-
+metric, whereas, the latter is defined w.r.t. a metric, we can show the triangle inequality for ∂(cid:98) along the
+lines of the proof of Lemma 7. Note that we did not use the symmetric property of W∞ while proving
+Lemma 7; we only used that the underlying metric d satisfies the triangle inequality, which also holds for
+∂(cid:98) which is a quasi-metric.
+This completes the proof of Lemma 12. (cid:3)
+In Section 3.1, we introduced two new distortions: ∂ (x,y) in (4) and ∂η (x,y) in (5). We prove
+move drmv
+that ∂ is a metric in Claim 12 and that ∂η is a metric in Claim 13. We present the definitions of
+move drmv
+these distortions here again for convenience:
+(cid:40)
+W∞( x , y ) if |x|=|y|
+∂ (x,y)= |x| |y| ∂η (x,y)=inf(∂ (x,z)+η·∂ (z,y)).
+move ∞ otherwise drmv z drop move
+Note that in the definition of ∂ , when |x|=|y|=0, we define ∂ (x,y)=0.
+move move
+Claim 12. ∂ (·,·) is a metric.
+move
+Proof: Since ∂ (·,·) is defined as the ∞-Wasserstein distance between normalized histograms, it suffices
+move
+to show that the ∞-Wasserstein distance is a metric. We need to show three things for any triple of
+distributions P,Q,R over a metric space (Ω,d): (i) W∞(P,Q)≥0 and equality holds if and only if P =Q,
+(ii) W∞(P,Q)=W∞(Q,P), and (iii) W∞(P,R)≤W∞(P,Q)+W∞(Q,R).
+By definition, W∞(P,R) = inf sup d(x,z). Now, the first two conditions follow
+φ∈Φ(P,R) (x,z):φ(x,z)(cid:54)=0
+because d is a metric, and the last condition (triangle inequality) we show in Lemma 7 in Appendix A.1.
+Note that when |x|=|y|=0, the Wasserstein distance is undefined, but we have defined ∂ (x,y) in
+move
+this case separately as 0 which is consistent with the properties of a metric. (cid:3)
+39
+We first give an intermediate result (Lemma 13 below) which will be used in proving that ∂η is a
+drmv
+quasi-metric. The result of this lemma is also used in the proof of Theorem 6.
+Lemma 13. Let x, y and z be any three histograms over a ground set G ,associated with a metric d, such
+that ∂ (x,z) = α and ∂ (z,y) = α with α ≥ 0 and α < 1. Then there exists a histogram s such
+move 1 drop 2 1 2
+that ∂ (x,s)=α and ∂ (s,y)≤α .
+drop 2 move 1
+Proof: Using the definitions of ∂ and ∂ , we have the following:
+drop move
+Z.1 |x|=|z|
+Z.2 W∞( x , z )≤α . We will use φ to denote the optimal joint distribution which achieves the infimum
+|x| |z| 1 z
+in the definition of W∞( x , z ).
+|x| |z|
+Z.3 |y|=(1−α )|z|
+2
+Z.4 For all g ∈G, 0≤y(g)≤z(g)
+Now we want to prove the existence of a histogram s with the following property:
+S.1 |s|=(1−α )|x|
+2
+S.2 For all g ∈G, 0≤s(g)≤x(g)
+S.3 |s|=|y|
+S.4 W∞( s , y )≤α .
+|s| |y| 1
+Consider the following joint distribution φ :
+s
+(cid:40)
+1 φ (g ,g )y(gy) if z(g )>0
+φ
+s
+(g
+x
+,g
+y
+)=
+0
+1−α2 z x y z(gy)
+otherw
+y
+ise
+(38)
+Wedenotethefirstmarginalofφ by s , wherescorrespondstothehistogramthatwewanttoshowexists.
+s |s|
+By definition, for all g ,g ∈G, we have φ (g ,g )≥0. Also note that, if z(g )=0, then for all g ∈G,
+x y s x y y x
+wehaveφ (g ,g )=0; thisisbecause z isthesecondmarginalofφ . Nowweshowthattheabove-defined
+z x y |z| z
+φ satisfies properties S.1-S.4 – we show these in the sequence of S.4, S.3, S.1, S.2.
+s
+• ProofofS.4. Notethatthefirstmarginalofφ isassumedtobe s . Nowweshowthatitssecondmarginal
+s |s|
+is y and that max d(g ,g )≤α . Note that these together imply that W∞( s , y )≤α .
+|y| (gx,gy)←φs x y 1 |s| |y| 1
+– Second marginal of φ is y : We show it in two parts, first for g ∈ G for which z(g ) = 0 and then
+s |y| y y
+for the rest of the g ∈ G. Note that when z(g ) = 0, we have from Z.4 that y(g ) = 0. Now we
+y y y
+show that (cid:82) φ (g ,g )dg = 0. It follows from (38) that for all g such that z(g ) = 0, we have
+G s x y x y y
+φ (g ,g ) = 0,∀g ∈ G, which implies that (cid:82) φ (g ,g )dg = 0. Now we analyze the case when
+s x y x G s x y x
+z(g )>0.
+y
+(cid:90) (cid:90) 1 y(g )
+φ (g ,g )dg = φ (g ,g ) y dg (using (38))
+s x y x 1−α z x y z(g ) x
+G G 2 y
+1 y(g )(cid:90)
+= y φ (g ,g )dg
+1−α z(g ) z x y x
+2 y G
+1 y(g )z(g )
+= y y (using Z.2)
+1−α z(g ) |z|
+2 y
+y(g )
+= y
+(1−α )|z|
+2
+y(g )
+= y . (Using Z.3)
+|y|
+40
+– W∞( s , y ) ≤ α : We have shown that the first and the second marginals of φ are s and y ,
+|s| |y| 1 s |s| |y|
+respectively. So, it suffices to show that max d(g ,g ) ≤ α . Consider any pair (g ,g ) ∈ G2
+(gx,gy)←φs x y 1 x y
+s.t. φ (g ,g ) > 0. This is possible only if φ (g ,g ) > 0 (see (38)), which, when combined with Z.2,
+s x y z x y
+gives d(g ,g )≤α . Hence, for any pair (g ,g )∈G2 s.t. φ (g ,g )>0, we have d(g ,g )≤α .
+x y 1 x y s x y x y 1
+• Proof of S.3. Note that (38) gives the normalized s, but we still have the freedom to choose |s|. To
+satisfy S.3, we set |s|=|y|.
+• Proof of S.1. Note that S.1 is already satisfied using Z.1, Z.3, and S.3.
+• Proof of S.2. Let us denote {g ∈ G | z(g) > 0} by G . We will show that for any g ∈ G, we have
+z
+x(g)−s(g)≥0:
+(cid:90) (cid:90)
+x(g)−s(g)=|x| φ (g,g )dg −|s| φ (g,g )dg (using Z.2 and S.4)
+z y y s y y
+G G
+(cid:90) (cid:90)
+=|x| φ (g,g )dg −|s| φ (g,g )dg (Since z(g )=0⇒φ (g,g )=0,∀g ∈G; Z.2)
+z y y s y y y z y
+Gz G
+(cid:90) (cid:90) 1 y(g )
+=|x| φ (g,g )dg −|s| φ (g,g ) y dg (using (38))
+z y y 1−α z y z(g ) y
+Gz Gz 2 y
+(cid:90) (1−α )|x|(cid:90) y(g )
+=|x| φ (g,g )dg − 2 φ (g,g ) y dg (using S.1)
+z y y 1−α z y z(g ) y
+Gz 2 Gz y
+(cid:90) (cid:90) y(g )
+=|x| φ (g,g )dg −|x| φ (g,g ) y dg
+z y y z y z(g ) y
+Gz Gz y
+(cid:90) (cid:18) y(g ) (cid:19)
+=|x| φ (g,g ) 1− y dg
+z y z(g ) y
+Gz y
+≥0 (using Z.4, y(gy) ≤1)
+z(gy)
+Thus, we have shown that the joint distribution φ defined in (38) satisfies all four properties S.1-S.4. This
+s
+completes the proof of Lemma 13. (cid:3)
+Claim 13. For all η ∈R , ∂η (·,·) is a quasi metric.
+≥0 drmv
+Proof: Note that both ∂ and ∂ are quasi-metrics. Hence, for any x,y, ∂ (x,y) ≥ 0 and
+drop move drop
+∂ (x,y) ≥ 0. This implies that for every x,y, ∂η (x,y) ≥ 0. Now we one by one prove that ∂η
+move drmv drmv
+satisfies the properties of quasi-metric:
+Property #1: For all x and y, x=y⇔∂η (x,y)=0.
+drmv
+1. For all x, ∂η (x,x)=0:
+drmv
+∂η (x,x)=inf(∂ (x,z)+η·∂ (z,x))
+drmv z drop move
+≤∂ (x,x)+η·∂ (x,x) (infimum over a set is ≤ the value at any fixed point in set)
+drop move
+=0
+Since ∂η (x,x)≥0 as well as ≤0, ∂η (x,x)=0.
+drmv drmv
+2. For all x,y, ∂η (x,y)=0⇒x=y:
+drmv
+∂η (x,y) = 0 implies that inf (∂ (x,z)+η·∂ (z,y)) = 0. As both ∂ (x,z) and ∂ (z,y)
+drmv z drop move drop move
+are ≥ 0 for any value of x,y,z, this is possible only if ∂ (x,z) = ∂ (z,y) = 0 which means that
+drop move
+x=z=y. Hence x=y.
+Property #2: For all x, y and z, ∂η (x,z)≤∂η (x,y)+∂η (y,z).
+drmv drmv drmv
+41
+We assume that the infimum in both ∂η (x,y) and ∂η (y,z) is achieved by s and s , respectively
+drmv drmv 1 2
+(the proof can be easily extended to the case when the infimum is not achieved). This means that there
+exists a,b,c,d≥0, such that
+∂ (x,s )=a; ∂ (s ,y)=b; ∂ (y,s )=c; ∂ (s ,z)=d,
+drop 1 move 1 drop 2 move 2
+which implies ∂η (x,y)=a+ηb and ∂η (y,z)=c+ηd. We need to show that ∂η (x,z)≤(a+c)+
+drmv drmv drmv
+η(b+d).
+Using Lemma 13 with ∂ (s ,y) = b and ∂ (y,s ) = c, we get that there is a y(cid:48) such that
+move 1 drop 2
+∂ (s ,y(cid:48))=c and ∂ (y(cid:48),s )≤b. This gives the following:
+drop 1 move 2
+∂ (x,s )=a; ∂ (s ,y(cid:48))=c; ∂ (y(cid:48),s )≤b; ∂ (s ,z)=d.
+drop 1 drop 1 move 2 move 2
+Now we prove that ∂η (x,z)≤(a+c)+η(b+d):
+drmv
+∂η (x,z)=inf(∂ (x,y)+η·∂ (y,z))
+drmv z drop move
+≤∂ (x,y(cid:48))+η·∂ (y(cid:48),z)
+drop move
+≤∂ (x,s )+∂ (s ,y(cid:48))+η·∂ (y(cid:48),z) (∂ is a quasi-metric)
+drop 1 drop 1 move drop
+≤∂ (x,s )+∂ (s ,y(cid:48))+η·(∂ (y(cid:48),s )+∂ (s ,z)) (∂ is a metric)
+drop 1 drop 1 move 2 move 2 move
+≤(a+c)+η(b+d).
+This concludes the proof of Claim 13 (cid:3)
+42

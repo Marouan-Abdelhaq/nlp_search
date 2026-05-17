@@ -1,0 +1,601 @@
+1
+ePython: An implementation of Python for the
+many-core Epiphany coprocessor
+Nick Brown
+EPCC
+James Clerk Maxwell Building
+Edinburgh
+nick.brown@ed.ac.uk
+Abstract—The Epiphany is a many-core, low power, low on- such as the Epiphany. By carefully designing an approach
+chip memory architecture and one can very cheaply gain access that takes advantage of the CPU during Python interpretation
+to a number of parallel cores which is beneficial for HPC
+we can support the user writing Python parallel codes on
+education and prototyping. The very low power nature of these the Epiphany. This is aimed at education and prototyping,
+architectures also means that there is potential for their use in
+future HPC machines, however there is a high barrier to entry where even novices can exploring the computational and
+in programming them due to the associated complexities and paralleltechniquesthatHPCprogrammersadoptonlargescale
+immaturity of supporting tools. modern supercomputers. After discussing the Epiphany and
+In this paper we present our work on ePython, a subset of related work by the community in more detail in section
+Python for the Epiphany and similar many-core co-processors.
+2, section 3 focuses in ePython itself. In this section we
+Duetothelimitedon-chipmemorypercorewehavedevelopeda
+new Python interpreter and this, combined with additional sup- consider some of the general support for parallelism and
+portforparallelism,hasmeantthatnovicescantakeadvantageof runninghybridonboththeCPUandEpiphany,wedescribethe
+PythontoveryquicklywriteparallelcodesontheEpiphanyand architecture of ePython in more detail before examining the
+explore concepts of HPC using a smaller scale parallel machine. performanceandprogrammabilityofanexampleGauss-Seidel
+ThehighlevelnatureofPythonopensupnewpossibilitiesonthe
+computational code. In section 4 we discuss interoperability
+Epiphany, we examine a computationally intensive Gauss-Seidel
+code from the programmability and performance perspective, with an existing Python interpreter running on the host and
+discuss running Python hybrid on both the host CPU and consider a heterogeneous example, where full Python on the
+Epiphany,andinteroperabilitybetweenafullPythoninterpreter host offloads computation to the Epiphany cores (in this
+on the CPU and ePython on the Epiphany. The result of this case number sorting), before draw conclusions and discussing
+work is support for developing Python on the Epiphany, which
+further work in section 5.
+canbeappliedtoothersimilararchitectures,thatthecommunity
+have already started to adopt and use to explore concepts of
+parallelism and HPC.
+II. BACKGROUND
+EachEpiphanycorecomeswithitsownlocal,32KBofon-
+Index Terms—Parallel programming, Scientific computing,
+Accelerator architectures, Multicore processing, Computer lan- chip memory and is interlinked to other cores via eMesh, a
+guages, Runtime library, Parallel machines, Supercomputers fastinterconnectarrangedina2Dmeshwithnearestneighbour
+direct connections. Each processor core in the Epiphany chip
+consistsofaRISCCPU,highbandwidthlocalmemory,DMA
+I. INTRODUCTION
+engine and network interface. Performance levels close to
+The Epiphany coprocessor [1] has been developed by 2 GFLOP/s per core have been demonstrated [3] in signal
+Adapteva and is packaged as a single chip component com- processing kernels and this architecture is applicable to a
+prising of many of processing cores. The Parallella single widerangeofuseswhichincludemanyHPCcodes.Adapteva
+board computer [2] has been built around the Epiphany chip have sold 64 core and 16 core Epiphany coprocessors but
+and combines it with a host ARM CPU. The most common the architecture, which is designed for scalability, has been
+Parallella ships for $99 and provides a 16 core Epiphany III demonstrated with up to 4096 cores and a production 1024
+withadualcorehostARM.WhilstAdaptevasellthishardware core version (the Epiphany V) has been announced [4] which
+as supercomputing for everybody due to the low price point, is compatible with previous generations and will be available
+actually programming this machine is time consuming and of inearly2017.Themostcommonversionincurrentcirculation
+considerable difficulty to novices. Being able to write high is the 16 core Epiphany III (32 GFLOP/s theoretical peak
+level parallel code and then experiment with parallelism in performance), with each core having 32KB of local memory
+Pythonwouldbeofgreatadvantageforbotheducationandfast distributedacrossfour8KBbanks.Itisexpectedthat,asthear-
+prototyping, however the limited amount of per core memory chitecture becomes more mature, then Epiphany coprocessors
+(32KB) available on the Epiphany means that it is impractical withafargreaternumbersofcoreswillbecomemorecommon
+to port an existing Python interpreter. place.Inthispaperwefocusonthe16coreEpiphanyIIIchip
+In this paper we present our work on supporting a subset duetoitsubiquity,grantedthisismoremulti-corethanmany-
+of Python on high core count, low on-chip memory devices core but the concepts and implementation discussed here can
+0202
+tcO
+82
+]CD.sc[
+1v72841.0102:viXra
+2
+easily be applied to both single coprocessors with very many that,eventhoughAdaptevasoldtheParallellaasdemocratising
+more cores (such as the announced 1024 core Epiphany V) supercomputing, few people have the expertise to be able to
+and also multiple coprocessors interconnected via Adapteva’s write even a simple parallel code for the Epiphany and this
+eMesh technology. has meant that many people have purchased the machine and
+The Parallella single board computer comprises of a dual then been unable to use it.
+core ARM A9 CPU and 1GB host RAM, 32MB of which is As well as the low cost of the Epiphany, one of the other
+reservedassharedmemorywhichboththehostandEpiphany major advantages is its energy efficiency, with the 16 core
+coprocessor can directly access. With a price point starting at EpiphanyIIIconsuminglessthan2Wattsofpower[8].Energy
+$99thishasbeendevelopedasalowcostmeansofleveraging efficiency is generally seen as major challenge to reaching
+HPC as well as a technology demonstrator for the Epiphany exa-scale and an architecture, for instance the Epiphany III,
+itself. The Linux OS is shipped with the Parallella, like many that candeliver 32 GFLOP/stheoretical peakperformance for
+accelerators the Epiphany is bare metal and has no operating less than 2 Watts is of great interest for reaching our energy
+system. Both the Parallella and Epiphany are open platforms, targets for exa-scale machines. The announced Epiphany V
+where all details such as the documentation, designs and is predicted to deliver 75 GFLOPS/Watt [4]. Instead of large
+entire source code are fully and freely available for anyone power hungry processors there is interest in utilising these
+touse.Adaptevaarekeenforthecommunitytodeveloptools, verymanylowpower,lowmemorycoresbuttheprogramming
+techniques and technologies which take advantage and make challengesassociatedwithtakingadvantageofthesearesignif-
+novel use of the Parallella and Epiphany. icant. This technology is also of great interest for parallelism
+UpuntilnowtheprogrammeroftheEpiphanyco-processor in embedded devices, such as smart phones, where both
+has only had a choice between writing their code in assembly performance and energy efficiency are crucially important.
+or C. Commonly two executables are built, one launched on Being able to effectively program and experiment with these
+the host CPU and the other on the Epiphany cores. Shared sorts of technologies will be key to their future development
+memoryisthenusedforcommunicationandthemarshalingof and acceptance by the HPC community.
+controlflowbetweenthehostanddevice.Anopensourcelow To enable both education and fast prototyping, support for
+level API has been developed which allows the programmer writing Python code is an obvious activity. However the lim-
+to call specific functions from their C code, such as installing ited, 32KB, memory per core provides a significant challenge
+interrupt timers and utilising the DMA engines of the cores. here. A full Python interpreter, such as CPython [9] and
+However even with the API, writing code for the Epiphany associated libraries will nowhere near fit in a core’s memory
+directly is fraught with difficulties, such as data consistency, andinadditionwealsoneedtoplacetheuser’scodeanddata
+differentdataalignmentsonthehostandEpiphanyandhaving in this same space. Other technologies such as Numba [10]
+to carefully select the appropriate linker script. As is common existwhichcanJITcompilecodeforGPUsorCPUs,butagain
+with these sorts of devices, the Epiphany has no IO connec- the compiled code and libraries are far too large to fit within
+tivity, so novices can find it very difficult to debug their code an Epiphany core’s memory. Even Python resources aimed at
+where they would simply add a print statement to CPU code. embedded devices require Megabytes rather than Kilobytes of
+There have been a number of technologies developed, with memory to run. There has been work done supporting Python
+varying degrees of maturity, to support programming the forthemany-coreKnightsLandingarchitecture[11],however
+Epiphany, such as COPRTHR[5], a threaded MPI [6] and KNL has vastly more memory than the Epiphany and as such
+OpenSHMEM [7] but these still require the programmer to this work is not directly applicable here.
+addressthelimitedamountofon-chipmemorypercore,tostill
+worry about the tricky lower level details of the architecture III. EPYTHON
+and write their code in C. In addition to the on-chip memory The ePython interpreter has been developed to support a
+thereisanadditional32MBofCPUmainmemoryavailableto subset of Python on the Epiphany co-processor. The pro-
+be shared between the host and Epiphany. One might assume grammer writes their Python code and executes it via the
+that the on-chip memory would be best viewed as cache, ePython tool on the Parallella which then interprets the code
+however because of a lack of hardware cache support and and executes it on the Epiphany. It is mainly the imperative
+the slow transfer speeds from host memory it is preferable to aspects of Python that are currently supported with a number
+maximise the use of on-chip memory and this is often viewed of extensions for parallelism provided as importable modules.
+as “main memory” rather than cache, with the shared host The intention of ePython has been to allow a complete novice
+memory avoided for code or program data. To put this in to write their first simple parallel Python code and run this on
+perspective libc is far larger than 32KB, so if one wishes to the Epiphany in one minute or less.
+use common C functionality such as string handling, maths
+functionality or memory allocation then they have to locate 1 from parallel import *
+2
+libc in shared main memory and take the performance hit or
+3 print ”Hello world from core ”+str(coreid ()
+implement ones own common C functionality but this adds to )+” of ”+str(numcores())
+thecomplexityofusercodeanddevelopmenttime.Inshortthe
+Listing1. Pythonparallelhelloworldcode
+existingwaysofprogrammingtheEpiphanyareneitheracces-
+sibletothenovicenordotheyencouragefastdevelopmentand Listing1illustratesasimplehelloworldPythoncodewhere
+prototype experimentation with the architecture. The result is each Epiphany core will display the message with its core
+3
+ID and total number of Epiphany cores. The coreid and
+numcores functions are located in the parallel module which
+is imported on line 1. One of the challenges of devices such
+astheEpiphanyisthatcodesrunningonthesecannotinteract
+with the user, not being able to display information to stdio
+is especially difficult when people are trying things out and
+debugging. ePython abstracts all of this from the programmer
+and supports user interaction (both output and input) from
+Python code running on any Epiphany core transparently.
+1 from parallel import *
+2
+3 if coreid ()==0:
+4 send(20, 1)
+Fig.1. ePythoninterpreterarchitecture,wherebytecodegenerationisdone
+5 elif coreid ()==1: onthehostandthentransmittedtotheEpiphanycores.Thehostalsorunsas
+6 print ”Got value ”+str(recv(0))+” from amonitortoperformactivitiessuchasIOwhendirectedbytheEpiphany
+core 0”
+Listing2. Pythonpointtopointcommunicationexample
+on a subset of Epiphany cores and specify more advanced
+Point to point message passing communication calls form placement information such as utilising only a range of cores
+a crucial part of many parallel codes, listing 2 illustrates a for their code. It was mentioned in section II that in addition
+Pythoncodetosendthevalue20fromEpiphanycore0atline to each Epiphany core’s 32KB of local memory there is
+4 to core 1 which issues a receive (line 6) and displays the also 32MB of slow shared host memory which can also be
+resultingvalue.Scalarsorlistsofintegers,reals,booleansand accessed. By default ePython will try to locate everything
+stringscanbecommunicatedandcurrentlyallcommunications (the code and data) in the core’s memory, but it is possible
+are blocking. In the case of communicating lists either the via command line options to override this and control which
+length of the list or an additional argument, if it is provided, memory is used for what.
+will determine the number of elements to send or receive. In
+this example all other Epiphany cores (cores 2 to 15) will A. Architecture
+execute the conditional statements but effectively do nothing
+Due to the limitations of the Epiphany coprocessor and
+as their core ids do not match.
+compilers, the ePython interpreter is written in C with sup-
+1 from parallel import * porting Python modules that the programmer can import.
+2 from random import randint Figure 1 illustrates the overall architecture of ePython, due
+3
+to the limited on core memory we aim to do as much of the
+4 a=reduce(randint(0,100) , ”max”)
+preparation of user code as possible on the host CPU and
+5 print ”The highest random number is ”+str(a
+) only run the minimal amount on the Epiphany required to
+actuallyexecutethecode.Aprogrammer’sPythoncodeisfirst
+Listing3. Pythoncollectivereductionexample,findingthemaximum
+preprocessedandthenparsedonthehosttoformaparsetree,
+randomnumberheldonanEpiphanycore
+which is then operated upon to form byte code. For memory
+Anotherimportantaspectofmanyparallelcodesarecollec- reasons this byte code is different to Python’s standard byte
+tivecommunications,whereallcoresareinvolvedinaspecific codeandoptimisedtobeassmallaspossible.Eachentryinthe
+communication to determine the result. Listing 3 illustrates a byte code starts with the “command” (such as conditional or
+reductioninPython,whereeachEpiphanycorewillgeneratea variable assignment) which is 1 byte, the command will then
+random number between 0 and 100, this is then reduced (line haveanumberofdifferentpropertiesassociatedwithitsuchas
+3) via the reduce function call with the operator (in this case variableidentifiers(each2bytes),operators(1byte),constants
+“max”) as an additional argument. In this case the maximum (4 bytes), memory addresses (4 bytes) and relative locations
+random number generated by any core is selected and this in the byte code to jump to (2 bytes.) These commands are
+is communicated to every other core which then stores it in then appended sequentially to form the overall byte code and
+variable a. Each core then displays its value of a (line 4) transferred to a portion of the shared memory, along with
+whichwillbeidenticalonthemall.Otheroperators,min,sum commands for activating the Epiphany cores.
+and prod are also supported. ePython’s parallel module also On the Epiphany itself the byte code is copied from shared
+provides a bcast function call which will broadcast a value memory into the local memory of each core. The interpreter
+from one specific root Epiphany core to every other core. then runs which reads in each command from the byte codes
+InalltheseexamplestheprogrammerexecutestheirPython andprocessesit.Thisinterpreteralsomaintainsastackareafor
+code in the standard way of saving it as a file and then each function call and heap for lists and strings. Larger codes
+providing the filename as an argument to the epython exe- or lists will transparently “flow over” to an area of the 32MB
+cutable run from bash on the Parallella host. There are also sharedmemorywhichisreservedforeachcore.Thiswillhave
+a variety of other options which configure the specifics of a performance impact but enables larger, more complex codes
+how the code should be executed, for instance one can run to execute. Figure 2 illustrates ePython’s memory map for
+4
+Figure1alsoillustratesaninterpreterandaruntimerunning
+on the host, the interpreter is designed to be very portable
+between architectures and it is only the runtime that is tied to
+thespecificsofthetechnology.Togofromonearchitectureto
+another, only a new runtime needs to be developed and a host
+runtime has been written so that, in addition to running code
+ontheEpiphanycores,theprogrammercanalsoruntheircode
+on the Parallella’s dual core ARM CPU at the same time. For
+memory reasons the interpreter itself is designed to support
+the minimum amount of functionality that ePython requires
+and the Python modules that come with ePython (such as
+parallel and util) contain higher level functionality which is
+imported by the programmer if required. During the parsing
+stage on the host, memory optimisation is also performed
+to omit unused functions that the programmer might have
+importedintotheircodebutnotused.IndevelopingePython’s
+Epiphany runtime a major advantage is that this is an open
+platform with all the documentation, source code and even
+designs of the Epiphany open and freely available, such work
+on a proprietary/closed platform would have been far more
+difficult and time consuming.
+B. Virtual cores
+Fig.2. ePythonmemorymapforeachEpiphanycore’s32KBSRAM
+As mentioned in section III-A ePython has been written in
+suchawaythattheinterpreterishighlyportableanditisonly
+the runtime that is specific to an architecture. In addition to
+an Epiphany core, where the first 24KB is taken up with the
+support for the Epiphany we have also developed variations
+interpreter and runtime. After this there is a section reserved
+of these that run on the Parallella’s dual core ARM CPU.
+for global variables (this is dynamic and in this example 50
+These are known as virtual cores, for all intents and purposes
+bytes is allocated), next is the byte code itself (again dynamic
+they look like fully fledged Epiphany cores to the Python
+and in this example 1.4KB), next is the communications
+programmer, operate and communicate as such, but instead
+area (fixed at 256 bytes) which supports message passing
+each is running within a thread on the CPU. The number
+functionality. 1KB is then reserved for the stack and the
+of virtual cores is defined as an argument to the epython
+remaining memory for the heap.
+executable and the core ids follow on sequentially from the
+The Epiphany runtime (figure 1) handles inter core com-
+Epiphany core IDs.
+munications where a target post-box, reserving memory for
+data from every other core, is allocated per core and is the 1 from parallel import ishost , isdevice ,
+coreid
+256 byte communications area of figure 2. Messages are sent
+2
+by writing to a specific post-box location in the target core’s
+3 if ishost () :
+memory and then awaiting acknowledgement, messages are 4 print ”Core number ”+str(coreid ())+” is a
+received by waiting on this local memory area. The actual virtual core on the CPU”
+datatransferisperformedviatheDMAengineofanEpiphany 5 elif isdevice () :
+6 print ”Core number ”+str(coreid ())+” is a
+core and in addition to the message itself an additional byte
+physical Epiphany core”
+(that wraps around) is also associated to provide versioning
+informationwhichiscrucialfordataconsistency.Theruntime Listing4. Pythonvirtualcoresexample,whichillustrateshandlingboth
+physical(Epiphany)coresandvirtual(threadedCPU)cores
+also provides IO functionality, the Epiphany itself can not
+directly perform IO but instead there is a monitor running Listing 4 illustrates Python code for determining which
+inside a thread on the host. The monitor will wait on an cores are physical Epiphany and which are virtual cores via
+area of shared memory for commands and data, such as theishostandisdevicefunctionswhicharepartoftheparallel
+displaying a message, and can write data back (for instance module. For instance if run with all 16 Epiphany cores and
+from user input) into shared memory that the Epiphany core 16 virtual cores, then cores 0 to 15 are reported as physical
+will pick up. This monitor approach not only provides the Epiphany cores and cores 16 to 31 virtual CPU cores. If run
+illusion of IO directly from the Epiphany cores, but it is also with 5 Epiphany cores and 10 virtual cores, then cores 0 to 4
+possibletorequestthemonitortoperformfunctionalitysuchas are reported as physical Epiphany cores and 5 to 14 as virtual
+string concatenation, complex mathematical functionality and CPU cores.
+handling error messages. This reduces the memory footprint The first reason for virtual cores is to allow users to
+oneachEpiphanycoreascodetosupportthesemorecomplex experiment with writing parallel Python codes for more than
+functions is only required on the host. 16 cores, there are later generations of the Epiphany chip
+5
+with more cores planned so for educational purposes it is
+desirable that programmers can experiment with developing 1 from parallel import *
+2 from math import pow, sqrt
+and running their code on more cores which virtual cores
+3
+transparently supports. The other reason for virtual cores is to 4 DATA SIZE=1000
+support writing heterogeneous, hybrid parallel codes, where 5 MAX ITS=10000
+theEpiphanyactsasanacceleratorandthehostCPUoffloads 6 W=1.3 # Overrelaxing factor (between 1 and
+2)
+computationally intensive aspects of a code to this device
+7
+which then sends the results back. A common use case would
+8 def fillInitialConditions (local data ,
+betorunwithanumberofEpiphanycoresandonevirtualcore local size):
+on the host CPU and, using the ishost and isdevice functions, 9 if coreid ()==0: local data[0]=1.0
+diverge depending whether it is the Epiphany or CPU. 10 if coreid ()==numcores() −1: local data[
+local size+1]=10.0
+11
+C. Parallel Gauss-Seidel example
+12 def computeNorm(local data , local size ,
+WhilstthemainpurposesofePythonareeducationandfast bnorm=none):
+prototyping,performanceisakeyconsiderationofparallelism 13 tmpnorm=0.0
+and as such it is worth addressing the sort of performance 14 i=1
+15 while i<=local size :
+that the Python programmer might expect from their code
+16 tmpnorm=tmpnorm+pow(( local data[i]*2−
+withePython.TheinterpretednatureofePythonwillinevitably
+local data[i−1]−local data[i+1]) ,
+result in a significant overhead compared to a similar C code 2)
+runningontheEpiphany,butthePythoncodewillbefareasier 17 i+=1
+and quicker to develop and experiment with. Thus there is a 18 tmpnorm=reduce(tmpnorm, ”sum”)
+19 if bnorm is none:
+trade-off between programmability and performance.
+20 return sqrt(tmpnorm)
+Listing 5 illustrates a parallel code to solve Laplace’s equa-
+21 else:
+tion for diffusion in one dimension. This uses the successive 22 return sqrt(tmpnorm)/bnorm
+over relaxation (SOR) variant of the Gauss Seidel iterative 23
+method for solving systems of linear equations. Lines 8 to 10 24 # Work out the amount of local data
+25 local size=DATA SIZE/numcores()
+define the function fillInitialConditions which sets the initial,
+26 if local size * numcores() != DATA SIZE:
+boundary, conditions. Lines 12 to 22 compute the residual
+27 if (coreid () < DATA SIZE−local size*
+norm of the local data and then issue a reduction (line 18) numcores()): local size=local size+1
+to determine the global norm. If the initial norm (bnorm) is 28
+provided as an argument to this function then the returned 29 data=[0]*(local size+2)
+30
+value is relative to this bnorm (which we want for each
+31 # Set the initial conditions
+iteration), otherwise the absolute residual norm is returned
+32 fillInitialConditions (data , local size)
+(whichwewantinitially.)Lines25to27calculatetheamount 33
+of local data per core and define the local list, data to hold 34 # Compute the initial absolute residual
+this(whichisallocatedintheheapmemoryandcontainsextra 35 bnorm=computeNorm(data , local size)
+36 norm=1.0
+halo elements at the start and end.) At line 38 the loop for
+37 its=0
+the iterations begins, for each iteration halo swapping (line
+38 while norm >= 1e−3 and its < MAX ITS:
+40 and 41) to left and right neighbours (where appropriate) is 39 # Halo swap
+performedviathesendrecvcommunicationcallandthen,after 40 if (coreid () > 0): data[0]=sendrecv(data
+calling the function to calculate the current relative residual, [1], coreid () −1)
+41 if (coreid () < numcores() −1): data[
+lines47to49containtheSORGauss-Seidelkernel.Whenthe
+local size+1]=sendrecv(data[
+code completes the final residual and number of iterations is
+local size ], coreid ()+1)
+displayed by Epiphany core 0 (line 52.) 42
+It can be seen from listing 5 that this is a high level code, 43 # Calculate current residual
+theprogrammercanclearlyseethecomputationalmethodand 44 norm=computeNorm(data , local size , bnorm)
+45
+geometric decomposition adopted for parallelism. They are
+46 i=1
+working with familiar HPC concepts, such as halo swapping
+47 while i<=local size :
+anddatadistributionwithouthavingtoworryaboutanyofthe 48 data[i]=((1−W) * data[i ]) + 0.5 * W * (
+lower level concerns that users of the Epiphany coprocessor data[i−1]+data[i+1])
+with other programming technologies would need to address. 49 i+=1
+50 its+=1
+It becomes very simple to experiment with computational and
+51
+parallelism choices, such as the number of Epiphany cores
+52 if coreid ()==0: print ”Completed in ”+str(
+to use, data decomposition, the global data size and over its )+” iterations , RNorm=”+str(norm)
+relaxation factor (line 6.) The lower level nature of other
+Listing5. PythonGaussSeidelwithSORsolvingLaplace’s
+Epiphany programming technologies would often necessitate
+equationfordiffusion
+wide spread, significant, changes to the code when experi-
+menting with these factors. For comparison a version of this has been written in C,
+6
+using Adapteva’s own Epiphany API, compiled with GCC at
+optimisation level 3. At 266 lines this C code is far more
+verboseandmuchofthisistakenupwithlowerlevelconcerns
+such as data padding and transfer consistency. A performance
+evaluationwith1000globalelements,arelaxationfactorof1.3
+and solving to a relative residual of 1e-3, has been performed
+with these versions and the results of this are illustrated in
+table I. The first table entry is running with ePython on all
+16 Epiphany cores using default settings (all byte code and
+data in core memory.) The second entry in the table is still
+runningon16Epiphanycoresbutthebytecodeanddatahave
+been located in shared memory rather than local Epiphany
+core memory (the ePython interpreter and runtime are still in
+Epiphany core memory.) Each core having to rely on shared
+memory for its byte code and data increases the runtime by
+5 times and illustrates how significant an impact using the
+slow main memory is for performance. The third entry in the
+table illustrates ePython running as a virtual core on the host
+Fig. 3. Strong scaling Python runtime and parallel efficiency with varying
+CPU only and when compared against the fourth entry, the Epiphanycores
+commonCPythonimplementationonthehostCPU,itisclear
+that there is a significant overhead in the ePython interpreter
+compared to CPython. Even though there is this overhead, using ePython one of the requests amongst more advanced
+the serial CPython on the host is slower than ePython on 16 users has been to support full Python on the host running a
+Epiphany cores. It can be seen that the versions in C, both common interpreter such as CPython. This allows for a rich
+running in serial on the CPU and in parallel on the Epiphany Python code to be developed and then for specific aspects
+vastly outperform CPython and ePython. This is unsurprising, to be offloaded to the Epiphany and also to support existing
+especially that the Epiphany C version is far faster than the Python codes where the programmer can experiment with
+ePython version, but this had to be hand crafted and took offloading different aspects to the Epiphany. An extension
+considerably longer to develop than the ePython code. has therefore been written, where ePython code runs on the
+Epiphany cores and full Python on the host CPU and the
+TABLEI two can communicate. This is intended to help explore and
+RUNTIMEFORDIFFERENTVERSIONSANDCONFIGURATIONSOFGAUSS prototype the offload model in more detail, where complex
+SEIDELSORSOLVER
+Python codes can offload aspects of their computation fairly
+Runtime(s) easily using ePython.
+9.61 ePythonon16Epiphanycores Twocodesarewritten,aPythoncodetorunontheEpiphany
+52.04 ePythonallinsharedmemory
+and second code to run on the host CPU. The host Python
+48.56 ePythononhostCPUonly
+14.71 CPythononhostCPUonly code imports the epython module which provides all the
+2.23 ConARMCPUonly communicationcalls(e.g.send,recvandreduce)astheywould
+1.01 Con16Epiphanycores
+appear in Python code on the Epiphany and these can be
+used to communicate with the code running on the Epiphany.
+Figure 3 illustrates the runtime and parallel efficiency of
+The Python code running on the host is assigned a core
+the Python code running over different numbers of Epiphany
+ID one greater than the last Epiphany core ID. The epython
+cores. As one would expect as the number of Epiphany cores
+executable is then run with the code and also the fullpython
+isincreasedtheruntimedropsandaswereachlargernumbers
+flag, the host Python code is run as normal with which ever
+of cores then we start to experience the limits of strong
+Python interpreter the user prefers. Listing 6 illustrates the
+scaling,wheretheadditionalcostofcommunicationoutweighs
+Python CPU code, generating random numbers and storing
+the saving in computation. It was seen in table I that the
+these in the data list which is then sent (along with its
+performance of ePython is poor in comparison to C, but from
+length) to Epiphany core 0. The host Python code then blocks
+figure 3 we can see that this is in the computational side of
+on the recv call where it will receive the resulting sorted
+things as the code scales quite well based upon the parallel
+numbersbackfromEpiphanycore0andthendisplaythem.A
+efficiency, even as the limits of strong scaling start to apply.
+sketch of the Epiphany Python code is provided in listing 7,
+This illustrates that there is potential for performance and
+where core 0 receives the length of data and data itself from
+scaling with ePython but there is work to be done optimising
+the Python virtual core (id 16), all Epiphany cores call the
+the execution speed.
+parallel odd even sort where core 0 will distribute the data
+amongst the other cores and these will sort it in parallel. Core
+IV. PYTHONINTEROPERABILITY
+0 then sends the sorted numbers back to the host at line 10.
+As mentioned in section III ePython supports a subset The parallel odd even sort function is based upon one of the
+of Python, as the community have picked up and started example Python codes at [12].
+7
+to a parallel machine that they can play around with and nor
+1 from random import randint
+do they have the in-depth programming experience to be able
+2 from epython import send , recv
+to write parallel codes in more traditional approaches such as
+3
+4 data=[] C+MPI. By abstracting the user from the lower level details
+5 count=0 theycanconcentrateonthehigherlevelconcernsoftheircode
+6 while count < 5000: both from a computation and parallel point of view. ePython
+7 data.append(randint(0,1000))
+providesalimitednumberofparallelmessagepassingcallsin
+8 count+=1
+comparison with a technology such as MPI, but as we have
+9
+10 send(len(data) , 0) seenthesearesufficientforalargenumberofcodesandteach
+11 send(data , 0, len(data)) the underlying concepts.
+12 data=recv(0, len(data))
+Python codes illustrating a variety of different parallel
+13
+14 count=0 patterns such as the geometric decomposition of our Gauss-
+15 while count < 5000: Seidel example, pipeline, master worker and parallel divide
+16 print data[count] and conquer have been developed and are available in the
+17 count+=1
+ePython repository as examples. Additionally a series of blog
+Listing6. PythonhostCPUcodeforoffloadingparallelnumbersorting articleshavebeenpublishedontheParallellawebsite,initially
+aimedatempoweringnovicestowriteasimpleparallelcodein
+1 from parallel import coreid , recv , send lessthan1minutethesehavethenlookedataspectsofparallel
+2 messaginganddifferentapproachesforparallelisingproblems.
+3 data=[] CommonHPCcomputationalcodesarealsointroducedbothin
+4 datalen=0
+the blog articles and ePython examples. Through all of these
+5 if coreid==0:
+there are some very interesting behaviours exhibited which
+6 datalen=recv(16)
+7 data=recv(16, datalen) people can experiment with, we have seen one example of
+8 parallel odd even sort(data) this in section III-C where the limits of strong scaling mean
+9 if coreid==0: that as a greater number of cores is used then there is a law
+10 send(data , 16, len(data))
+of diminishing returns. With smaller global data sizes people
+Listing7. SketchofPythoncoderunningonEpiphanycoresfor can actually see an optimum number of Epiphany cores and
+parallelnumbersorting thenadecreaseinperformancewhentheygopastthis,alldue
+to strong scaling.
+Table II illustrates the runtime of ePython on the Epiphany
+and CPython on the host sorting 5000 numbers via the odd The community have contributed a number of examples
+even sort method. The first entry illustrates the hybrid code such as Mandlebrot, a Monte Carlo method (dartboard to
+on 16 Epiphany cores and the host CPU (running CPython) generate PI) and sorting algorithms. There are other tools,
+compared to the second entry which is the runtime of a serial suchastheJupyterNotebook[13]whichcommunitymembers
+version in CPython on the host only. Unlike the Gauss-Seidel have integrated with ePython for interactive programming of
+example,itcanbeseenherethatusingserialCPythonforsort- examples to aid education in parallelism. Very many of the
+ingthenumbersisslightlyfasterthansortingontheEpiphany ideas and concepts that people play with in Python on the
+cores via the hybrid offload approach of ePython+CPython. Epiphany can then be scaled up and apply to writing parallel
+There are a number of reasons for this, firstly CPython is far codes for large scale supercomputers.
+more mature and will contain optimisations which ePython
+TheParallellaisnottheonlytechnologythatsupportsHPC
+does not yet implement. Secondly shared memory between
+education, for instance for a comparable price it is possible to
+the host and Epiphany is slow (as discussed in section III-C)
+purchase a number of Raspberry PIs and this has been done
+anddatamustnegotiatethisinthehybridcasetocommunicate
+in Wee Archie [14] which is made up of 18 Raspberry PIs.
+withtheEpiphanycores.Additionallythehybridcoderequires
+Howeverinthisapproachonenotonlyneedstobuytheboards
+core 0 to distribute its received data amongst the other cores
+but also to purchase all the supporting hardware such as the
+andthengatherthisbackupafterwardsbeforesendingitback
+network switches and cables. They also need the expertise
+to the host and this adds extra overhead.
+and time to set both the hardware and software environment
+up so that these can communicate before being able to write
+TABLEII
+or experiment with any parallel code. Networking on the
+RUNTIMECOMPARISONFORNUMBERSORT
+Raspberry PI is implemented on top of USB and driven in
+Runtime(s) software, therefore it is notoriously slow and as such running
+43.83 HybridePythonandCPython
+codes over multiple nodes often results in worse performance
+37.59 CPythononhostonly
+than a single node. With the Parallella and ePython there
+is no additional setup or building costs and the Epiphany
+inter-core eMesh connection technology is such that inter-
+V. ASANEDUCATIONALTOOL
+core communications will perform much better and closer or
+The main driving force behind the development of ePython even better to what one would expect from large scale HPC
+is using it as an educational tool. Not everyone has access machines.
+8
+VI. CONCLUSIONS [2] Adapteva. (2013) Parallella-1.x reference manual. [Online]. Available:
+http://www.parallella.org/docs/parallella manual.pdf
+In this paper we have introduced ePython, an implemen-
+[3] ——. (2013) Epiphany architecture reference. [Online]. Available:
+tation of a subset of Python for the Epiphany co-processor. http://www.adapteva.com/docs/epiphany arch ref.pdf
+WhilstarchitecturessuchastheEpiphanyhavegreatpotential, [4] A. Olofsson. (2016) Epiphany-v: A 1024 processor 64-bit risc
+system-on-chip. [Online]. Available: https://www.parallella.org/wp-
+both from an educational (due to low cost) and future HPC
+content/uploads/2016/10/e5 1024core soc.pdf
+(due to very low power) perspective these chips are very [5] D. Richie. (2013) Coprthr api reference. [Online]. Available:
+difficult to program for a variety of reasons. Due to the www.browndeertechnology.com/docs/coprthr api ref.pdf
+[6] J. A. Ross, D. A. Richie, S. J. Park, and D. R. Shires, “Parallel
+high level nature of Python, our approach allows users to
+programming model for the epiphany many-core coprocessor using
+quickly develop parallel codes and experiment with a variety threadedmpi,”MicroprocessorsandMicrosystems,vol.43,pp.95–103,
+ofdifferentconsiderationsandapproaches.Combinedwiththe 2016.
+[7] J.A.RossandD.A.Richie,“Implementingopenshmemfortheadapteva
+low cost nature of the Parallella, ePython could become a key
+epiphanyriscarrayprocessor,”arXivpreprintarXiv:1604.04205,2016.
+enabler for making supercomputing accessible to all. There [8] Adapteva.(2013)E16g301epiphany16-coremicroprocessor.[Online].
+is also benefit from a prototyping point of view, it is true Available:http://www.adapteva.com/docs/e16g301 datasheet.pdf
+[9] P.S.Foundation.(2016)Pythonlanguagereference.[Online].Available:
+that eventually one would want to port their code to C for
+http://www.python.org
+performance reasons but initially they can very easily and [10] Numba. (2016) Numba documentation. [Online]. Available:
+quickly develop and experiment using Python that can then http://numba.pydata.org/numba-doc/latest/index.html
+[11] R. d. Wargny, “High performance python on intel many-core architec-
+inform and drive the porting into C later on. The central ideas
+ture,”inEuroPython,2016.
+behind ePython are not unique to the Epiphany, our work can [12] N. Brown. (2016) epython parallel odd even sort. [Online]. Avail-
+beappliedtootherhighcorecount,lowmemoryarchitectures able:https://github.com/mesham/epython/blob/master/examples/parallel-
+odd-even-sort.py
+and Python could act as an approach for quickly testing and
+[13] F.Pe´rezandB.E.Granger,“IPython:asystemforinteractivescientific
+evaluating further developments in this area in the future. computing,” Computing in Science and Engineering, vol. 9, no. 3, pp.
+There is plenty of further work for ePython especially 21–29,May2007.[Online].Available:http://ipython.org
+[14] U. of Edinburgh. (2016) Wee archie: Digital dinos put
+because the 1024 core Epiphany V, which will be available
+bite-sized supercomputer through its paces. [Online]. Avail-
+in early 2017, will likely attract a lot of interest and new able: https://www.epcc.ed.ac.uk/news/digital-dinosaurs-put-bite-sized-
+users to the technology. Being able to quickly get started supercomputer-through-its-paces
+and write high level parallel code in Python will be a major
+advantage and an obvious first step will be to further optimise
+the interpreter. By using techniques such as JIT compiling
+and static optimisation it should be possible to significantly
+increase the performance of ePython, to make it more com-
+petitive with other Python interpreters and much closer to
+C on these architectures. Another obvious extension is on
+the parallel side of things, non-blocking messages would be
+useful and also support for shared memory communication
+would be beneficial and support education in writing shared
+memory parallel codes. When combining ePython on the
+Epiphany with a full Python interpreter, such as CPython,
+on the host it is not ideal to require two separate codes
+nor communicate via the message passing function calls.
+Instead further abstraction, where ePython code is contained
+as functions in the host code (probably decorated with some
+annotation) and the programmer could interact with this RPC
+style,bycallingthesefunctionsonthehost,andtheunderlying
+epython module would handle all the communications to and
+from the Epiphany transparently.
+These further developments to ePython combined with
+Adapteva’a future roadmap for the Epiphany architecture will
+provide a strong foundation for prototyping and experiment-
+ing with parallelism and parallel algorithms in Python over
+thousands of low power cores.
+ePython is open source, licenced under BSD and available
+for download at
+https://github.com/mesham/epython
+REFERENCES
+[1] A. Olofsson, “A manycore coprocessor architecture for heterogeneous
+computing,” in Los Alamos Computer Science Symposium (LACSS)
+2009,2009.

@@ -1,0 +1,1335 @@
+Graphical Abstract
+A Comprehensive Review of State-of-The-Art Methods for Java Code Generation from Natural
+LanguageText
+JessicaLópezEspejel,MahamanSanoussiYahayaAlassan,ElMehdiChouham,WalidDahhane,ElHassaneEttifouri
+3202
+nuJ
+01
+]LC.sc[
+1v17360.6032:viXra
+Highlights
+A Comprehensive Review of State-of-The-Art Methods for Java Code Generation from Natural
+LanguageText
+JessicaLópezEspejel,MahamanSanoussiYahayaAlassan,ElMehdiChouham,WalidDahhane,ElHassaneEttifouri
+• CodeGenerationisanimportantNaturalLanguageProcessing(NLP)task
+• Initializingmodelsfrompretrainedweightsleadstobetterresultsthantrainingthemfromscratch
+• Decoder-onlymodelsachievethebestcomprehensionofthecodesyntaxandsemantics
+• Combiningmultiplelearningobjectivesleadtobettercodegenerationmodels.
+• ImprovingCodeGenerationmetricsisbecomingamustinordertobettercompareandfurtherimprovestate-of-the-art
+methods
+A Comprehensive Review of State-of-The-Art Methods for Java Code
+Generation from Natural Language Text⋆
+JessicaLópezEspejela,∗, MahamanSanoussiYahayaAlassana, ElMehdiChouhama,
+WalidDahhanea and ElHassaneEttifouria
+aNovelisResearchandInnovationLab,207RuedeBercy,Paris,75012,,France
+ARTICLE INFO ABSTRACT
+Keywords: JavaCodeGenerationconsistsingeneratingautomaticallyJavacodefromaNaturalLanguageText.
+JavaCodeGeneration This NLPtask helps inincreasing programmers’ productivity byproviding them withimmediate
+LanguageModels solutionstothesimplestandmostrepetitivetasks.Codegenerationisachallengingtaskbecause
+NaturalLanguageProcessing ofthehardsyntacticrulesandthenecessityofadeepunderstandingofthesemanticaspectofthe
+RecurrentNeuralNetworks programminglanguage.ManyworkstriedtotacklethistaskusingeitherRNN-based,orTransformer-
+TransformerNeuralNetworks basedmodels.Thelatterachievedremarkableadvancementinthedomainandtheycanbedividedinto
+threegroups:(1)encoder-onlymodels,(2)decoder-onlymodels,and(3)encoder-decodermodels.In
+thispaper,weprovideacomprehensivereviewoftheevolutionandprogressofdeeplearningmodels
+inJavacodegenerationtask.Wefocusonthemostimportantmethodsandpresenttheirmeritsand
+limitations,aswellastheobjectivefunctionsusedbythecommunity.Inaddition,weprovideadetailed
+descriptionofdatasetsandevaluationmetricsusedintheliterature.Finally,wediscussresultsof
+differentmodelsonCONCODEdataset,thenproposesomefuturedirections.
+Intelligence (AI) system. Intuitively, most of code genera-
+1. Introduction
+tion datasets are built from source code of the concerned
+In the last years, there has been a huge interest from
+Programming Language (PL) and documentation in Natu-
+the Natural Language Processing (NLP) community in the
+ral Language (NL). These datasets are collected from web
+automation of software engineering to increase program-
+sites such as Github1 and Stack Overflow2. In the case of
+mers’ productivity (Ahmad et al., 2021). Code Generation
+Java programming language, documentation is written in
+Task (or Program Synthesis Task) helps considerably in JavaDoc(Oracle,2022),whichisaformatthatdescribesall
+reducing workload of programmers, by speeding up the
+classes,membervariablesandmethods.Therefore,JavaDoc
+implementationofsimplefunctions,andlettingthemfocus
+documentation with its source code have been exploited to
+onthemostcomplextasksonly.
+generate large datasets containing pairs of text-code lines
+Inthispaper,weareinterestedtoshowtheprogressover
+(SeeSection6formoredetails).Alongwithdatasets,several
+theyearsintheautomaticJavasourcecodegenerationfrom
+modelshavesurgedtotackletheJavaCodeGenerationtask.
+natural language. This task consists in taking as an input a
+The first models used in literature are based on Recurrent
+natural language phrase, and producing an equivalent Java
+Neural Networks (RNNs) such as LPN (Ling et al., 2016)
+codeasanoutput(Figure1).
+and Seq2Seq (Yin and Neubig, 2017). However, the big
+success of Transformer-based pretrained language models
+(LMs) such as BERT (Devlin et al., 2019), GPT (Radford
+et al., 2019), and T5 (Raffel et al., 2020), in a wide range
+ofNLPtasks,shiftedtheeffortsofthecommunitytoadapt
+Transformersmodels(Vaswanietal.,2017)togenerateJava
+codefromnaturallanguage.Theresultsofsucheffortsgave
+birthtomoresophisticatedLargeLanguageModels(LLMs)
+suchasChatGPT(OpenIA,2023),LLaMA(Touvronetal.,
+Figure 1: Java source code generation from natural language 2023),andBARD(Google,2023).Notethatatthetimeof
+writingthisarticle,theperformanceofthelatteralgorithms
+hasnotbeentestedonstandardJavabenchmarks.Nonethe-
+In the Java Code Generation task as in many others,
+less, initial indications suggest that their performance is
+attention is put on both the model and the dataset. The
+exceptional.
+latter are key ingredients to develop a powerful Artificial
+Programming language generation presents more chal-
+∗Correspondingauthor lenges than standard natural language generation. For in-
+Emailaddresses:jlopezespejel@novelis.io(J.LópezEspejel); stance, (1) the neural network should be able to correctly
+syahaya@novelis.io(M.YahayaAlassan);elchouham@novelis.io(E.M.
+understand instructions in natural language to generate a
+Chouham);wdahhane@novelis.io(W.Dahhane);eettifouri@novelis.io
+(E.H.Ettifouri) correspondingcorrectsourcecode,(2)thelatterhaslexical,
+ORCID(s):0000-0001-6285-0770(J.LópezEspejel);
+0000-0001-5387-3380(W.Dahhane);0000-0001-5299-9053(E.H.Ettifouri) 1 https://github.com/
+1 2 https://stackoverflow.com/
+First Author et al.: PreprintsubmittedtoElsevier Page1of16
+Review of State-of-The-Art Methods for Java Code Generation from Natural Language Text
+grammatical, and semantic constraints (Wang et al., 2021; Data type - Code generation models can be trained on
+Scholaketal.,2021)thatshouldbetakenintoaccount,and unimodal or bimodal data. On the one hand, unimodal
+(3) one small mistake (such as a missing dot or colon) can datakeepthesourcecodewithoutpairednaturallanguage,
+change completely the semantic of the code and make the or keep the natural language without paired code. On the
+model’soutputincorrect. other hand, bimodal data have NL-PL pairs. The bimodal
+In this paper, we provide a comprehensive review of data have shown its usefulness in training the multi-modal
+state-of-the-artmethodsinJavacodegenerationfromnatural pretrained models (Feng et al., 2020), which learn implicit
+language. To the best of our knowledge, this is the first alignmentbetweeninputofdifferentcategories.
+review for Java Code Generation methods. Our goal is to
+provide a solid base for future researchers by highlighting
+3. Background
+what was already done, and what can be improved. These
+arethemainfindingsofourpaper: Theautomaticsourcecodegenerationtaskcanbemod-
+eled as a translation task, where the input text is a natural
+• Initializing models from pretrained weights leads to
+languagephraseandtheoutputtextisaprogrammingsource
+betterresultsthantrainingthemfromscratch
+code.Earlyworksinthefieldoflanguagetranslationfocused
+on regular expressions, logical forms, sequence of instruc-
+• Decoder-only models have shown the best compre-
+tions, and agent-specific languages. Later, the efforts were
+hensionofthecodesyntaxandsemantics
+shifted to use semantic parsing and SQL code generation.
+• Combiningmultiplelearningtasksleadtobettercode These developments paved the way for the generation of
+generationmodels. Javacodefornaturallanguage.Inthefollowingparagraphs,
+we will provide a brief overview of remarkable methods
+• Improving Code Generation metrics is becoming a
+proposedforeachcategory.
+must in order to better compare and further improve
+Regular expressions - Angluin (1987) worked on the
+state-of-the-artmethods
+mappingofnaturallanguagetoregularexpressionsbylearn-
+ing general rules from examples, and automatizing their
+Therestofthepaperisorganizedasfollows:Section2
+generation. Alternatively, Ranta (1998) and Kushman and
+provides a formulation of the problem. Section 3 outlines
+Barzilay (2013a) used rule-based techniques and Combi-
+thebackgroundofthestudiedtask.Section4presentsRNN-
+natory Categorical Grammar (CCG) to generate regular
+based methods to tackle Java Code Generation. Note that
+expressions from natural language, respectively. Similarly,
+this type of methods are outdated nowadays and are not
+Kushman and Barzilay (2013b) worked on generating reg-
+effective to tackle complex NLP tasks. Section 5 presents
+ular expressions from natural language queries. While the
+themostpowerfulTransformer-basedmethods.Thissection
+methodprovedeffectiveinhandlingawidevarietyofnatural
+isthelargest,andtakesthebiggestattentioninthisarticle.
+languagequeries,includingcomplexones,itwasnotableto
+Section 6 provides a brief description of the most popular
+handle all of them, as it relies on semantic unification and
+datasets usedin JavaGeneration. Section7 presents evalu-
+couldstrugglewithcertaintypesofqueries.
+ation metrics used by the community to evaluate different
+Logical forms - Authors of Zettlemoyer and Collins
+models. In Section 8, we compare experimentally between
+(2005a)mappednaturallanguagesentencestologicalforms.
+the state-of-the-art methods and highlight their advantages
+They introduced an approach based on probabilistic cate-
+and disadvantages. Finally, we conclude in Section 9 and
+gorial grammars (PCGs). Even though the method handles
+providesomeperspectives.
+ambiguity in natural language, and can generate multiple
+logicalforms,thePCGparserusedinthemodeliscomplex
+2. ProblemDefinition and computationally expensive, making it difficult to scale
+tolargedatasets.
+WebuildonthenotationsusedinFengetal.(2020)and
+proposeaunifiednotationforallmethodsdescribedinthis Agent-specificlanguage- Kateetal.(2005)proposeda
+method for automatically translating natural language sen-
+paper. The goal is to facilitate the comprehension and the
+tencesintoagent-specificlanguageexpressions.Theadvan-
+comparisonbetweenstate-of-the-artmethods.
+tages of this method is that it can automate the translation
+Given an input text 𝑤 = {𝑤 ,𝑤 ,..,𝑤 } of length
+0 1 𝑛−1 process, saving time and effort for human translators, and
+| 𝑤 | = 𝑛,thegoalofacodegenerationmodelistoproduce can potentially improve the accuracy of formal language
+an equivalent source code sequence 𝑐 = {𝑐 ,𝑐 ,..,𝑐 } of
+0 1 𝑙−1 expressiongeneration.However,themodelcouldfacediffi-
+length
+|
+𝑐 |=𝑙,where𝑤
+𝑖
+and𝑐
+𝑖
+areinputandoutput(target)
+cultiesinprocessingcertaincategoriesofcomplexsentences
+tokensrespectively.Themodelistrainedonbatchesofsize
+or in handling expressions that have multiple valid formal
+𝐵usingaloss(𝜃),where𝜃arethemodel’sparameters.The
+languagetranslations.
+formula of loss function (𝜃) varies between code genera-
+tionmethodsanddependsheavilyonthearchitectureused. Sequence of instructions - Branavan et al. (2010) pre-
+sented a framework that learns to map natural language
+We will provide a detailed explanation of these learning
+instructionstocorrespondingactionsinanenvironmentby
+objectivesinSection5.
+traininganagentwithacombinationofsupervisedlearning
+First Author et al.: PreprintsubmittedtoElsevier Page 2 of 16
+Review of State-of-The-Art Methods for Java Code Generation from Natural Language Text
+Figure 2: Timeline of some models in the Java Code Generation task
+andreinforcementlearningtechniques.Themethoddoesnot toenhanceprograminductionmethods.Onekeyfeatureof
+requirehand-engineeredfeatures,makingithighlyadaptable theirapproachistheintegrationofadditionalmemoryinto
+todifferenttasksandenvironments.However,theframework neural networks (Graves et al., 2014; Kumar et al., 2016;
+struggleswithinstructionsthatareambiguousorimprecise, JoulinandMikolov,2015),whichallowsformoreadvanced
+leadingtoerrorsinactiongeneration. and sophisticated problem-solving capabilities. Moreover,
+Semantic Parsing - We have identified salient back- Mouetal.(2015)usedamethodbasedonRNNsforgenerat-
+ground approaches in the semantic parsing. One example ingcomputerprogramsdirectlyfromnaturallanguageinput.
+istheworkintroducedbyZettlemoyerandCollins(2005a), Thissequence-to-sequencemodelisanend-to-endapproach
+who mapped NL to lambda–calculus encodings of their that uses an LSTM-based encoder to create a fixed-length
+semantics. To check the syntax and the semantics, the au- vectorrepresentationoftheinput,andadecoderthatpredicts
+thors used a log-linear model. Later, Wong and Mooney eachtokenbasedontheoutputsequencetokensandtheinput
+(2006), developed a statistical semantic parsing system vector.
+calledWASP.Thissystemisdesignedtogenerateaformal SimilarlytoNeelakantanetal.(2016),ReedanddeFre-
+representation of the meaning of a sentence. Similarly, Lu itas (2016) introduced an approach to induce programs
+et al. (2008) proposed for parsing natural language, which calledNPI(NeuralProgrammer-Interpreter).AsMouetal.
+involves utilizing a generative model to convert input sen- (2015), NPI is an end-to-end model. NPI does not need
+tencesintorepresentationsoftheirmeanings. manual feature engineering or domain-specific knowledge.
+SQL query generation - This is the closest type of ap- It can learn how to create and execute programs, but the
+proaches to Java generation task. One interesting work in method is limited to generate complex programs, as the
+thiscategorywasproposedbyMilleretal.(1996)whoused size of the programs is restricted by the capacity of the
+an interface that is based on trained statistical models. To neural network. In the same year, Ling et al. (2016) pro-
+trainthemodel,authorsusedATIS(AirTravelInformation) posed Latent Predictor Network (LPN) that generates code
+dataset. This dataset also was used by Ramaswamy and from natural language descriptions by predicting the latent
+Kleindienst(2000). representation of code snippets. The LPN model consists
+The aforementioned works offer an introduction to the of two components: a code generation model and a latent
+methodsutilizedinthebackgroundandestablishtheground- predictor model. The code generation model maps natural
+work for more advanced techniques based on RNN and languagedescriptionstocoderepresentations,andthelatent
+Transformers, which will be discussed in subsequent sec- predictormodelpredictsthelatentcoderepresentationgiven
+tions of this paper. Unfortunately, most of the methods thepreviousgeneratedcode.However,LPNmodelrequires
+presentedinthissectionareoutdatedandareunabletodeal alargeamountoftrainingdatatoperformwell.
+withcomplexJavagenerationprograms. AnotherinterestingworkinthiscategoryiscalledDeep-
+API. It was proposed by Gu et al. (2016b), and consists
+in generating Java API sequences from natural language
+4. RNN-basedCodeGenerationMethods
+query.DeepAPIadaptsaRNNencoder-decodermodel(Cho
+Thefirstneural-network-basedapproachesusedtotackle et al., 2014b) to encode the input sequence to a fixed-
+source code generation from natural language were based lengthcontextvector.Thishelpsinrecognizingsemantically
+onRecurrentNeuralNetworks(RNNs)suchasLongShort- relatedwords.Inaddition,importanceofindividualAPIsis
+termMemory(LSTM)(HochreiterandSchmidhuber,1997) used to enhance the performance of the model. DeepAPI
+and Gated Recurrent Unit (GRU) (Cho et al., 2014a). For is the first model from its kind, but unfortunately, it only
+instance,Neelakantanetal.(2016)proposedanarchitecture focusesonJDKlibrary.
+known as the Neural Programmer, which integrates RNNs Iyer et al. (2018) introduced a sequence-to-sequence
+with a set of fundamental arithmetic and logic operations model and evaluated its performance on their CONCODE
+First Author et al.: PreprintsubmittedtoElsevier Page 3 of 16
+Review of State-of-The-Art Methods for Java Code Generation from Natural Language Text
+dataset. The model is composed of a bidirectional LSTM
+encoder,andanLSTM-baseddecoder.Thelatterusesatwo-
+stepattentionmechanism,oneofthesestepsisasupervised
+copy of Gu et al. (2016a). Alternatively, Iyer et al. (2018)
+testedseq2seqmodelintroducedbyYinandNeubig(2017)
+on their CONCODE dataset. Seq2seq uses sequence-to-
+sequence LSTM-based architecture. However, the decoder
+usessupervisedcopyingfromthewholeinputsequence.
+DespitetheusefulnessofRNNsinmultipleNLPtasks,
+theyarecurrentlynotverypopularinthecommunitysince
+they were highly outperformed in 2017 by Transformer Figure 3: A simplified illustration of the different architecture
+neural networks (Vaswani et al., 2017). Most of the works types of Transformer neural networks
+presentedinthissectiondidnotfocusonJavaprogramming
+language. This is showed in Figure 2 that outlines some
+methodsfocusonJavacodegeneration.Wecanclearlysee ∙ MLM: Masked Language Modeling (Devlin et al.,
+thatJavaPLtaskisindeedtackledusingTransformers.For 2019) - It consists in selecting randomly a set of positions
+thisreason,webookedmoreroomforthemintherestofthe from the input tokens, then replacing tokens in these po-
+paper. sitions with a special [MASK] token. This objective aims to
+predict only the original tokens that are masked, and not
+to reconstruct the entire input. The token chosen at each
+5. Transformer-basedJavaCodeGeneration position is selected from the model vocabulary. The MLM
+Methods lossfunctionisdefinedinEquation1.
+Transformers-based models have shown outstanding
+s
+e
+c
+t
+o
+a
+r
+l
+e
+.,
+s
+2
+o
+0
+n
+17
+v
+)
+a
+,
+r
+a
+io
+u
+u
+to
+s
+m
+N
+a
+L
+ti
+P
+cs
+t
+u
+a
+m
+sk
+m
+s
+a
+s
+r
+u
+i
+c
+z
+h
+ati
+a
+o
+s
+n
+tr
+(
+a
+Z
+n
+h
+s
+a
+l
+n
+at
+g
+io
+e
+n
+ta
+(V
+l.,
+a
+2
+sw
+02
+a
+0
+n
+)
+i 
+𝑀𝐿𝑀
+(𝜃)=− ∑ 𝑙𝑜𝑔𝑃
+𝜃
+𝐷 1(𝑥
+𝑖|
+𝑤𝑚𝑎𝑠𝑘𝑒𝑑,𝑐𝑚𝑎𝑠𝑘𝑒𝑑) (1)
+and question answering (Raffel et al., 2020). All of these
+𝑖∈𝑚𝑤∪𝑚𝑐
+modelshavetwostages:(1)pre-training,and(2)fine-tuning. where𝜃 arethemodel’sparameters,𝑤isanaturallan-
+Thepre-trainingconsistsoflearningalanguagemodelora guageinput,𝑐 isprogramminglanguageoutput,𝑃 𝐷 1 isthe
+learningobjectivetaskfromunlabeleddata,andfine-tuning discriminatorthatpredictsatokenfromalargevoc 𝜃 abulary,
+is the step in which the model learns the knowledge that and𝑚𝑤and𝑚𝑐 arerandomsetofmaskedpositionsin𝑤and
+is related to a specific task using labeled data. Therefore, 𝑐,respectively.
+one of the main factors in the success of these models is
+the supervised learning objectives used. Code generation ∙ RTD: Replaced Token Detection (Clark et al., 2020)
+methodstriedfirsttoadaptexistingstandardtextgeneration - It replaces (corrupts) some tokens in the input sequence
+methodsandtheirobjectivestoCodeGeneration(Phanetal., with plausible tokens proposed from a generator network.
+2021; Ahmad et al., 2021). Later, other methods explored Thediscriminatorneuralnetworkistrainedtodetermineif
+morespecifictechniquestoimprovethesyntaxandseman- eachtokeninthecorruptinputistheoriginaloneornot.The
+tics of the generated code (Tipirneni et al., 2022; Wang RTDlossfunctionisdefinedinEquation2.
+et al., 2021). We study state-of-the-art methods based on
+theirarchitectureanddividethenintothreemaincategories:
+encoder-only models, decoder-only models, and encoder-  (𝜃)= ∑𝑛+𝑙−1(𝛿(𝑖)𝑙𝑜𝑔𝑃 𝐷 2(𝑥𝑐𝑜𝑟𝑟𝑢𝑝𝑡,𝑖)+
+𝑅𝑇𝐷 𝑖=0 𝜃 (2)
+decodermodels.Figure3showsasimplifiedillustrationof (1−𝛿(𝑖))(1−𝑙𝑜𝑔𝑃 𝐷 2(𝑥𝑐𝑜𝑟𝑟𝑢𝑝𝑡,𝑖)))
+𝜃
+the main difference in the architecture between the three
+typesofmodels.Figure4showsthemainlearningobjectives where𝑃 𝐷 2 isthediscriminatorwhichpredictstheprob-
+used in each category of methods, plus, an example of abilityofthe 𝜃 𝑖-thwordbeingoriginal,and𝛿(𝑖)isanindicator
+referenceforeachobjective.Weprovidemoredetailsinthe functiondefinedas:
+followingthreesubsections.
+{ 1 𝑖𝑓 𝑥𝑐𝑜𝑟𝑟𝑢𝑝𝑡 ≡𝑥,
+𝛿(𝑖)= 𝑖 𝑖
+5.1. Encoder-onlymodels 0 𝑜𝑡ℎ𝑒𝑟𝑤𝑖𝑠𝑒.
+ThesemethodsuseanencoderonlyintheTransformer
+neuralnetworkarchitecture(Figure3(a)).Theyconcatenate ∙ DOBF: Deobfuscation (Rozière et al., 2021) - It re-
+the natural language sequence 𝑤, and the programming names the class, function and variable names with unin-
+languagesequence𝑐andusethemasaninput𝑥={𝑤,𝑐}to formative labels. All instances of selected identifiers are
+theencoder. replaced in the whole source code with the uninformative
+Themainobjectivesusedbythistypeofmethodsareas label.Themodelistrainedtorecovertheoriginalnamesby
+follows: deobfuscatingthecode.Itisthefirstapproachtoexploitthe
+structureofprogramminglanguages.
+First Author et al.: PreprintsubmittedtoElsevier Page 4 of 16
+Review of State-of-The-Art Methods for Java Code Generation from Natural Language Text
+∙EdgePrediction (Guoetal.,2021)-ItisusedwithData
+Flow Graph (DFG) and consists in masking some direct
+edgesinthedataflow.Then,themodelaimstopredictthese min ∑ 𝐻𝑢𝑏𝑒𝑟 ( 𝑙𝑜𝑔 (𝜃,𝑁,𝐷)−𝑙𝑜𝑔𝐿 ) (5)
+𝛿 𝑃𝐴𝑅 𝑖 𝑖 𝑖
+𝐴,𝐵,𝐸,𝛼,𝛽
+maskededges.EdgePredictionlossisdefinedinEquation3. 𝑟𝑢𝑛𝑠𝑖
+where 𝛿 = 10−3 and 𝐿 is the pretraining loss. Huber
+loss is robust to outliers and provides an overall good per-
+ (𝜃)=− ∑ [𝛿(𝑒 ∈𝐸𝑚𝑎𝑠𝑘𝑒𝑑)𝑙𝑜𝑔𝑝 +
+𝐸𝑑𝑔𝑒𝑃𝑟𝑒𝑑 𝑒 𝑖𝑗∈𝐸 𝑐 𝑖𝑗 𝑒 𝑖𝑗 formance.
+(1−𝛿(𝑒 ∈𝐸𝑚𝑎𝑠𝑘𝑒𝑑))𝑙𝑜𝑔(1−𝑝 )]
+𝑖𝑗 𝑒
+𝑖𝑗
+(3) ∙ ULM: Unidirectional Language Modeling (Radford
+et al., 2019) - It aims to predict the next token 𝑥 given
+𝑖
+where𝐸 isthesetofcandidateedges,𝐸𝑚𝑎𝑠𝑘𝑒𝑑 istheset the previous tokens. The ULM loss function is defined in
+𝑐
+of masked edges, 𝑝 is the probability that an edge exists Equation6:
+𝑒
+𝑖𝑗
+betweennodes𝑖and𝑗,and𝛿(𝑒 ∈𝐸)isdefinedasfollows:
+𝑖𝑗
+𝑙−1
+𝛿(𝑒 ∈𝐸)= { 1 𝑖𝑓 ⟨ 𝑣 𝑖 ,𝑣 𝑗⟩∈𝐸,  𝑈𝐿𝑀 (𝜃)=− ∑ 𝑙𝑜𝑔𝑃 𝜃 (𝑥 𝑖| 𝑥 <𝑖 ) (6)
+𝑖𝑗 0 𝑜𝑡ℎ𝑒𝑟𝑤𝑖𝑠𝑒. 𝑖=0
+∙ Node Alignement (Guo et al., 2021) - It is similar to where𝑥 referstoallthetokensthatarebeforethe𝑖𝑡ℎone.
+<𝑖
+the Edge Prediction task, but instead of predicting edges
+between the nodes of DFG, it predicts edges between the Methods - Lu et al. (2021) tested the performance of
+GPT-2 (Radford et al., 2019) model on code generation
+sourcecodetokensanddataflownodes.
+task using three configurations: GPT-2, CodeGPT-2 and
+Methods - CodeBERT (Feng et al., 2020) is based on CodeGPT-adapt. The latter is pretrained on text extracted
+BERT (Devlin et al., 2019), and is the first large bimodal from45millionlinksontheweb.UnlikeGPT-2,CodeGPT-
+(NL-PL)pretrainedmodelonCodeSearchNet(Husainetal., 2 and CodeGPT-adapt that are pretrained on CodeSearch-
+2019)dataset.Inthepretrainingstage,CodeBERTusestwo Net dataset, CodeGPT-2 is pretrained from scratch, and
+objective functions: Masked Language Modeling (MLM), CodeGPT-adaptisinitializedfromGPT-2checkpoint.
+andReplacedTokenDetection(RTD).
+GraphCodeBERT(Guoetal.,2021)isbasedonBERT Large Language Models (LLMs) - GPT-3 (Brown
+et al., 2020) marked the beginning of the era of Large
+(Devlin et al., 2019), and is the first pretrained model that
+Language Models (LLMs). It showed that, by scaling up
+leverages the code structure via Data Flow Graph (DFG).
+language models, the few-shot learning is possible, and it
+In the pretraining stage, GraphCodeBERT uses MLM as a
+cansometimesevenreachcompetitiveresultsintaskssuch
+learning objective, and two additional tasks: prediction of
+as machine translation, code generation, reading compre-
+codestructureedgesinthedataflow,andvariable-alignment
+hension, etc. For all tasks, GPT-3 is applied without any
+oversourcecodeanddataflow.
+gradient updates or fine-tuning, with tasks and few-shot
+demonstrations specified purely via text interaction with
+5.2. Decoder-onlymodels
+These methods use decoder(s) only in the Transformer themodel.ThismodelfollowsGPT-2architecture,andhas
+neuralnetworkarchitecture(Figure3(b)). 175Bofparameters(10timesmorethanthepreviousone).
+There is a series of GPT-3.5 models that are based on
+∙ PAR: Parametric Loss Function (Hoffmann et al., GPT-3(Brownetal.,2020).Wecitethemhereafter:
+2022)-Thisisoneofthemostrecentobjectivesproposedfor
+decoder-onlyChinchillamodel.Itisaparametriclossfunc-
+• Code-davinci-002: is one of the Codex (Chen et al.,
+2021a) models, that are trained on natural language
+tion,basedonmodelsparameterscountandthenumberof
+andprogramminglanguagesincludingJava.
+already-seentokens.ThePARlossisdefinedinEquation4:
+• Text-davinci-002: is an InstructGPT (Ouyang et al.,
+𝐴 𝐵 2022)modelbasedoncode-davinci-002.
+ (𝜃,𝑁,𝐷)≜𝐸+ + (4)
+𝑃𝐴𝑅 𝑁𝛼 𝐷𝛽
+• Text-davinci-003:isthemostpowerfulGPT-3model
+where𝐸 istheentropyofthenaturallanguagetextand compared with previous GPT-based models. It
+referstoidealgenerativeprocess, 𝐴 referstothenegative can perform better in quality language generation,
+𝑁𝛼
+gapinperformancebetweenaperfectlytrainedTransformer instruction-following,etc.
+with N parameters and an ideal generative process, and
+𝐵 refers to incomplete convergence of the Transformer An upgrade of GPT-3.5 lead to the birth of Chat-
+𝐷𝛽
+modelbecauseofitslimitednumberofoptimizationsteps. GPT (OpenIA, 2023), an impressive language model that
+Theestimationof𝛼,𝛽,𝐴,𝐵,𝐸 isdoneusingaHuberLoss fueled a debate about the impact of AI on our daily life.
+(Hernandez et al., 2021) that uses the L-BFGS algorithm Currently, ChatGPT is based on an even more powerful
+(Nocedal,1980),asinEquation5: and sophisticated GPT-4 architecture. The latter is a large
+First Author et al.: PreprintsubmittedtoElsevier Page 5 of 16
+Review of State-of-The-Art Methods for Java Code Generation from Natural Language Text
+multimodal model capable of processing both text and im- inspiredbyGPT-3(Brownetal.,2020),andSwiGLUactiva-
+age inputs and producing text outputs. It surpasses exist- tionfunctionfromPaLM(Driessetal.,2023).Additionally,
+ing models by a considerable margin in English and also itemploysrotarypositionalembeddingsinsteadofabsolute
+exhibits strong performance in other languages. The loss positionalembeddingsusedbyGPTNeo(Blacketal.,2022).
+functioncomputationisoneofthemainmodificationsmade LLaMA-13B, which is only one-tenth the size of GPT-
+compared to previous GPT models. The authors were able 3, performs better on most benchmarks and can be run
+to predict GPT-4’s final loss on their internal codebase by on a single GPU. Furthermore, the 65B-parameter model
+fitting a scaling law with an irreducible loss term. As for is competitive with other LLMs like Chinchilla-70B and
+Java,ChatGPTisabletogenerateverycomplexcodefrom PaLM-540B.
+naturallanguagerequest.
+Although GPT-4 is an advanced language model that 5.3. Encoder-Decodermodels
+outperforms its predecessors, it still has limitations similar Thesemethodsusebothencoder(s)anddecoder(s)inthe
+to earlier GPT models. These limitations include generat- Transformerneuralnetworkarchitecture(Figure3(c)).
+ing false information, providing harmful advises, having a
+restricted context window, and lacking the ability to learn ∙MSP:MaskedSpanPrediction (Raffeletal.,2020)-It
+from experience. However, the authors conducted a thor- consists in randomly masking spans of text with arbitrary
+ough evaluation of GPT-4’s performance on a variety of lengths. Later, the model predicts the masked spans.MSP
+datasets,suchasacademicexams.ItwasfoundthatGPT-4 lossisdefinedinEquation7.
+achievedahuman-levelperformanceonmostofthesetests.
+Additionally,intheirinternalfactualityevaluationsdesigned
+𝑘−1
+t
+h
+o
+igh
+te
+e
+s
+r
+t
+t
+t
+h
+h
+a
+e
+n
+m
+th
+o
+e
+d
+l
+e
+a
+l
+t
+’
+e
+s
+st
+ac
+G
+c
+P
+u
+T
+ra
+-
+c
+3
+y
+.5
+,
+m
+GP
+od
+T
+e
+-4
+l. N
+sc
+o
+o
+t
+r
+e
+ed
+tha
+1
+t
+9
+C
+%
+ha
+p
+t
+o
+G
+i
+P
+nt
+T
+s 
+𝑀𝑆𝑃
+(𝜃)= ∑ −𝑙𝑜𝑔𝑃
+𝜃
+(𝑤𝑚
+𝑖
+𝑎𝑠𝑘𝑒𝑑
+|
+𝑤∖𝑚𝑎𝑠𝑘𝑒𝑑,𝑤𝑚
+<𝑖
+𝑎𝑠𝑘𝑒𝑑) (7)
+𝑖=0
+(and other large language models) is recent and was not
+testedyetonCONCODEdataset.Forthisreason,wedidnot where𝑥𝑚𝑎𝑠𝑘𝑒𝑑 isthemaskedinputoflength𝑘,𝑥∖𝑚𝑎𝑠𝑘𝑒𝑑
+includeitsresultsinourreview. is the masked sequence to predict by the decoder, and
+AtthesametimethanChatGPT,Raeetal.(2021)built 𝑥𝑚𝑎𝑠𝑘𝑒𝑑 isthespansequencegeneratedsofar.
+<𝑖
+onGPT-2andproposedGopher,amodelthatcontains280
+billionparameters.However,Gopherhastwomodifications ∙ IT: Identifier Tagging (Wang et al., 2021) - It aims to
+comparedwithGPT-2:theauthorsusedRMSNorm(Zhang determine if code tokens are identifiers (e.g., function or
+andSennrich,2019)insteadofLayerNorm(Baetal.,2016), variable names). Therefore, authors compute a probability
+and also used the relative positional encoding (Dai et al., value𝑝 foreachoutputtoken.
+𝑖
+2019) instead of the absolute positional encodings. The Toseeifanodeisanidentifierornot,theauthorsconvert
+modelwasevaluatedon152differenttasks,includingJava thecodesequencetoanAST(AbstractSyntaxTree).TheIT
+codegeneration.EventhoughGopheroutperformsthestate lossiscomputedusingabinarycrossentropyloss,wherethe
+oftheartin81%ofthetask,whentheauthorsevaluatedit binarylabel𝑦 =1meansthatthetokenisanidentifier,and
+𝑖
+in 124 tasks, there are still some challenges related to the 𝑦 =0meansthatitisnot(Equation8).
+𝑖
+distributionalbias,andthetrainingdefinitioncriteria.
+AfterGopher,Hoffmannetal.(2022)introducedanew
+𝑙−1
+languagemodelcalledChinchilla.Thismodelhasthesame ∑
+ (𝜃 )= −[𝑦 𝑙𝑜𝑔𝑝 +(1−𝑦)𝑙𝑜𝑔(1−𝑝)] (8)
+architecture as Gopher but with 70 billion parameters and 𝐼𝑇 𝑒 𝑖 𝑖 𝑖 𝑖
+𝑖=0
+additionaldata.UnlikeGopher,Chinchillausesvariationsin
+thenumberoftrainingsteps,modelsizesofdifferenttrain- where 𝜃 are the encoder’s parameters, and 𝑝 are the
+𝑒 𝑖
+ing FLOP counts, a different loss function (𝑃𝐴𝑅 function probabilitiesoftheoutputsequencetokens.
+fromEquation4),andtheAdamW(LoshchilovandHutter,
+2019) optimizer instead of Adam (Kingma and Ba, 2015).
+∙MIP:MaskedIdentifierPrediction (Wangetal.,2021)
+-Itconsistsinmaskingallidentifiers(functionandvariable
+Chinchilla outperforms various language models such as
+names)inthePL,andreplacingallrecurrencesofaspecific
+Gopher and GPT-3 in many tasks. However, the quality
+identifier with a unique sentinel token. It is inspired by
+of code generation in Chinchilla is related to its size, and
+deobfuscationpreviouslyusedinRozièreetal.(2021).The
+scalingtrainingtokenscanimproveit.AlthoughChinchilla’s
+lossfunctionisdefinedas:
+authors recommend training a 10B model on 200B tokens,
+Touvronetal.(2023)hasshownthata7Bmodelcontinues
+toimproveevenafter1Ttokens.
+𝑛−1
+Inspired by Chinchilla, Touvron et al. (2023) proposed  𝑀𝐼𝑃 (𝜃)= ∑ −𝑙𝑜𝑔𝑃 𝜃 (𝑤 𝑖| 𝑤𝑚𝑎𝑠𝑘𝑒𝑑,𝑤 <𝑖 ) (9)
+theLLaMAfamilyofLLMs,whoseparametersrangefrom
+𝑖=0
+7B to 65B. The architecture of LLaMA incorporates the
+strengths of previous LLMs, such as input normalization where𝑤𝑚𝑎𝑠𝑘𝑒𝑑 isthemaskedinput.
+First Author et al.: PreprintsubmittedtoElsevier Page 6 of 16
+Review of State-of-The-Art Methods for Java Code Generation from Natural Language Text
+∙ Bimodal dual objective (Wang et al., 2021) - It aims It explores additional pretraining using Java code only. In
+to leverage bimodal data in order to achieve better NL-PL addition,theauthorsexploretheimpactofinputandoutput
+alignments.Duringthetrainingprocess,ifNListheencoder sequencelengthduringfine-tuning.
+input,thenPListhedecoderinputandviceversa. Parvezetal.(2021)introducedREDCODER(Retrieval
+augmentED CODe gEneration and summaRization frame-
+∙ MCL: MultiModal Contrastive Learning (Guoetal., work).ItiscomposedofaretrievalmodulecalledSCODER-
+2022)-Thislosshelpsinlearningthesemanticembedding R(SummaryandCODERetriever),andageneratormodule
+ofmappedASTsequences.Authorsforwardthesameinput called SCODER-G, which is based on PLBLART (Ahmad
+in the neural network and use different hidden dropout et al., 2021). SCODER-R is initialized from GraphCode-
+masks. The resulting hidden representations are used as BERT (Guo et al., 2021) weights, it receives the NL text,
+positives, while the other representations from the same andreturnsthetop-k sourcecodes.Later,theNLsequence
+batchareusedasnegatives. is concatenated with the top-k code sequences to have the
+augmentedinputsequence.ThissequenceisfedtoPLBART
+togenerateJavacode.
+ (𝜃)=−
+𝐵
+∑
+−1
+𝑙𝑜𝑔
+𝑒𝑐𝑜𝑠(ℎ̃
+𝑖
+,ℎ̃
+𝑖
++)∕𝜏
+(10) CodeT5 (Wang et al., 2021) is based on T5 (Raffel
+𝑀𝐶𝐿 𝑖=0 ∑𝑏−1𝑒 𝑐𝑜𝑠(ℎ̃ 𝑗 ,ℎ̃+ 𝑗 ) ∕𝜏 etal.,2020)neuralnetworkarchitecture.AuthorsconvertPL
+𝑗=0 segmentsintoanAbstractSyntaxTree(AST)andintroduce
+where 𝜏 is the temperature scalar, ℎ̃+ and ℎ̃ are the two pretraining tasks: Identifier-aware denoising objective,
+𝑖 𝑖
+positiveandnegativerepresentations,respectively,and𝑐𝑜𝑠()̇ and bimodal dual generation objective. On the one hand,
+isthecosinesimilarity. Identifier-awaredenoisingobjectiveusesMaskedSpanPre-
+diction (MSP) objective similar to T5 (Raffel et al., 2020),
+∙ CMG: Cross-Modal Generation (Guo et al., 2022) - andintroducedtwosupplementarytasks:IdentifierTagging
+Thislossiscomplementarytothepreviousone.Itpushesthe (IT), and Masked Identifier Prediction (MIP). Identifier-
+modeltoprovidecommentstodescribethecode’sfunction. awareobjectiveoptimizesthesethreelosses(MSP,IT,MIP)
+This helps the model to better understand the semantics of equally.Ontheotherhand,bimodaldualobjectiveoptimizes
+the code and unify its representation across programming themodelsimultaneouslyusingbimodaldatawithdifferent
+languages.ItsisdefinedinEquation11. order(NL-PL,thenPL-NL).Surprisingly,experimentslead
+bytheauthorshaveshownthattheorderbetweenthecode
+andthenaturallanguagetestmattersinthemodel’sperfor-
+𝑙−1
+∑ mance.
+ 𝐶𝑀𝐺 (𝜃)=− 𝑙𝑜𝑔𝑃 𝜃 (𝑑 𝑖| 𝑋,𝑑 𝑡<𝑖 ) (11) Later, Tipirneni et al. (2022) proposed StructCoder
+𝑖=0
+model,whichisinitializedfromCodeT5(Wangetal.,2021)
+where X is the flattened AST sequence, and 𝑑 = weights,andpretrainedusingDAE(DenoisingAutoencod-
+{𝑑 ,𝑑 ,..,𝑑 }isthecodecomments. ing)task.StructCoderalsousesanabstractsyntaxtreeand
+0 1 𝑛−1
+propose two learning objectives to train both the encoder
+Methods- Ahmadetal.(2021)introducedPLBART(Pro-
+andthedecoder:DFGprediction,andASTpathsprediction.
+gram and Language BART), a model based on 𝐵𝐴𝑅𝑇 𝑏𝑎𝑠𝑒 Specifically,thedecoderistrainedtopredictthenodetypes
+(Lewis et al., 2020). The latter was originally proposed to
+onalltheroot-leafpathsinthetargetAST,andtopredictthe
+tackle text generation and comprehension tasks, such as
+dataflowedges.
+translation,questionanswering,andautomaticsummariza-
+Very recently, UniXcoder (Guo et al., 2022) surged
+tion. The only difference between the two model architec-
+to tackle code-related understanding and generation tasks.
+tures is that PLBART added a normalization layer on top
+UniXcoder leverages the AST information through trans-
+ofboththeencoderandthedecoder.Itisthefirstmodelto
+forming AST to sequence text. This method is functional
+exploitthepossibilitytogeneratesourcecodefromNLwith
+in three modes: encoder-only, decoder-only, and encoder-
+apretraineddecoder.
+decoder.Authorsusedthreelearningobjectivetaskstopre-
+Posterior to PLBART, Phan et al. (2021) introduced
+trainedthemodel:MLM(Devlinetal.,2019),Unidirectional
+CoTexT(CodeandTextTransferTransformer),whichbuilds
+Language Modeling (ULM) (Radford et al., 2019), and
+on𝑇5
+𝑏𝑎𝑠𝑒
+(Raffeletal.,2020)model.Theauthorsstudiedthe
+Denoising Objective (Raffel et al., 2020). In addition, they
+CoTexT performance based on two criteria: (1) combining
+introduced two more objectives: Multi-modal Contrastive
+corpora(CodeSearchNetandGitHubrepositories),and(2)
+Learning(MCL),andCross-ModalGeneration(CMG)that
+pretraining with unimodal and bimodal data. Therefore,
+targetthesemanticunderstandingofcodeanditsunification
+the three resulting models are as follows: CoTexT (1-CC),
+acrossdifferentprogramminglanguages.
+CoTexT (2-CC), and CoTexT (1-CCG). Since all of the
+models are initialized from 𝑇5 weights, and the latter
+𝑏𝑎𝑠𝑒
+wasoriginallypretrainedontheC4dataset,thecomparison
+isfair.
+Most recently, Lopez Espejel et al. (2023) introduced
+JaCoText, a model that is initialized from CotexT weights.
+First Author et al.: PreprintsubmittedtoElsevier Page 7 of 16
+Review of State-of-The-Art Methods for Java Code Generation from Natural Language Text
+Figure 4:OverviewoflearningobjectivesinTransformer-basedCodeGenerationMethods,andsomeexamplesofsuchmethods.
+6. DatasetsforJavaCodeGeneration CodeNet wasproposedbyPurietal.(2021b).Itcontainsa
+setofprogrammingproblemscollectedfromtwowebsites:
+Inthissection,wepresentthemostuseddatasetsinJava
+AIZU (Watanobe, 2022) and AtCoder (Inc., 2022). It con-
+CodeGeneration.Abriefsummaryofthem,aswellastheir
+tains13,916,868submissions,dividedinto4053problems.
+meritsandlimitations,arepresentedinTable1.
+Submissionsarein55differentprogramminglanguages,but
+95%arecodedinC++,Python,Java,C,Ruby,andC#.Only
+CONCODE (Iyer et al., 2018) was collected from Java
+theother5%areinJava.
+projectsonGithub(approx.33,000repositories).Itiscom-
+posedoftuplesofclassenvironment(membervariablesand
+Java dataset (Ahmad et al., 2021) was collected from
+member methods), natural language (JavaDoc comments),
+GithubrepositoriesassociatedwithJavalanguageavailable
+andsourcecode.ItaimstogenerateJavacodefromNLdoc-
+on Google BigQuery. Authors follow Roziere et al. (2020)
+umentation and the class environment (used as a context).
+topreprocessthedata.
+Java code belongs to several domains. It has been used to
+fine-tunethemodels.Itcontains100𝐾,2𝐾,and2𝐾 linesof AlphaCode Pre-training was introduced by Li et al.
+NL-PLinthetrain,validation,andtestsets,respectively. (2022) to pretrained their model. The authors scrawled
+the data from public Github repositories. The pretrained
+CoNaLa (Yin et al., 2018) consists of query-code pairs
+datasetcontains715.1GBofcode,includingC++,C#,Go,
+collected from the website Stack Overflow via a mining
+Java,JavaScript,Lua,PHP,Python,Ruby,Rust,Scala,and
+method. It contains two programming languages: Python
+TypeScript.Fromtheseprogramminglanguages,113.8GB
+andJava.Itcontains11125,1237,and500linesofNL-PL
+consistofJavadata.
+inthetrain,validation,andtestsets,respectively.
+CodeContests was introduced by Li et al. (2022) to fine-
+MTG corpus (Ling et al., 2016) aims to generate source
+tunedtheirmodel.Theauthorscombinesscrapeddatafrom
+code given the card description in Trading Card Games
+Codeforces(Mirzayanov,2020)withexistingdatafromDe-
+(TCGs).Theauthorscollectedthedatafromtwoopensource
+scription2Code(Caballeroetal.,2016),andCodeNet(Puri
+implementationsofTCGs:MagictheGathering(MTG),and
+etal.,2021a).ItcontainsC++,Python,andJava.
+Hearthtone (HS). While the latter digital implementation
+is in python. we focus in this work on MTG dataset that BIGQUERYCODEGEN (Pangetal.,2022)containssix
+containsJavadigitalimplementation.Itcontains11969,664, programminglanguages:C,C++,Go,Java,JavaScript,and
+and664linesofNL-PLinthetrain,validation,andtestsets, Python. In total, it contains, 342.1 GB of data, including
+respectively. around 120.2 GB of Java data. It was used to pretrain the
+CODEGENmodels.
+CodeSearchNet (GeneralLanguageUnderstandingEval-
+uation benchmark for CODE) was introduced by Lu et al. PolyCoder Dataset (Xu et al., 2022) was collected from
+(2021). It contains six programming languages (Ruby, Githubrepositoriesthathaveatleast50stars.Itcontains12
+JavaScript, Go, Python, Java, and PHP) with 6.4M of uni- PLs(C,C#,C++,Go,Java,JavaScript,PHP,Python,Ruby,
+modal (only PL) data, and 2.1M bimodal (PL-NL) data- Rust, Scala, TypeScript), where each PL has a maximum
+points. The data was collected from Github code reposito- of 25K repositories. The raw data size is around 631 GB
+ries,andincludes10tasksover14differentdatasets. (including 60 GB for Java). To preprocess the data, the
+authors follow Codex process (Chen et al., 2021b). After
+First Author et al.: PreprintsubmittedtoElsevier Page 8 of 16
+Review of State-of-The-Art Methods for Java Code Generation from Natural Language Text
+Programming
+Dataset Size Source Proposedfor merits limitations
+language(PL)
+querynlincorporatesbothmember
+100𝐾,2𝐾,2𝐾lines
+CONCODE Java Github codegeneration largescale variablesandmembermethods.However,
+intrain/val/test
+inpractice,isnotanoptimalapproach.
+-Ifthereareseveralvalidsourcecode
+foraquestion,theannotators
+11125,1237,and500lines
+CoNaLa Python,Java StackOverflow classification manualannotation mightnotidentifyallofthem.
+intrain/val/test
+-Theannotatorscanfailwhenthe
+codesourceiscomplex.
+tradingcardgames newareaoffocuson -Theprogrammingofcardgamesis
+11969,664,and664lines
+MTGcorpus Python,Java MagictheGathering codegeneration codegeneration anicheindustrythatcaterstoa
+intrain/val/test
+andHearthtone forcardgames. specificdemographicwithinsociety.
+Ruby,JavaScript,Go, 6.4MofPLdata, -largescale Theauthorscreateproxydataset
+CodeSearchNet Github codesearch
+Python,Java,PHP 2.1MofPL-NLdata -expertannotators oflowerquality
+Thecodeinthedataset
+BIGQUERY C,C++,Go, 342.1GBoftotalcode, Multi-Turn -largescale
+- - exhibitscertainvulnerabilities
+CODEGEN Java,JavaScript,Python 120.3GBofJavacode programsynthesis -multi-lingualdataset
+andsafetyissues.
+-Thecodesamplesmaylack
+extensivecommentsandcould
+-codesimilarity
+14millionofcode -largescale beinmultiplelanguages.
+55different andclassification
+CodeNet samplesandapprox.500 AIZUandAtCoder -high-quality -Thecodesamplesoffer
+programminglanguages codetranslation
+millionlinesofcode annotations solutionsforprogrammingproblems
+-codeperformance
+thatareaimedatbeginners
+incollegeandhighschool.
+C++,C#,Go,
+AlphaCode
+Java,JavaScript,Lua, 715.1GBoftotalcode, -largescale Thedatasetmaycontain
+Pre-training Github codegeneration
+PHP,Python,Ruby, 113.8GBofJavacode -multiplePLs unsafecode
+dataset
+Rust,Scala,TypeScript
+-includesproblems,
+-therawdatasetsof
+Codeforces solutionsandtestcases
+13328,117,165inlines CodeContestscontaina
+CodeContests C++,Python,Java Description2Code codegeneration -containscorrectand
+train/valid/test highrateoffalse
+CodeNet incorrecthuman
+positivesamples.
+submissions
+C,C#,C++,
+Thecodesourcemay
+PolyCoder Go,Java,JavaScript, 631GBoftotalcode, codecompletion -largescale
+Github containvulnerabilities
+Dataset PHP,Python,Ruby, 60GBofJavacode codesynthesis -multiplePLs
+andsafetyissues.
+Rust,Scala,TypeScript
+-codecompletion
+TheStack 358languages -documentationgeneration -largescale itcontainsunsafecode
+6TBoftotalcode Github
+Dataset includingJava -auto-completionof -multiplePLs (maliciousfiles)
+codesnippets
+Githuband -thecodemaycontain
+Javadataset Java 352GB -codegeneration -specializedinJava
+StackOverflow vulnerabilities
+Table 1
+Summary of datasets used in literature
+filtering the data, the final data size is 243.6 GB, with 41 of overlapped n-grams between the ground truth and the
+GBforJavalanguage. predictiongeneratedbythemodel.Itconsiderssomecriteria
+to penalize the score, such as the sentence length. Overall,
+The Stack Dataset was proposed by Kocetkov et al. thismetricislessrigidthanEM,andacceptssmallvariations
+(2022). It is the largest code dataset so far. It contains 6 between two predicted codes. However, since the Ngrams
+TBofdatafrom358programminglanguages.Thecodewas order is not considered, it also ignores the semantic of the
+extractedfromGithubrepositorieswithpermissivelicenses, generatedcode.Also,itcanoverestimatethemodel’sscore.
+suchasMIT,BSD-3-Clause,ISC,ECLandApache2.0.
+CodeBLEU (Ren et al., 2020) uses the n-gram match
+scoreoftheBLEUmetricbetweenthegroundtruthandthe
+7. Evaluationmetrics
+generated sequence. Furthermore, it takes into account the
+The following metrics are used to evaluate Java Code codesyntax,andcodesemanticsbymatchingtheASTand
+Generation methods. A brief summary of these metrics is DFG, respectively. This metric is the most accurate one so
+presentedinTable2. farandisbetteradaptedforcodegeneration.UnlikeBLEU
+metric, it can be too strict and underestimate the model’s
+ExactMatch(EM) measurestheaccuracyofthemodel. score.
+Itdeterminesifthepredictionisthesameasthegroundtruth
+(alsoknownasreferenceorgoldstandard).Eventhoughthis
+8. ResultsandDiscussion
+metriciseasyandfasttocompute,andprovidesstraightfor-
+wardunderstandingofmodel’saccuracy,itistoorigidthat Main Results - Table 3 displays the hyper-parameters
+itdoesnottakeintoaccountthesemanticsimilaritybetween utilizedbystate-of-the-arttechniquesduringthepretraining
+referenceandpredictioncodes.Itpenalizesthemodeleven and fine-tuning stages to evaluate the CONCODE dataset.
+forwhitespacesandthevariablenames.Naturally,thisisthe Meanwhile, Table 4 presents the outcomes of diverse ap-
+mostdifficultmetrictosatisfy. proaches on the same dataset. Since CONCODE was re-
+leasedin2018,ithasbeenthemainbenchmarktoevaluate
+BLEU (Papinenietal.,2002)wasoriginallyintroducedto Java code generation task. The first two lines of the table
+evaluatemachinetranslationtask.Itmeasuresthepercentage
+First Author et al.: PreprintsubmittedtoElsevier Page 9 of 16
+Review of State-of-The-Art Methods for Java Code Generation from Natural Language Text
+Metric Proposedfor Merits Limitations
+-easytocompute -rigidmetric
+-codecompletion
+ExactMatch(EM) -fastestininference -semanticnotconsidered
+-codesummarization
+-easytointerpret -penalizesevenwhitespaces
+-lessrigidthatEM -Ngramordernotconsidered
+BLEU(Papinenietal.,2002) machinetranslation -easytocompute -semanticnotconsidered
+-acceptsmultiplecorrectanswers -canbetoooptimistic
+-moreaccurate -slowerininference
+CodeBLEU(Renetal.,2020) codegeneration -betteradaptedforcodegeneration -moredifficulttocompute
+-betterhandlingofsemantic -canbetoostrict
+Table 2
+Summary of metrics used in literature
+Input/Output Batch Training Vocab
+Model LR Optimizer Dropout
+Length Size(B) steps Size
+GPT-2pretraining 1024 5e-5 Adam 0.1 32 - 50,000
+PLBARTpretraining 512/512 1e-6 Adam 0.1,0.5 2048 100K 50,004
+PLBARTfine-tuning 512/512 3e-5 Adam 0.1 32 100K 50,004
+CoTexTpretraining 1024/1024 1e-3 Adam - 128 200K 32,000
+CoTexT-basefine-tuning 256/256 1e-3 Adam - 128 45K 32,000
+JaCoText-basefine-tuning 379/379 1e-3 Adam - 128 60K 32,000
+CodeBERTfine-tuning 512 5e-5 Adam 0.1 32 50,265
+GraphCodeBERTfine-tuning 256 1e-4 Adam - 64 -
+CodeT5-basepretraining 512/256 2e-4 Adam - 1024 150epochs 32,100
+CodeT5-basefine-tuning 320/150 5e-5 Adam - 32 30epochs 32,100
+StructCoderpretraining 400/400 5e-5 AdamW - 32 12K 32,100
+StructCoderfine-tuning 325/155 5e-5 AdamW - 32 100K 32,100
+Table 3
+Hyper-parameters used by state-of-the-art methods during pretraining and fine tuning
+correspondtoresultsofRNN-basedmethods.Thelatterob- modelisdirectlyfine-tunedfromGPT-2weights,whilethe
+tainthelowestscores.Thisfindingisnotsurprisingbecause second and third models were trained on the CodeSearch-
+recurrentneuralnetworksarenotaslargeasTransformers, Net dataset. The main difference is that CodeGPT-adapted
+andhavelimitedgeneralizationcapability.Inaddition,they initializes the training process from the GPT-2 checkpoint,
+sufferoftenfromvanishingandexplodinggradientproblems andCodeGPT-2performsatrainingfromscratch.
+(Hochreiter,1998;Squartinietal.,2003;Fadziso,2020). ResultsshowthatperformanceoftheTransformer-based
+AsfortheTransfomer-basedmethods,mostofencoder- models varies significantly. The highest overall results are
+decodermethodsarebasedonT5(namelyCodeT5,CoTexT, obtained with the very recent state-of-the-art methods that
+JaCoText, and StructCoder) or BART (namely PLBART) are based on T5 (Raffel et al., 2020) and GPT-2 (Radford
+models. In the case of T5-base, the scores are obtained etal.,2019)models.ThebestmodelintermsofBLEUand
+after fine-tuning directly from the pretrained model. How- CodeBLEUmetricsisCodeT5-large.Thisisintuitiveinsofar
+ever,PLBART,CoTexTandJaCoTextwerepretrainedusing asithasthelargestnumberofparameters(770M).However,
+source code datasets, and are based on previously trained this boost in performance comes at an expense of longer
+models. trainingtimeduetothelargecomplexityofthemodel.The
+Encoder-only methods are generally based on BERT. bestmodelintermsofExactMatchmetricisREDCODER
+AuthorsofCodeBERTandGraphCodeBERTdidnotorig- (Parvez et al., 2021), indicating that it generates code that
+inally used them for Java Code Generation on CONCODE is more similar syntactically to the ground-truth code. It is
+dataset. Instead, they used them in other tasks such as noteworthytomentionthat,ontheonehand,resultsarevery
+code search and code documentation generation. Results comparablebetweenCodeT5-largeandREDCODER,while
+presented here were reported by Parvez et al. (2021) who on the other hand, there is a huge difference between their
+usedthemodelsforcodegeneration.NotethatCodeBERT number of parameters. In fact, CodeT5-large is x5.5 larger
+(Feng et al., 2020) is the first model to be pretrained on than REDCODER. Depending on the application domain
+variousprogramminglanguages. andontheavailablecomputationalresources,acompromise
+Decoder-only models presented by Lu et al. (2021) are shouldbedoneinordertoprioritizethegaininmemoryor
+versions based on GPT-2 (Radford et al., 2019). The first thegaininperformance.
+First Author et al.: PreprintsubmittedtoElsevier Page 10 of 16
+Review of State-of-The-Art Methods for Java Code Generation from Natural Language Text
+CodeBERT (Feng et al., 2020) and GraphCodeBERT methods to overcome the different tasks. However, as time
+(Guoetal.,2021)havealsoachievedrelativelyhighscores, has progressed and technology has advanced, the demand
+butnotashighastheCodeT5-largeandREDCODER.This for more sophisticated techniques has increased to tackle
+islikelyduetothefactthattheyhavefewernumberofparam- the most complex code generation obstacles. One of the
+eters (125M, 110M versus 770M and 140M, respectively). techniques that has made significant strides in this field is
+Interestingly, REDCODER outperforms CodeGPT-2 even the utilization of RNNs, such as LSTMs (Hochreiter and
+thought it has less than half of its parameters only (140 M Schmidhuber, 1997), and later GRUs (Cho et al., 2014a).
+vs 345 M). This proves the effectiveness of retrieval and These advanced techniques have greatly enhanced the ca-
+generation models SCODER-R and SCODER-G, the main pability to address the challenges of code generation. For
+buildingblocksofREDCODER. instance,Iyeretal.(2018)introducedCONCODE,adataset
+StructCoder (Tipirneni et al., 2022) and JaCoText with the purpose of generating Java code through natural
+(Lopez Espejel et al., 2023) have very comparable EM language. The authors used a sequence-to-sequence model
+(22.35 vs 22.15) and BLEU (40.91 vs 39.07) results, with based on RNNs, which was similar to other models used
+StructCoder being slightly better than JaCoText. The latter inthefield(Neelakantanetal.,2016;Lingetal.,2016).At
+improvestheresultsofCoTextbyanaverageof2.5points. thetimeofthedevelopmentofthismodel,theintegrationof
+JaCotextincrementsCotexTbyaddingapretrainingphasein theattentionmechanism(Guetal.,2016a)wasasignificant
+whichlargeinputsequencewereused.Finally,UniXcoder, breakthroughincodeandtextgeneration.
+CodeT5-small, and 𝑇5 achieve the lowest results in Although models based on Recurrent Neural Networks
+𝑏𝑎𝑠𝑒
+Transformer-based methods. Overall Code-T5-small is the (RNNs) were initially promising, they were hindered by
+model that best balances the compromise between perfor- severaldrawbacks.Oneofthesewasthevanishinggradient
+manceandnumberofparameters,andispreferableisstricter problem (Hochreiter, 1998; Squartini et al., 2003; Fadziso,
+applicationdomains. 2020), and also they were limited in their ability to effec-
+Last but not least, results show that using pretraining tivelyprocesslargeamountsofinputdata.Asaresult,RNN-
+leadstoabetterperformancethantrainingfromscratch.This basedmodelsoftentruncatednaturallanguagerequestsand
+canbeseenwhencomparingtheperformancesofCodeGPT- codesequences,leadingtosignificantinformationlossand
+adaptedandCodeGPT-2.Asmentionedpreviously,thefor- incompletegeneratedcode.Furthermore,duetoJava’sstrict
+merisinitializedfromGPT-1checkpoints,andthelatteris programmingrules,thecodegeneratedbythesemodelswas
+trained from scratch. This finding was also confirmed by oftenriddledwithsyntaxerrorsandcouldnotbeexecuted.
+Feng et al. (2020) and Rozière et al. (2021). Therefore, we After the big success of Transformers Vaswani et al.
+recommend using pretrained models whose representation (2017) in NLP tasks, many Java Code Generation re-
+is already stable and can facilitate the training of down- searchers shifted their efforts to this neural network archi-
+streamingtasks. tecture, and proposed the above mentioned methods. The
+Finally,sincethehighestachievedscoreonCONCODE most succesful models are based on T5 and GPT-2 mod-
+datasetis45.08,thereisstillalargegapbetweenthebestJava els. CodeT5 models use a learning objective task that was
+codegenerationmethodsandthegroundtruth.Thismeans specificallydesignedtotakeadvantageoftheprogramming
+thatmoreeffortisneededtotacklethistask. language structure. In Wang et al. (2021), CodeT5-small
+andCodeT5-baseachievedremarkableimprovementsinthe
+General Discussion - Over the years, generating code performance of code generation task using bimodal dual
+through natural language has been a challenging task. The learningobjective.Authorsleveragethetokentypeofiden-
+maingoalofthistaskistoincreaseprogrammers’productiv- tifiersfromtheASTsuchasfunctionnamesandvariablesto
+itybyautomatingtediousandrepetitivecodingtasks.Inthis enrichthesemanticfeatures.Wangetal.(2021)studiedthree
+paper, we present advancements in code generation within objectives: Masked Span Prediction (MSP), Identifier Tag-
+theJavaprogramminglanguage.However,inordertofully ging(IT),andMaskedIdentifierPrediction(MIP).Itturns
+comprehendthesubjectmatter,itiscrucialtohaveagraspof outthatMaskedSpanPredictionisthemostcrucialobjective
+thehistoricaldevelopmentofcodegenerationinotherfields. forlearningthesyntacticinformationinthegenerationtasks.
+Early attempts to generate code automatically involved However,thesimultaneousoptimizationofthethreeofthem
+translating natural language requests into regular expres- achievethebestperformance.Alternatively,Leetal.(2022)
+sions(Angluin,1987;Ranta,1998),logicalformsbasedon showthatCodeT5-largeobtainshigherscoresthanCodeT5-
+probabilisticcategorialgrammars(ZettlemoyerandCollins, small and CodeT5-base. This finding is intuitive since the
+2005b), agent-specific language (Kate et al., 2005). These modelarchitectureismorecomplex.
+approacheslaidthegroundworkformoresophisticatedtech- After the success of CodeT5, StructCoder (Tipirneni
+niques,suchassemanticparsing(WongandMooney,2006; et al., 2022) surged. It combines T5-base architecture with
+Lu et al., 2008) and SQL query generation (Miller et al., ASTs. Moreover, authors use DFGs to make aware both
+1996;RamaswamyandKleindienst,2000),whichweredis- the encoder and decoder of the syntax and the data flow.
+cussedinSection3. ThissystemachievedbetterresultsthanCodeT5usingT5-
+The previously mentioned methods utilize basic tech- base. Therefore,AST andDFGobjectives arebeneficial to
+niques such as rule-based systems and simple statistical learncorrectlythesemanticandsyntaxofJavaprogramming
+First Author et al.: PreprintsubmittedtoElsevier Page 11 of 16
+Review of State-of-The-Art Methods for Java Code Generation from Natural Language Text
+Score(↑ ) #params(↓)
+Category Model EM BLEU CodeBLEU
+Seq2Seq(YinandNeubig,2017) 6.65 21.29 - -
+RNN-based
+Iyeretal.(2018) 8.60 22.11 - -
+sdohteMdesab-remrofsnarT
+CodeBERT(Fengetal.,2020) 18.00 28.70 31.40 125M
+Encoder-only
+GraphCodeBERT(Guoetal.,2021) 18.70 33.40 35.90 110M
+GPT-2(Radfordetal.,2019) 17.35 25.37 29.69 345M
+Decoder-only CodeGPT-2(Luetal.,2021) 18.35 28.69 32.71 124M
+CodeGPT-adapted(Luetal.,2021) 20.10 32.79 35.98 124M
+𝑇5 (Raffeletal.,2020) 18.65 32.74 35.95 220M
+𝑏𝑎𝑠𝑒
+CodeT5-small(Wangetal.,2021) 21.55 38.13 41.39
++dual-gen 19.95 39.02 42.21 60M
++multi-task 20.15 35.89 38.83
+CodeT5-base(Wangetal.,2021) 22.30 40.73 43.20
++dual-gen 22.70 41.48 44.10 220M
+Encoder-decoder +multi-task 21.15 37.54 40.01
+CodeT5-large(Leetal.,2022) 22.65 42.66 45.08 770M
+PLBART(Ahmadetal.,2021) 18.75 36.69 38.52 140M
+CoTexT(Phanetal.,2021) 20.10 37.40 40.14 220M
+JaCoText(LopezEspejeletal.,2023) 22.15 39.07 41.53 220M
+REDCODER(Parvezetal.,2021) 23.40 41.60 43.40 140M
+REDCODER-EXT(Parvezetal.,2021) 23.30 42.50 43.40 140M
+StructCoder(Tipirnenietal.,2022) 22.35 40.91 44.76 220M
+UniXcoder(Guoetal.,2022) 22.60 38.23 - 125M
+Table 4
+Results of Java code generation task on the CONCODE dataset. We present EM, BLEU, and CodeBLEU scores, as well as the
+number of parameters for each method. Best results are in bold.
+language. Another interesting models is REDCODER, the ChatGPT4isnottheonlyattempttoimproveChatGPT,
+latteristhefirstmodeltousetwoencoders.Thefirstencoder other decoder-only competitors are trying hard to outper-
+isusedfortheretrievalmoduletosearchforrelevantcodein formit.TwoexamplesofsuchsystemsareGoogle’sBARD
+the dataset, the second one is part of the generator module (Google,2023)thatisbasedonLaMDAmodel(Thoppilan
+(encoder-decoder model) to generate the Java source code. etal.,2022),andLLaMA(Touvronetal.,2023)thatisbased
+REDCODERachievesthebestExactMatch(EM)score. onChinchillamodel.Itisnoteworthytomentionthatallvery
+GPT-3modelinanimprovementofGPT-2,introduced recentLLMshavenotbeenyetfullybenchmarkedonanyof
+by Brown et al. (2020). It is a breakthrough in Large Lan- state-of-the-artdatasetsforJavacodegeneration,atthetime
+guage Models (LLMs), as it demonstrates the feasibility ofwritingthisarticle.
+of scaling the model and achieving competitive scores in
+varioustasksthroughfew-shotlearning.Thismodelwasthe
+9. ConclusionsandPerspectives
+startingpointtomanyvariantsamongwhichOpenAI’sChat-
+GPTchatbot(OpenIA,2023).ChatGPT(OpenIA,2023)is In this paper, we presented a comparison review of
+basedontheGPT-3.5model,whichhasshownremarkable state-of-the-art methods in Java Code Generation using
+performance in various tasks, such as machine translation CONCODE dataset. Many methods surged during the
+in multiple languages, automatic summarization, parts of last years and we categorized them based on their ar-
+speech tagging, and even code generation through natural chitecture: (1) RNN-based methods, and (2) Transformer-
+languagerequests.Inparticular,ChatGPThasdemonstrated based methods. The latter are divided into three subcate-
+impressiveproficiencyinwritingcomplexJavasourcecode, gories:encoder-basedmethods,decoder-basedmethods,and
+evenforapplications. encoder-decoder-basedmethods.Weproposethefollowing
+DespitetheimpressiveresultsshowedbyChatGPT,the futuredirections:
+latter has many limitations, out of which, we mention the
+following. (1) ChatGPT is not able to fully understand • Itwouldbeinterestingtousebeamsearchalgorithm
+naturallanguagerequeststhatarenotwell-formulated(such to detect syntax errors, similarly to what is done in
+as missing commas), and (2) ChatGPT is sensitive to the thesemanticparserPICARDinSQLcodegeneration.
+prompts used by users to interact with it. The new version (Scholaketal.,2021)
+of ChatGPT (called ChatGPT4) was proposed precisely to
+• Onebigdrawbackofcurrentcodegenerationmetrics
+augment the understanding capacity of it. ChatGPT4 has
+istheirhighdependencyonsyntaxsimilaritybetween
+made significant advancements in Java Code generation
+reference and predicted codes. It is really important
+fromcomplexqueries,aswellasinworkingonmultimodal
+and right time to start focusing on handling the se-
+inputssuchastext,images,andvideo.
+mantic part of it. Even though that two codes are
+First Author et al.: PreprintsubmittedtoElsevier Page 12 of 16
+Review of State-of-The-Art Methods for Java Code Generation from Natural Language Text
+syntacticallydifferent,theystillcanperformthesame Larochelle,H.,Ranzato,M.,Hadsell,R.,Balcan,M.,Lin,H.(Eds.),Ad-
+task. vancesinNeuralInformationProcessingSystems,CurranAssociates,
+Inc.. pp. 1877–1901. URL: https://proceedings.neurips.cc/paper_
+• One straightforward line of work is to exploit more files/paper/2020/file/1457c0d6bfcb4967418bfb8ac142f64a-Paper.pdf.
+Java datasets such as AlphaCode (Li et al., 2022), Caballero, E., OpenAI, ., Sutskever, I., 2016. Description2Code
+PolyCoder(Xuetal.,2022),andAlphaCode(Lietal.,
+Dataset. URL: https://github.com/ethancaballero/description2code,
+doi:10.5281/zenodo.5665051.
+2022)inthegenerationprocess,especiallyatthefine
+Chen,M.,Tworek,J.,Jun,H.,Yuan,Q.,Ponde,H.,Kaplan,J.,Edwards,
+tuningstep.Thisisbecausecurrentmethodsonlyuse H.,Burda,Y.,Joseph,N.,Brockman,G.,Ray,A.,Puri,R.,Krueger,G.,
+Java data to pretrain the model, while they fine-tune Petrov,M.,Khlaaf,H.,Sastry,G.,Mishkin,P.,Chan,B.,Gray,S.,Ryder,
+modelsonPythonbenchmarks. N.,Pavlov,M.,Power,A.,Kaiser,L.,Bavarian,M.,Winter,C.,Tillet,
+P.,Such,F.P.,Cummings,D.W.,Plappert,M.,Chantzis,F.,Barnes,E.,
+• Despite the fact that large language models such as Herbert-Voss,A.,Guss,W.H.,Nichol,A.,Babuschkin,I.,Balaji,S.A.,
+Jain,S.,Carr,A.,Leike,J.,Achiam,J.,Misra,V.,Morikawa,E.,Radford,
+ChatGPT, Bard and LLaMA provide extraordinary
+A.,Knight,M.M.,Brundage,M.,Murati,M.,Mayer,K.,Welinder,P.,
+performances in code generation, their number of
+McGrew,B.,Amodei,D.,McCandlish,S.,Sutskever,I.,Zaremba,W.,
+parametersishuge.Futureresearchwouldfocusonthe 2021a. Evaluating large language models trained on code. ArXiv
+compressionofsuchlanguagemodels,ortheproposal abs/2107.03374.
+of smaller-scale efficient language models. This will Chen,M.,Tworek,J.,Jun,H.,Yuan,Q.,Ponde,H.,Kaplan,J.,Edwards,
+H.,Burda,Y.,Joseph,N.,Brockman,G.,Ray,A.,Puri,R.,Krueger,G.,
+be very useful for researcher and companies that do
+Petrov,M.,Khlaaf,H.,Sastry,G.,Mishkin,P.,Chan,B.,Gray,S.,Ryder,
+nothaveenoughcomputationalresourcesormemory
+N.,Pavlov,M.,Power,A.,Kaiser,L.,Bavarian,M.,Winter,C.,Tillet,
+(Taoetal.,2022). P.,Such,F.P.,Cummings,D.W.,Plappert,M.,Chantzis,F.,Barnes,E.,
+Herbert-Voss,A.,Guss,W.H.,Nichol,A.,Babuschkin,I.,Balaji,S.A.,
+• Alternatively, another perspective would be to work Jain,S.,Carr,A.,Leike,J.,Achiam,J.,Misra,V.,Morikawa,E.,Radford,
+on training time optimization, especially for large A.,Knight,M.M.,Brundage,M.,Murati,M.,Mayer,K.,Welinder,P.,
+models such as ChatGPT. For instance, continual McGrew,B.,Amodei,D.,McCandlish,S.,Sutskever,I.,Zaremba,W.,
+2021b. Evaluating large language models trained on code. ArXiv
+learningalgorithmscanbeusedinordertointegrate
+abs/2107.03374.
+newdataon-the-fly,withoutretrainingthemodelfrom
+Cho,K.,vanMerriënboer,B.,Gulcehre,C.,Bahdanau,D.,Bougares,F.,
+scratchateachupdate(Gaoetal.,2023). Schwenk,H.,Bengio,Y.,2014a.Learningphraserepresentationsusing
+RNNencoder–decoderforstatisticalmachinetranslation,in:Proceed-
+• Current code generation models lack of reasoning ingsofthe2014ConferenceonEmpiricalMethodsinNaturalLanguage
+abilities. Another perspective would be to develop Processing(EMNLP),pp.1724–1734.
+more the common sense of language models to im- Cho,K.,vanMerrienboer,B.,Gülçehre,Ç.,Bahdanau,D.,Bougares,F.,
+Schwenk,H.,Bengio,Y.,2014b.Learningphraserepresentationsusing
+prove their generation semantic, thus, their perfor-
+RNNencoder-decoderforstatisticalmachinetranslation,in:Moschitti,
+mance(HuangandChang,2022).
+A.,Pang,B.,Daelemans,W.(Eds.),Proceedingsofthe2014Conference
+onEmpiricalMethodsinNaturalLanguageProcessing,EMNLP2014,
+October25-29,2014,Doha,Qatar,AmeetingofSIGDAT,aSpecial
+References InterestGroupoftheACL,ACL.pp.1724–1734.
+Clark,K.,Luong,M.,Le,Q.V.,Manning,C.D.,2020. ELECTRA:pre-
+Ahmad,W.,Chakraborty,S.,Ray,B.,Chang,K.W.,2021. Unifiedpre-
+training text encoders as discriminators rather than generators. 8th
+trainingforprogramunderstandingandgeneration,in:Proceedingsof
+International Conference on Learning Representations, ICLR 2020,
+the2021ConferenceoftheNorthAmericanChapteroftheAssociation
+forComputationalLinguistics:HumanLanguageTechnologies.
+AddisAbaba,Ethiopia,April26-30,2020URL:https://openreview.
+Angluin,D.,1987. Learningregularsetsfromqueriesandcounterexam-
+net/forum?id=r1xMH1BtvB.
+Dai,Z.,Yang,Z.,Yang,Y.,Carbonell,J.G.,Le,Q.V.,Salakhutdinov,R.,
+ples. InformationandComputation75,87–106. URL:https://www.
+2019.Transformer-xl:Attentivelanguagemodelsbeyondafixed-length
+sciencedirect.com/science/article/pii/0890540187900526,doi:https://
+context,in:Korhonen,A.,Traum,D.R.,Màrquez,L.(Eds.),ACL(1),
+doi.org/10.1016/0890-5401(87)90052-6.
+AssociationforComputationalLinguistics.pp.2978–2988.
+Ba, J.L., Kiros, J.R., Hinton, G.E., 2016. Layer normalization. URL:
+Devlin,J.,Chang,M.,Lee,K.,Toutanova,K.,2019.BERT:pre-trainingof
+http://arxiv.org/abs/1607.06450.citearxiv:1607.06450.
+deepbidirectionaltransformersforlanguageunderstanding,in:Burstein,
+Black, S., Biderman, S., Hallahan, E., Anthony, Q., Gao, L., Golding,
+J.,Doran,C.,Solorio,T.(Eds.),Proceedingsofthe2019Conference
+L.,He,H.,Leahy,C.,McDonell,K.,Phang,J.,Pieler,M.,Prashanth,
+oftheNorthAmericanChapteroftheAssociationforComputational
+U.S.,Purohit,S.,Reynolds,L.,Tow,J.,Wang,B.,Weinbach,S.,2022.
+Linguistics:HumanLanguageTechnologies,NAACL-HLT2019,Min-
+GPT-NeoX-20B: An open-source autoregressive language model, in:
+neapolis,MN,USA,June2-7,2019,Volume1(LongandShortPapers),
+ProceedingsofBigScienceEpisode#5–WorkshoponChallenges&
+AssociationforComputationalLinguistics.pp.4171–4186.
+PerspectivesinCreatingLargeLanguageModels.
+Driess,D.,Xia,F.,Sajjadi,M.S.M.,Lynch,C.,Chowdhery,A.,Ichter,B.,
+Branavan,S.,Zettlemoyer,L.,Barzilay,R.,2010. Readingbetweenthe
+Wahid,A.,Tompson,J.,Vuong,Q.,Yu,T.,Huang,W.,Chebotar,Y.,
+lines:Learningtomaphigh-levelinstructionstocommands,in:Proceed-
+Sermanet,P.,Duckworth,D.,Levine,S.,Vanhoucke,V.,Hausman,K.,
+ingsofthe48thAnnualMeetingoftheAssociationforComputational
+Toussaint, M., Greff, K., Zeng, A., Mordatch, I., Florence, P., 2023.
+Linguistics,AssociationforComputationalLinguistics,Uppsala,Swe-
+Palm-e: An embodied multimodal language model. arXiv preprint
+den.pp.1268–1277.URL:https://aclanthology.org/P10-1129.
+arXiv:2303.03378.
+Brown,T.,Mann,B.,Ryder,N.,Subbiah,M.,Kaplan,J.D.,Dhariwal,P.,
+Fadziso, T., 2020. Overcoming the vanishing gradient problem during
+Neelakantan,A.,Shyam,P.,Sastry,G.,Askell,A.,Agarwal,S.,Herbert-
+learningrecurrentneuralnets(rnn). AsianJournalofAppliedScience
+Voss,A.,Krueger,G.,Henighan,T.,Child,R.,Ramesh,A.,Ziegler,D.,
+andEngineering9,207–218.
+Wu,J.,Winter,C.,Hesse,C.,Chen,M.,Sigler,E.,Litwin,M.,Gray,S.,
+Feng,Z.,Guo,D.,Tang,D.,Duan,N.,Feng,X.,Gong,M.,Shou,L.,Qin,
+Chess,B.,Clark,J.,Berner,C.,McCandlish,S.,Radford,A.,Sutskever,
+B.,Liu,T.,Jiang,D.,Zhou,M.,2020. Codebert:Apre-trainedmodel
+I., Amodei, D., 2020. Language models are few-shot learners, in:
+First Author et al.: PreprintsubmittedtoElsevier Page 13 of 16
+Review of State-of-The-Art Methods for Java Code Generation from Natural Language Text
+forprogrammingandnaturallanguages. URL:http://arxiv.org/abs/ Weinberger,K.Q.(Eds.),ProceedingsofThe33rdInternationalCon-
+2002.08155. cite arxiv:2002.08155Comment: Accepted to Findings of ferenceonMachineLearning,PMLR,NewYork,NewYork,USA.pp.
+EMNLP2020.12pages. 1378–1387.URL:https://proceedings.mlr.press/v48/kumar16.html.
+Gao,S.,Zhang,H.,Gao,C.,Wang,C.,2023. Keepingpacewithever- Kushman,N.,Barzilay,R.,2013a. Usingsemanticunificationtogenerate
+increasingdata:Towardscontinuallearningofcodeintelligencemodels. regularexpressionsfromnaturallanguage,in:Proceedingsofthe2013
+CoRRabs/2302.03482. ConferenceoftheNorthAmericanChapteroftheAssociationforCom-
+Google,2023. Anoverviewofbard:anearlyexperimentwithgenerative putationalLinguistics:HumanLanguageTechnologies,Associationfor
+ai.URL:https://ai.google/static/documents/google-about-bard.pdf. ComputationalLinguistics,Atlanta,Georgia.pp.826–836.URL:https:
+Graves,A.,Wayne,G.,Danihelka,I.,2014.Neuralturingmachines.arxiv //aclanthology.org/N13-1103.
+Citearxiv:1410.5401. Kushman,N.,Barzilay,R.,2013b. Usingsemanticunificationtogenerate
+Gu,J.,Lu,Z.,Li,H.,Li,V.O.K.,2016a.Incorporatingcopyingmechanism regularexpressionsfromnaturallanguage,in:Proceedingsofthe2013
+insequence-to-sequencelearning.CoRRabs/1603.06393. ConferenceoftheNorthAmericanChapteroftheAssociationforCom-
+Gu, X., Zhang, H., Zhang, D., Kim, S., 2016b. Deep api learning, in: putationalLinguistics:HumanLanguageTechnologies,Associationfor
+Proceedingsofthe201624thACMSIGSOFTInternationalSymposium ComputationalLinguistics,Atlanta,Georgia.pp.826–836.URL:https:
+on Foundations of Software Engineering, Association for Computing //aclanthology.org/N13-1103.
+Machinery,NewYork,NY,USA.p.631–642. URL:https://doi.org/ Le,H.,Wang,Y.,Gotmare,A.D.,Savarese,S.,Hoi,S.C.H.,2022.Coderl:
+10.1145/2950290.2950334,doi:10.1145/2950290.2950334. Mastering code generation through pretrained models and deep rein-
+Guo,D.,Lu,S.,Duan,N.,Wang,Y.,Zhou,M.,Yin,J.,2022. Unixcoder: forcementlearning.arXivpreprintarXiv:2207.01780.
+Unifiedcross-modalpre-trainingforcoderepresentation.arxiv. Lewis,M.,Liu,Y.,Goyal,N.,Ghazvininejad,M.,Mohamed,A.,Levy,O.,
+Guo,D.,Ren,S.,Lu,S.,Feng,Z.,Tang,D.,Liu,S.,Zhou,L.,Duan,N.,Svy- Stoyanov,V.,Zettlemoyer,L.,2020. BART:Denoisingsequence-to-
+atkovskiy,A.,Fu,S.,Tufano,M.,Deng,S.K.,Clement,C.B.,Drain,D., sequencepre-trainingfornaturallanguagegeneration,translation,and
+Sundaresan,N.,Yin,J.,Jiang,D.,Zhou,M.,2021.Graphcodebert:Pre- comprehension,in:Proceedingsofthe58thAnnualMeetingoftheAs-
+trainingcoderepresentationswithdataflow. 9thInternationalConfer- sociationforComputationalLinguistics,AssociationforComputational
+enceonLearningRepresentations,ICLR2021,VirtualEvent,Austria, Linguistics,Online.pp.7871–7880. URL:https://aclanthology.org/
+May3-7,2021URL:https://openreview.net/forum?id=jLoC4ez43PZ. 2020.acl-main.703,doi:10.18653/v1/2020.acl-main.703.
+Hernandez,D.,Kaplan,J.,Henighan,T.,McCandlish,S.,2021. Scaling Li,Y.,Choi,D.,Chung,J.,Kushman,N.,Schrittwieser,J.,Leblond,R.,
+lawsfortransfer.arXivpreprintarXiv:2102.01293. Eccles, T., Keeling, J., Gimeno, F., Dal Lago, A., Hubert, T., Choy,
+Hochreiter, S., 1998. The vanishing gradient problem during learning P., de Masson d’Autume, C., Babuschkin, I., Chen, X., Huang, P.S.,
+recurrentneuralnetsandproblemsolutions. InternationalJournalof Welbl,J.,Gowal,S.,Cherepanov,A.,Molloy,J.,Mankowitz,D.,Suther-
+Uncertainty,FuzzinessandKnowledge-BasedSystems6,107–116. landRobson,E.,Kohli,P.,deFreitas,N.,Kavukcuoglu,K.,Vinyals,O.,
+Hochreiter,S.,Schmidhuber,J.,1997. Longshort-termmemory. Neural 2022.Competition-levelcodegenerationwithalphacode.arXivpreprint
+computation9,1735–1780. arXiv:2203.07814.
+Hoffmann,J.,Borgeaud,S.,Mensch,A.,Buchatskaya,E.,Cai,T.,Ruther- Ling,W.,Blunsom,P.,Grefenstette,E.,Hermann,K.M.,Kočiský,T.,Wang,
+ford,E.,deLasCasas,D.,Hendricks,L.A.,Welbl,J.,Clark,A.,Hen- F., Senior, A., 2016. Latent predictor networks for code generation,
+nigan,T.,Noland,E.,Millican,K.,vandenDriessche,G.,Damoc,B., in: Proceedings of the 54th Annual Meeting of the Association for
+Guy,A.,Osindero,S.,Simonyan,K.,Elsen,E.,Rae,J.W.,Vinyals,O., ComputationalLinguistics(Volume1:LongPapers),pp.599–609.
+Sifre,L.,2022. TrainingCompute-OptimalLargeLanguageModels. Lopez Espejel, J., Alassan, M.S.Y., Dahhane, W., Ettifouri, E.H., 2023.
+arXive-prints. Jacotext:Apretrainedmodelforjavacode-textgeneration.International
+Huang, J., Chang, K.C.C., 2022. Towards reasoning in large language JournalofComputerandSystemsEngineering17,100–105.
+models:Asurvey.arXivpreprintarXiv:2212.10403. Loshchilov,I.,Hutter,F.,2019. Decoupledweightdecayregularization.
+Husain, H., Wu, H., Gazit, T., Allamanis, M., Brockschmidt, M., 7thInternationalConferenceonLearningRepresentations,ICLR2019,
+2019. Codesearchnetchallenge:Evaluatingthestateofsemanticcode NewOrleans,LA,USA,May6-9,2019URL:https://openreview.net/
+search.CoRRabs/1909.09436.URL:http://arxiv.org/abs/1909.09436, forum?id=Bkg6RiCqY7.
+arXiv:1909.09436. Lu,S.,Guo,D.,Ren,S.,Huang,J.,Svyatkovskiy,A.,Blanco,A.,Clement,
+Inc.,A.,2022.Atcoder.https://atcoder.jp/.Accessed:2022-10-28. C.B.,Drain,D.,Jiang,D.,Tang,D.,Li,G.,Zhou,L.,Shou,L.,Zhou,
+Iyer,S.,Konstas,I.,Cheung,A.,Zettlemoyer,L.,2018.Mappinglanguage L.,Tufano,M.,Gong,M.,Zhou,M.,Duan,N.,Sundaresan,N.,Deng,
+tocodeinprogrammaticcontext,in:Proceedingsofthe2018Conference S.K.,Fu,S.,Liu,S.,2021. Codexglue:Amachinelearningbenchmark
+onEmpiricalMethodsinNaturalLanguageProcessing,Associationfor datasetforcodeunderstandingandgeneration.ArXivabs/2102.04664.
+ComputationalLinguistics,Brussels,Belgium.pp.1643–1652. URL: Lu,W.,Ng,H.T.,Lee,W.S.,Zettlemoyer,L.S.,2008. Agenerativemodel
+https://aclanthology.org/D18-1192,doi:10.18653/v1/D18-1192. forparsingnaturallanguagetomeaningrepresentations,in:Proceedings
+Joulin,A.,Mikolov,T.,2015. Inferringalgorithmicpatternswithstack- ofthe2008ConferenceonEmpiricalMethodsinNaturalLanguagePro-
+augmentedrecurrentnets. AdvancesinNeuralInformationProcessing cessing,AssociationforComputationalLinguistics,Honolulu,Hawaii.
+Systems28.URL:https://proceedings.neurips.cc/paper_files/paper/ pp.783–792.URL:https://aclanthology.org/D08-1082.
+2015/file/26657d5ff9020d2abefe558796b99584-Paper.pdf. Miller,S.,Stallard,D.,Bobrow,R.,Schwartz,R.,1996. Afullystatistical
+Kate,R.J.,Wong,Y.W.,Mooney,R.J.,2005.Learningtotransformnatural approach to natural language interfaces, in: 34th Annual Meeting of
+toformallanguages,in:Proceedingsofthe20thNationalConferenceon the Association for Computational Linguistics, Association for Com-
+ArtificialIntelligence-Volume3,AAAIPress.p.1062–1068. putationalLinguistics,SantaCruz,California,USA.pp.55–61. URL:
+Kingma,D.P.,Ba,J.,2015. Adam:Amethodforstochasticoptimization. https://aclanthology.org/P96-1008,doi:10.3115/981863.981871.
+3rdInternationalConferenceonLearningRepresentations,ICLR2015, Mirzayanov, M., 2020. Codeforces: Results of 2020. URL: https://
+SanDiego,CA,USA,May7-9,2015,ConferenceTrackProceedings codeforces.com/blog/entry/89502.
+URL:http://arxiv.org/abs/1412.6980. Mou, L., Men, R., Li, G., Zhang, L., Jin, Z., 2015. On end-to-end
+Kocetkov,D.,Li,R.,BenAllal,L.,Li,J.,Mou,C.,MuñosFerrandis,C., programgenerationfromuserintentionbydeepneuralnetworks.CoRR
+Hughes,S.,Wolf,T.,Bahdanau,D.,vonWerra,L.,deVries,H.,2022. abs/1510.07211. URL: http://dblp.uni-trier.de/db/journals/corr/
+Thestack:3tbofpermissivelylicensedsourcecode.arxiv. corr1510.html#MouMLZJ15.
+Kumar,A.,Irsoy,O.,Ondruska,P.,Iyyer,M.,Bradbury,J.,Gulrajani,I., Neelakantan,A.,Le,Q.V.,Sutskever,I.,2016.Neuralprogrammer:Induc-
+Zhong,V.,Paulus,R.,Socher,R.,2016. Askmeanything:Dynamic inglatentprogramswithgradientdescent.4thInternationalConference
+memory networks for natural language processing, in: Balcan, M.F., onLearningRepresentations,ICLR2016,SanJuan,PuertoRico,May
+2-4,2016,ConferenceTrackProceedingsURL:http://arxiv.org/abs/
+First Author et al.: PreprintsubmittedtoElsevier Page 14 of 16
+Review of State-of-The-Art Methods for Java Code Generation from Natural Language Text
+1511.04834. Reed, S.E., de Freitas, N., 2016. Neural programmer-interpreters. 4th
+Nocedal,J.,1980. Updatingquasi-newtonmatriceswithlimitedstorage. InternationalConferenceonLearningRepresentations,ICLR2016,San
+Mathematicsofcomputation35,773–782. Juan,PuertoRico,May2-4,2016,ConferenceTrackProceedingsURL:
+OpenIA,2023.Gpt-4technicalreport.arxivURL:https://arxiv.org/pdf/ http://arxiv.org/abs/1511.06279.
+2303.08774.pdf. Ren,S.,Guo,D.,Lu,S.,Zhou,L.,Liu,S.,Tang,D.,Zhou,M.,Blanco,
+Oracle,2022.javadoc.https://docs.oracle.com/javase/8/docs/technotes/ A.,Ma,S.,2020. Codebleu:amethodforautomaticevaluationofcode
+tools/windows/javadoc.html.Accessed:2022-09-05. synthesis.ArXivabs/2009.10297.
+Ouyang,L.,Wu,J.,Jiang,X.,Almeida,D.,Wainwright,C.L.,Mishkin, Rozière,B.,Lachaux,M.,Szafraniec,M.,Lample,G.,2021. DOBF:A
+P.,Zhang,C.,Agarwal,S.,Slama,K.,Ray,A.,Schulman,J.,Hilton,J., deobfuscationpre-trainingobjectiveforprogramminglanguages.CoRR
+Kelton,F.,Miller,L.E.,Simens,M.,Askell,A.,Welinder,P.,Christiano, abs/2102.07492.
+P.F.,Leike,J.,Lowe,R.J.,2022. Traininglanguagemodelstofollow Roziere, B., Lachaux, M.A., Chanussot, L., Lample, G., 2020. Un-
+instructionswithhumanfeedback.ArXivabs/2203.02155. supervised translation of programming languages, in: Larochelle, H.,
+Pang,B.,Hayashi,H.,Tu,L.,Wang,H.,Zhou,Y.,Savarese,SilvioXiong, Ranzato,M.,Hadsell,R.,Balcan,M.,Lin,H.(Eds.),AdvancesinNeural
+C.,2022.Codegen:Anopenlargelanguagemodelforcodewithmulti- InformationProcessingSystems,CurranAssociates,Inc..pp.20601–
+turnprogramsynthesis.ArXiv. 20611.URL:https://proceedings.neurips.cc/paper_files/paper/2020/
+Papineni, K., Roukos, S., Ward, T., Zhu, W.J., 2002. Bleu: a method file/ed23fbf18c2cd35f8c7f8de44f85c08d-Paper.pdf.
+forautomaticevaluationofmachinetranslation,in:Proceedingsofthe Scholak,T.,Schucher,N.,Bahdanau,D.,2021. PICARD:Parsingincre-
+40thAnnualMeetingoftheAssociationforComputationalLinguistics, mentallyforconstrainedauto-regressivedecodingfromlanguagemod-
+AssociationforComputationalLinguistics,Philadelphia,Pennsylvania, els,in:Proceedingsofthe2021ConferenceonEmpiricalMethodsin
+USA.pp.311–318. URL:https://aclanthology.org/P02-1040,doi:10. NaturalLanguageProcessing,AssociationforComputationalLinguis-
+3115/1073083.1073135. tics.pp.9895–9901.URL:https://aclanthology.org/2021.emnlp-main.
+Parvez,M.R.,Ahmad,W.U.,Chakraborty,S.,Ray,B.,Chang,K.,2021. 779.
+Retrieval augmented code generation and summarization. CoRR Squartini,S.,Hussain,A.,Piazza,F.,2003. Preprocessingbasedsolution
+abs/2108.11601. for the vanishing gradient problem in recurrent neural networks, in:
+Phan, L., Tran, H., Le, D., Nguyen, H., Annibal, J., Peltekian, A., Ye, Proceedings of the 2003 International Symposium on Circuits and
+Y.,2021. CoTexT:Multi-tasklearningwithcode-texttransformer,in: Systems,2003.ISCAS’03.,IEEE.pp.V–V.
+Proceedingsofthe1stWorkshoponNaturalLanguageProcessingfor Tao,C.,Hou,L.,Zhang,W.,Shang,L.,Jiang,X.,Liu,Q.,Luo,P.,Wong,
+Programming(NLP4Prog2021). N.,2022. Compressionofgenerativepre-trainedlanguagemodelsvia
+Puri,R.,Kung,D.,Janssen,G.,Zhang,W.,Domeniconi,G.,Zolotov,V., quantization.CoRRabs/2203.10705.
+Dolby,J.,Chen,J.,Choudhury,M.,Decker,L.,Thost,V.,Buratti,L., Thoppilan,R.,Freitas,D.,Hall,J.,Shazeer,N.,Kulshreshtha,A.,Cheng,
+Pujar,S.,Finkler,U.,2021a. Projectcodenet:Alarge-scaleaiforcode H.T., Jin, A., Bos, T., Baker, L., Du, Y., Li, Y., Lee, H., Zheng, H.,
+datasetforlearningadiversityofcodingtasks.arxiv. Ghafouri,A.,Menegali,M.,Huang,Y.,Krikun,M.,Lepikhin,D.,Qin,
+Puri,R.,Kung,D.S.,Janssen,G.,Zhang,W.,Domeniconi,G.,Zolotov,V., J.,Le,Q.,2022.Lamda:Languagemodelsfordialogapplications.arXiv
+Dolby,J.,Chen,J.,Choudhury,M.,Decker,L.,Thost,V.,Buratti,L., .
+Pujar,S.,Ramji,S.,Finkler,U.,Malaika,S.,Reiss,F.,2021b. Project Tipirneni, S., Zhu, M., Reddy, C.K., 2022. Structcoder: Structure-
+codenet: A large-scale ai for code dataset for learning a diversity of aware transformer for code generation. CoRR abs/2206.05239.
+codingtasks.ArXivarXiv:2105.12655. URL:https://doi.org/10.48550/arXiv.2206.05239,doi:10.48550/arXiv.
+Radford,A.,Wu,J.,Child,R.,Luan,D.,Amodei,D.,Sutskever,I.,2019. 2206.05239,arXiv:2206.05239.
+Languagemodelsareunsupervisedmultitasklearners.arxiv. Touvron,H.,Lavril,T.,Izacard,G.,Martinet,X.,Lachaux,M.A.,Lacroix,
+Rae, J.W., Borgeaud, S., Cai, T., Millican, K., Hoffmann, J., Song, F., T.,Rozière,B.,Goyal,N.,Hambro,E.,Azhar,F.,etal.,2023. Llama:
+Aslanides,J.,Henderson,S.,Ring,R.,Young,S.,Rutherford,E.,Hen- Open and efficient foundation language models. arXiv preprint
+nigan,T.,Menick,J.,Cassirer,A.,Powell,R.,vandenDriessche,G., arXiv:2302.13971.
+Hendricks,L.A.,Rauh,M.,Huang,P.S.,Glaese,A.,Welbl,J.,Dathathri, Vaswani,A.,Shazeer,N.,Parmar,N.,Uszkoreit,J.,Jones,L.,Gomez,A.N.,
+S.,Huang,S.,Uesato,J.,Mellor,J.,Higgins,I.,Creswell,A.,McAleese, Kaiser,Ł.,Polosukhin,I.,2017.Attentionisallyouneed,in:Advances
+N., Wu, A., Elsen, E., Jayakumar, S., Buchatskaya, E., Budden, D., inNeuralInformationProcessingSystems,pp.5998–6008.
+Sutherland, E., Simonyan, K., Paganini, M., Sifre, L., Martens, L., Wang,Y.,Wang,W.,Joty,S.,Hoi,S.C.,2021. CodeT5:Identifier-aware
+Li,X.L.,Kuncoro,A.,Nematzadeh,A.,Gribovskaya,E.,Donato,D., unifiedpre-trainedencoder-decodermodelsforcodeunderstandingand
+Lazaridou,A.,Mensch,A.,Lespiau,J.B.,Tsimpoukelli,M.,Grigorev, generation,in:Proceedingsofthe2021ConferenceonEmpiricalMeth-
+N.,Fritz,D.,Sottiaux,T.,Pajarskas,M.,Pohlen,T.,Gong,Z.,Toyama, odsinNaturalLanguageProcessing.
+D.,deMassond’Autume,C.,Li,Y.,Terzi,T.,Mikulik,V.,Babuschkin, Watanobe,Y.,2022.Aizuonlinejudge.https://onlinejudge.u-aizu.ac.jp.
+I.,Clark,A.,deLasCasas,D.,Guy,A.,Jones,C.,Bradbury,J.,Johnson, Accessed:2022-10-28.
+M.,Hechtman,B.,Weidinger,L.,Gabriel,I.,Isaac,W.,Lockhart,E., Wong, Y.W., Mooney, R., 2006. Learning for semantic parsing with
+Osindero,S.,Rimell,L.,Dyer,C.,Vinyals,O.,Ayoub,K.,Stanway,J., statisticalmachinetranslation,in:ProceedingsoftheHumanLanguage
+Bennett,L.,Hassabis,D.,Kavukcuoglu,K.,Irving,G.,2021. Scaling TechnologyConferenceoftheNAACL,MainConference,Association
+Language Models: Methods, Analysis & Insights from Training Go- for Computational Linguistics, New York City, USA. pp. 439–446.
+pher. arXive-prints,arXiv:2112.11446doi:10.48550/arXiv.2112.11446, URL:https://aclanthology.org/N06-1056.
+arXiv:2112.11446. Xu, F.F., Alon, U., Neubig, G., Hellendoorn, V.J., 2022. A systematic
+Raffel,C.,Shazeer,N.,Roberts,A.,Lee,K.,Narang,S.,Matena,M.,Zhou, evaluationoflargelanguagemodelsofcode,in:Proceedingsofthe6th
+Y.,Li,W.,Liu,P.J.,2020.Exploringthelimitsoftransferlearningwitha ACMSIGPLANInternationalSymposiumonMachineProgramming,
+unifiedtext-to-texttransformer. JournalofMachineLearningResearch AssociationforComputingMachinery,NewYork,NY,USA.p.1–10.
+21,1–67.URL:http://jmlr.org/papers/v21/20-074.html. Yin,P.,Deng,B.,Chen,E.,Vasilescu,B.,Neubig,G.,2018. Learningto
+Ramaswamy,G.N.,Kleindienst,J.,2000.Hierarchicalfeature-basedtrans- minealignedcodeandnaturallanguagepairsfromstackoverflow,in:
+lationforscalablenaturallanguageunderstanding. SixthInternational Proceedingsofthe15thInternationalConferenceonMiningSoftware
+ConferenceonSpokenLanguageProcessing. Repositories, Association for Computing Machinery, New York, NY,
+Ranta, A., 1998. A multilingual natural-language interface to regular USA. p. 476–486. URL: https://doi.org/10.1145/3196398.3196408,
+expressions, in: Proceedings of the International Workshop on Finite doi:10.1145/3196398.3196408.
+StateMethodsinNaturalLanguageProcessing,AssociationforCom- Yin,P.,Neubig,G.,2017. Asyntacticneuralmodelforgeneral-purpose
+putationalLinguistics,USA.p.79–90. code generation, in: Proceedings of the 55th Annual Meeting of the
+First Author et al.: PreprintsubmittedtoElsevier Page 15 of 16
+Review of State-of-The-Art Methods for Java Code Generation from Natural Language Text
+AssociationforComputationalLinguistics(Volume1:LongPapers),pp.
+440–450.
+Zettlemoyer,L.S.,Collins,M.,2005a.Learningtomapsentencestological
+form:Structuredclassificationwithprobabilisticcategorialgrammars,
+in:ProceedingsoftheTwenty-FirstConferenceonUncertaintyinArti-
+ficialIntelligence,AUAIPress,Arlington,Virginia,USA.p.658–666.
+Zettlemoyer,L.S.,Collins,M.,2005b.Learningtomapsentencestological
+form:Structuredclassificationwithprobabilisticcategorialgrammars,
+in:ProceedingsoftheTwenty-FirstConferenceonUncertaintyinArti-
+ficialIntelligence,AUAIPress,Arlington,Virginia,USA.p.658–666.
+Zhang,B.,Sennrich,R.,2019. RootMeanSquareLayerNormalization.
+AdvancesinNeuralInformationProcessingSystems32URL:https:
+//openreview.net/references/pdf?id=S1qBAf6rr.
+Zhang,J.,Zhao,Y.,Saleh,M.,Liu,P.J.,2020. Pegasus:Pre-trainingwith
+extractedgap-sentencesforabstractivesummarization,in:Proceedings
+ofthe37thInternationalConferenceonMachineLearning,pp.11328–
+11339.
+First Author et al.: PreprintsubmittedtoElsevier Page 16 of 16

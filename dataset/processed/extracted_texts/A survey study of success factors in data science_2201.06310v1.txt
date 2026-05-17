@@ -1,0 +1,524 @@
+A survey study of success factors in data science projects
+Iñigo Martinez Elisabeth Viles Igor G Olaizola
+Vicomtech Foundation University of Navarra Vicomtech Foundation
+Basque Research and Technology Alliance TECNUN School of Engineering Basque Research and Technology Alliance
+Donostia-San Sebastián 20009, Spain Donostia-San Sebastián 20018, Spain Donostia-San Sebastián 20009, Spain
+imartinez@vicomtech.org eviles@tecnun.es iolaizola@vicomtech.org
+Abstract—In recent years, the data science community has clear objectives, a biased emphasis on technical issues, a
+pursued excellence and made significant research efforts to de- lack of reproducibility, and role ambiguity are among these
+velopadvancedanalytics,focusingonsolvingtechnicalproblems
+challenges, which lead to a low level of maturity in data
+at the expense of organizational and socio-technical challenges.
+science projects, that are managed in an ad-hoc fashion. The
+Accordingtoprevioussurveysonthestateofdatascienceproject
+management, there is a significant gap between technical and lackofadefinedprocessmethodologytomanagedatascience
+organizationalprocesses.Inthisarticlewepresentnewempirical projectsisoneoftheprimaryreasonsforthesechallenges.[5].
+data from a survey to 237 data science professionals on the Several surveys [6]–[9] have been conducted to collect
+use of project management methodologies for data science. We
+empiricaldataonthestateofdatascienceprojectmanagement
+provideadditionalprofilingofthesurveyrespondents’rolesand
+in both industry and research. According to the findings of
+their priorities when executing data science projects. Based on
+this survey study, the main findings are: (1) Agile data science these surveys, there is a significant gap between technical and
+lifecycle is the most widely used framework, but only 25% of organizationalprocesseswhenappliedtodatascienceprojects.
+the survey participants state to follow a data science project In this article, we present new empirical data from a
+methodology.(2)Themostimportantsuccessfactorsareprecisely
+survey to 237 data science professionals on the use of project
+describingstakeholders’needs,communicatingtheresultstoend-
+managementmethodologiesfordatascience.Furthermore,we
+users,andteamcollaborationandcoordination.(3)Professionals
+who adhere to a project methodology place greater emphasis provide additional profiling of the survey respondents’ roles
+on the project’s potential risks and pitfalls, version control, the (data scientist, data engineer, business analyst, etc.) and their
+deploymentpipelinetoproduction,anddatasecurityandprivacy. priorities when executing data science projects.
+The rest of the article is structured as follows: Background
+IndexTerms—datascience,survey,projectmanagement,factor
+context is presented in Section II, along with organizational
+analysis, success factors
+and socio-technical challenges that arise when executing a
+data science project. Section III describes the methodology
+I. INTRODUCTION
+for the survey. Section IV presents and discusses the results
+In recent years, the data science (DS) community has
+obtained from the survey and finally, Section V describes the
+pursued excellence and made significant research efforts to
+main conclusions of the paper.
+develop advanced analytics, focusing on solving technical
+problems at the expense of organizational and socio-technical II. BACKGROUNDCONTEXT
+challenges. Developing and successfully implementing a data Data science is a multidisciplinary field that lies between
+science project to business processes pose significant chal- computer science, mathematics and statistics, and comprises
+lenges to companies. According to VentureBeat [1], 87% the use of scientific methods and techniques, to extract
+of data science projects never make it into production, and knowledge and value from large amounts of structured and/or
+a NewVantage survey [2] found that adoption of big data unstructured data. After several decades of progress, data
+and artificial intelligence (AI) initiatives remain a significant scienceandmachinelearningtechnologyarecalledtobecome
+challenge for 77% of businesses. In fact, 70% of companies a significant source of value for a wide range of businesses
+report minimal or no impact from AI [3]. Gartner [4] also [10], [11]. However, these recent technological achievements
+reported that 80% of analytics insights will fail to deliver do not correspond to their application to real-world data
+business outcomes by 2022, and 80% of data science projects science projects. Data scientists are struggling to deploy their
+will “remain alchemy, run by wizards”. These low success models into business processes. Evidence suggests that the
+rates in data science projects are indeed noteworthy given the gap is widening between organizations successfully gaining
+competitive advantage that such advanced techniques provide value from data science and those struggling to do so [12].
+to researchers and practitioners. Significant challenges remain unsolved, and many artificial
+Leveraging data science within a business organizational intelligence initiatives fail.
+context involves organizational and socio-technical challenges
+beyond the analytical ones: a lack of vision, strategy and
+978-1-6654-3902-2/21/$31.00©2021IEEE
+©2021IEEE.Personaluseofthismaterialispermitted.PermissionfromIEEEmustbeobtainedforallotheruses,inany
+currentorfuturemedia,includingreprinting/republishingthismaterialforadvertisingorpromotionalpurposes,creatingnew
+collectiveworks,forresaleorredistributiontoserversorlists,orreuseofanycopyrightedcomponentofthisworkinotherworks.
+2202
+naJ
+71
+]BD.sc[
+1v01360.1022:viXra
+Team Management Project Management Data & Information Management
+Poor coordination Low level of process maturity Lack of reproducibility
+Collaboration issues across teams Uncertain business objectives Retaining and accumulation of knowledge
+Lack of transparent communication Setting adequate expectations Low data quality for ML
+Inefficient governance models Hard to establish realistic project timelines Lack of quality assurance checks
+Lack of people with analytics skills Biased emphasis on technical issues No validation data
+Rely not only on leading data scientist Delivering the wrong thing Data security and privacy
+Build multidisciplinary teams Project not used by business Investment in IT infrastructure
+TABLEI
+DATASCIENCEPROJECTSMAINCHALLENGES
+Table I summarizes the main challenges faced by data sci- III. METHODS
+ence professionals when executing real data science projects.
+Tobetterunderstandtheuseofprojectmanagementmethod-
+Even though these issues do exist in real-world data science
+ologies and the priorities of data science professionals during
+projects, the community has not been overly concerned about
+project execution, a cross-sectional quantitative survey was
+them [5], [13], and there is a wide consensus that not enough
+conducted. This survey focused on understanding the pro-
+hasbeenwrittenaboutsolutionstotackletheseproblems[14].
+fessional profile of the respondents (Q −Q ), the type of
+1 5
+Some authors and companies have proposed methodologies
+projects they carry out (Q −Q ), the most important factors
+6 8
+for managing data science projects, and have come up with
+tosuccessfullydevelopaDSprojectQ andwhethertheyuse
+9
+new tools and processes to address the cited issues. The
+any project methodology Q −Q (Table II). In total 237
+10 11
+most popular frameworks in this regard are: CRISP-DM [15],
+professionals from industry and research organizations were
+Microsoft TDSP [16], Agile DS Lifecycle [17], Domino
+surveyed during September 2021. Participants accessed the
+DS Lifecycle [18], IBM FMDS [19], RAMSYS [20], and
+survey via the LinkedIn professional network.
+MIDST[21].Anextensivecriticalreviewover19datascience
+methodologies was presented in [14].
+Question Fig.
+However, while the proposed solutions are leading the
+way in addressing these organizational and socio-technical
+Q1 Inwhatcountrydoyouwork? A.1
+Q2 Whichtitlebestdescribesyourrole? A.2
+challenges, the reality is that data science projects are not Q3 Whichisyourjobexperiencelevel? 1
+taking advantage of such methodologies and frameworks. Q4 Whoarethestakeholdersofyourworkprojects? 1
+Accordingtoasurvey[22]carriedoutin2018toprofessionals
+Q5 Whatisyourgender? 1
+Q6 Averageprojectduration(<3,<6,>6months) 1
+from both industry and non-profit organizations, 82% of the
+Q7 Doyouusuallyworkingrouporindividually? 1
+respondents did not follow an explicit process methodology Q8 Magnitudeoftheproject(local/national/international) 1
+for developing data science projects, and equally important, Q9 Howrelevantarethesefactorsforthe 3
+developmentofdatascienceprojects?
+85% of the respondents considered that using an improved
+Q10 Doyouusuallyfollowsomedata 1
+and more consistent process would result in more effective scienceprojectmethodology?
+data science projects. Furthermore, a survey conducted to Q11 Selectthemethodologiesyouknowabout 2
+nearly800dataandanalyticsleadersbyCoriniumIntelligence and/orhaveusedforyourdatascienceprojects
+[7] found that only 48% of data science organizations have
+TABLEII
+established standardized processes.
+SURVEYQUESTIONS
+ConsideringasurveyfromKDnuggetsin2014[6],themain
+methodology used by 43% of respondents was CRISP-DM.
+IV. RESULTS
+This methodology has been consistently the most commonly
+The results of the survey are presented and discussed in
+used for analytics, data mining, and data science projects, for
+this section. First, the respondents’ professional profiles are
+each KDnuggets poll starting in 2002 up through the most
+examined. The use of data science methodologies is then
+recent 2014 poll [8]. Recently, Saltz [9] conducted a survey
+investigated, and finally, the relevance scores assigned to
+to 109 respondents to gather information about what project
+fifteen success factors are presented.
+management framework teams used to help them execute
+data science projects. CRISP-DM is used by nearly half of A. Professional profiles
+all respondents. Scrum, Kanban, and customized processes
+The survey included professionals from 35 different coun-
+followed.
+tries, the majority of whom work in the United States of
+According to the results of these surveys, the percentage of
+America or Spain. Among the survey respondents, 27% were
+people using CRISP-DM has not changed significantly over
+data scientists, 14% data engineers, 12% business analysts,
+the last 20 years, indicating that technology has advanced
+12% data analysts, 11% machine learning engineers and 6%
+much faster than organizational processes for handling data
+softwaredevelopers.FiguresA.1andA.2showadetailedview
+science projects.
+of work-country and professional-roles respectively.
+More than 6 Less than 3 From 3 to 6
+months months months NA
+Average d u p r r a o t j i e o c n t 39.2% 18.1% 38.8%
+Depends on the
+Do you usually Yes No project NA
+fo S llo c w ie n so ce m p e r D oj a e t c a t 24.1% 21.9% 28.7% 25.3%
+methodology?
+Individually Group NA
+Do you usually
+work in group or 28.7% 67.5%
+individually?
+National Local International NA
+Magnitude p o ro f j t e h c e t 35% 19.8% 41.4%
+Other Male Female NA
+What is your gender? 77.6% 11.4% 9.3%
+Senior Executive Entry Associate/Mid
+e W xp h e ic r h ie i n s c y e o l u e r v j e o l b ? 46.4% 7.2% 17.7% 28.7%
+Technological Business Academic
+institutions organizations institutions
+Who are the
+stakeholders of your 14.3% 77.6% 8%
+work projects?
+0 50 100 150 200
+Survey Respondents
+noitseuQ
+65.5 % 34.5 %
+Agile DS Lifecycle
+45.2 % 54.8 %
+24.3 % 75.7 %
+CRISP−DM
+13.6 % 86.4 %
+16.4 % 83.6 %
+Domino DS Lifecycle
+98.3 %
+20.3 % 79.7 %
+IBM FMDS
+98.3 %
+20.3 % 79.7 %
+Microsoft TDSP
+7.3 % 92.7 %
+13.6 % 86.4 % MIDST
+97.7 %
+13 % 87 %
+RAMSYS
+99.4 %
+0 50 100 150
+Survey Respondents
+Fig.1. SurveyresultstoadditionalquestionsQ3−Q8,Q10.NAmeans"Not
+Answer".
+The vast majority of respondents (77%) identified as male.
+The level of job experience among the professionals polled
+was distributed as follows: 46% senior, 28% associate, 18%
+entry-level, and 7% executive. Hence, more than half of the
+surveyed professionals have many years of experience under
+the belt.
+With regard to project characteristics, nearly 40% of the
+respondents say a project usually takes more than 6 months
+to complete, while another 40% says it takes between 3 to
+6 months. This may suggest that long projects are the norm
+in the field of data science. In terms of projects magnitude,
+42% of the professionals work on international projects, 35%
+on national and 20% on local projects. This implies that
+the majority of data science projects are large and involve
+a large number of stakeholders, who in the case of this
+survey are mostly business organizations (77%). With respect
+toteamwork,68%oftheprofessionalspolledsaytheyusually
+work in groups, with 29% working individually. This shows
+the importance of coordination, transparent communication,
+andcollaborationamongindividualsandteamsforthesuccess
+of DS projects. See Figure 1 for a detailed view on these
+matters.
+B. Data science methodologies
+Withregardtodatasciencemethodologies,AgileDSLifecy-
+cle is the most widely used framework, followed by CRISP-
+DM and Microsoft TDSP (Figure 2). Few people use their
+in-house methodology. However, it is remarkable to see that
+only25%oftheparticipantsareawareofCRISP-DM,whereas
+65% of them know about Agile DS Lifecycle.
+ygolodohteM
+Know about it Did not know Used it Did not use
+Fig.2. Surveyresultstotheuseofmethodologiesfordatascienceprojects
+(questionQ11)
+The fact that 75% of the respondents are unaware of
+CRISP-DM may indicate a different trend in the use of this
+methodology when compared with data collected in previous
+surveys [6], [9], with around 45% use of CRISP-DM. Other
+factors,suchasthenumberofrespondentsandthedistribution
+oftheirprofessionalprofiles,mayhaveskewedthesefindings.
+An extensive survey could help to reduce this uncertainty.
+Furthermore, only 25% of the survey participants state
+they use some kind of data science project methodology, and
+another 29% say it depends on the project. Moreover, the
+number of NA (not answer) responses may suggest that the
+proportion of people using a DS methodology is less than
+25%. In any case, this low percentage demonstrates the lack
+of a defined process methodology for managing data science
+projects, which has been recognized as one of the primary
+causes for current failures and management challenges.
+C. Success factors
+Question Q requested survey participants to evaluate the
+9
+importance of fifteen factors for the development and success
+ofdatascienceprojects.Thesefactorsarethoughttocontribute
+to the project’s success in meeting its objectives, and were
+selected based on an analysis of current challenges in data
+science projects [14]. The scoring system followed a 5 point
+Likert scale, from 1 (not important at all) to 5 (absolutely
+essential). Figure 3 shows the distribution of the scores, along
+with the weighted average and standard deviation for each
+factor. The factors are listed in descending order (from top
+to bottom in the figure) based on their weighted average
+score. The top three most important success factors are to
+1) precisely describe stakeholders needs, 2) communicate
+Weighted
+Avg ± Std
+Precisely describe stakeholders needs 54.2% 32.1% 8.4% 4.34 ± 0.88
+Communicating the results to end−users 55.8% 28.9% 8.4% 4.32 ± 0.94
+Team collaboration and coordination 32.1% 44.7% 18.9% 4.04 ± 0.85
+Proactive team communication 32.1% 43.2% 18.4% 3.99 ± 0.91
+Develop a strategy to meet project requirements 32.6% 38.9% 21.1% 3.95 ± 0.95
+Identify project potential risks and pitfalls 28.4% 45.3% 18.4% 3.92 ± 0.95
+Version control for code, data & models 34.2% 35.3% 18.9% 7.9% 3.88 ± 1.08
+Deployment pipeline to production 30% 32.6% 22.1% 12.6% 3.75 ± 1.10
+Understanding each team member skills and role 22.1% 40% 29.5% 3.73 ± 0.97
+Data security and privacy 34.7% 27.9% 18.9% 12.1% 3.73 ± 1.23
+Establishing timelines and deliverables 26.3% 33.2% 28.9% 8.9% 3.72 ± 1.03
+Harness knowledge for future work 18.9% 36.3% 34.7% 7.9% 3.62 ± 0.95
+Define a data lifecycle workflow 20% 35.3% 32.1% 10% 3.60 ± 1.00
+Data visualization tools 20.5% 32.6% 32.6% 11.1% 3.56 ± 1.03
+Data augmentation or metadata enrichment 9.5% 25.3% 37.4% 22.1% 3.11 ± 1.04
+0 50 100 150
+Survey Respondents
+rotcaF
+5−Absolutely essential 4−Very important 3−Moderately important 2−Little importance 1−Not important at all
+Fig.3. Surveyresultsto"howrelevantarethesefactorsforthedevelopmentofdatascienceprojects?"questionQ9.Thescoringweightsrangefrom1(not
+importantatall)to5(absolutelyessential).Theweightedaverageandstandarddeviationarecalculatedbasedontheresponsecountandtheweightforthe
+answerchoice.
+the results to end-users, and 3) team collaboration and D. Common factor analysis
+coordination. The less important ones, on the other hand,
+UsingtheresultsfromquestionQ ,commonfactoranalysis
+are data augmentation, data visualization tools and defining 9
+was conducted to see if there were are any latent variables in
+data life-cycle workflow. It is also worth noting the factors
+the data, i.e., groups of factors that were answered similarly
+with the highest standard deviations: deployment pipeline to
+based on the survey participants’ scores.
+production and data security and privacy had more variance
+Tobegin,Bartlett’stestofsphericityandtheKaiser-Meyer-
+in their scores, which could indicate that professionals have
+Olkin measure of sampling adequacy were used to check
+differing views on the importance of these factors.
+whether any meaningful latent factors could be found within
+Furthermore, an additional analysis of these scores was the data. The parallel analysis method was then used to
+performedtodeterminewhethertherewereanysignificantdif- determine the number of factors, which resulted in 3 factors.
+ferencesbetweenprofessionalswhouseaprojectmethodology The results of the common factor analysis are shown in
+andthosewhodonot.UsingtheresponsesfromquestionQ Figure 5 (in blue color). Prior to the survey’s public release,
+10
+(Do you usually follow a data science project methodology?), each of the fifteen factors was weighted and classified based
+the weighted average scores were computed for each choice on three distinct and specific latent dimensions (in yellow).
+(Yes / No / Depends on the project), which are shown in These latent variables were selected based on a previous
+Figure 4. The orange asterisk on the right side indicates a paper by the authors [14], which proposes the principles of
+significant difference between the Yes and No cases, based on an integral methodology for data science that should include
+Mann-Whitney U-test. Statistical tests are performed using R three foundation stones: team, data and project management.
+v3.6.3 [23]. Professionals who follow a project methodology More information on the proposed principles for integral
+give more importance to a) the project’s potential risks and methodologies can be found in section 5 (discussion) of [14].
+pitfalls, b) version control, c) the deployment pipeline to Comparing the results from the common factor analysis with
+production, and d) data security and privacy. the authors’ a priori determined weights, it can be observed
+4.21 4.40 4.46
+Precisely describe stakeholders needs
+4.25 4.26 4.47 Communicating the results to end-users
+3.98 4.04 4.12 Team collaboration and coordination
+Develop a strategy to meet project 3.88 4.02 4.10
+requirements
+3.96 4.00 4.04
+Proactive team communication
+Identify project potential risk p s it f a a n ll d s 3.77 3.88 4.19 ✱
+3.73 3.74 4.21
+Version control for code, data & models ✱
+3.54 3.79 3.96
+Deployment pipeline to production ✱
+Understanding each team member skills 3.69 3.75 3.81
+and role
+3.51 3.82 3.85
+Establishing timelines and deliverables
+3.52 3.63 3.91
+Data security and privacy ✱
+3.52 3.54 3.82
+Define a data lifecycle workflow
+3.49 3.65 3.75
+Harness knowledge for future work
+3.51 3.56 3.65
+Data visualization tools
+3.04 3.10 3.23
+Data augmentation or metadata enrichment
+3.0 3.5 4.0 4.5
+Score
+rotcaF
+Professionals address to DS methodology Yes No Depends on the project Factor 1 (Team) Factor 2 (Data) Factor 3 (Project)
+Version control for code, data & models
+Team collaboration and coordination
+Proactive team communication
+Precisely describe stakeholders needs
+Identify project potential risks and pitfalls
+Harness knowledge for future work
+Establishing timelines and deliverables
+Develop a strategy to meet project requirements
+Deployment pipeline to production
+Define a data lifecycle workflow
+Data visualization tools
+Data security and privacy
+Data augmentation or metadata enrichment
+Communicating the results to end−users
+0.0 0.5 0.0 0.5 0.0 0.5
+Normalized loadings
+Fig.4. Comparisonofweightedaveragescoresbetweenpeoplewhofollow
+(anddonot)followanydatascienceprojectmethodology.Theorangeasterisk
+on the right side indicates a significant difference between the Yes and No
+cases,basedonMann-WhitneyU-test.
+that the first factor is related to the team management facet,
+the second to the data management aspect and the third
+to the project management. Hence, based on the relevance
+scores provided by the survey participants and the conducted
+factor analysis, it can be concluded that there are three latent
+variables and, in addition, these coincide with the a priori set
+values based on the proposed framework [14].
+V. CONCLUSIONS
+This article presents new empirical data from a survey to
+237 data science professionals on the use of project manage-
+mentmethodologiesfordatascience.Severalaspectsofsurvey
+respondents’ work as data science professionals were evalu-
+ated, including their experience level and role (data scientist,
+data engineer, business analyst, etc.), projects characteristics
+(magnitude, duration) and their priorities when executing data
+science projects. Regarding the limitations of the presented
+study, note there may be a bias due to the survey’s non-
+probabilistic design.
+According to this survey study, the most widely used
+framework is Agile DS lifecycle, which has surpassed the
+long-standing CRISP-DM methodology. However, only 25%
+ofthesurveyparticipantsstatetofollowadatascienceproject
+methodology.Thislowpercentageshowsthelackofadefined
+process methodology for managing data science projects,
+which has been identified as one of the primary causes for
+current failures and management challenges. With regard to
+the study of the success factors, based on the scores gathered,
+the most important factors are (1) precisely describing stake-
+rotcaF
+A priori assigned Factor analysis
+Fig.5. Factoranalysisloadings.Comparisonwithpreassignedweightsprior
+tothesurvey.
+holders’ needs, (2) communicating the results to end-users,
+and (3) team collaboration and coordination. Furthermore, a
+statistical analysis of the scores revealed that professionals
+whoadheretoaprojectmethodologyplaceagreateremphasis
+on the project’s potential risks and pitfalls, version control,
+the deployment pipeline to production, and data security and
+privacy. The obtained scores were subjected to a common
+factoranalysis,whichrevealedthreelatentfactors.Comparing
+the results from the common factor analysis with a priori
+determined weights, the first factor was related to the team
+management facet, the second to the data management aspect
+and the third to the project management.
+Therefore, this survey reinforces the notion that the three
+most important factors for successful DS projects are project
+development, teamwork, and data management. The latter is
+also most valued by those professionals who use DS method-
+ologies. However, the methodologies that attempt to address
+these three factors and were best valued according to the
+principlesofanintegralmethodologyin[14]arehardlyknown
+andused.Thereisstillaneedforgreaterdisseminationofthe
+methodologies that reinforce these factors or for improving
+and incorporating such factors into the most widely used
+methodologies.
+REFERENCES
+[1] VentureBeat,“Whydo87%ofdatascienceprojectsnevermakeitinto
+production?”2019.
+[2] NewVantage,“NewVantagePartners2019BigDataandAIExecutive
+Survey,”2019.
+[3] S. K. Sam Ransbotham, “Winning with ai,” Oct 2019. [Online].
+Available:https://sloanreview.mit.edu/projects/winning-with-ai/
+[4] Gartner,“TakingaFirstSteptoAdvancedAnalytics.”
+[5] J. S. Saltz, “The need for new processes, methodologies and tools to APPENDIXA
+support big data teams and improve big data project effectiveness,” in SURVEYADDITIONALRESULTS
+2015IEEEInternationalConferenceonBigData(BigData),Oct2015,
+pp.2066–2071.
+[6] G. Piatetsky, “Crisp-dm, still the top methodology for analytics, data
+NA 4
+mining,ordatascienceprojects,”KDDNews,2014.
+[7] C. G. Intelligence, “2020 state of data & analytics us.” [Online]. United States of America 67
+Available:https://www.coriniumintelligence.com/reports/2020-soda-us Spain 61
+[8] JeffreySaltzandNicholasJHotz,“CRISP-DM–DataScienceProject United Kingdom 16
+Management,”2019.
+Netherlands 11
+[9] J. Saltz, “Crisp-dm is still the most popular framework for
+executing data science projects,” Jul 2021. [Online]. Available: Germany 9
+https://www.datascience-pm.com/crisp-dm-still-most-popular/ France 8
+[10] NathanBenaichandIanHogarth,“StateofAI2019.” Australia 6
+[11] Mondal, Bhaskar, Artificial Intelligence: State of the Art. Cham: Canada 6 IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIItttttttttttttttttttttttttttttttttttteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeemmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmssssssssssssssssssssssssssssssssssss wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiitttttttttttttttttttttttttttttttttttthhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh 111111111111111111111111111111111111 ccccccccccccccccccccccccccccccccccccoooooooooooooooooooooooooooooooooooouuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuunnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnntttttttttttttttttttttttttttttttttttt
+SpringerInternationalPublishing,2020,pp.389–425.
+[12] N. S. Mayur P. Joshi, “Why so many data science projects fail India 6 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCChhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiilllllllllllllllllllllllllllllllllllleeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+to deliver,” Mar 2021. [Online]. Available: https://sloanreview.mit.edu/ Singapore 4 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCChhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiinnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrraaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaazzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzziiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiillllllllllllllllllllllllllllllllllll
+article/why-so-many-data-science-projects-fail-to-deliver/ Norway 4 GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrreeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeecccccccccccccccccccccccccccccccccccceeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+[13] J. Saltz, I. Shamshurin, and C. Connors, “Predicting data science so- PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPoooooooooooooooooooooooooooooooooooollllllllllllllllllllllllllllllllllllaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaannnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnndddddddddddddddddddddddddddddddddddd
+ciotechnicalexecutionchallengesbycategorizingdatascienceprojects,” New Zealand 3 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuussssssssssssssssssssssssssssssssssssttttttttttttttttttttttttttttttttttttrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrriiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+Journal of the Association for Information Science and Technology, Portugal 3 RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRoooooooooooooooooooooooooooooooooooommmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaannnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnniiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCoooooooooooooooooooooooooooooooooooolllllllllllllllllllllllllllllllllllloooooooooooooooooooooooooooooooooooommmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+vol.68,no.12,pp.2720–2728,2017. Denmark 3 TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTThhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiillllllllllllllllllllllllllllllllllllaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaannnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnndddddddddddddddddddddddddddddddddddd
+[14] I.Martinez,E.Viles,andI.G.Olaizola,“Datasciencemethodologies: LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeemmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbboooooooooooooooooooooooooooooooooooouuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuurrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrgggggggggggggggggggggggggggggggggggg
+Ireland 2
+Currentchallengesandfutureapproaches,”BigDataResearch,vol.24, MMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaauuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuurrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrriiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiittttttttttttttttttttttttttttttttttttaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaannnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnniiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+p. 100183, 2021. [Online]. Available: https://www.sciencedirect.com/ Belgium 2 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAffffffffffffffffffffffffffffffffffffgggggggggggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaannnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnniiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiissssssssssssssssssssssssssssssssssssttttttttttttttttttttttttttttttttttttaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaannnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
+SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSoooooooooooooooooooooooooooooooooooouuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuutttttttttttttttttttttttttttttttttttthhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAffffffffffffffffffffffffffffffffffffrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrriiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiccccccccccccccccccccccccccccccccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+science/article/pii/S2214579620300514 Sweden 2 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrruuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuunnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnneeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaarrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrruuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuussssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaallllllllllllllllllllllllllllllllllllaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaammmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
+[15] R.WirthandJ.Hipp,“Crisp-dm:Towardsastandardprocessmodelfor Japan 2 SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrriiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaannnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAArrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrraaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRReeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeppppppppppppppppppppppppppppppppppppuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuubbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbblllllllllllllllllllllllllllllllllllliiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiicccccccccccccccccccccccccccccccccccc
+datamining,”inProceedingsofthe4thinternationalconferenceonthe UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnniiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiitttttttttttttttttttttttttttttttttttteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeedddddddddddddddddddddddddddddddddddd AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAArrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrraaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiirrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrraaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaatttttttttttttttttttttttttttttttttttteeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeessssssssssssssssssssssssssssssssssss
+Italy 2
+practicalapplicationsofknowledgediscoveryanddatamining,vol.1.
+Springer-VerlagLondon,UK,2000.
+0 20 40 60
+[16] Microsoft,“Whatistheteamdatascienceprocess?-azurearchitecture Survey Respondents
+center.” [Online]. Available: https://docs.microsoft.com/en-us/azure/
+architecture/data-science-process/overview Fig.A.1. Surveyresultsto"inwhatcountrydoyouwork?"questionQ1
+[17] J. Russell, “Agile data science 2.0: Building full-stack data analytics
+applicationswithspark,”2017.
+[18] Nicholas J Hotz and Jeffrey Saltz, “Domino Data Science Lifecycle –
+DataScienceProjectManagement,”2018.
+Data Scientist 66
+[19] JohnRollings,“Foundationalmethodologyfordatascience,”2015.
+[20] S. Moyle and A. Jorge, “Ramsys - a methodology for supporting Data Engineer 33
+rapid remote collaborative data mining projects,” in ECML/PKDD01
+Workshop: Integrating Aspects of Data Mining, Decision Support and Business Analyst 28
+Meta-learning(IDDM-2001),vol.64,2001.
+Data Analyst 28
+[21] K. Crowston, J. S. Saltz, A. Rezgui, Y. Hegde, and S. You, “Socio-
+technicalaffordancesforstigmergiccoordinationimplementedinmidst, Machine Learning Engineer 27
+a tool for data-science teams,” Proceedings of the ACM on Human-
+ComputerInteraction,vol.3,no.CSCW,pp.1–25,2019. Software Developer 14
+[22] J. Saltz, N. Hotz, D. J. Wild, and K. Stirling, “Exploring project
+Data Architect 8
+managementmethodologiesusedwithindatascienceteams,”inAMCIS,
+2018. Data Consultant 3 IIIIIIIIIIIIIIIIIIIIIIIIIIIIIttttttttttttttttttttttttttttteeeeeeeeeeeeeeeeeeeeeeeeeeeeemmmmmmmmmmmmmmmmmmmmmmmmmmmmmsssssssssssssssssssssssssssss wwwwwwwwwwwwwwwwwwwwwwwwwwwwwiiiiiiiiiiiiiiiiiiiiiiiiiiiiittttttttttttttttttttttttttttthhhhhhhhhhhhhhhhhhhhhhhhhhhhh 11111111111111111111111111111 cccccccccccccccccccccccccccccooooooooooooooooooooooooooooouuuuuuuuuuuuuuuuuuuuuuuuuuuuunnnnnnnnnnnnnnnnnnnnnnnnnnnnnttttttttttttttttttttttttttttt
+[23] R Core Team, R: A Language and Environment for Statistical CCCCCCCCCCCCCCCCCCCCCCCCCCCCC−−−−−−−−−−−−−−−−−−−−−−−−−−−−−SSSSSSSSSSSSSSSSSSSSSSSSSSSSSuuuuuuuuuuuuuuuuuuuuuuuuuuuuuiiiiiiiiiiiiiiiiiiiiiiiiiiiiittttttttttttttttttttttttttttteeeeeeeeeeeeeeeeeeeeeeeeeeeee
+Computing, R Foundation for Statistical Computing, Vienna, Austria, Statistician 3 EEEEEEEEEEEEEEEEEEEEEEEEEEEEEcccccccccccccccccccccccccccccooooooooooooooooooooooooooooonnnnnnnnnnnnnnnnnnnnnnnnnnnnnooooooooooooooooooooooooooooommmmmmmmmmmmmmmmmmmmmmmmmmmmmiiiiiiiiiiiiiiiiiiiiiiiiiiiiisssssssssssssssssssssssssssssttttttttttttttttttttttttttttt
+2020.[Online].Available:https://www.R-project.org CCCCCCCCCCCCCCCCCCCCCCCCCCCCCooooooooooooooooooooooooooooonnnnnnnnnnnnnnnnnnnnnnnnnnnnnsssssssssssssssssssssssssssssuuuuuuuuuuuuuuuuuuuuuuuuuuuuullllllllllllllllllllllllllllltttttttttttttttttttttttttttttaaaaaaaaaaaaaaaaaaaaaaaaaaaaannnnnnnnnnnnnnnnnnnnnnnnnnnnnttttttttttttttttttttttttttttt
+Data Manager 3 SSSSSSSSSSSSSSSSSSSSSSSSSSSSStttttttttttttttttttttttttttttrrrrrrrrrrrrrrrrrrrrrrrrrrrrraaaaaaaaaaaaaaaaaaaaaaaaaaaaattttttttttttttttttttttttttttteeeeeeeeeeeeeeeeeeeeeeeeeeeeegggggggggggggggggggggggggggggiiiiiiiiiiiiiiiiiiiiiiiiiiiiisssssssssssssssssssssssssssssttttttttttttttttttttttttttttt
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAnnnnnnnnnnnnnnnnnnnnnnnnnnnnnaaaaaaaaaaaaaaaaaaaaaaaaaaaaalllllllllllllllllllllllllllllyyyyyyyyyyyyyyyyyyyyyyyyyyyyysssssssssssssssssssssssssssssttttttttttttttttttttttttttttt NNNNNNNNNNNNNNNNNNNNNNNNNNNNNOOOOOOOOOOOOOOOOOOOOOOOOOOOOOCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+Mechanical Engineer 2 BBBBBBBBBBBBBBBBBBBBBBBBBBBBBiiiiiiiiiiiiiiiiiiiiiiiiiiiiiooooooooooooooooooooooooooooossssssssssssssssssssssssssssstttttttttttttttttttttttttttttaaaaaaaaaaaaaaaaaaaaaaaaaaaaatttttttttttttttttttttttttttttiiiiiiiiiiiiiiiiiiiiiiiiiiiiissssssssssssssssssssssssssssstttttttttttttttttttttttttttttiiiiiiiiiiiiiiiiiiiiiiiiiiiiiccccccccccccccccccccccccccccciiiiiiiiiiiiiiiiiiiiiiiiiiiiiaaaaaaaaaaaaaaaaaaaaaaaaaaaaannnnnnnnnnnnnnnnnnnnnnnnnnnnn
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCClllllllllllllllllllllllllllllooooooooooooooooooooooooooooouuuuuuuuuuuuuuuuuuuuuuuuuuuuuddddddddddddddddddddddddddddd AAAAAAAAAAAAAAAAAAAAAAAAAAAAArrrrrrrrrrrrrrrrrrrrrrrrrrrrrccccccccccccccccccccccccccccchhhhhhhhhhhhhhhhhhhhhhhhhhhhhiiiiiiiiiiiiiiiiiiiiiiiiiiiiittttttttttttttttttttttttttttteeeeeeeeeeeeeeeeeeeeeeeeeeeeecccccccccccccccccccccccccccccttttttttttttttttttttttttttttt
+Engineering Manager 2 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAeeeeeeeeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrrrrrrrrrrrrrrrrrrrrrooooooooooooooooooooooooooooossssssssssssssssssssssssssssspppppppppppppppppppppppppppppaaaaaaaaaaaaaaaaaaaaaaaaaaaaaccccccccccccccccccccccccccccceeeeeeeeeeeeeeeeeeeeeeeeeeeee EEEEEEEEEEEEEEEEEEEEEEEEEEEEEnnnnnnnnnnnnnnnnnnnnnnnnnnnnngggggggggggggggggggggggggggggiiiiiiiiiiiiiiiiiiiiiiiiiiiiinnnnnnnnnnnnnnnnnnnnnnnnnnnnneeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrrrrrrrrrrrrrrrrrrrrr
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAnnnnnnnnnnnnnnnnnnnnnnnnnnnnnaaaaaaaaaaaaaaaaaaaaaaaaaaaaalllllllllllllllllllllllllllllyyyyyyyyyyyyyyyyyyyyyyyyyyyyytttttttttttttttttttttttttttttiiiiiiiiiiiiiiiiiiiiiiiiiiiiicccccccccccccccccccccccccccccsssssssssssssssssssssssssssss EEEEEEEEEEEEEEEEEEEEEEEEEEEEEnnnnnnnnnnnnnnnnnnnnnnnnnnnnngggggggggggggggggggggggggggggiiiiiiiiiiiiiiiiiiiiiiiiiiiiinnnnnnnnnnnnnnnnnnnnnnnnnnnnneeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrrrrrrrrrrrrrrrrrrrrr
+Product Owner 2 IIIIIIIIIIIIIIIIIIIIIIIIIIIIInnnnnnnnnnnnnnnnnnnnnnnnnnnnnddddddddddddddddddddddddddddduuuuuuuuuuuuuuuuuuuuuuuuuuuuussssssssssssssssssssssssssssstttttttttttttttttttttttttttttrrrrrrrrrrrrrrrrrrrrrrrrrrrrriiiiiiiiiiiiiiiiiiiiiiiiiiiiiaaaaaaaaaaaaaaaaaaaaaaaaaaaaalllllllllllllllllllllllllllll eeeeeeeeeeeeeeeeeeeeeeeeeeeeennnnnnnnnnnnnnnnnnnnnnnnnnnnngggggggggggggggggggggggggggggiiiiiiiiiiiiiiiiiiiiiiiiiiiiinnnnnnnnnnnnnnnnnnnnnnnnnnnnneeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrrrrrrrrrrrrrrrrrrrrr
+DDDDDDDDDDDDDDDDDDDDDDDDDDDDDaaaaaaaaaaaaaaaaaaaaaaaaaaaaatttttttttttttttttttttttttttttaaaaaaaaaaaaaaaaaaaaaaaaaaaaa OOOOOOOOOOOOOOOOOOOOOOOOOOOOOpppppppppppppppppppppppppppppeeeeeeeeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrrrrrrrrrrrrrrrrrrrrraaaaaaaaaaaaaaaaaaaaaaaaaaaaatttttttttttttttttttttttttttttiiiiiiiiiiiiiiiiiiiiiiiiiiiiiooooooooooooooooooooooooooooonnnnnnnnnnnnnnnnnnnnnnnnnnnnnsssssssssssssssssssssssssssss MMMMMMMMMMMMMMMMMMMMMMMMMMMMMaaaaaaaaaaaaaaaaaaaaaaaaaaaaannnnnnnnnnnnnnnnnnnnnnnnnnnnnaaaaaaaaaaaaaaaaaaaaaaaaaaaaagggggggggggggggggggggggggggggeeeeeeeeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrrrrrrrrrrrrrrrrrrrrr
+Other 2 UUUUUUUUUUUUUUUUUUUUUUUUUUUUUssssssssssssssssssssssssssssseeeeeeeeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrrrrrrrrrrrrrrrrrrrrr EEEEEEEEEEEEEEEEEEEEEEEEEEEEExxxxxxxxxxxxxxxxxxxxxxxxxxxxxpppppppppppppppppppppppppppppeeeeeeeeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrrrrrrrrrrrrrrrrrrrrriiiiiiiiiiiiiiiiiiiiiiiiiiiiieeeeeeeeeeeeeeeeeeeeeeeeeeeeennnnnnnnnnnnnnnnnnnnnnnnnnnnnccccccccccccccccccccccccccccceeeeeeeeeeeeeeeeeeeeeeeeeeeee EEEEEEEEEEEEEEEEEEEEEEEEEEEEEnnnnnnnnnnnnnnnnnnnnnnnnnnnnngggggggggggggggggggggggggggggiiiiiiiiiiiiiiiiiiiiiiiiiiiiinnnnnnnnnnnnnnnnnnnnnnnnnnnnneeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrrrrrrrrrrrrrrrrrrrrr
+VVVVVVVVVVVVVVVVVVVVVVVVVVVVViiiiiiiiiiiiiiiiiiiiiiiiiiiiiccccccccccccccccccccccccccccceeeeeeeeeeeeeeeeeeeeeeeeeeeee PPPPPPPPPPPPPPPPPPPPPPPPPPPPPrrrrrrrrrrrrrrrrrrrrrrrrrrrrreeeeeeeeeeeeeeeeeeeeeeeeeeeeesssssssssssssssssssssssssssssiiiiiiiiiiiiiiiiiiiiiiiiiiiiidddddddddddddddddddddddddddddeeeeeeeeeeeeeeeeeeeeeeeeeeeeennnnnnnnnnnnnnnnnnnnnnnnnnnnnttttttttttttttttttttttttttttt ooooooooooooooooooooooooooooofffffffffffffffffffffffffffff AAAAAAAAAAAAAAAAAAAAAAAAAAAAAnnnnnnnnnnnnnnnnnnnnnnnnnnnnnaaaaaaaaaaaaaaaaaaaaaaaaaaaaalllllllllllllllllllllllllllllyyyyyyyyyyyyyyyyyyyyyyyyyyyyytttttttttttttttttttttttttttttiiiiiiiiiiiiiiiiiiiiiiiiiiiiicccccccccccccccccccccccccccccsssssssssssssssssssssssssssss
+R&D 2 FFFFFFFFFFFFFFFFFFFFFFFFFFFFFuuuuuuuuuuuuuuuuuuuuuuuuuuuuunnnnnnnnnnnnnnnnnnnnnnnnnnnnnccccccccccccccccccccccccccccctttttttttttttttttttttttttttttiiiiiiiiiiiiiiiiiiiiiiiiiiiiiooooooooooooooooooooooooooooonnnnnnnnnnnnnnnnnnnnnnnnnnnnnaaaaaaaaaaaaaaaaaaaaaaaaaaaaalllllllllllllllllllllllllllll aaaaaaaaaaaaaaaaaaaaaaaaaaaaappppppppppppppppppppppppppppppppppppppppppppppppppppppppppllllllllllllllllllllllllllllliiiiiiiiiiiiiiiiiiiiiiiiiiiiicccccccccccccccccccccccccccccaaaaaaaaaaaaaaaaaaaaaaaaaaaaatttttttttttttttttttttttttttttiiiiiiiiiiiiiiiiiiiiiiiiiiiiiooooooooooooooooooooooooooooonnnnnnnnnnnnnnnnnnnnnnnnnnnnn mmmmmmmmmmmmmmmmmmmmmmmmmmmmmaaaaaaaaaaaaaaaaaaaaaaaaaaaaannnnnnnnnnnnnnnnnnnnnnnnnnnnnaaaaaaaaaaaaaaaaaaaaaaaaaaaaagggggggggggggggggggggggggggggeeeeeeeeeeeeeeeeeeeeeeeeeeeeerrrrrrrrrrrrrrrrrrrrrrrrrrrrr
+0 20 40 60
+Survey Respondents
+Fig. A.2. Survey results to "which title best describes your role?" question
+Q2

@@ -1,0 +1,700 @@
+This Reads Like That: Deep Learning for Interpretable Natural Language
+Processing
+ClaudioFanconi∗ MoritzVandenhirtz∗ SeverinHusmann JuliaE.Vogt
+ETHZürich ETHZürich ETHZürich ETHZürich
+fanconic@ethz.ch moritz.vandenhirtz@inf.ethz.ch shusmann@ethz.ch julia.vogt@inf.ethz.ch
+Abstract maintaining high predictive performance (Chen
+etal.,2019).
+Prototypelearning,apopularmachinelearning
+Inthiswork,wefocusontransforminganden-
+method designed for inherently interpretable
+hancingtheprototype-basedmodelintroducedby
+decisions,leveragessimilaritiestolearnedpro-
+totypes for classifying new data. While it is Chen et al. (2019) from the computer vision do-
+mainlyappliedincomputervision,inthiswork, maintothenaturallanguageprocessing(NLP)do-
+we build upon prior research and further ex- main. Prototype-based methods for NLP, as ex-
+plore the extension of prototypical networks plored in previous works (Friedrich et al., 2022;
+tonaturallanguageprocessing. Weintroduce
+Mingetal.,2019;Huangetal.,2022;Wangetal.,
+alearnedweightedsimilaritymeasurethaten-
+2022), involve classifying test samples based on
+hancesthesimilaritycomputationbyfocusing
+theirsimilaritytoprototypicaltrainingsamples. To
+oninformativedimensionsofpre-trainedsen-
+improveupontheseprioradaptations,wepropose
+tence embeddings. Additionally, we propose
+a post-hoc explainability mechanism that ex- two key enhancements. Firstly, we introduce a
+tractsprediction-relevantwordsfromboththe learnedweightedsimilaritymeasurethatenables
+prototypeandinputsentences. Finally,weem- the model to attend to the most informative as-
+piricallydemonstratethatourproposedmethod
+pectsofthepre-trainedsentenceembedding. This
+notonlyimprovespredictiveperformanceon
+improvementensuresthatthemethodcanbenefit
+the AG News and RT Polarity datasets over
+from pre-trained language models (Reimers and
+apreviousprototype-basedapproach,butalso
+Gurevych,2019),whichhaveshownsuperbempir-
+improvesthefaithfulnessofexplanationscom-
+paredtorationale-basedrecurrentconvolutions. icalresults,andextracttask-relevantinformation,
+therebyenhancingitsperformance. Secondly,we
+1 Introduction enhancetheinterpretabilitymechanismbyconduct-
+ingpost-hocanalysestodeterminetheimportance
+Due to the increasing utilization of artificial neu-
+of individual words in both test samples and sen-
+ralnetworksincriticaldomainssuchasmedicine
+tenceprototypes. Furthermore,weinvestigatethe
+andautonomousdriving,theneedforinterpretable
+faithfulnessoftheseexplanations,examiningtheir
+and explainable decisions made by these models
+abilitytofaithfullycaptureandrepresenttheunder-
+isextremelyimportant(SamekandMüller,2019;
+lyingmodel’sdecision-makingprocess.
+Rudin,2019). Whileextensiveresearchinthisfield
+In summary, our contributions in this paper in-
+hasfocusedonpost-hocexplanationsforblack-box
+volve domain-specific adaptations of inherently
+machinelearningmodels(Bachetal.,2015;Kim
+interpretable prototype-based models from com-
+et al., 2018; Bau et al., 2017; Lapuschkin et al.,
+puter vision to the NLP domain, enhancing their
+2019),arecentlineofinvestigationhaschallenged
+performance through a learned weighted similar-
+thisparadigmbyproposingnetworkarchitectures
+itymeasure,improvingexplainabilityviapost-hoc
+thatinherentlypossessinterpretability(Girdharand
+analysesofwordimportance,andinvestigatingthe
+Ramanan,2017;Chenetal.,2019;Lietal.,2018;
+faithfulness thereof. These advancements aim to
+Brendel and Bethge, 2019). These interpretable
+further the understanding and trustworthiness of
+modelsaimtobasetheirdecisionsonalimitedset
+prototype-basedmethodsinNLP.1
+ofhuman-understandablefeatures,enablingusers
+tocomprehendthedecision-makingprocesswhile
+1Thecodeispubliclyavailableathttps://github.com/
+*Equalcontribution fanconic/this_reads_like_that.
+3202
+tcO
+52
+]LC.sc[
+1v01071.0132:viXra
+2 RelatedWork Toprovideameaningfulinterpretationinthein-
+putspace,weperiodicallyprojecttheprototypesto
+The three main interpretability mechanisms for
+theirnearesttrainingsampleofthesameclass. For
+deep neural networks discussed in this work are
+thelastthreeepochs,theprototypesareprojected
+post-hoc explainability, rationale-based models,
+andfixed,thusenablingvisualizationoftheproto-
+andprototype-basedmodels.
+types contributing to an input’s prediction at test
+Post-hoc explanation methods correlate inputs
+time. Toensuretheusefulspreadingofprototypes,
+and outputs to explain a model’s behavior using
+we employ the loss terms proposed by Friedrich
+gradient visualization (Sundararajan et al., 2017;
+etal.(2022). InAppendixA.4,weconductanabla-
+Smilkov et al., 2017) and attention mechanisms
+tionstudytoassesstheeffectofthedifferentterms.
+(Bahdanauetal.,2015;Lietal.,2017;Husmann
+Moreinformationabouttheexperimentalsetupand
+etal.,2022;AbnarandZuidema,2020). However,
+implementationcanbefoundinAppendixA.2.
+the faithfulness of these methods is uncertain, as
+learnedattentionweightscanlackcorrelationwith 3.1 LearnedWeightedSimilarityMeasure
+gradient-basedmeasuresoffeatureimportance,and
+Wanting to leverage the strong empirical perfor-
+differentattentiondistributionscanyieldequivalent
+mance of pre-trained language models, the issue
+predictions(JainandWallace,2019).
+arises that their sentence embeddings contain in-
+Rationale-based models (Lei et al., 2016; Jain
+formationrelevanttomultipletasks(Reimersand
+etal.,2020;Bastingsetal.,2019)improveexplana-
+Gurevych,2019),whereasweareonlyinterestedin
+tionfaithfulnessbyselectingrationalesthatserve
+one(e.g. sentimentclassification). Thus,thesim-
+as explanations for predictions. While rationales
+ilaritytoprototypes,thatiscomputeddirectlyon
+indicatecontributinginputfeatures,theydonotre-
+thesepre-trainedembeddings,shouldonlydepend
+vealhowthesefeaturesarecombinedorprocessed
+onclass-relevantinformation. Toachievethis,we
+withintheneuralnetwork.
+proposeanewsimilaritymeasurethatassignsindi-
+Prototype-based networks (Chen et al., 2019)
+vidualweightstothedimensionsoftheembedding,
+emulatehuman-likereasoningbyfindingsimilari-
+inspiredbytheworkofVargasandCotterell(2020)
+tiesbetweeninputpartsandprototypestomakepre-
+ongenderbiasasalinearsubspaceinembeddings.
+dictions. However,existingNLP-basedprototype
+Thisallowsthenetworktofocusondimensionsit
+methods(Friedrichetal.,2022;Mingetal.,2019;
+deemsmoreimportantforourspecifictask,rather
+Huangetal.,2022;Wangetal.,2022)requirefull
+than treating all dimensions equally. In this mea-
+modelcontrolandlacktheabilitytovisualizeim-
+sure,wecalculatethesimilarity(i.e. ℓ distanceor
+2
+portantwordsinsentences,failingthecriterionof
+cosinesimilarity)betweentheembeddingsandpro-
+sparseexplanations(Rudin,2019). Ourproposed
+totypes,consideringtheweightsassignedtoeach
+methodaddressestheselimitations. Furtherdetails
+dimension. Forcosinesimilarity,wemultiplyeach
+onrelatedworkcanbefoundinAppendixA.1.
+dimensionoftheembeddingsbythecorresponding
+learnedweight,asshowninEquation1:
+3 Methods
+Inourapproach,wefirstcomputethesentenceem-
+(cid:80)
+w u v
+beddingusingapretrainedlanguagemodelsBERT sim(w,u,v) = i i i i , (1)
+(cid:113) (cid:113)
+(Reimers and Gurevych, 2019), GPT2 (Radford (cid:80) w u2 (cid:80) w v2
+i i i i i i
+et al., 2019; Muennighoff, 2022), MPNet (Song
+etal.,2020),andRoBERTa(Sanhetal.,2019)to wherewrepresentstheweightvector,anduandv
+capturethesemanticrepresentationoftheinputsen- aretheembeddingswhosesimilarityisbeingcal-
+tence. Then,weutilizeaprototypicallayertomea- culated. Duringtraining,weenforcenon-negative
+surethesimilaritybetweenthesentenceembedding reasoningbyclampingtheweightstoaminimum
+and learned prototypes. These prototypes act as of0. Thisensuresthatnegativereasoningisdisal-
+learnedprototypicalpointsintheembeddingspace, lowed. Similarly, for the ℓ 2 similarity, we weigh
+representing the different classes, to which they theembeddingdimensionsaccordingtotheweight
+havebeenassignedequally. Thesimilarityscores vector:
+aremultipliedbythelearnedprototypeweightsto
+(cid:115)
+(cid:88)
+arriveatthefinal,inherentlyinterpretablepredic- sim(w,u,v) = (w u v )2 (2)
+i i i
+tion.
+i
+3.2 VisualizingImportantWords Dataset
+Backbone Similarity RTreviews AGNews
+Instead of the sentence-level approach proposed
+BERT cosine 80.46±0.43 78.67±0.21
+by Friedrich et al. (2022), which visualizes the
+w.cosine 82.14±0.20 86.13±0.12
+whole prototypes as explanation, we introduce a
+ℓ distance 79.20±0.36 73.36±0.89
+word-levelvisualizationforimprovedinterpretabil- 2
+w.ℓ distance 80.02±0.44 73.11±0.82
+2
+itythroughsparseexplanations(Rudin,2019). On
+GPT2 cosine 73.41±0.41 85.77±0.20
+ahighlevel,wevisualizethewordsofasamplethat
+w.cosine 75.44±0.05 87.25±0.13
+weremostimportantforthesimilaritytothesetof
+ℓ distance 69.39±1.78 78.36±1.46
+2
+prototypes,whichhadthebiggesteffectonthepre- w.ℓ distance 69.88±0.46 79.36±1.36
+2
+diction. Thisisachievedbycomputingthediscrete
+MPNet cosine 81.09±0.49 86.49±0.32
+derivativeofthesimilaritytotheseprototypeswith w.cosine 79.55±0.82 88.09±0.28
+respecttoeachinputtoken. Weiterativelyremove ℓ distance 75.87±4.21 79.84±1.50
+2
+thetokenfromtheinputthatdecreasesthesimilar- w.ℓ 2 distance 77.69±2.26 79.73±1.38
+itythemost,asuponreversion,thistokenismost RoBERTa cosine 75.58±2.37 86.24±0.06
+w.cosine 77.51±0.29 87.45±0.07
+importantforthesimilarity. Likewise, forvisual-
+izingimportantwordsofprototypes,weconsider ℓ 2 distance 72.57±1.79 80.48±0.90
+w.ℓ distance 73.34±3.55 81.58±0.85
+the similarity to the input sample. By iteratively 2
+selectingandremovingthetokens,wevisualizethe
+Table1: Testaccuracy(%)whenusingweighted("w.")
+mostimportantwordsforagivenprototypeandtest similarityscores,againstusingnormalsimilarityscores
+sample. Theformercanbeinterpretedasaformof withdifferentsentencetransformers. Theexperiments
+abstractiverationales(novelwordsaregeneratedto areaveragedoverfiverunsandthestandarderrorisre-
+supporttheprediction),whilethelatterareextrac- ported. Thebestperformingmethodwithinaweighted
+andnonweightedsimilaritymeasureismarkedinbold.
+tiverationales(importantwordsfromtheinputdata
+are extracted to support the prediction) (Gurrapu
+withdifferentrandomseeds,andthemeanandstan-
+etal.,2023).
+darddeviationthereofarereported. Inthesecond
+Unlike previous approaches (Friedrich et al.,
+experiment, wecalculatedthetestsetconfidence
+2022),wedonotimposerestrictionsontherelative
+intervals(CIs)through1’000-foldbootstrappingas
+positionofthewordsorfixthenumberofvisual-
+aproxy,duetotheexcessivecomputationalcost.
+ized words in advance. Instead, we dynamically
+determine the number of words to be visualized 4.1 LearnedWeightedSimilarityMeasure
+basedontheexplainedpercentageofthefulldis-
+Toexploretheimpactoftheweightedembedding
+tance. We define full distance as the change in
+dimensions in the similarity measure, we carry
+similarity after having removed the top n tokens
+out an experiment in which we compare the per-
+(where n = 10), hereby implicitly assuming that
+formance of the weighted with the unweighted
+the similarity between any two sentences can be
+model on the Rotten Tomato (RT) movie review
+erasedbyremovingntokens. Then,wevisualize
+dataset(Pangetal.,2002),aswellastheAGnews
+thesmallestsubsetofremovedtokensthattogether
+dataset (Zhang et al., 2016). The test accuracy
+accountforatleastq ∈ [0,1](inourcaseq = 0.75)
+resultsaredisplayedinTable1. Theresultsdemon-
+ofthefulldistance. Thisapproachprovidesmore
+strate that in 13 out of the 16 experiments, the
+flexibilityandadaptabilityinvisualizingtheimpor-
+modelprofitsinperformancefromfocusingonthe
+tantwordsofasentenceanditsprototypeswithout
+task-relevantsentenceembeddingdimensions. The
+requiring predefined specifications of their struc-
+largest change can be observed when using stan-
+ture. Itoffersamorenuancedunderstandingofthe
+dardcosinesimilarityontheAGnewsdatasetwith
+reasonsbehindthesimilaritybetweenatestsample
+anaccuracyof78.86%(±0.21%p)increasingby
+andtheprototypesandthusofthedecision-making
+almost8%-pointsto86.18%(±0.12%p)whenus-
+processforpredictingasample’slabel.
+ing learned embedding dimensions. We observe,
+thatforbothdatasets,theunweightedaswellasthe
+4 Results
+learnedweightedcosinesimilarityperformedbet-
+Inthissection,wepresentexperimentsdemonstrat- terthanℓ orlearnedweightedℓ similarity. Thus,
+2 2
+ing the importance of our proposed method. In for the remaining experiments, we will focus on
+thefirstexperiment,themodelswererunfivetimes themodelusingweightedcosinesimilarity.
+Testsampleanditskeywords Prototype1anditsmostimportantwords
+•Thisinsufferablemovieismeanttomakeyouthinkabout •Plodding,poorlywritten,murkyandweaklyacted,thepic-
+existentialsuffering.Instead,it’llonlyputyoutosleep. turefeelsasifeveryonemakingitlosttheirmoviemojo.
+•Becauseofanunnecessaryandclumsylastscene,’swimfan’ •Plodding,poorlywritten,murkyandweaklyacted,thepic-
+leftmewithaverybadfeeling. turefeelsasifeveryonemakingitlosttheirmoviemojo.
+•Campanella’scompetentdirectionandhisexcellentcastover- •...bright,intelligent,andhumanlyfunnyfilm.
+cometheobstaclesofapredictableoutcomeandascreenplay
+thatglossesoverrafael’sevolution.
+•Betweenthem,deniroandmurphymakeshowtimethemost •...bright,intelligent,andhumanlyfunnyfilm.
+savoryandhilariousguiltypleasureofmanyarecentmovie
+season.
+Table2: ExemplarytestsamplesfromthemoviereviewdatasetbyPangetal.(2002)withthecorrespondingmost
+importantprototypefromtraining. Themostimportantwordsasdeterminedbyourmodelarevisualizedincolor.
+Thehighlightedwordswithinthetestsentenceareextractiverationales,whiletheoneswithintheprototypecanbe
+thoughtofasabstractiverationales.
+4.2 VisualizingImportantWords for the model’s behavior. Sufficiency is quanti-
+fied as the difference between the probability of
+Todemonstratetheeffectivenessofourvisualiza-
+the predicted class for the original input and the
+tion approach, we first show qualitative samples
+probabilityofthesameclasswhenmakingpredic-
+fromthetestsetofthemoviereviewdataset(Pang
+tionssolelybasedontherationales. Itmeasuresthe
+et al., 2002). Table 2 presents test set sentences
+extent to which the extracted rationales are suffi-
+with prototypes and the corresponding most im-
+cientforamodeltomakeitsprediction(DeYoung
+portantwordsfromthesentenceitself(extractive
+etal.,2020). Comprehensivenessissimilarlycom-
+rationales),butalsofromtheprototype(abstractive
+puted, but instead of considering the probability
+rationales). Thanks to our innovation, we go be-
+obtained with only the rationales, it subtracts the
+yondsimplyvisualizingtheprototypicalsentence
+predicted probability of the input without any ra-
+andshowthemostimportantwordsfromtheproto-
+tionales. Comprehensivenesscapturesthedegree
+typeaswellasfromthesamplewearecomparing
+towhichtheextractedrationalescapturealltokens
+itto. Weenhancetheinterpretabilitymechanism,
+themodelusesforprediction.
+aswecanshowtowhichwordsfromtheprototype
+thetestsampleismostsimilartoandwhichwords
+The previous work of Friedrich et al. (2022)
+fromitcontributedmosttothesimilarity. Hence,
+lacks the extraction of specific rationales for test
+themostsignificantwordsfromthesameprototype
+sentences. Thus,weemploytherecurrentconvolu-
+canvarydependingonthetestsamples,sincethe
+tionalneuralnetwork(RCNN)ofLeietal.(2016)
+rationalefortheirsimilaritymaydiffer.
+as a baseline that extracts rationales at the word-
+levelfromthetestsamples. Similarly,forourap-
+4.3 Faithfulness
+proach,weextracttheimportantwordsbyfocusing
+Toevaluatethefaithfulnessofourmodel’svisual- on the similarity to the three prototypes that con-
+izationmechanism,weadoptthemetricsofcom- tributemosttothepredictionfromthetestsamples.
+prehensiveness and sufficiency, following the ap- TheresultsoftheevaluationontheRottenTomato
+proachesofJacoviandGoldberg(2021)andDeY- movie review dataset (Pang et al., 2002) are pre-
+oung et al. (2020). These metrics serve as prox- sentedinTable3. Therefore,inthisexperimentwe
+iesforassessingwhetherthevisualizedimportant focussolelyonextractiverationalestocomputethe
+words,referredtoasrationales,faithfullyaccount comprehensivenessandsufficiency.
+Model Comp.(%p)↑ Suff.(%p)↓ Accuracy(%)
+RationalesRCNN(Leietal.,2016) 19.12 5.81 73.84
+95%-CI (18.20,20.01) (5.07,6.58) (71.97,75.75)
+Ours(BERT) 52.90 2.63 82.65
+95%-CI (51.79,54.12) (1.63,3.54) (80.98,84.33)
+Table 3: Comprehensiveness (Comp.), Sufficiency (Suff.), and Accuracy results on the movie review dataset,
+includingbootstrapped95%confidenceintervalsofthetestsetingray.
+Both models exhibit notably low sufficiency, ourprimaryobjectiveinthisworkisnottoempha-
+with our method achieving a value of 2.63% sizepredictiveperformancecomparedtolargerand
+points(95%-CI:1.63%p,3.54%p)andthebaseline morecomplexmodels,butrathertoexplorethein-
+modelachieving5.81%points(95%-CI:5.07%p, terpretabilitymechanismofprototypicalnetworks
+6.58%p). Thesefindingssuggestthatourproposed inthecontextofNLP.
+networkextractsrationalesthatareutilizedforpre- Secondly, although prototypical networks ex-
+dictionmoresufficientlythanthebaseline. Addi- hibitaninherentlyinterpretablenetworkarchitec-
+tionally,ourmodeldemonstratesacomprehensive- ture, they still rely on a black box encoder. As
+nessscorethatismorethan33%pointshigherthan demonstrated by Hoffmann et al. (2021), manip-
+thebaselinemodel. Thisobservationsuggeststhat ulating the model inputs can lead to interpreta-
+whilebothmethodsextractrelevantrationales,only tions that may not align with human understand-
+ourmethodvisualizesthefullsetofrationaleson ing. Nonetheless,ourresearchrepresentsasignifi-
+whichthemodelbasesitsprediction. cantsteptowardsachievingexplainableandinter-
+pretableAI.
+5 Conclusion
+Finally,theproposedpost-hocmethodforquan-
+tifyingword-levelimportanceiscomputationally
+Ourworkpresentsseveralsignificantcontributions.
+expensive. Itinvolvesiterativelyremovingindivid-
+Firstly,weadvancetheresearchonextendingpro-
+ualwordsfromanembedding,whichnecessitates
+totypicalnetworkstonaturallanguageprocessing
+multipleforwardpassesthroughthenetwork.
+byintroducingalearnedweightedsimilaritymea-
+surethatenablesourmodeltofocusonthecrucial
+dimensionswithinsentenceembeddingswhiledis-
+References
+regardinglessinformativecontext. Thisallowsus
+SamiraAbnarandWillemZuidema.2020. Quantifying
+toreapthebenefitsofpre-trainedlanguagemodels
+attentionflowintransformers. InAnnualMeetingof
+whileretaininganinherentlyinterpretablemodel.
+theAssociationforComputationalLinguistics.
+Thisenhancementleadstoaccuracyimprovements
+SebastianBach,AlexanderBinder,GrégoireMontavon,
+over the previous work by Friedrich et al. (2022)
+FrederickKlauschen,Klaus-RobertMüller,andWo-
+onboththeRTmoviereviewdatasetandtheAG jciech Samek. 2015. On pixel-wise explanations
+news dataset. Additionally, we propose a post- fornon-linearclassifierdecisionsbylayer-wiserele-
+hocvisualizationmethodforidentifyingimportant vancepropagation. PLOSONE,10(7):e0130140.
+words in prototypical sentences and in test sen- DzmitryBahdanau,KyunghyunCho,andYoshuaBen-
+tences. Ourresultsdemonstrateimprovedfaithful- gio. 2015. Neural machine translation by jointly
+learningtoalignandtranslate. CoRR,abs/1409.0473.
+nessincapturingtheessentialfactorsdrivingthe
+model’spredictionscomparedtoLeietal.(2016). Jasmijn Bastings, Wilker Aziz, and Ivan Titov. 2019.
+Collectively,ourfindingshighlighttheefficacyof Interpretable neural predictions with differentiable
+binary variables. In Proceedings of the 57th Con-
+learnedweightedsimilaritymeasure,thevalueof
+ference of the Association for Computational Lin-
+ourpost-hocvisualizationtechnique,bothleading
+guistics,ACL2019,Florence,Italy,July28-August
+totheenhancedfaithfulnessoftheproposedmodel. 2,2019,Volume1: LongPapers,pages2963–2977.
+Theseadvancementscontributetoadeeperunder- AssociationforComputationalLinguistics.
+standingoftheinterpretabilityofneuralnetworks
+DavidBau,BoleiZhou,AdityaKhosla,AudeOliva,and
+innaturallanguageprocessingtasks. AntonioTorralba.2017. Networkdissection: Quanti-
+fyinginterpretabilityofdeepvisualrepresentations.
+Acknowledgements InProceedingsoftheIEEEconferenceoncomputer
+visionandpatternrecognition,pages6541–6549.
+MVissupportedbytheSwissStateSecretariatfor
+WielandBrendelandMatthiasBethge.2019. Approx-
+Education,ResearchandInnovation(SERI)under
+imating CNNs with bag-of-local-features models
+contractnumberMB22.00047. works surprisingly well on imagenet. In Interna-
+tionalConferenceonLearningRepresentations.
+Limitations
+Chaofan Chen, Oscar Li, Daniel Tao, Alina Barnett,
+Thisstudyhascertainlimitations. Firstly, ourfo- CynthiaRudin,andJonathanKSu.2019. Thislooks
+likethat:Deeplearningforinterpretableimagerecog-
+cusisontwowell-balancedclassificationdatasets,
+nition. InAdvancesinNeuralInformationProcess-
+andourperformanceisnotcompetitivewithnon-
+ingSystems,volume32,pages8930–8941.Curran
+interpretablestate-of-the-artclassifiers. However, Associates,Inc.
+Jay DeYoung, Sarthak Jain, Nazneen Fatema Rajani, testingwithconceptactivationvectors(tcav). InIn-
+EricLehman,CaimingXiong,RichardSocher,and ternationalConferenceonMachineLearning,pages
+ByronC.Wallace.2020. ERASER:Abenchmarkto 2668–2677.PMLR.
+evaluaterationalizedNLPmodels. InProceedings
+of the 58th Annual Meeting of the Association for SebastianLapuschkin,StephanWäldchen,Alexander
+ComputationalLinguistics,pages4443–4458,Online. Binder,GrégoireMontavon,WojciechSamek,and
+AssociationforComputationalLinguistics. Klaus-RobertMüller.2019. Unmaskingcleverhans
+predictorsandassessingwhatmachinesreallylearn.
+Felix Friedrich, Patrick Schramowski, Christopher NatureCommunications,10(1):1–8.
+Tauchmann, and Kristian Kersting. 2022. Interac-
+tively providing explanations for transformer lan- TaoLei,ReginaBarzilay,andTommiJaakkola.2016.
+guagemodels. InProceedingsofthe1stConference Rationalizingneuralpredictions. InProceedingsof
+ofHybridHumanArtificialIntelligence(HHAI)and the2016ConferenceonEmpiricalMethodsinNat-
+in Frontiers in Artificial Intelligence and Applica- uralLanguageProcessing,pages107–117,Austin,
+tions. Texas.AssociationforComputationalLinguistics.
+RohitGirdharandDevaRamanan.2017. Attentional Jiwei Li, Will Monroe, and Dan Jurafsky. 2017. Un-
+poolingforactionrecognition. InAdvancesinNeural derstandingneuralnetworksthroughrepresentation
+InformationProcessingSystems,volume30. erasure.
+Sai Gurrapu, Ajay Kulkarni, Lifu Huang, Ismini OscarLi,HaoLiu,ChaofanChen,andCynthiaRudin.
+Lourentzou, and Feras A. Batarseh. 2023. Ratio- 2018. Deep learning for case-based reasoning
+nalizationforexplainablenlp: asurvey. Frontiersin throughprototypes: Aneuralnetworkthatexplains
+ArtificialIntelligence,6. itspredictions. InProceedingsoftheAAAIConfer-
+enceonArtificialIntelligence,volume32.
+AdrianHoffmann,ClaudioFanconi,RahulRade,and
+JonasKohler.2021. Thislookslikethat...doesit? Zachary C. Lipton. 2018. The mythos of model in-
+shortcomingsoflatentspaceprototypeinterpretabil- terpretability: In machine learning, the concept of
+ity in deep networks. In ICML 2021 Workshop on interpretabilityisbothimportantandslippery. Queue,
+Theoretic Foundation, Criticism, and Application 16(3):31–57.
+TrendofExplainableAI.
+YaoMing,PanpanXu,HuaminQu,andLiuRen.2019.
+YouchengHuang,WenqiangLei,JieFu,andJiancheng Interpretableandsteerablesequencelearningviapro-
+Lv.2022. Reconciliationofpre-trainedmodelsand totypes. Proceedingsofthe25thACMSIGKDDIn-
+prototypicalneuralnetworksinfew-shotnameden- ternationalConferenceonKnowledgeDiscovery&
+tityrecognition. InFindingsoftheAssociationfor DataMining.
+Computational Linguistics: EMNLP 2022, pages
+1793–1807,AbuDhabi,UnitedArabEmirates.Asso- Niklas Muennighoff. 2022. Sgpt: Gpt sentence
+ciationforComputationalLinguistics. embeddings for semantic search. arXiv preprint
+arXiv:2202.08904.
+Severin Husmann, Hugo Yèche, Gunnar Ratsch, and
+RitaKuznetsova.2022. Ontheimportanceofclini- BoPang,LillianLee,andShivakumarVaithyanathan.
+calnotesinmulti-modallearningforEHRdata. In 2002. Thumbs up? sentiment classification using
+NeurIPS2022WorkshoponLearningfromTimeSe- machinelearningtechniques. InProceedingsofthe
+riesforHealth. ACL-02ConferenceonEmpiricalMethodsinNatu-
+ralLanguageProcessing-Volume10,EMNLP’02,
+Alon Jacovi and Yoav Goldberg. 2021. Aligning page 79–86, USA. Association for Computational
+FaithfulInterpretationswiththeirSocialAttribution. Linguistics.
+TransactionsoftheAssociationforComputational
+Linguistics,9:294–310. Alec Radford, Jeff Wu, Rewon Child, David Luan,
+DarioAmodei,andIlyaSutskever.2019. Language
+SarthakJainandByronC.Wallace.2019. Attentionis modelsareunsupervisedmultitasklearners.
+notexplanation. CoRR,abs/1902.10186.
+NilsReimersandIrynaGurevych.2019. Sentence-bert:
+Sarthak Jain, Sarah Wiegreffe, Yuval Pinter, and By- Sentenceembeddingsusingsiamesebert-networks.
+ron C. Wallace. 2020. Learning to faithfully ra-
+tionalize by construction. In Proceedings of the CynthiaRudin.2019. Stopexplainingblackboxma-
+58th Annual Meeting of the Association for Com- chinelearningmodelsforhighstakesdecisionsand
+putationalLinguistics,ACL2020,Online,July5-10, use interpretable models instead. Nature Machine
+2020,pages4459–4473.AssociationforComputa- Intelligence,1(5):206–215.
+tionalLinguistics.
+WojciechSamekandKlaus-RobertMüller.2019. To-
+Been Kim, Martin Wattenberg, Justin Gilmer, Carrie wardsexplainableartificialintelligence. InExplain-
+Cai,JamesWexler,FernandaViegas,etal.2018. In- ableAI:interpreting,explainingandvisualizingdeep
+terpretabilitybeyondfeatureattribution: Quantitative learning,pages5–22.Springer.
+Victor Sanh, Lysandre Debut, Julien Chaumond, and A Appendix
+Thomas Wolf. 2019. Distilbert, a distilled version
+ofbert: smaller, faster, cheaperandlighter. ArXiv, A.1 SupplementalRelatedWork
+abs/1910.01108.
+Various methods have been proposed to address
+Daniel Smilkov, Nikhil Thorat, Been Kim, Fernanda theexplainabilityandinterpretabilityofdeepneu-
+Viégas,andMartinWattenberg.2017. Smoothgrad:
+ral networks. In this section we are discussing
+removingnoisebyaddingnoise.
+theexistingwork,focusingespeciallyonpost-hoc
+KaitaoSong, XuTan, TaoQin, JianfengLu, andTie- explainability,rational-basedinterpretability,and
+YanLiu.2020. Mpnet: Maskedandpermutedpre- prototype-basedinterpretability.
+trainingforlanguageunderstanding. InProceedings
+ofthe34thInternationalConferenceonNeuralIn-
+A.1.1 Post-hocExplainability
+formationProcessingSystems,NIPS’20,RedHook,
+NY,USA.CurranAssociatesInc. Post-hocexplanationmethodsarefocusedonfind-
+ing correlations based on the inputs and outputs.
+MukundSundararajan,AnkurTaly,andQiqiYan.2017.
+Thus,explanationsarecommonlyonlycreatedaf-
+Axiomaticattributionfordeepnetworks. InProceed-
+ingsofthe34thInternationalConferenceonMachine terforwardpassesofblack-boxmodels. Onesuch
+Learning-Volume70, ICML’17, page3319–3328. method is e.g. to visualize the gradients of neu-
+JMLR.org. ralnetworksovertheinputswithheatmaps(Sun-
+dararajanetal.,2017;Smilkovetal.,2017). Alter-
+FranciscoVargasandRyanCotterell.2020. Exploring
+the linear subspace hypothesis in gender bias miti- natively, what has recently become popular with
+gation. In Proceedings of the 2020 Conference on the rise of transformer architectures in NLP, are
+EmpiricalMethodsinNaturalLanguageProcessing
+post-hoc explanations based on attention mecha-
+(EMNLP),pages2902–2913,Online.Associationfor
+nisms(Bahdanauetal.,2015). ForexampleLietal.
+ComputationalLinguistics.
+(2017)usetheattentionlayerstodetectimportant
+JianingWang,ChengyuWang,ChuanqiTan,Minghui wordsinsentimentanalysistasks. However,Jain
+Qiu, Songfang Huang, Jun Huang, and Ming Gao.
+andWallace(2019)pointoutsomeshortcomingsin
+2022. SpanProto: Atwo-stagespan-basedprototyp-
+theexplainabilityofattentionheadsandthusneed
+icalnetworkforfew-shotnamedentityrecognition.
+In Proceedings of the 2022 Conference on Empiri- tobehandledwithcaution.
+calMethodsinNaturalLanguageProcessing,pages
+3466–3476,AbuDhabi,UnitedArabEmirates.As- A.1.2 Rational-basedModels
+sociationforComputationalLinguistics.
+Lei et al. (2016) introduced so-called rationals.
+Xiang Zhang, Junbo Zhao, and Yann LeCun. 2016. Thesearepiecesoftheinputtextservingasjusti-
+Character-levelconvolutionalnetworksfortextclas- ficationsforthepredictions. Theyusedamodular
+sification.
+approachinwhichaselectorfirstextractspartsof
+asentencefollowedbythepredictormodulewhich
+subsequentlymakesclassificationsbasedontheex-
+tractedrationals. Bothmodulesaretrainedjointly
+inanend-to-endmanner. Theyarguethatusingthe
+selector,thisfractionoftheoriginalinputshould
+be sufficient to represent the content. Nonethe-
+less,thisselector-predictormodularapproachhas
+severaldrawbacks(JacoviandGoldberg,2021). Ja-
+coviandGoldberg(2021)arguethatbytrainingin
+thisend-to-endfashiontheselectormaynotencode
+faithful justifications, but rather "Trojan explana-
+tions". These may be problems like the rational
+directlyencodingthelabel. Anotherillustratedfail-
+urecaseisthattheselectormodulemakesanim-
+plicitdecisiontomanipulatethepredictortowards
+a decision, meaning that the selector dictates the
+decisiondetachedfromitsactualpurposetoselect
+importantinformationforthepredictorbyextract-
+ing a rationale that has a strong class indication
+it deems to be correct. For these reasons, Jacovi
+andGoldberg(2021)suggestapredict-select-verify
+modelinwhichthemodelclassifiesbasedonthe
+fullinputtextbuttheselectedrationaleshouldin
+itself be sufficient to get to the same prediction,
+building up the extracted rational until this is the
+case.
+A.1.3 PrototypicalModels
+Prototype-based networks have recently been in-
+Figure1: Anexampledepictingthereasoningproduced
+troducedforcomputervisiontaskstoimprovein-
+byProtoPNetforcomputervision.
+terpretability. Inthepaper"ThisLooksLikeThat:
+Deep Learning for Interpretable Image Recogni-
+tion"(Chenetal.,2019),theauthorsarguethattheir A.2 ExperimentalSetup
+ProtoPNethasatransparent,human-likereasoning
+In the first experiment, where we examine the
+process. Specifically,aProtoPNettriestofindsim-
+learned weighted similarity measure, we em-
+ilaritiesbetweenpartsofaninputimageandparts
+ployedthe‘bert-large-nli-mean-tokens‘variantof
+of training images, called prototypes (hence the
+Sentence-BERT, following the code provided by
+titleoftheirpaper),andclassifiestheinputimage
+Friedrich et al. (2022). For the MPNET, we uti-
+basedonthis. Figure1showsanexampleforthe
+lizedthe‘all-mpnet-base-v2‘sentencetransformer;
+classificationofbirds.
+forRoBERTa,weemployedthe‘all-distilroberta-
+ProtoPNetshavealreadybeendiscussedinthe v1‘ variant; and for GPT2, we utilized the pre-
+settingofNLPbyFriedrichetal.(2022)andMing trained transformer model ‘Muennighoff/SGPT-
+et al. (2019). Friedrich et al. (2022) change the 125M-weightedmean-nli-bitfit‘ (all of which are
+encoderofthenetworkfromaconvolutionalneural availableintheHuggingFacelibrary). Acrossall
+network to a pretrained attention-based language training runs, we adopted the ADAM optimizer
+model. Furthermore,theyenhancethemodelwith with a learning rate of 0.005 and a weight decay
+additionallossesintheprototypelayertoreceive of 0.0005. Our models underwent 100 epochs of
+betterprototypesonawordandsentence-levelpre- training,withabatchsizeof128. Weimplemented
+diction. Ultimately,theirso-calledi/Proto-Trexis alearningrateschedulerthatreducedthelearning
+applied to classification and explanatory interac- ratebyafactorof0.5every30epochsiftherewas
+tive learning (XIL). Ming et al. (2019) apply the noimprovementinthevalidationloss. Similarto
+conceptofprototypestosequentialdataandfocus Friedrich et al. (2022), our model lacks an early
+ondifferentvariantsofRNNs. Theyidentifythat stoppingmechanism,astheprojectionsonlycom-
+forsequentialdataitisoftenthecasethatmultiple mence after 50% of the epochs have passed. A
+prototypesaresimilar. Asolutiontheyintroducean projectionstep, involvingtheprojectionofapro-
+additionaldiversitylossthatpenalizesprototypes totype back to a training sample, was conducted
+thatareclosetoeachother. However,RNNshave every 5th epoch. In the final three epochs, only
+theproblemthatitisdifficulttoprojecttheproto- the fully connected layer was trained using posi-
+typesonlytotherelevantpartsofasequence. To tiveweightstopreventnegativereasoning,aligning
+overcome this limitation they use CNNs that can withFriedrichetal.(2022)’scodeimplementation.
+easilycapturesubsequencesofaninput. Furtherde- Recognizing the impact of vector magnitudes on
+tailswillbeexplainedinSection3. Likewithpost- ℓ distance compared to cosine similarity, we ad-
+2
+hocandrational-basedmethods, prototypeshave justedthedimensionweightingvectorbyapplying
+theirshortcomingsintheirinterpretabilitymecha- asigmoidfunctionandthenmultiplyingitbytwo,
+nism (Hoffmann et al., 2021). If there are subtle constrainingthevaluestotherangeof(0,2). For
+differencesinthewaythetestandtrainingdatais eachclass,wedefined10prototypes,leadingtoa
+acquired,itcanleadtomisguidinginterpretations totalof20prototypesforthemovieclassification
+(suchasJPEGcompressionforimages). and40fortheAGNewsdataset. Furthermore,the
+encoderlayersarefrozenduringtraining,therefore where t is the prediction, y is the true label,
+i i
+thegradientonlyflowsthroughthefullyconnected z ∈ Rd are the latent variables of the sentence-
+layerandtheprototypicallayer. embedding, p ∈ Rd are the prototypes, and w ∈
+RC×daretheweightsofthelastlayer. Furthermore,
+A.3 Interpretabilityvs. Performance forthelosstobecomplete,followingmustuphold:
+As there is often a trade-off between the perfor- λ i > 0,i ∈ {1,...,5}. (Please note, that by the
+manceandtheinterpretabilityofdeepneuralnet- time of writing, the formulas of the losses in the
+works,weanalysedthepredictiveperformanceof paperofFriedrichetal.(2022),aswellassomein-
+a standard BERT on the movies and AG News terpretationsincludedsomemistakes. However,in
+dataset. Instead of appending a prototype layer theircodetheyareimplementedcorrectly.) Toeval-
+afterthetransformerbackbone,wedirectlyadded uatewhethereachofthelosstermsisnecessarywe
+a fully connected (FC) layer to the classification carryoutanablationstudy. InTable5,theresults
+output. We trained it with the cross entropy loss, ofourlossablationstudyarepresented. Weshow
+andkeptthewholeexperimentalsetupthesameas theaccuracyofourbest-performingmodelonthe
+inthepreviousexperiments. Theresultsareshow moviereviewdatasetwiththedifferentlossterms
+inTable4. Weseethatwhilethenon-interpretable individually removed (λ j = 0,j ̸= i) from the
+baselineperformsbetterasexpected,asitdoesnot
+fulllosstermaswellasthetopk ∈ {0,...,3}pro-
+haveunderlyingarchitecturalconstraints,thediffer- totypesremoved. Thisallowsinspectingwhether
+enceisnotasprominent. Additionally,onecould eachlosstermhaditsdesiredeffect.
+trade-offinterpretabilityandaccuracybyallowing In general, we observe that for the baseline
+for more prototypes, which would increase accu- model with all loss terms included, the model
+racybutmakethemethodlessinterpretableasthe largely relies on the top 2 prototypes, as without
+simutabilitydecreases(Lipton,2018). themaccuracydropsto27.89%.
+Theclusteringloss,Clst(z,p) : Rd×Rd −→ R,
+Dataset
+shouldensurethateachtrainingsampleiscloseto
+Backbone FinalLayer RTreviews AGNews
+atleastoneprototypewhereastheseparationloss,
+BERT FC 85.12±0.25 90.29±0.15 Sep(z,p) : Rd × Rd −→ R, should encourage
+Prototype 82.14±0.20 86.38±0.09
+trainingsamplestostayawayfromprototypesnot
+GPT2 FC 77.87±0.22 89.47±0.14
+oftheirownclass(Lietal.,2018). Intheresults,
+Prototype 75.44±0.05 87.25±0.13
+wecanseethatseeminglythefullloss(λ ̸= 0,i ∈
+i
+MPNet FC 85.12±0.25 89.35±0.05
+{1,...,5})reliesmoreonthetop2prototypes,as
+Prototype 79.55±0.82 88.09±0.28
+accuracy is much lower for the model with the
+RoBERTa FC 84.37±0.08 89.14±0.05
+clustering term removed than for the model with
+Prototype 77.51±0.29 87.45±0.07
+thefulllossterm. Thissuggeststhatwithoutthis
+Table4: Testsetaccuracy(%)comparisonoftheper- termthemodelmayrelyonmanyprototypestoget
+formance vs. interpretability trade-off, by removing toanestimateinsteadofonlyonthemostsimilar
+the prototypical layer and connecting the embedding
+prototypeasitshouldencourage.
+layer directly to the classification output with a fully
+Resultsafterremovingtheseparationlossterm
+connected(FC)layer. Theresultsareaveragedoverfive
+runs,andthestandarderrorisreportedingray. Thebest show a slightly higher accuracy of 83.37% and a
+performingvariantofamodelisdenotedinbolt. stronger drop-off when removing the prototypes.
+Thesteeperdrop-offmayimplythatithasthede-
+sired effect of separating prototypes of different
+A.4 LossAblationStudy
+classesappropriately.
+Here,weanalyzetheimportanceofthelossesthat
+The goal of the distribution loss, Dist(z,p) :
+weandFriedrichetal.(2022)areusing:
+Rd×Rd −→ R,istoensurethateachprototypeis
+closetoasampleinthetrainingset. Theremoval
+n ofthislossdoesnotseemtohurttheperformance.
+1 (cid:88)
+L = CE(t i ,y i )+λ 1 Clst(z,p) Hence,webelieveitisnotnecessaryandcouldbe
+n
+i=1 (3) removed. Anexplanationofthisbehaviormightbe
++λ 2 Sep(z,p)+λ 3 Dist(z,p) thatwhiletheoreticallythemaximumisspecified
++λ Divers(p)+λ ||w|| overthewholetrainingset,inthecodeofFriedrich
+4 5 1
+Topkprototypesremoved
+Removedlossterm k = 0 k = 1 k = 2 k = 3
+Baseline(fullloss) 82.46 80.16 62.15 27.89
+Clusteringloss(λ = 0) 82.56 58.03 38.91 29.61
+1
+Separationloss(λ = 0) 83.37 66.94 40.11 23.10
+2
+Distributionloss(λ = 0) 82.99 82.70 78.77 57.21
+3
+Diversityloss(λ = 0) 82.41 80.21 56.49 25.11
+4
+Weights’ℓ loss(λ = 0) 82.51 79.59 55.20 25.16
+1 5
+Table5: Lossablationstudyshowingaccuracywhenremovingdifferentnumberoftopprototypesandusingour
+bestmodelwithweightedcosinesimilarityontheRTpolaritydataset.
+etal.(2022)thatweadopted,themaximumisonly
+takenoverabatch. Requiringeachprototypetobe
+closetoatrainingsamplefromeachbatchmight
+betoomuchtoaskfor. Furtherresearchmightbe
+goingintoarelaxationofthisloss.
+The idea of the diversity loss, Divers(p) :
+Rd −→ R, is to push prototypes from the same
+class apart to learn different facets of the same
+class (Friedrich et al., 2022). Compared to the
+baseline,theresultsshowthatindeedaccuracyis
+higherwhenremovingthetopkprototypesandthe
+diversitylosstermseemstohavethedesiredeffect
+ofprototypeslearningdifferentfacetsofthesame
+class.
+Finally,droppingtheweights’ℓ -regularization
+1
+termdoesseemtoslightlyworsentheperformance
+whendropping1to3prototypes.

@@ -1,0 +1,520 @@
+(IJCSIS) International Journal of Computer Science and Information Security,
+Vol. 3, No. 1, 2009
+A Secure Multi-Party Computation Protocol for
+Malicious Computation Prevention for preserving
+privacy during Data Mining
+Dr. Durgesh Kumar Mishra Neha Koria, Nikhil Kapoor, Ravish Bahety
+Professor (CSE) and Dean (R&D), Computer Science Dept. (R&D)
+Acropolis Institute of Technology & Research, Acropolis Institute of Technology & Research,
+Indore, MP, India Indore, MP, India
+mishra_research@rediffmail.com koria.neha@gmail.com, nikhilkapoor01@gmail.com,
+ravish.bahety@gmail.com
+ABSTRACT- Secure Multi-Party Computation (SMC) allows should be acknowledged that to compute results upon data
+parties with similar background to compute results upon whose source is not known is not child’s play; and the
+their private data, minimizing the threat of disclosure. The works undertaken until now have served a great purpose
+exponential increase in sensitive data that needs to be passed
+in enlightening the industry of the subtleties of this so-
+upon networked computers and the stupendous growth of
+called SMC problem.
+internet has precipitated vast opportunities for cooperative
+Thus motivated with the intention of solving this
+computation, where parties come together to facilitate
+SMC problem we proposed a new protocol
+computations and draw out conclusions that are mutually
+beneficial; at the same time aspiring to keep their private Encrytpo_Random through which we had put forward
+data secure. These computations are generally required to be what we perceived, to be the most appropriate and
+done between competitors, who are obviously weary of each- seemingly plausible solution to the SMC conundrum. The
+others intentions. SMC caters not only to the needs of such methodology followed was quite elementary yet very
+parties but also provides plausible solutions to individual comprehensible. Encrytpo_Random worked on a two
+organizations for problems like privacy-preserving database
+layer basis; it consisted of the parties (1st layer) who
+query, privacy-preserving scientific computations, privacy-
+aspire to draw out a result collectively and being
+preserving intrusion detection and privacy-preserving data
+apprehensive of each-others intentions appoint an
+mining. This paper is an extension to a previously proposed
+assumedly unbiased third party (2nd layer) to carry out the
+protocol Encrytpo_Random, which presented a plain sailing
+yet effective approach to SMC and also put forward an aptly computation and announce the result.
+crafted architecture, whereby such an efficient protocol, In Extended Encrytpo_Random the domain of the
+involving the parties that have come forward for joint- 2nd layer has been extended from a single third-party to
+computations and the third party who undertakes such multiple third-parties, from whom a single entity is chosen
+computations, can be developed. Through this extended at run time and given the responsibility of performing the
+work an attempt has been made to further strengthen the
+required computation. A proposal sounds overtly
+existing protocol thus paving the way for a more secure
+hyperbolic without a thorough layout of the architecture to
+multi-party computational process.
+aptly implement it. Thus, here we also present a
+meticulously worked-out architecture to realize the
+KEYWORDS- Complexity, Encryption, Decryption,
+Encrytpo_Random, Extended Encrytpo_Random, Pool of protocols and also to showcase and answer the pertinent
+function, Random Dissemination, Secure Multi-party queries that are bound to arise in the minds of the
+Computation (SMC), Trusted Third Party (TTP). audience.
+The modus-operandi of the protocol deters the
+bodies involved to exhibit any malicious conduct by
+1. INTRODUCTION presenting thoroughly planned impediments in the path of
+the transfer of data among themselves. The security of
+The SMC has been a problem that has attracted the information of the parties is of utmost importance in any
+attention of scholars and the industry for quite some time. approach seeking to solve the SMC enigma. In our
+Although a vast amount of work has been done upon the protocols we have taken adequate precautions so as to
+subject, the perpetual implementation of the endeavors has guarantee the security of data of the involved parties.
+only yielded a perennial hornet’s nest. Having said that, it Instead of sending the entire data blocks the parties break
+(IJCSIS) International Journal of Computer Science and Information Security,
+Vol. 3, No. 1, 2009
+them into packets and randomly distribute amongst to actually implement it. Another disadvantage of this
+themselves, for a stipulated number of times. Provisions protocol is that, the anonymzier-layer has been assumed to
+have been done so as to ensure that the parties do not get be incorruptible; if in case it becomes malicious then
+to know whose data packets they are forwarding, and in many an information leak can occur.
+stark contrast, the third party also doesn’t have even a To solve such problems we proposed a new
+Lilliputian hint as to whose data packet a particular party protocol Encrytpo_Random[20], which involved only two
+is sending. This necessitates the need of a secure channel layers: 1st Layer consisted of the parties that wish to
+to transfer the data packets which have been dealt with in compute results and the 2nd Layer made of the Trusted
+the deftly formed and apposite architecture. To further Third Party (TTP), that which computes the result for
+conceal the identity of the data packets we apply an these parties. Here we are putting forward an extension
+encrypting function upon the data packets; these with the aim of further strengthening the existing protocol.
+encrypting functions also reach to the third party through We consider the third party as a trusted one on account
+the same path and are used to decode the packets and that it computes the results correctly.
+rearrange them to form data blocks.
+3. INFORMAL DESCRIPTION
+2. BACKGROUND
+3.1 Encrypto_Random
+The SMC came to the fore-front as the Millionaires
+The previous attempts done to solve the SMC problem
+problem described by Yao in [8]. U.Maurer considered the
+were either too simple or gullible in their outlook that it
+general SMC protocols [7]. For specific tasks like online
+was quite easy for the various parties involved in the
+auctions, public voting or online updating of the data there
+process of computation to leak the data; or were too
+exist very efficient and effective protocols. General SMC
+complicated to be realized in the real world.
+protocols are less effective than special purpose protocols.
+Our protocols dare to rectify the fallacies of these
+Maurer also defined the different types of security in
+preceding works by proposing a new scheme for solving
+databases [5]. Privacy preserving data mining using SMC
+the SMC problem. The main aspect of SMC is the
+has great importance and many applications have been
+computation of data in a secure and private manner. Thus
+developed [9, 14]. Du et al. reviewed the various
+the handling of the data is the major concern. Keeping this
+industrial problems and listed them in [1, 3]. Some of the
+vital point of the SMC in mind, we put forward a simple
+existing protocols are in the form of the circuit evaluation
+but effective two-layer protocol. The layout of our
+protocols, and encryption with homomorphism schemes.
+protocol is straight forward, which makes is easy to
+The first general constant round protocol for
+implement; but we have put various checks at subsequent
+secure two-party computations was given by Yao [16].
+levels so as to ensure the security of the data of the
+Yao’s original protocol considered only the case of semi-
+incumbent parties. Encrypto_Random works on the simple
+honest parties. An extension to the case of malicious party
+technique that ‘n’ number of parties decide to coordinate,
+was given by Lindell [17]. Goldreich et al. showed the
+and thus need to put forward their data; obviously aspiring
+existence of a secure solution of SMC problem [6]. The
+not to give undue advantage to their competitors by
+size of such protocols depend upon the number of parties
+revealing their information. Thus they appoint a third
+involved in the computation process.
+party to compute upon their collective data and announce
+A new concept was put forward by D.K.Mishra
+the result publicly.
+and M.Chandwani [18] through their multi-layer
+Encrypto_Random exhibits two-layer
+protocols. Initially a two-layer protocol along with a
+architecture, activation of each layer being an alternate
+tentative architecture for its implementation was
+phenomenon. At the 1st layer the Parties (who wish to
+proposed. This two-layer protocol was improvised by a
+perform the computations) are active while at the 2nd
+three-layer protocol in which an anonymizer layer was
+layer the Third Party (who computes the result for the
+added in between the participating parties and the third
+parties) is active. The parties break their data blocks into
+party. This new layer hid the information of the parties
+packets (number of packets formed by each party is fixed,
+from the third party, who computes the data and provides
+as decided by the TTP). Then an encrypting function is
+the result. In the next paper [19], this three-layer protocol,
+used by each party to encode their data packets. This
+was further extended into a four-layer protocol in which a
+encrypting function is drawn out randomly by each party
+packet layer was introduced. This new concept provided
+from a pool maintained by the Third Party. These
+security to the data from most of the malicious activity,
+encrypted packets are then randomly sent to other
+even if the third party is not a trusted one.
+participating parties. This random distribution is
+The magnanimity and the complexity of this
+synchronized, and is realized by using a random function
+protocol present an unusual paradox. On one hand owing
+which can be initiated by any of the participating parties at
+to its compounded and uncanny nature, this protocol
+run time. This process of random dissemination of the
+prevents most of the unscrupulous activities; but on the
+data packets is carried out many times; which further
+other hand, its intricate technicalities make it very difficult
+guarantees the confidentiality of the data blocks. After a
+(IJCSIS) International Journal of Computer Science and Information Security,
+Vol. 3, No. 1, 2009
+certain number of this parceling out, these data packets are 4. Each party having an input can communicate
+then sent to the third party; who has the resources to store with a trusted network connection.
+all the incoming data packets. The TTP then decodes the 5. The communication channels used by the input
+received data packets by using the pool of encrypting providing parties to communicate with the third
+functions maintained by it, consequently re-arranging party are secure. This implies that no intruder can
+them into whole data blocks. Now the computations are intercept the data transferred between them.
+carried out as per the collective requirements of the parties 6. The function given to the domain of the parties
+and the result is announced publicly. are not same, they are different.
+7. Minimum three parties should be involved in the
+3.2 Extended Encrypto_Random SMC.
+8. The number of packets generated by each party is
+Encrypto_Random gives an efficient and secure way of
+the same, as decided by the TTP.
+carrying out multi-party computations. Requisite measures
+9. The packet sizes of the parties are equal, as
+were taken to check the flow of data. But still a certain
+decided by the TTP.
+amount of hesitancy creeps into the mind of the observer
+that too much of information is being leveraged upon the 10. The TTP has the resources to store all the
+TTP. To take care of such doubts we here propose an incoming data packets and the encoded
+extension to our existing work, wherein the computational functions.
+layer consists of not one but multiple third parties. One out
+of these many TTP is chosen at run time, and all data
+5. ARCHITECTURE
+packets are then forwarded by the parties on the 1st layer
+to this TTP. This TTP then rearranges the data packets into 5.1 Encrypto_Random:
+data blocks and consequentially calculates and announces
+the result. Choice of the TTP is done on a random basis
+and is undertaken by another randomization function, in-
+Layer 2 (Computation
+built in the architecture of the protocol. Layer)
+As the TTP is not predetermined and is unknown Third Party
+until the time of the computation, this decreases the
+possibility of a joint malicious conduct by the parties and
+the TTP. Also, since most of the activities take place at
+run-time, it guarantees against any sort of unscrupulous
+a w c e ti l v l. i t T ie h s e (j e o n i c n r t y p o t r i n i g n d f i u v n id c u ti a o l n ) s b a y r e t h s e e le v c a t r e io d u f s r o e m nt it a i e p s o a o s l P 2 P 3
+maintained by each TTP, thus the parties does not
+P
+1
+P
+4
+individually need to intimate the TTP as to which function
+Layer 1 (Input Layer)
+they have used. The data packets are distributed randomly
+amongst the parties, that too a number of times, because as
+when the parties will forward the data it will be a P
+5
+P
+combination of various packets and thus the identity is n P 7 P 6
+hidden.
+Here special care has been taken to keep the
+process very straight-forward for the parties. The chosen
+Figure 1. The Existing Architecture
+TTP however has to undertake a lot of efforts to decrypt
+the data packets and to rearrange them back into whole Figure 1 depicts the simple architecture of
+data blocks. But this is just a small price to pay for Encrypto_Random. According to this the 1st layer i.e. The
+maintaining the secrecy of information, which is of utmost Input Layer comprise of all the parties that are involved in
+importance for every organization. the computation process. Since all these parties are inter-
+connected, the data packets of the respective parties are
+randomly distributed amongst them, for a stipulated
+4. ASSUMPTIONS number of times. Thus when the parties forward the data
+packets, the Third Party receives the data packets that
+The following assumptions have been stipulated:
+belong to some other party rather than the one who has
+1. TTP computes the result from the data provided
+forwarded them. This ensures that the identity of the
+to it by the parties.
+parties is hidden in terms of which data packets belong to
+2. It will do so by using a function, for which it will
+them.
+bring into effect a function generator.
+3. TTP has the ability to announce the result of the The Third Party exists at the 2nd layer, i.e. The
+computation publicly, although this won’t be Computation Layer, where the computations are carried
+desirable in most of the cases. out. After receiving the data packets from the parties (at
+(IJCSIS) International Journal of Computer Science and Information Security,
+Vol. 3, No. 1, 2009
+layer 1), the data packets are re-arranged by the Third using randomization function (R). All data is sent to this
+f
+Party using the Pool of Functions. Once the data packets TTP, who then decodes the data packets, rearranges them
+are reassembled the computation is carried out and the into whole data blocks; computes and announces the result
+result is obtained. It seems to be a simple architecture but publicly.
+provides various checks keeping in mind the fulfillment of Algorithm Extended Encrypto_Random:
+the all the constraints of the SMC.
+1. Define P ,P …, P as parties;
+1 2, n
+2. Define D as function pool;
+3. Define F ,F …, F as encrypting functions;
+1 2, n
+5.2 Extended Encrypto_Random:
+4. For party P to P do
+1 n
+begin
+Break data block into packets;
+Single TTP
+(P K , P K P K)
+selected at run n 1 n 2 … n r
+time using /* Where K 1 , K 2 …Kr
+Randomization designate the packets of a party
+Function (R)
+f */
+Select function from pool (D);
+TTP 1 TTP 2 TTP 3 . . . TTP m Attach encrypting value of function to
+each packet;
+Layer 2 (Computational Layer)
+Compute S = P K + VF ;
+nr n r r n
+/* Where V , V V are the
+1 2, …, r
+values of function F )*/
+n
+end;
+P 2 P 3
+5. For r=1 to s, do
+begin
+P
+1
+P
+4 Send S randomly to P ;
+nr n
+end;
+Layer 1 (Input Layer)
+6. Repeat step 5 for n times.
+7. Select TTP using R.
+f
+P
+5 8. For P to P , do
+P n P 7 P 6 1 n begin
+Send S to TTP;
+nr
+end;
+Figure 2. The Proposed Architecture
+9. TTP decodes S using F from D; and rearrange
+nr n
+Figure 2 depicts the extended architecture of our protocol. P K into data blocks;
+n r
+Instead of a single TTP, the computational layer (2nd
+10. TTP computes and announces result;
+layer) consists of a pool of TTP. Each TTP has the same
+pool of functions, which were used previously by the
+parties (1st layer) to encrypt their data packets. One out 7. ANALYSIS AND PERFORMANCE
+these many TTP is chosen at run time and all data packets
+Extended Encrypto_Random
+are forwarded to it making it responsible for the regrouping
+of data packets into data blocks and the subsequent Case 1: Joint malicious conduct by certain Parties.
+required calculations.
+The parties receive the data packets P K and the function
+n r
+value VF . At a given instant, if m number of parties get
+r n
+together, they will have the following information at their
+6. FORMAL DESCRIPTION
+disposal: 1). m*X number of packets, (X = number of
+r r
+Extended Encrypto_Random packets generated by a single party, as fixed by the TTP)
+and 2). m number of encrypting functions. This
+The extended protocol, like its predecessor, is based on information is useless for them, because they won’t be
+the simple pretext of a group of parties (P 1 , P 2 …P n ) who having the encrypting functions of the other parties for
+assign the task of computation to a TTP. Each party P n generating the whole blocks of data. Moreover it is highly
+breaks its data block into number of packets (P K) and improbable that these m parties receive all the packets of a
+n r
+applies encrypting function (f , f …f ) chosen from the certain party, thus making the available information with
+1 2 n
+pool of functions (D). This breaking of the data blocks them redundant.
+into packets and the application of the encrypting
+Case 2: The chosen TTP becomes malicious.
+functions is facilitated by the already existing provisions
+deftly incorporated in the architecture of the protocol. The TTP receives the packets P K and the function value
+n r
+These encrypted packets (S = P K + VF ) are randomly VF . Also, it has the pool of random functions. At a given
+nr n r r n r n
+distributed among parties. A TTP is chosen at run time instant it has the set (P n K r , V r F n , pool of functions). The
+(IJCSIS) International Journal of Computer Science and Information Security,
+Vol. 3, No. 1, 2009
+TTP can assemble the data packets to form whole data
+blocks, but in no case can relate any data block thus 1.2
+formed to a certain party. Further, if there are a large
+1
+number of participating parties (which can be assumed to
+be the real world scenario, and for which our protocol is 0.8
+sincerely aimed at), then it becomes nearly impossible to
+decisively relate a particular data block to a particular 0.6
+party. This is also evident by the probabilistic curve, which
+0.4
+describes an inversely parabolic path and tends to 0 as the
+number of parties increases. 0.2
+Case 3: Joint malicious conduct by some Party and the 0
+TTP. 1 2 3 4 5 6 7
+In the previous protocol there was a predetermined TTP, No. of parties
+thus there was plausibility about some party goading the
+TTP to exhibit corrupt behavior, and consequently give
+undue advantage to such a party by revealing the
+regrouped data blocks. This problem is taken care of in this
+extended work, as the TTP is decided only at run time by
+the protocol. Thus it becomes virtually impossible for any
+party motivated by vindictive intent to collaborate with the
+unknown TTP for a joint malicious conduct.
+8. PROBABILISTIC EVIDENCE
+Let P(x ) be the probability that a party turns malicious,
+n
+where n is the number of parties.
+Thus, P(x ) = P(x ) = P(x ) = P(x ) = . . . =P(x ) = 1/n
+1 2 3 4 n
+(equal for all parties).
+If at a given instant, a party P (say) intends to leak the
+r
+information of the other parties. The probability of the
+number of packets that party can decrypt is given by
+= number of packets of that party / total number of
+packets.
+= Xr / ( ∑n Xr)
+r=1
+Therefore, probability that one party exhibits malicious
+conduct
+= [1/n] * [Xr / ( ∑n Xr)]
+r=1
+Now let’s say r number of parties become malicious.
+Thus, Probability for leak of the packets
+= [r/n] * [ ∑r Xr)/ ( ∑n Xr]
+r=1 r=1
+Also, let P(t ) be the probability that the chosen TTP turns
+m
+malicious, where m is the number of total TTP out of
+which one will be chosen.
+Thus, P(t ) = P(t ) = P(t ) = P(t ) = . . . =P(t ) = 1/m
+1 2 3 4 m
+(equal for all TTP).
+Therefore, Total Probability for leak of the packets is
+given by
+= 1/m * [r/n] * [ ∑r Xr)/ ( ∑n Xr]
+r=1 r=1
+suoicilaM
+fo
+ytilibaborP
+latoT
+tcudnoC
+Encrypto_Random Extended Encrypto_Random
+Figure 3. Total Probability for Leak of Data
+n = number of parties coming together for joint
+computation.
+m = number of TTP from which one is chosen.
+X = 4, fixed number of packets made by each of these n
+r
+parties (as decided by the TTP). Here has been taken as
+example to construct the graph.
+m = 4, fixed number of TTP taken as example to illustrate
+the graph.
+Let’s say that one party out of n decides to decrypt its data
+packets. Thus, probability that it becomes successful in
+exhibiting such malicious conduct is given by: (1/m *
+1/n2).
+This curve depicts an inversely hyperbolic path and
+substantially proves that, as the number of participating
+parties increases, the probability of malicious conducts
+and the subsequent leakage of data decreases, and
+ultimately tends to zero if the number of parties are
+numerous.
+9. CONCLUSION
+Secure Multi-Party Computation is a well researched
+topic. Quite a few protocols already exist, and work is
+going-on on another handful. Through Extended
+Encrypto_Random we have endeavored to present a
+concept that emphasizes the need to keep the structure of
+the proposed solution to the problem very forthright so as
+to avoid ambiguities; at the same time ensuring the
+security of information by taking efficient and intricate
+measures. The data is first distributed and then sent
+forward; assuring that no party becomes victim to
+sabotage by other parties and also that, no party gets
+undue privilege, as the sole responsibility of the
+computation process is not vested upon a single entity.
+The encrypted nature of data further hinders any
+possibility of spiteful conduct. The possibility of
+collaborative malefic behavior by some party and the TTP
+has been completely curbed by concealing the identity of
+the TTP until runtime. Our protocol also reduces the
+(IJCSIS) International Journal of Computer Science and Information Security,
+Vol. 3, No. 1, 2009
+complexities that are encountered in three and four layer [15] Ivan Demgard and Yuvai Ishai, “Constant-Round Multi-Party
+protocols. Computation using a Black-Box Pseudo Random Generator.” Aug
+10, 2005.
+[16] A C Yao, “How to generate and Exchange Secrets.” April 16, 2004.
+[17] Yehuda Lindell, “Parallel Coin-Tossing and ConstantRound Secure
+10. FUTURE SCOPE
+Two-Party Computation.”
+The function domain is being further developed and the [18] D. K. Mishra, M. Chandwani, "Secure Multi-Party Computation
+Protocol using Ambiguous Identity," accepted for the publication in
+transforming functions that leverage the proposed
+Journal.
+architecture in different areas are being fine-tuned. [19] D. K. Mishra, M. Chandwani, “Extended Protocol for Secure Multi-
+Subsequent enhancement of the protocol is expected in the party Computation using Ambiguous Identity”. WSEAS Transaction
+on Computer Research, Vol 2, issue 2, Feb 2007.
+sense that instead of making a single TTP responsible for
+[20] Neha Koria, Nikhil Kapoor, Ravish Bahety, D K Mishra,
+calculating the result, multiple TTP are given the same set “Complexity Minimization in Secure Multi-Party Computation for
+of data packets, upon which each of them will perform the Preserving Privacy during Data Mining.” Computing for National
+Development, INDIACOM’09, 3rd National Conference, 26-27 Feb
+same computations. Then the results of each of them are
+2009.
+compared to decide which of them are harmonious. If
+AUTHORS PROFILE
+more than half of the results are found synonymous, then
+Dr. Durgesh Kumar Mishra
+such a result can be authenticated.
+REFERENCES
+[1] W. Du, and M. J. Attalah, “Secure Multi - Party Computation
+Problems and Their Applications: A Review and Open Problems.”
+Tech Report CERIAS Tech Report 2001-51, Centre for Education Biography: Dr. Durgesh Kumar Mishra has received M.Tech.
+and Research in Information Assurance and Security and degree in Computer Science from DAVV, Indore in 1994 and PhD
+Department of Computer Sciences, Purdue University, West degree in Computer Engineering in 2008. Presently he is working as
+Lafayette, IN 47906, 2001. Professor (CSE) and Dean (R&D) in Acropolis Institute of
+[2] J. Vaidya, and C. Clifton, “Leveraging the Multi in Secure Multi- Technology and Research, Indore, MP, India. He is having around
+Party Computation.” WPES’03 October 30, 2003, Washington DC, 20 Yrs of teaching experience and more than 5 Yrs of research
+USA, ACM Transaction 2003, pp 120-128. experience. He has completed his research work with Dr. M.
+[3] M. J. Atallah and W. Du., “Secure Multi-Party Computation Chandwani, Director, IET-DAVV Indore, MP, India in Secure
+Geometry.” Seventh International Workshop on Algorithms and Multi- Party Computation. He has published more than 60 papers in
+Data Structures (WADS 2001), Providence, Phode Island, USA, refereed International/National Journal and Conference including
+Aug 8- 10, 2001, pp 136-152 IEEE, ACM etc. He is a senior member of IEEE and Secretary of
+[4] W. Du, and M. J. Attalah, “Privacy-Preserving Cooperative IEEE MP-Subsection under the Bombay Section, India. Dr. Mishra
+Scientific Computations.” IN 14th IEEE Computer Security has delivered his tutorials in IEEE International conferences in India
+Foundation Workshop, Nova Scotia, Canada June 11-13, 2001. as well as other countries also. He is also the programme committee
+[5] U. Maurer, “The Role of Cryptography in Database Security.” member of several International conferences. He visited and
+SIGMOD 2004, June, Paris, France June 13-18, 2004, pp 29-35. delivered his invited talk in Taiwan, Bangladesh, USA, UK etc in
+[6] O. Goldreich, S. Micali, and A. Wigderson, “How to Play Any Secure Multi-Party Computation of Information Security. He is an
+Mental Game – A Completeness Theorem for Protocols with author of one book also. He is also the reviewer of tree International
+Honesty Majority.” 19th ACM Symposium on the Theory Of Journal of Information Security. He is a Chief Editor of Journal of
+Computation, 1987, pp 218-229. Technology and Engineering Sciences. He has been a consultant to
+[7] U. Maurer, “Secure Multi-Party Computation made Simple.” industries and Government organization like Sale tax and Labor
+Security in Computational Network (SCN’02), G. Persiano (Ed.), Department of Government of Madhya Pradesh, India.
+Lecture notes in Computer Science, Springer- Verlag, Vol. 2576,
+2003, pp 14-28. Nikhil Kapoor (India), He has done BE in
+[8] A. C. Yao, “Protocols for Secure Computations.” In Proc. 23rd Computer Engineering and Science in 2009.
+IEEE Symposium on the Foundation of Computer Science (FOCS), He has published paper in referred
+IEEE 1982, pp 160- 164. International/National Journal and
+[9] Agrawal, A. Evfimievski, and R. Srikant, “Information Sharing Conferences.
+Across Private Databases.” SIGMOD- 2003, SAndiego CA, June 9-
+11, 2003, pp 109-115.
+[10] R. Canetti, “Secure and Composition of Multi-Party Cryptographic Neha Koria (India), She has done BE in
+Protocols.” Journal of Cryptography, Vol. 13, No. 1, 2000, pp143- Computer Engineering and Science in 2009.
+202. He has published paper in referred
+[11] B. Pfitzmann, M. Schunter, and M. Waidner, “Secure Reactive International/National Journal and
+System.” IBM Research Report RZ 3206, Feb 14, 2000. Conferences.
+[12] J. VAidya and C. Clifton, “Privacy Preserving Association Rule
+Mining in Vertically Partitioned Data.” 8thACM SIGKDD
+Ravish Bahety (India), He has done BE in
+International Conference on Knowledge Discovery and Data
+Computer Engineering and Science in 2009.
+Mining(2002), pp 639- 644.
+He has published paper in referred
+[13] Y. LIndell and B. Pinkas, “Privacy Preserving Data Mining.”
+International/National Journal and
+Advances in Cryptology – CRYPRTO 2000, Springer- Verlag, Aug
+Conferences.
+20-24, 2000, pp 36-54.
+[14] H. Kargupta, B. Park, D. Herchberher, and E. Johnson, “Collective
+Data Mining: A New Perspective Toward Distributed Data MInig
+Book, Philip Chan, AAA Press, 1999.

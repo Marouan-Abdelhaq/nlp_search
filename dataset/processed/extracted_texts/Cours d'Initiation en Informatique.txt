@@ -1,0 +1,1110 @@
+Université Sultan Moulay Slimane
+Ecole Supérieure de Technologie Fkih Ben Salah
+-
+Module : MATHEMATIQUES ET INITIATION A
+L’INFORMATIQUE
+Elément: "Initiation à l’informatique"
+Pr. Rachid AIT DAOUD Année Universitaire 2022-2023
+Elément: "Initiation à l’informatique"
+2
+Initiation à l’informatique
+ Buts et motivation (1)
+L'objectif de ce cours est de présenter les concepts fondamentaux, le "comment ça
+marche, l'informatique?".
+Le cours est divisé en trois parties:
+1ére partie: rassemble les concepts essentiels sur les notions d’informatique,
+d’ordinateur, de système d'exploitation.
+Deuxième partie: introduit le concept d’algorithmique qui permet de décrire de
+façon simple et concise le fonctionnement d'un programme.
+Troisième partie: introduit les concepts de langage de programmation, de
+programme informatique et décrit comment se déroule son exécution.
+3
+Initiation à l’informatique
+ But et motivation (2)
+Être capable de :
+
+Comprendre un algorithme et expliquer ce qu’il fait.
+ Savoir transcrire les différentes étapes de résolution d'un problème sous forme d'algorithme.
+ Construire un algorithme simple, le programmer et comprendre comment se déroule son
+exécution.
+ Modifier un algorithme existant pour obtenir des résultats améliorés.
+ Développer des programmes informatiques qui soient:
+ Simples
+ Correctes
+ Efficaces
+ Rapides
+Plan de cours
+1
+Généralité sur l’informatique
+Définitions: Informatique, Données, Ordinateur, Système d’exploitation
+2 Algorithmique
+Chapitre 1: Les éléments de base algorithme
+d’un
+I- Introduction
+II- Structure générale algorithme
+d’un
+III- Les variables et les constantes
+IV- Les instructions de base
+Chapitre 2: Les structures conditionnelles et répétitives
+I- Les structures conditionnelles (alternatives)
+II- Les structures répétitives (Les boucles)
+III-
+L’organigramme
+3 Base de programmation
+Notions de base en programmation avec Quick Basic
+5
+Partie 1:
+Généralité sur l’informatique
+6
+Généralité sur l’informatique
+ Définition
+informatique?
+D’où vient le mot
+le mot informatique fait sa première apparition en 1957 sous
+la plume d’un ingénieur allemand, nommé Karl Steinbuch.
+Ce dernier, est un auteur d’un ouvrage sur le traitement
+automatisé de données.
+Informatique = Information Automatique
++
+ Définition: L’informatique est la science du traitement
+automatique de l’information.
+7
+Généralité sur l’informatique
+ Personnalités
+Charles Babbage: Il fut le premier à énoncer l’idée et le principe
+d’un ordinateur.
+Steve Jobs: Cofondateur de la société APPLE, il a inventé
+l’interface graphique des systèmes d’exploitation. Il a également
+révolutionné le monde mobile grâce notamment au iPhone.
+Bill Gates: Il est le fondateur de Microsoft. Il a inventé le
+système d’exploitation le plus utilisé de nos jours (Microsoft
+Windows).
+Tim Bernes Lee: est un informaticien britannique, celui qui a
+inventé le www qui est à la base de l’internet que nous
+connaissons aujourd'hui.
+8
+Généralité sur l’informatique
+ Essor
+Invention du L’ordinateur personnel
+Invention du •1958: C'est
+(PC): c'est un ordinateur
+microprocesseur: En
+destiné à l'usage d'une
+transistor l'invention du
+1969, Mercian E.
+personne, de prix
+(1947): circuit Hoff, ingénieur à accessible et dont les
+Intel inventa le dimensions sont assez
+L’invention intégré. premier réduites pour tenir sur un
+bureau. La première
+du transistor. microprocesseur
+machine appelée micro-
+Intel 4004 ordinateur est le Micral N,
+commercialisé, le 15 breveté en 1973 par le
+FrançaisFrançoisGernelle.
+novembre 1971.
+ont permis de nouvelles possibilités
+9
+de miniaturisation et de puissance
+de calcul.
+Généralité sur l’informatique
+
+Usagers de l’informatique
+ Concepteurs: un concepteur est une
+personne qui est chargée d'identifier les
+besoins des utilisateurs et de les spécifier.
+Son rôle consiste en particulier à
+expliquer les concepts à des experts non
+informaticiens.
+ Développeurs: un développeur
+(programmeur) est un informaticien qui
+réalise des logiciels et les met en œuvre à
+l'aide de langages de programmation.
+#
+ Utilisateurs: Une personne qui utilise un
+système informatisé (ordinateur ou
+robot) mais qui n'est pas nécessairement
+informaticien.
+10
+Généralité sur l’informatique
+
+Technologie de l’information
+1 Nombres prix, poids, volume, température, vitesse,
+pression...
+Formats de données ?? 2 Textes courrier, publications, articles de presse...
+3 Images plans, dessins, graphiques, diagrammes,
+cartes géographiques, photos, images 3D...
+4 Sons paroles, audios, bruitages ou musique.
+5 Vidéo prises de vue, clips ou films.
+11
+Généralité sur l’informatique
+ Données / Informations
+ Il existe une différence subtile entre les données et les informations. Les données sont les faits ou
+les détails à partir desquels l’information est dérivée.
+ Les données individuelles sont rarement utiles seules. Pour que les données deviennent des
+informations, elles doivent être mises en contexte.
+ Donnée :
+ Les données sont des faits bruts et non organisés qui doivent être traités.
+ Les données sont toujours interprétées, par un homme ou une machine, pour en tirer un sens.
+ Les données contiennent des chiffres, des énoncés et des caractères sous forme brute.
+ Information :
+ Lorsque des données sont traitées, organisées, structurées ou présentées dans un contexte
+donné afin de les rendre utiles, on les appelle des informations.
+ Lorsque les données sont transformées en informations, elles ne contiennent jamais de
+détails inutiles.
+12
+Généralité sur l’informatique
+
+Système de traitement de l’information
+Entrées Unité de
+Mémoire Sortie
+(D/Inf) calcul
+ Un système de traitement de l'information est composé de quatre unités:
+ l'unité d'entrée (anglais: input), qui permet de faire entrer les informations dans le système.
+(l'entrée des informations utilise notamment des procédés de numérisation)
+ l'unité de stockage (anglais: storage) qui permet de conserver les informations.
+ l'unité de traitement (anglais: processor) qui comme son nom l'indique va traiter les
+informations.
+ l'unité de sortie (anglais: output) qui permet de faire sortir les résultats des traitements.
+Généralité sur l’informatique
+ Représentation et stockage des données
+ Elles sont de toutes sortes (texte, image, son, video), mais sont numérisées sous forme de 0 et de
+1 (codées en binaire), on parle de .
+codage de l’information
+ Le codage d'une information consiste à établir une correspondance entre la représentation
+externe (habituelle) de l'information (le caractère A ou le nombre 36 par exemple), et sa
+représentation interne dans la machine, qui est une suite de bits.
+ On utilise la représentation binaire car:
+1. les données binaires sont plus faciles à mémoriser sur des supports physiques (bandes magnétiques,
+disques, usb, etc.)
+2. La représentation binaire est facile à réaliser techniquement à l'aide de bistables (système à deux états
+réalisés à l'aide de transistors).
+
+Par exemple, si l’on veut stocker un nombre entier sur le disque dur d’un ordinateur, on code
+généralement ce nombre en base 2 (langage machine) (10) au lieu de le coder en base 10
+2
+(système décimal).
+Exemple: le nombre 12 (en base 10) sera codé en base 2 par la suite binaire 00001100,
+14
+Généralité sur l’informatique
+ Représentation et stockage des données
+ On mesure la quantité de mémoire stockée dans les ordinateurs en :
+ Octet : 8 bits  permet de différencier 256 informations (ex : caractères)
+ Kilo Octet (Ko) : 210 octets = 1024 octets
+ Mega Octet (Mo) : 220
+octets = 1024 Kilo octets = 1 million d’octets
+ Giga Octet (Go) : 230 octets = 1 073 741 824 octets = 1024
+Mo = 1 milliard d’octets
+ Tera Octet, Peta Octet, Exa Octet, zeta
+etc….
+15
+Généralité sur l’informatique
+
+Architecture de base d’un ordinateur
+Définition: Un ordinateur est une machine de traitement de l’information. Il est capable d’acquérir
+de l’information, de la stocker, de la transformer en effectuant des traitements quelconques, puis de
+la restituer sous une autre forme.
+ Principe de fonctionnement
+Les deux principaux constituants ordinateur sont la mémoire principale et le processeur. La
+d’un
+mémoire principale (MP) permet de stocker de (programmes + données) tandis que
+l’information,
+le processeur exécute pas à pas les instructions composant les programmes.
+16
+Généralité sur l’informatique
+ Notion de programme
+Un programme est une suite élémentaires, qui vont être exécutées dans par
+d’instructions l’ordre
+le processeur, Ces instructions correspondent à des actions très simples, comme additionner
+deux nombre, lire ou écrire une case mémoire, etc.
+N.B: Chaque instruction est codifiée en mémoire sur quelques octets.
+17
+Généralité sur l’informatique
+ Notion de mémoire principale
+1
+ La mémoire est divisée en emplacements de taille fixe (par exemple 8
+bits), utilisés pour stocker les instructions et les données (Au moins 2
+temporairement).
+3
+4
+ La mémoire de la machine est formée d'un grand nombre de cellules
+numérotées. 5
+6
+ Le numéro d'une case mémoire est appelé « adresse mémoire ».
+7
+Cases mémoire
+18
+Généralité sur l’informatique
+ Notion de processeur
+Est le cerveau de l'ordinateur. Il permet de manipuler des informations numériques, c'est-à-dire des
+informations codées sous forme binaire {0, 1}, et d'exécuter les instructions stockées en mémoire.
+Pour chaque instruction, le processeur effectue schématiquement les opérations suivantes :
+1.
+Lire en mémoire (MP) l’instruction à exécuter.
+2. Effectuer le traitement correspondant.
+3.
+Passer à l’instruction suivante.
+ Notion de périphériques
+Le programme reçoit des données des périphériques en entrée, et communique ses résultats en
+sortie à des périphériques. Une liste (non exhaustive) de périphériques usuels est :
+-
+le clavier qui permet à l’utilisateur de saisir du texte ;
+-
+la souris qui permet à l’utilisateur de sélectionner, d’activer ou de créer à la main
+des objets graphiques ;
+-
+l’écran qui permet aux programmes d’afficher des données sous forme graphique ;
+-
+l’imprimante qui permet de sortir des données sur support papier ;
+19
+Généralité sur l’informatique
+20
+Généralité sur l’informatique
+
+Notion de système d’exploitation
+ Un programme informatique doit recevoir des données pour les traiter,
+et produire données. Pour que le programme puisse fonctionner, il
+d’autres
+faut du matériel (composants électroniques), et il faut une couche logicielle
+intermédiaire avec le matériel, appelée système . Le système
+d’exploitation
+assure la communication entre le programme informatique
+d’exploitation
+et le matériel, et permet au programme sur le matériel.
+d’agir
+ Autre définition: Un système d'exploitation (OS: Operating System) est
+un ensemble de programmes qui dirige l'utilisation des ressources d'un
+ordinateur par des logiciels applicatifs.
+21
+Partie 2: Algorithmique
+Chapitre 1: Les éléments de base d’un algorithme
+22
+Algorithmique
+– Notion et définition d’un algorithme
+algorithme?
+D’où vient le mot
+Muhammad Ibn Mûsâ al-Khuwârizmî ( 780-850)
+mathématicien, géographe, astrologue et astronome
+∼
+23
+Algorithmique
+– Notion et définition d’un algorithme
+Le terme algorithme vient du nom du mathématicien Al-Khwârizmî. Il est employé en
+informatique pour décrire une méthode de résolution de problème programmable sur
+machine.
+Un algorithme est la description de la méthode de résolution problème donné en
+d’un
+utilisant des instructions élémentaires permettant d'aboutir à un résultat . Ces instructions
+deviennent compréhensibles par lors de la traduction de en
+l’ordinateur l’algorithme
+programme.
+Données Algorithme Résultats
+24
+Algorithmique
+– Notion et définition d’un algorithme
+Exemple 1: (Algorithme de plantation d'un arbre)
+Creuser un trou, reboucher un trou et placer un arbre dans un trou sont des opérations
+élémentaires (des actions simples) que toute personne (machine dans le cas de l'informatique) est
+censée savoir exécuter. Néanmoins, si un jardinier (programmeur) veut faire planter un arbre par
+une personne qui ne sait pas le faire, il doit lui fournir "un descriptif" (un algorithme) qui lui
+indique les opérations à faire ainsi que leur ordre d'exécution (séquencement).
+------ Algorithme de plantation d'un arbre ------
+1. Creuser un trou
+2.
+Placer l’arbre dans le trou
+3. Reboucher le trou
+25
+Algorithmique
+– Notion et définition d’un algorithme
+Exemple 2 (Algorithme de plantation et d'arrosage de plusieurs arbres):
+Pour planter et arroser un ensemble d'arbres, on peut procéder de la manière suivante: planter
+l'ensemble d'arbres et les arroser tous à la fin.
+------ Algorithme de plantation et d'arrosage de plusieurs arbres ------
+1. Creuser un trou.
+2. Placer un arbre dans le trou.
+3. Reboucher le trou.
+4. S'il existe encore des arbres exécuter les actions 1, 2, 3 et 4.
+Sinon exécuter les actions suivantes.
+5. Arroser les arbres.
+Remarque:
+Pour résoudre le problème précédent, on peut procéder autrement : planter et arroser arbre par
+arbre. On conclut alors qu'à un problème donné pourraient correspondre plusieurs algorithmes.
+26
+Algorithmique Algorithmique et programmation
+–
+Tout problème à programmer doit être résolu, d’abord sous forme d’algorithme, puis
+converti en programme dans le langage de votre choix.
+Un algorithme est indépendant du langage de programmation utilisé.
+Programme:
+un langage de programmation,
+Est un enchainement d’instructions, écrit dans
+exécutées par un ordinateur, permettant de traiter un problème et de renvoyer des
+résultats. Il présente
+la traduction d’un algorithme à l’aide d’un langage de
+programmation.
+27
+Algorithmique Algorithmique et programmation
+–
+
+Cycle de développement d’un programme informatique:
+Traduction
+Problème Programme
+• •
+Algorithme Résultat
+• •
+Analyse Exécution
+28
+Algorithmique
+– Structure générale d’un algorithme
+En général, un algorithme est composé de trois parties principales:
+ L’en-tête: Cette partie sert à donner un nom à l’algorithme. Elle est procédée par le mot Algorithme.
+ La partie déclarative: Dans cette partie, on déclare les différents objets que l’algorithme utilise (variables, constantes, …)
+ Le corps de l’algorithme: Cette partie contient les instructions (opérations) de l’algorithme. Elle est délimitée par les mots Début et
+Fin.
+En-tête
+Algorithme Nom de l’algorithme
+Déclaration des variables Variable Identificateur: type
+et constantes Constante Identificateur=valeur
+Corps de l’algorithme Début
+(traitement) Instruction 1
+Instruction 2
+…….
+Instruction n
+Fin
+29
+Algorithmique Les variables et les constantes
+–
+ Notion de variable
+ L’algorithme ne manipule pas directement les valeurs des données.
+ C’est pour cela que les données ainsi que les résultats des calculs intermédiaires ou
+1
+finaux, sont organisées dans des cases mémoires qui correspondent à des variables.
+ Une variable est associée à une zone de la mémoire de la machine appelé « case 2
+mémoire » ou « mot mémoire ».
+3
+ Elle est repérée par un nom, ou identificateur.
+4 Ali
+ Elle contient une valeur qui peut varier au cours de l'exécution de l'algorithme, d'où le
+nom de variable. 5
+ Au départ la valeur est indéfinie
+6
+ Toutes les valeurs qu'elle peut prendre sont d'un même type, c'est à dire sont de même
+7
+nature et peuvent subir les mêmes opérations de base.
+ Quand une variable est déclarée dans un algorithme, la machine lui associe une
+Cases mémoire
+adresse mémoire.
+ Dans l'algorithme, on ne manipule que le nom des variables, pas l'adresse mémoire.
+Var1
+30
+Algorithmique Les variables et les constantes
+–
+ Notion de variable
+ Une variable possède donc :
+ Une valeur contenue par la case mémoire.
+ Un identificateur: nom unique par lequel on peut accéder à son contenu.
+ Un type qui définit la taille de la place occupée.
+ Ne pas confondre la variable et son contenu
+ Une variable est un contenant(case ou boîte)
+ Le contenu d'une variable est une valeur numérique, alphanumérique
+…
+31
+Algorithmique Les variables et les constantes
+–
+ Déclaration des variables (1)
+La partie déclaration consiste à énumérer toutes les variables dont on aura besoin
+au cours de .
+l’algorithme
+Chaque déclaration doit comporter le nom de la variable (identificateur) et son type.
+La syntaxe:  Variable identificateur : type
+Variable X : entier
+Variable age : réel
+Exemple 
+Variable a,b,c : entiers
+Variable prenom : chaîne
+Variable resultat : logique
+32
+Algorithmique Les variables et les constantes
+–
+ Déclaration des variables (2)
+- Identificateur
+Un identificateur est le nom donné à une variable, une constante, fonction, etc. Ce
+nom doit obligatoirement commencer par une lettre suivie suite de lettres et
+d’une
+de chiffres et ne doit pas contenir .
+d’espace
+33
+Algorithmique Les variables et les constantes
+–
+ Déclaration des variables (2)
+- Types de données
+Un type détermine en particulier les valeurs possibles de la variable et les opérations
+primitives applicables à cette variable.
+Numérique Alphanumérique
+Entier (Sans la Réel (Avec et Caractères Chaîne de
+Type de données Booléen
+virgule) sans la caractères
+virgule)
+Exemple -17 34,17 "A" "al- Deux valeurs
+109 -177,19 "#" "2" Khuwarizmi", possibles:
+2020 10 "? " "+" "Bonjour", Soit Vrai, soit
+"$" "112020" Faux
+34
+Algorithmique Les variables et les constantes
+–
+ Déclaration des variables (2)
+- Types de données
+Préciser le type des données suivantes:
+Donnée Type
+-700
+"9"
+"Welcome to EST FBS"
+-40.99
+" # "
+Faux
+"Vrai"
+35
+Algorithmique Les variables et les constantes
+–
+ Déclaration des variables (2)
+- Types de données
+Préciser le type des données suivantes:
+Donnée Type
+-700 entier
+"9" caractère
+"Welcome to EST FBS" Chaine de caractères
+-40.99 réel
+" # " Chaine de caractères
+Faux booléen
+"Vrai" Chaine de caractère
+36
+Algorithme Les variables et les constantes
+–
+ Déclaration des variables (3)
+Déclarer une variable :
+• réserver une place en mémoire
+• attribuer l'identificateur à cette
+place
+1
+2
+Identificateur: 
+A
+3
+Type: 
+Entier
+A 17 4
+Valeur: 
+17
+5
+Identificateur:  B
+B 29,07 6
+Type:  réel
+7
+Valeur:  29,07
+Cases mémoire
+37
+Algorithme Les variables et les constantes
+–
+ Les Constantes
+Une constante est un objet dont l'état reste inchangé durant toute l'exécution d'un
+programme. On ne peut jamais modifier sa valeur et celle-ci doit donc être précisée
+lors de la définition de l'objet.
+Déclaration des constantes
+Syntaxe:  Constante identificateur = valeur
+Exemple  Constante PI = 3.14
+38
+Algorithme Les instructions de base
+–
+Une instruction est une action élémentaire commandant à la machine un calcul. Les
+instructions de base sont:
+1. : L'affectation, notée par le symbole , est l'opération
+L’instruction d’affectation
+qui évalue une expression (constante ou une expression arithmétique ou logique) et
+attribue la valeur obtenue à une variable.
+Syntaxe:  Variable  expression
+a  17 (a reçoit la valeur 17)
+a  (a*b)+c (a reçoit le résultat de (a*b)+c )
+Exemple d’affectation a  ‘K’ (a reçoit la lettre K )
+a 
+X et Y (a reçoit le résultat de l’expression
+logique)
+39
+Algorithme Les instructions de base
+–
+2. ou de lecture
+L’instruction d’entrée
+Cette instruction permet d'attribuer à une variable une valeur introduite au moyen
+d'un organe d'entrée (généralement le clavier).
+Syntaxe:  Lire (identificateur)
+Lire (A)
+Exemple
+Lire (A,B,C)
+Remarque: Lorsque le programme rencontre cette instruction, et attend que
+l’exécution s’interrompt
+tape une valeur. Cette valeur est rangée en mémoire dans la variable désignée.
+l’utilisateur
+40
+Algorithme Les instructions de base
+–
+3. de sortie ou de
+L’instruction l’écriture
+Cette instruction permet de communiquer une valeur donnée ou un résultat d'une
+expression à l'organe de sortie. En termes elle permet des
+d’autres d’afficher
+informations à .
+l’écran
+Syntaxe:  Ecrire (expression)
+expression: une valeur, un résultat, un message, etc
+Exemple 1 Ecrire
+(A) (affiche à l’écran la valeur de la variable A)
+A  17
+Exemple 2
+Ecrire ("La valeur de A est = ", A) Que affiche la dernière ligne ?
+41
+Algorithme Les opérateurs et expressions
+–
+ Les opérations possibles sur les variables dépendent de leur type.
+• Exemple: On ne peux pas multiplier des mots
+1. Les opérateurs de comparaison: > , >= , < , <=, =, ≠ (entiers, réels et caractères)
+2. Les opérateurs arithmétiques:
+Les opérateurs arithmétiques permettent de faire des calculs entre des valeurs numériques :
+• Entre des réels: +, -, * (la multiplication), / (la division), ^ (Exposant) + les opérateurs de comparaison.
+• Entre deux entiers: +, -, * (la multiplication), / (la division), ^ (Exposant), DIV (la division entière), MOD (le reste de la division
+entière ) + les opérateurs de comparaison.
+3. Les opérateurs de concaténations: Entre chaines: Les opérateurs de comparaison, la concaténation (&)
+4. Les opérateurs logiques: ET , OU , NON
+42
+Algorithme
+– Exemple d’algorithme
+1. Nom d’algorithme
+2. Déclaration de variables
+3. Corps de l’algorithme
+43
+Algorithme
+– Exemple d’algorithme
+44
+Algorithme Exercice
+–
+Exercice 1: Calcule PTTC
+Ecrire un algorithme qui permet de saisir le prix HT (PHT) produit et de
+d’un
+calculer sont prix total TTC (PTTC), TVA = 20%.
+45
+Algorithme Exercice
+–
+Solution:
+Ecrire un algorithme qui permet de saisir le prix HT (PHT) produit et de
+d’un
+calculer sont prix total TTC (PTTC), TVA = 20%.
+Algorithme Calcult_PTTC
+Variables PHT, PTTC : réel
+Constante TVA = 0.2
+Début
+Ecrire ("Entrer le prix hors taxes:")
+Lire (PHT)
+PTTC  PHT + (PHT*TVA)
+Ecrire ("Le prix TTC est =", PTTC)
+Fin
+46
+Algorithme Exercice
+–
+Exercice 2: Ecrire un algorithme qui demande à de saisir le rayon r et
+l’utilisateur
+la hauteur h cylindre et qui permet sa surface totale et son
+d’un d’afficher
+volume.
+Surface = 2 r(h+r)
+π
+Volume = r2h
+π
+47
+Algorithme Exercice
+–
+Solution :
+Ecrire un algorithme qui permet de calculer le périmètre et la surface cercle
+d’un
+Algorithme Cercle
+Variables Ray, Haut, Volu, Surf : réel
+Constante P = 3.14
+Début
+Ecrire ("Entrer le rayon:")
+Lire (Ray)
+Ecrire ("Entrer la hauteur:")
+Lire (Haut)
+Volu  P*Ray*Ray*Haut
+Surf  2*P*Ray(Haut+Ray)
+Ecrire ("La surface est =", Surf)
+Ecrire ("Le Volume est =", Volu)
+Fin
+48
+Algorithme Exercice
+–
+Exercice 3: Écrire un programme qui permute la valeur de
+deux variables c1 et c2 de type caractère
+49
+Algorithme Exercice
+–
+Solution
+Algorithme Permutation_deux_caractères
+Variables c1, c2 : caractère
+Variable inter : caractère
+Début
+Ecrire ("Entrer le premier caractère:")
+Lire (c1)
+Ecrire ("Entrer le deuxième caractère:")
+Lire (c2)
+inter  c1
+c1  c2
+c2  inter
+Ecrire ("Les valeurs de c1 et c2 après la permutation sont:", c1,c2)
+Fin
+50
+Partie 2: Algorithmique
+Chapitre 2: Les structures conditionnelles et répétitives
+A- Les structures conditionnelles
+51
+A- Les structures conditionnelles (Alternatives)
+Introduction:
+Traitement séquentiel # Structure Conditionnelle
+Un traitement séquentiel contient une procédure étape par étape à
+exécuter, alors que la structure conditionnelle ou alternative permet
+ou non une série selon la valeur
+d’exécuter d’instructions d’une
+condition.
+52
+A- Les structures conditionnelles (Alternatives)
+1. La structure Si Alors FinSi
+… …
+Syntaxe:
+Si condition Alors
+traitement -- une séquence d’instructions
+FinSi
+Règle : La condition est nécessairement une expression ou une variable booléenne.
+Évaluation :
+1. la condition est évaluée ;
+2. si la condition est vraie, le traitement est exécuté puis le contrôle passe à
+l’instruction
+qui suit le FinSi ;
+3. si la condition est fausse, la machine saute directement à qui suit le FinSi.
+l’instruction
+En termes, le traitement est effectué si et seulement si la condition est VRAI.
+d’autres
+53
+A- Les structures conditionnelles (Alternatives)
+Exercice 1:
+Écrire un algorithme qui lit une valeur entière au clavier et affiche
+« pair » si elle est pair.
+54
+A- Les structures conditionnelles (Alternatives)
+Solution
+Algorithme Nombre_pair
+Variables Nbr, R : entier
+Début
+Ecrire ("Entrer un nombre:")
+Lire (Nbr)
+R  Nbr MOD 2
+Si R=0 Alors
+Ecrire (Nbr," est pair")
+FinSi
+Fin
+55
+A- Les structures conditionnelles (Alternatives)
+2. La structure Si Alors Sinon FinSi
+… … …
+Syntaxe:
+Si condition Alors
+Instruction(s) 1
+Sinon
+Instruction(s) 2
+FinSi
+Règle : La condition est nécessairement une expression ou une variable booléenne.
+Évaluation :
+1. la condition est évaluée ;
+2. si la condition est vraie, la série 1 est exécutée et
+d’instructions l’ensemble
+2 est ignoré. puis le contrôle passe à qui suit le FinSi ;
+d’instructions l’instruction
+3. De même, si la condition est fausse, la machine saute directement à la première ligne
+56
+située après le Sinon et exécute 2.
+l’ensemble d’instruction
+A- Les structures conditionnelles (Alternatives)
+Exercice 2:
+Écrire un algorithme qui lit un nombre entier au clavier et affiche
+nombre positif ou négatif.
+s’il s’agit d’un
+57
+A- Les structures conditionnelles (Alternatives)
+3. La structure Si Alors SinonSi Sinon FinSi
+… … … …
+Syntaxe:
+qui sera exécutée est
+L’instruction
+Si condition1 Alors
+dont la condition est
+l’instruction
+Instruction(s) 1
+vraie.
+SinonSi condition2 Alors
+Si aucune condition la valeur
+n’a
+Instruction(s) 2
+vraie, qui suit la
+c’est l’instruction
+SinonSi condition3 Alors
+Sinon qui sera exécutée.
+Instruction(s) 3
+Sinon
+Instructions
+FinSi
+58
+A- Les structures conditionnelles (Alternatives)
+Exercice 3:
+Écrire un algorithme qui demande le numéro mois et affiche
+d’un
+le nombre de jours que comporte ce mois en utilisant la structure
+Si Alors SinonSi Sinon FinSi.
+… … … …
+--------------------------------------------------------------------------
+Janvier, Mars, Mai, Juillet, Août, Octobre, Décembre  31 jours
+Avril, Juin, Septembre, Novembre  30 jours
+Février  28 jours
+-------------------------------------------------------------------------
+59
+A- Les structures conditionnelles (Alternatives)
+Algorithme Nombre_de_jours_par_Mois
+Variable mois: entier
+Début
+Ecrire("Entrer une valeur entre 1 et 12")
+Lire(mois)
+Si(mois=1 ou mois=3 ou mois=5 ou mois=7 ou mois=8 ou mois=10 ou
+mois=12) Alors
+Ecrire(« Ce mois comporte 31 jours")
+SinonSi (mois=4 ou mois= ou mois=6 ou mois=9) Alors
+Ecrire("Ce mois comporte 30 jours")
+SinonSi (mois=2) Alors
+Ecrire("Ce mois comporte 28 jours")
+Sinon
+Ecrire (« Nombre invalide, ce mois pas")
+n’existe
+Fin
+60
+A- Les structures conditionnelles (Alternatives)
+Exercice 4:
+Ecrire un algorithme qui permet le maximum parmi
+d’afficher
+deux nombres saisis au clavier.
+(Utiliser Si Alors SinonSi Sinon FinSi).
+l’instruction … … … …
+61
+A- Les structures conditionnelles (Alternatives)
+Algorithme Maximum_de_deux_nombres
+Variable A,B: réel
+Début
+Ecrire("Entrer la valeur de A")
+Lire(A)
+"
+Ecrire("Entrer la valeur de B")
+Lire(B)
+Si(A>B) Alors
+Ecrire("Le maximum est", A)
+SinonSi (A=B) Alors
+Ecrire("Egalité")
+Sinon
+Ecrire ("Le maximum est", B)
+FinSi
+Fin
+62
+A- Les structures conditionnelles (Alternatives)
+Remarque:
+Une structure conditionnelle peut contenir à son tour une autre structure conditionnelle, càd
+l’une incluse dans l’autre
+Exemple :
+Ecrire un algorithme permettant de calculer le montant des allocations familiales sachant que le
+montant dépend du nombre :
+d’enfants
+.
+• Si nombre d’enfants est inférieur ou égale à 3 alors les allocations sont de 300 dh par enfant
+• Si le nom d’enfants est strictement supérieur à trois et inférieur ou égale à 6 alors les allocations
+sont de:
+- 300 dh par enfant pour les trois premiers enfants
+- 100 dh par enfant pour les suivants
+• Si le nombre d’enfants est strictement supérieur à 6 alors les allocations sont:
+- 300 dh par enfant pour les trois premiers enfants
+- 100 dh par enfant pour les suivants
+- 0 dh par enfant pour les suivants
+63
+A- Les structures conditionnelles (Alternatives)
+Algorithme Allocations_familiales
+Variable NbrEnf, Montant: entier
+/* NbrEnf: Nombre Montant: Montant des allocations familiales */
+d’enfants,
+Début
+Ecrire("Entrer le nombre
+d’enfants")
+Lire(NbrEnf)
+"
+Si (NbrEnf<=3) Alors
+Montant <--- NbrEnf * 300
+Sinon
+Si (NbrEnf<=6) Alors
+Montant <--- (3*300) + (NbrEnf - 3) * 100
+Sinon
+Montant <--- 1200
+FinSi
+FinSi
+Ecrire("Le montant familiales est", Montant)
+d’allocations
+64
+Fin
+A- Les structures conditionnelles (Alternatives)
+4. La structure à choix multiples Syntaxe:
+Cette instruction conditionnelle permet de
+Selon expression faire
+choisir le traitement à effectuer en fonction de
+choix 1: action(s)1
+la valeur ou de de valeurs
+l’intervalle d’une
+choix 2: action(s)2
+variable ou expression.
+d’une
+choix 3: action(s)3
+… …
+choix n: action(s)n
+Sinon
+actions
+FinSelon
+65
+A- Les structures conditionnelles (Alternatives)
+4. La structure à choix multiples Syntaxe:
+- Evaluation:
+Selon expression faire
+choix 1: action(s)1
+ est évaluée, puis sa valeur est
+L’expression
+successivement comparée à chacun des ensembles choix 2: action(s)2
+choix .
+i choix 3: action(s)3
+ Dès y a correspondance, les comparaisons sont … …
+qu’il
+arrêtées et la séquence associée est exécutée. choix n: action(s)n
+Sinon
+ À la fin de on continuera la suite de
+l’exécution,
+actions
+du programme à partir de la 1ère instruction
+l’exécution
+qui vient après FinSelon. FinSelon
+ Si aucun choix ne correspondant, on exécutera le
+traitement Sinon du Selon.
+66
+A- Les structures conditionnelles (Alternatives)
+4. La structure à choix multiples Syntaxe:
+- Remarques:
+Selon expression faire
+choix 1: action(s)1
+1. Le sélecteur doit être de type scalaire discret et doit
+avoir une valeur avant d’être impliqué dans le Selon. choix 2: action(s)2
+choix 3: action(s)3
+2. Les traitements relatifs aux valeurs peuvent comporter
+également structures conditionnelles. … …
+d’autres
+choix n: action(s)n
+3. Choix i peut être un ensemble des valeurs séparées par
+Sinon
+des virgules ou intervalle des valeurs (Vi .. Vf).
+actions
+4. Si la valeur du sélecteur est différente des valeurs FinSelon
+proposées alors le traitement qui suit la clause
+c’est
+sinon qui sera exécuté.
+67
+A- Les structures conditionnelles (Alternatives)
+Algorithme Jours
+4. La structure à choix multiples
+Variable J: entier
+Début
+Exemple:
+Ecrire("Entrer le numéro du jours")
+Ecrire un algorithme permettant
+Lire(J)
+le jour en toute lettre selon
+d’afficher
+Selon (J) Faire
+son numéro saisi au clavier.
+1: Ecrire("Dimanche")
+2: Ecrire("Lundi")
+3: Ecrire("Mardi")
+…
+7: Ecrire("Samedi")
+Sinon
+Ecrire ("Le numéro saisi ne correspond pas à un jours")
+FinSelon
+Fin
+68
+A- Les structures conditionnelles (Alternatives)
+Exercice 5:
+Ecrire un algorithme qui vérifie si le caractère saisi par l’utilisateur est une voyelle ou une
+consonne on utilisant Selon.
+Les voyelles sont: a, e, i, o, u, y
+69
+A- Les structures conditionnelles (Alternatives)
+Solution:
+70
+Partie 3: Notions de base en programmation avec Quick Basic
+71
+Partie 3: Notions de base en programmation
+avec Quick Basic
+72
+Définition d'un programme :
+ Un programme est une suite d'instructions données préalablement par le programmeur à la machine. Cette suite
+sera ultérieurement exécutée par l'ordinateur qui affichera alors des choses à l'écran, demandera à l'utilisateur du
+programme des données, fera des calculs, réagira lorsque l'utilisateur appuiera sur les touches du clavier, etc...
+ Un compilateur est un programme qui traduit un texte écrit dans un langage de programmation de haut niveau
+vers un code binaire prêt pour exécution par l'ordinateur.
+Fig-1 : Schéma de principe de la compilation
+Concepts fondamentaux de programmation
+1. Les variables:
+ Définition: Les données sont stockées dans des variables. Ces variables sont des emplacements dans la
+mémoire de . Elles ont un nom et un type (fixes) elles contiennent une valeur qui elle peut
+l’ordinateur
+varier.
+- Le nom variable permet de retrouver son emplacement en mémoire. Il équivaut à son
+d’une
+adresse.
+- Le type de la variable détermine à lui réserver en mémoire et les traitements qui lui
+l’espace
+sont appropriés.
+ Types de variables:
+Concepts fondamentaux de programmation
+1. Les variables (suite):
+ Déclaration de variables: Déclarer une variable, lui réserver un emplacement en mémoire auquel
+c’est
+on donne un nom et en indiquant son type
+Syntaxe: DIM NomVariable AS type
+Exemple: DIM Age AS INTEGER
+DIM Prenom AS STRING
+ Affectation: Assigner une valeur à une variable, écrire cette valeur dans mémoire
+c’est l’emplacement
+réservé à cette variable.
+Age = 19
+Exemple:
+Prenom = "Ali"
+NB : La déclaration des variables est facultative en Quick Basic.
+Concepts fondamentaux de programmation
+2. Entrées / Sorties
+ Les instructions PRINT et CLS :
+Pour afficher du texte à l'écran, il faut utiliser l'instruction PRINT en plaçant le texte entre des
+guillemets.
+CLS (Clear screen) est utilisée pour effacer l’affichage.
+Programme Résultat du programme
+PRINT "Salut les amis" Salut les amis
+PRINT " 3+4 " 3+4
+PRINT
+PRINT 3+4 7
+PRINT "Bonjour"; BonjourAhmed
+PRINT "Ahmed"
+PRINT "Bonjour", Bonjour Ahmed
+PRINT "Ahmed"
+Concepts fondamentaux de programmation
+2. Entrées / Sorties
+
+L’instruction INPUT (Comment permettre à l'utilisateur d'entrer des données dans le
+programme ?)
+Le rôle de cette instruction est d’inviter l’utilisateur à entrer une donnée dans le programme qui
+sera stockée par la suite dans une variable précise.
+Exemple:
+PRINT "Quel est ton nom ?"
+INPUT Nom
+Programme Résultat du programme
+PRINT "Donner le montant en Euros:" Donner le montant en Euros:
+INPUT M ? 2
+PRINT "La valeur en dh est:" ; M*10.80 La valeur en dh est: 21,6
+Concepts fondamentaux de programmation
+3. Les opérateurs
+A- Les opérateurs de comparaison B- Les opérateurs arithmétiques
+OpérateurDescription Opérateur Description
+= Comparaison d'un égalité + Effectue une addition
+- Effectue une soustraction
+<> Comparaison d'une différence
+* Effectue une multiplication
+> Comparaison de plus grand que
+/ Effectue une division réel
+>= Comparaison de plus grand ou égal que
+\ Effectue une division entière
+< Comparaison de plus petit que
+MOD Effectue le reste d'une division (modulo)
+<= Comparaison de plus petit ou égal que
+^ Effectue une opération d'exposant
+AND Effectuer un «Et binaire»
+NOT Effectue une «Négation binaire»
+OR Effectuer un «Ou binaire»
+Concepts fondamentaux de programmation
+3. Les structures conditionnelles
+ Comment faire en sorte que le programme réagisse différemment en fonction de ce
+que l'utilisateur aura tapé ?
+1. Les instructions et IF ... THEN ... ELSEIF ... ELSE ... END IF:
+IF ... THEN … END IF
+Ces structures permettent d’exécuter ou bien non un bloc d’instructions selon le résultat d’un test
+de comparaison.
+Programme Résultat du
+Programme Résultat du
+programme
+programme
+CLS Quelle est votre âge ?
+CLS Quelle est votre âge ?
+PRINT "Quelle est votre âge " 5
+PRINT "Quelle est votre âge " 5
+INPUT age Gamin !
+INPUT age Gamin !
+IF age >= 80 THEN
+IF age >= 80 THEN
+PRINT "Vous n'êtes plus jeune."
+PRINT "Vous n'êtes plus
+END IF
+jeune."
+IF age <= 20 THEN
+ELSEIF age <= 20 THEN
+PRINT "Gamin !"
+PRINT "Gamin !"
+END IF
+ELSE
+IF age > 20 AND age < 80
+PRINT "Ni jeune ni vieux !"
+THEN
+END IF
+PRINT "Ni jeune ni vieux!"
+END IF
+Concepts fondamentaux de programmation
+3. Les structures conditionnelles
+ Comment faire en sorte que le programme réagisse différemment en fonction de ce
+que l'utilisateur aura tapé ?
+SELECT CASE (SELON en algorithme)
+2. L’instruction
+L’instruction SELECT CASE convient mieux dès qu’il y a plus de trois conditions à tester
+Programme
+SELECT CASE (expression ou variable) Les listes de valeurs peuvent se
+présenter
+CASE liste_de_valeurs_1 comme suit :
+Séquence d’instruction 1 2 = une seule valeur
+12, 15, 21 = plusieurs valeurs
+CASE liste_de_valeurs_1 10 TO 20 = une plage de valeurs
+Séquence d’instruction 2 IS > 12 = au-delà d’une valeur
+…
+CASE ELSE
+Séquence d’instruction N
+END SELECT
+Equivalence langage algorithmique / QBasic
+Algorithme Qbasic
+Variable Nbr : entier DIM Nbr AS INTEGER
+Variable Nom : chaine de caractères DIM Nom AS STRING
+Nbr <-- 4 Nbr = 4
+Nom <-- "Ali" Nom = "Ali"
+Ecrire (" Merci d’entrer votre nom") PRINT "Merci d’entrer votre nom"
+Lire (Nom) INPUT Nom
+Si Note > 18 Alors Ecrire ("Excellent travail") IF Note > 18 THEN PRINT "Excellent travail"
+Si Note > 18 Alors Ecrire ("Excellent travail") IF Note > 18 THEN PRINT "Excellent travail"
+Sinonsi Note < 10 Alors Ecrire ("Insuffisant") ELSEIF Note < 10 THEN PRINT "Insuffisant"
+FinSi END IF
+SELON expression Faire SELECT CASE expression
+FinSelon END SELECT

@@ -1,0 +1,753 @@
+4202
+beF
+22
+]MQ.oib-q[
+1v08941.2042:viXra
+Comparative Analysis of Data Preprocessing
+Methods, Feature Selection Techniques and
+Machine Learning Models for Improved
+Classification and Regression Performance on
+Imbalanced Genetic Data
+Arshmeet Kaur1* and Morteza Sarmadi2
+1*Biology Student, Evergreen Valley College, 3095 Yerba Buena Rd, San
+Jose, 95135, CA, U.S.A.
+2Research Scientist, Gilead Sciences, 333 Lakeside Dr, Foster City,
+94404, CA, U.S.A.
+*Corresponding author(s). E-mail(s): Arka7783@stu.evc.edu;
+Contributing authors: msarmadi@mit.edu;
+Abstract
+Rapid advancements in genome sequencing have led to the collection of vast
+amountsofgenomicsdata.Researchersmaybeinterestedinusingmachinelearn-
+ing models on such data to predict the pathogenicity or clinical significance of
+a genetic mutation. However, many genetic datasets contain imbalanced tar-
+get variables that pose challenges to machine learning models: observations are
+skewed/imbalancedinregressiontasksorclass-imbalancedinclassificationtasks.
+Genetic datasets are also often high-cardinal and contain skewed predictor vari-
+ables,whichposesfurtherchallenges. Weaimedtoinvestigatetheeffectsofdata
+preprocessing, feature selection techniques, and model selection on the perfor-
+manceofmodelstrainedonthesedatasets.Wemeasuredperformancewith5-fold
+cross-validation and compared averaged r-squared and accuracy metrics across
+differentcombinationsoftechniques.Wefoundthatoutliers/skewinpredictoror
+targetvariablesdidnotposeachallengetoregressionmodels.Wealsofoundthat
+class-imbalanced target variables and skewed predictors had little to no impact
+onclassificationperformance.Randomforestwasthebestmodeltouseforimbal-
+anced regression tasks. While our study uses a genetic dataset as an example of
+a real-world application, ourfindingscan begeneralized toany similar datasets.
+1
+Keywords:MachineLearning,Genetic mutations,CADD-PHRED,SIFT,PolyPhen
+1 Introduction
+When dealing specifically with predicting the pathogenicity/clinical significance of
+a mutation, we face two problems: either imbalanced regression or class-imbalanced
+classification. Our study aims to find methods that lead to the best performance
+of imbalanced regression and class-imbalanced classification tasks for models trained
+on data with the two characteristics mentioned above. While we are using a genetic
+dataset, our results are applicable to any datasets that share those characteristics of
+high-cardinality and skewed predictors.
+The first problem, imbalanced regression, occurs when machine learning mod-
+els aim to predict a continuous, skewed target variable. For example, consider
+CADD PHRED, a score ranging from 0 (benign) to 1 (most deleterious) (Niroula
+andVihinen, 2019).Mostmissensemutations(¿70%)aremildlydeleterious(Kryukov
+et al.,2007a).Additionally, medicalresearchersstudying diseasemightbe morelikely
+to focus on deleterious mutations. If they obtain data from a source focusing on the
+clinical/disease significance of genetic variants, such as Clinvar, observations may be
+skewed toward deleterious mutations. Thus, we would expect CADD PHRED, in the
+dataset used here, to be skewed heavily towards deleterious mutations.
+Theimbalancedregressionproblemposestwomainchallenges(RibeiroandMoniz,
+2020): 1) normal distributions are a common assumption of machine learning models
+andearlierutility-basedregression.2)Attempts to optimize model performanceoften
+resultin severebias.Manyreal-worldtargetvariablesmustbe modeledas continuous
+variables,ascategoriesdo notprovideenoughinformation.Additionally,the majority
+of the research on imbalanced target variables focuses on classification tasks. To deal
+withdatasetscontainingskewedpredictorsandtargets,pastresearchhasattemptedto
+use preprocessing methods to address skewed predictor variables (Branco and Torgo,
+2019). Another possible solution might be different feature selection techniques or
+model choices; while there have been many studies focusing on feature selection and
+dimensionality reductionfor class-imbalancedclassificationproblems (Kryukovet al.,
+2007b), (Maldonado et al., 2014), (Khoshgoftaar et al., 2010), (Pant and Srivastava,
+2015), as pointed out by (Branco and Torgo, 2019), there is a research gap in study-
+ing the data-intrinsic characteristics for imbalanced regression tasks. Following suit,
+there have been many studies focusing on the machine learning models that work
+best on class-imbalanced classification problems (Luo et al., 2019), (Esteves, 2020),
+(Mirza et al., 2016), but to our knowledge, there are few for imbalanced regression
+tasks. The first part of our study aims to supplement this sparse research by assess-
+ing which data preprocessing techniques (log or power transforms), feature selection
+techniques (univariate and embedded), and model choice (between decision trees, K-
+nearest neighbors, RANSAC, random forest, and support vector regressor) deal with
+our high-cardinality data with both skewed predictor and target variables. In other
+2
+words,weaimtodetermine whichcombinationofthesethreefactorsleadstothe best
+performance of the regressiontask (predicting CADD PHRED).
+The secondproblemis class-imbalancedclassification.Pathogenicityscorescanbe
+categorizedas“benign”or“damaging”basedonacutoff(forexample,thosespecified
+onEnsembl(Ensembl, 2014)).Inthis study, we lookat SIFT scores,whichdetermine
+whetherageneticvariantwillcauseachangeinproteinfunction,with0beingthemost
+deleterious and 1 being tolerated (Sim et al., 2012). In the dataset used, the scores
+arecategorizedasdeleterious,tolerated,toleratedlowconfidence,and deleteriouslow
+confidence.PolyPhenscores(also0to1)representtheprobabilityofagivenmutation
+being deleterious to protein structure and function: They can be sorted into benign,
+probably damaging,possibly damaging, and unknown. PolyPhenand SIFT represent
+the effect of a mutation on protein structure, and only approximately 20 percent of
+non-synonymous SNPs (single nucleotide polymorphisms) are deleterious to protein
+structure(Sunyaevetal.,2001).Thus,wewouldexpecttheretobemoreobservations
+in the “tolerated” classes, leading to class imbalance.
+The class-imbalance problem occurs when there is a disproportionate amount of
+observationsineachclassofaclassificationtarget,leadingmachinelearningalgorithms
+to treat the less common class values as noise (Abd Elrahman and Abraham, 2013).
+It is important to address this problem because class imbalance is often observed in
+biomedical, medical diagnostic, and bioinformatic data, as well as in other fields like
+geology or finance. Using different feature selection techniques is one way to address
+the problem; for example, researchers have developed an embedded feature selection
+approach derived from the SVM model (Nguwi and Cho, 2010). There has also been
+some researchlookingat the effect ofmodelchoice for class-imbalanceddatasets with
+skewed predictor variables, but not many models have been tested; one study found
+thatnaiveBayesClassifieroutperformedProbabilisticNeuralNetwork(Shahadatand
+Pal,2015).Ourresearchwillfocus onwhichdata preprocessing(log andpowertrans-
+forms), feature selection techniques (univariate feature vs embedded selection), and
+modelchoice(betweendecisiontrees,randomforest,K-nearestneighbors,NaiveBayes
+Classifier, Support Vector Classifier) deal with our high-cardinality data with both
+skewedpredictorandimbalancedtargetvariablesbest.Inotherwords,again,weseek
+tofindwhichcombinationwillleadtothebestperformanceofthe classificationtasks.
+To summarize,this researchaims to look ata variety ofdata transformationtech-
+niques, feature selection techniques, and model choices to deal with skewed predictor
+variables and either skewed or class-imbalancedtarget variables.Our results apply to
+datasetssimilartoours.Throughoutthepaper,thesectionswillbesplittoseparately
+address the regressiontask and classification tasks.
+2 Methods
+2.1 Data Preprocessing and Creation of Datasets For Model
+Training
+We obtained a cleaned dataset from (Kaur and Sarmadi, 2024), originally from
+(Arvai, 2020) (see Fig.1). In step one, we made three copies of the cleaned dataset
+to create three different datasets for each of the target variables in this paper:
+3
+Original File: Cleaned Data:
+clinvar_conflicting.csv clinvar_cleaned.csv
+Taken From Previous Study
+Cleaning Data
+- Removing all CLASS = 1, all conflicting information
+- Dropping irrelevant columns
+- Fixing errors in data entry in some columns
+clinvar_cleaned.csv
+Done in Current Study
+Step 1: Creating Each Variable’s
+Dataset.
+clinvar_caddphred.csv clinvar_sift.csv clinvar_polyphen.csv
+Step 2: Dropping all null values for the target variable.
+caddphred_imputed.csv sift_imputed.csv polyphen_imputed.csv
+Step 3: Encoding
+Final Data: Final Data: Final Data:
+df_caddphred.csv df_sift.csv df_polyphen.csv
+Fig. 1 Workflow of Data Preprocessing: The dataset used inthis research, clinvar cleaned.csv was
+obtainedfromtheauthorsof(KaurandSarmadi,2024),whocleanedanoriginaldatasetfrom(Arvai,
+2020).Theprocessofcreatingthecleaneddataset(removingconflictinginformation,droppingirrele-
+vantlowvariancevariables,andfixingerrorsindataentry)isdescribedinsections2.1to2.3of(Kaur
+andSarmadi,2024).Therestofthisfiguredetailsthedatasets createdinthisstudy.
+CADD PHRED, SIFT and PolyPhen. The cleaned dataset contained LoFtool, BLO-
+SUM62, CADD PHRED, PolyPhen, and SIFT scores. The combinations of data
+transformations, feature selection techniques, and model choices that lead to the
+best performance for LoFtool and BLOSUM62 have already been separately stud-
+ied. Additionally, BLOSUM62 is more of a probability-of-substitution score than a
+pathogenicity score (Eddy, 2004). Therefore, we deemed both variables irrelevant
+to this paper. We dropped the “score” variables other than the target variable
+from each respective dataset. For example, to create the PolyPhen dataset (clin-
+var polyphen.csv), we dropped BLOSUM62, LoFtool, CADD PHRED, and SIFT. In
+step two, we dropped all null values for each target variable, reducing the number of
+entries in each dataset from 39693 to 39454, 18246, and 18229 for CADD PHRED,
+SIFT,andPolyPhenrespectively.Instepthree,weperformedencodingforcategorical
+variables of all datasets created in step two. For all datasets, we used regularizedtar-
+get encoding, with CADD PHRED, SIFT, or PolyPhen as the “target.” Regularized
+4
+target encoding has been shown to outperform other common methods such as leaf
+or one-hot encoding for high-cardinality data (Pargent et al., 2022). For SIFT (cate-
+gories: tolerated low confidence, tolerated, deleterious low confidence and deleterious
+and PolyPhen (categories: benign, probably damaging, possibly damaging), ordinal
+encoding was used first to assign numerical values 1.0, 2.0... in order of increasing
+pathogenicity and then regularized target encoding was applied.
+Fig.2 SIFTandPolyphenClassDistribution:Inthisfigure,wevisualizedSIFTandPolyPhenclass
+distributionsinordertoassessiftheclass-imbalanceproblemwaspresentineachdataset(Guoetal.,
+2008).
+Fig. 3 CADD PHRED’s Heavy Right Skew: The presence of outliers and heavy right skew in
+CADD PHREDindicatesthatmodelstrainingonthisdatahavetodealwiththeimbalancedregres-
+sionproblem,whichisexplainedingreater detailintheintroductionsection.
+5
+Fig. 2 illustrates the class distribution of the SIFT and PolyPhen variables in
+their datasets. Because there were only two observations in the “unknown” category,
+we deemed that class irrelevant. A decent amount of observations were present in
+the remaining classes. However, for the SIFT variable in the SIFT dataset, the two
+“low confidence”categorieshadfewerobservationsthanthe toleratedand deleterious
+categoriesdid. We also observedoutliersand heavyrightskewin the CADD PHRED
+variable (see Fig. 3). Finally, as visualized in Fig. 4, across all datasets, six predictor
+variables were consistently heavily skewed.
+Fig. 4 Comparing Continuous Variables Across Datasets: We found six variables (AF ESP,
+AF EXAC, AF TGP, cDNA position, CDSposition, Protein position)that wereheavilyskewed in
+allthreedatasets(df polyphen.csv,df sift.csv,anddf caddphred.csvforthetop,middleandbottom
+panelsrespectively).
+6
+Table I Datasets CreatedforRegressionTaskModelTraining
+Set Name of Dataset Handling CADD PHRED Handling Skewed Predictors
+1 df caddphred Notapplicable. Notapplicable.
+df caddphred yj Yeo-JohnsonTransformed Yeo-JohnsonTransformed.
+df caddphred log LogarithmTransformed LogarithmTransformed
+2 caddphred no outliers encoded DroppedOutliers Notapplicable.
+caddphred no outliers encoded yj DroppedOutliers Yeo-JohnsonTransformed.
+caddphred no outliers encoded log DroppedOutliers LogarithmTransformed
+We created two sets, each with unique ways of handling the skewed predictor and target variables. We will
+make within-set and between-set comparisons to compare different methods of transformation and determine
+whether skewed predictor variables affect model performance. Set 1 contains df caddphred (the final dataset
+fortheCADD PHREDtargetvariable)anditstransforms.Alloutliers(1.5timestheIQRaboveorbelowthe
+firstorthirdquartile)weredroppedfromdf caddphredtocreatecaddphred no outliers encoded.Set2contains
+caddphred no outliers encodedanditstransforms.
+Table II Datasets CreatedforClassificationTasksModel
+Training
+Set Dataset Handling Skewed Predictors
+3 df polyphen Notapplicable.
+df polyphen yj Yeo-JohnsonTransformed.
+df polyphen log LogarithmTransformed
+4 df sift Notapplicable.
+df siftyj Yeo-JohnsonTransformed.
+df siftlog LogarithmTransformed
+We created Set 3 from df polyphen and Set 4 from df sift
+(seeFig.1formoreinformationonthesedatasets). Wetrans-
+formed skewed predictor variables in both sets. Nothing was
+done to modify the class-imbalanced categorical target vari-
+ablesinbothsets.Wewillprimarilybecomparingthesetsto
+assesstheeffectofskewedpredictorvariablesonclassification
+performance.
+TodealwiththeskewedpredictorvariablesandskewedCADD PHREDtargetvari-
+able, we will use logarithm transformation (Curran-Everett, 2018), and Yeo-Johnson
+transformation (similar to Box-Cox) (Weisberg, 2001), (Yeo and Johnson, 2000).
+Researchers have questioned the validity of the logarithm transform in biomedical
+researchanddataanalysis(Changyongetal.,2014),(Fengetal.,2013),(Keene,1995).
+Thus, it could be insightful to compare model performance on data that has been
+transformed in different ways. We created a multitude of training datasets from each
+target variable’s dataset (refer to Tables 1 and 2). We have a total of six datasets for
+the regressiontask and six for the classification task.
+7
+Fig. 5 Examples of Combinations of Dataset, Feature Selection Techniques, and Model Choices:
+Each of the twelve datasets from Sets 1 through 4 (see Tables 1 and 2) produced eleven unique
+combinations of the dataset used, feature selection technique applied, and model trained. Three
+featuresetswerecreatedforeachdatasetusingdifferentunivariatefeatureselectiontechniques,and
+three models were trained for each feature set. In addition, for every dataset, two more models,
+random forest and decision trees were trained with no specified feature set, allowing the models to
+usetheirembedded featureselectiontechniques. Intotal, thereweretwelvedatasets inSets1-4and
+eleven combinations for each, meaning we tested one hundred and thirty-two total combinations.
+Resultsfortheregressorsweresavedtoonefileandclassifierstoanother.
+2.2 Training and Testing Models
+Weplannedtocomparetheperformanceofdifferentfeatureselectiontechniques.The-
+oretically,univariatefeatureselectiontechniquesshouldyieldworseperformancethan
+other techniques in bioinformatics research (Ni, 2012); to the contrary, some studies
+show that in research,univariate methods canyield better results. However,this may
+be chalked up to having a limited sample size of studies. Therefore, we aim to com-
+paremodelperformancebetweendifferentfeatureselectiontechniquesforclassification
+and regression tasks. For the classification task (predicting SIFT and PolyPhen), we
+will use f-classification, chi-squared classification, and mutual-info classification (all
+univariate feature selection techniques from sklearn) as well as the embedded fea-
+ture selection of decision trees and random forest classifiers. For the regression task
+(predicting CADD PHRED), we will use f-regression, r-regression, and mutual-info
+regression as well as the embedded feature selection of decision trees and random
+forestregressors.Forallunivariatefeatureselectiontechniquesapplied,weusedSelec-
+tKBest from sklearn in order to make feature sets of ten. We also chose to compare
+performances between different machine learning models. For the regressiontask, we
+chose to compare between decision trees, K-nearest neighbors, RANSAC (robust to
+outliers (Zuliani, 2009), (Derpanis, 2010)), random forest, and support vector regres-
+sor. For the classification task, we chose to compare decision trees, random forests,
+K-nearest neighbors, Naive Bayes Classifier, and Support Vector Classifier. We used
+5-fold cross-validation (to reduce overfitting concerns (Charilaou and Battat, 2022),
+8
+(MontesinosLo´pezetal.,2022))andmeasuredtheaveragedr-squaredoraccuracyfor
+each combination, which will show us the goodness-of-fit of all models.
+2.3 Analysis of Results
+To analyze the results (r-squared and accuracy for all combinations), we used
+robustlmm, an extension of the lme4 R package for linear mixed effects modeling
+(Koller,2016),(Batesetal.,2014).Linearmixedeffectsmodelsprovideanappropriate
+regression for complex datasets with multiple variables where observations are “clus-
+tered.” The results file contains three characteristics:the model, dataset, and feature
+selection technique used. It also includes the r-squared associated with each unique
+combination of these three. Some of the observations share two of these three charac-
+teristics, making them more closely related to each other than to other observations.
+Observations in this data could share both dataset and feature selection techniques,
+forexample.Wewillrefertothevariablethatformstheseclustersasa“groupingvari-
+able.”Inthecaseofourdataset,thegroupingvariablewasacombinedvariableofdata
+plusfeatureselection,dataplusmodelchoice,andfeatureselectionplusmodelchoice.
+Mixedmodels cancontainfixedeffects,variablesthatdonotvaryacrossdifferentval-
+ues of the grouping variable, and random effects, which do vary. The random effects
+account for variability in the response variable (r-squared) that cannot be accounted
+for by the fixed effects. For example, the fixed effects were the combined grouping
+variables (data/feature selection, data/model, and feature selection/model) and the
+corresponding random effects were model, feature selection, or data, respectively. For
+example,whenanalyzingtheeffectthatusingacertaindataset(randomeffect)hadon
+the response variable (r-squared), feature selection/model was the grouping variable
+and a fixed effect.
+We used robust linear mixed-effects modeling from the robustlmm package in R,
+which can handle contamination and outliers that regular linear mixed-effect models
+may not be able to (Koller, 2016),. For the best outcome, we tested the assumptions
+of linear mixed-effect models: linearity, homoscedasticity (homogeneity of variances),
+and normality of the residuals. To test these, we loosely followed the guidelines from
+the UniversityofIllinoisatChicago(Palmeri,2016).Totestthe linearityassumption,
+weplottedresidualsagainstfittedvaluesandlookedforrandomscatteraroundy=0.
+Homoscedasticity could be assessed from the same plot: essentially, we were looking
+for randomscatter, no “fanning out.” Lastly, we tested the normality of the residuals
+using a histogram of residual values (looking for normal distribution) and a Q-Q plot
+(looking for points following the qline generated by R closely). Research indicates
+that linear mixed models are quite robust to these distributional assumptions being
+violated (Schielzeth et al., 2020); to be careful, we will be assessing the Intraclass
+Correlation Coefficient (Koo and Li, 2016) and Marginal and Conditional r-squared
+values to see the goodness–of–fit of the model.
+3 Results
+Our main question had three components: which data transformations, feature
+selection techniques, and machine learning models lead to increased r-squared (for
+9
+regression tasks) or accuracy (for classification tasks)? Thus, we split our results
+accordingly. The best-performing combination for the regression task was random
+forest, using its own embedded feature selection, trained on df caddphred with an r-
+squaredvalueof0.64.The best-performingcombinationfortheclassificationtaskwas
+the SVC classifier, trained on df sift log, using chi-squared feature selection and it
+achieved an accuracy of 0.66.
+3.1 Between-Set and Within-Set Comparisons of Data
+Transformations Effects on Regression Task Performance
+In the output of mixed-effects models, the intercept term, marked as “(Intercept),”
+represents the baseline value of the response variable. For example, when we use
+the intercept dataset caddphred no outliers encoded in Table 3, we expect a value
+of 0.39 for the response variable. All other values in the table are “adjustments” of
+this baseline value; for example, we see a 0.05(0.00-0.09) increase in the response
+variable when the caddphred no outliers encoded log dataset is used. In Tables 3 to
+6, the “response” variable is the r-squared value measuring the goodness-of-fit for
+the machine learning models trained and tested. This is not to be confused with the
+marginal and conditional R-squared values stated at the bottom of each table; these
+values refer to the goodness-of-fitof the linear mixed-effects regressionmodel used to
+analyze results files (see Fig. 4 for more information on the results files). MarginalR-
+squared values show us the percentage of variance explained by fixed effects whereas
+conditionalR-squaredvaluesshowvarianceexplainedbybothfixedandrandomeffects
+(Nakagawa and Schielzeth, 2013). Simply put, the random effects are the variables
+you see in each table. In Table 3, the data variable is the randomeffect and the fixed
+effect is a combined model choice and feature selection variable. More detail on this
+is given in the methods section. We will use a significance cutoff of p<0.05.
+In Table 3, we conducted two comparisons between Set 1 and Set 2. Firstly, we
+compared the r-squared adjustment values for df caddphred (outliers present) and
+caddphred no outliers encoded(outliersdropped)toseeifdroppingoutliers(thusnor-
+malizingskewofthetargetvariable)hadanyimpactonmodelperformance.Wefound
+no significant difference between the two datasets, indicating that the outliers and
+skewed target variables had no impact on model performance.
+We also compared the caddphred no outliers encoded log and df caddphred log
+datasets.Theonlydifferencebetweenthesedatasetswasthattheformerdroppedout-
+liers and the latter transformedthem. Both dealt with skewedpredictor variables the
+same way, by log transforming them. Comparing these datasets allows us to see the
+effect of log-transforming outliers versus dropping them when predictor variables are
+normalizedusingthelogtransformation;usingthecaddphred no outliers encoded log
+dataset led to a marginal 0.05 (0.00-0.09) increase in r-squared while using the
+df caddphred log datasetled to a -0.35(-0.05-0.04)decreasein r-squared.To summa-
+rize, when predictors are log-transformed,dropping outliers in the target variable led
+to better model performance than log-transformingthem. However,dropping outliers
+only caused a marginal increase as compared to the baseline.
+Inadditiontobetween-setcomparisons,wealsocarriedoutwithin-setcomparisons.
+Severalvariableswereskewed(Fig.3)inthe originalCADD PHREDdataset.Within
+10
+Table III R-SquaredAdjustmentValuesBasedOnDataset(Sets 1and2)
+Set Predictors Estimates CI p
+2 (Intercept) [caddphred no outliers encoded] 0.39 0.24–0.54 <0.001
+data[caddphred no outliers encoded log] 0.05 0.00–0.09 0.041
+data[caddphred no outliers encoded yj] 0.03 -0.02–0.07 0.203
+1 data[dfcaddphred] 0.03 -0.02–0.08 0.196
+data[dfcaddphred log] -0.35 -0.40–-0.31 <0.001
+data[dfcaddphred yj] -0.01 -0.05–0.04 0.690
+Random Effects
+σ2 0.00
+τ00 grouping variable 0.06
+ICC 0.95
+Ngrouping variable 11
+Observations
+Marginal R2 / Conditional R2 0.245/0.965
+R-squaredadjustmentvalues(estimates)basedonpredictorvariables(datasetusedinthiscase),confidence
+intervals, and p-values. In this case, the low marginal R-squared and high conditional R-squared of 0.97
+indicate that a large amount of the variance in the response variable (machine learning models’ r-squared
+values)isexplainedbythedatasetused.AnICCof0.95indicatesthemodel’sreliability(Bobaketal.,2018)
+.
+Set1,twoofthedatasetstransformandnormalizeboththe predictorandtargetvari-
+ables using the log and Yeo-Johnsontransforms.If we compare datasetswithin Set 1,
+we can see if the transformation was worthwhile and whether the log or Yeo-Johnson
+transformationwasbetter.AswecanseeinTable4,therewasnosignificantdifference
+between the untransformed, original CADD PHRED dataset (df caddphred) and the
+Yeo-Johnsontransform(df caddphred yj).Logtransformingpredictorandtargetvari-
+ables (df caddphred log) significantly decreased model performance by -0.38 (-0.44–
+-0.32). Therefore, we conclude that transforming both predictor and target variables
+with either the log-transform or Yeo-Johnson transform brought about no benefit.
+Within Set 2, all sets have a normalized target variable (outliers were dropped in
+the targetvariable).Two ofthe sets havelog or Yeo-Johnsontransformedthe skewed
+predictorvariables.ComparingdatasetswithinSet2allowsustoexaminewhetherthe
+skew of predictor variables is important to model performance once the skew of the
+targetvariablehasalreadybeennormalized.AsseeninTable5,therewasnosignificant
+changeinperformancecausedbyeitherthelogorYeo-Johnsontransforms.Thisseems
+to indicate that the skew of the predictor variables does not make a difference when
+the skew of the target variable is normalized.
+3.1.1 Comparing Different Model Choice
+For both sets, Random forest was the most successful model, causing an increase of
+0.41 (0.33-0.50). The others may look somewhat close in effect size, but none are
+11
+Table IV R-SquaredAdjustmentValuesBasedOnDataset(Set1)
+Predictors Estimates CI p
+(Intercept) [df caddphred] 0.42 0.26–0.57 <0.001
+data[df caddphred log] -0.38 -0.44–-0.32 <0.001
+data[df caddphred yj] -0.04 -0.10–0.02 0.190
+Random Effects
+σ2 0.00
+τ00 grouping variable 0.06
+ICC 0.93
+Ngrouping variable 11
+Observations
+Marginal R2 / Conditional R2 0.309/0.951
+AmarginalR-squaredof0.31withaconditionalR-squaredof0.95fortheregres-
+sionindicates that arelativelylargepercentage of thevariance isexplained by
+randomeffects(levelsofthedatavariable).TheICCshowedreliability,(Bobak
+etal.,2018)
+.
+Table V R-SquaredAdjustmentValuesBasedOnDataset(Set2)
+Predictors Estimates CI p
+(Intercept) [caddphred no outliers encoded] 0.40 0.25–0.54 <0.001
+data[caddphred no outliers encoded log] 0.05 -0.00–0.09 0.056
+data[caddphred no outliers encoded yj] 0.03 -0.02–0.08 0.211
+Random Effects
+σ2 0.00
+τ00 grouping variable 0.06
+ICC
+ICC 0.95
+N grouping variable
+N 11
+Observations
+Observations 33
+Marginal R2 / Conditional R2 0.006/0.951
+A near-nonexistent marginal R-squared with aconditional R-squared of 0.95 for the
+regression indicates that most of the variance in the machine learning models’ r-
+squaredvaluesisexplainedbyrandomeffects(levelsofthedatavariable).AnICCof
+0.95indicates themodel’sreliability(Bobaketal.,2018).
+statisticallysignificant.SVRwasinsecondwitha0.26(-0.00-0.52)butjustmarginally
+did not make the statistical significance cut-off (p = 0.051).
+12
+TableVI R-squaredAdjustmentsForDifferentModelChoices(Sets1and2)
+Predictors Estimates CI p
+(Intercept) [dtregression] 0.16 -0.07–0.39 0.163
+model[knnregression] 0.19 -0.07–0.45 0.150
+model[ransacregression] 0.07 -0.19–0.33 0.584
+model[rfregression] 0.41 0.33–0.50 <0.001
+model[svrregression] 0.26 -0.00–0.52 0.051
+Random Effects
+σ2 0.00
+τ00 grouping variable 0.07
+ICC 0.93
+Ngrouping variable 24
+Observations
+Marginal R2 / Conditional R2 0.147/0.944
+ThemarginalandconditionalR-squaredvaluesshowthatthemajorityofvari-
+ance is explained by random effects (levels of the data variable) and the ICC
+showstheregressionisreliable(Bobaketal.,2018)
+3.2 Classification Task Performance
+The classification tasks pose a less complex task as the data is in the outcome vari-
+ables(SIFT andPolyPhen).However,as mentionedinthe methods section,the SIFT
+datasethasaclassimbalancewhereasthePolyPhenvariabledoesnot.Wewillobserve
+whether there is a difference inwhichcombinationofdata transformationtechniques,
+featureselectiontechniques,andmodelchoicegivesthebestperformanceandwhether
+this differs between the two variables’ datasets (Sets 3 and 4 from Table 2).
+3.2.1 Comparing different Data Transformation Techniques
+Webeganbycomparingdf sift(classimbalancepresent)anddf polyphen(classimbal-
+ance not present) to assess how much of a problem class imbalance posed on overall
+model performance. Interestingly, as we can see in Table 7, there was no significant
+difference between df sift and df polyphen on model performance,indicating that the
+classimbalanceactuallydidnotcauseanissueintheSIFTdataset.Wealsoranregres-
+sion models on Sets 3 and 4 separately (Tables 8 and 9 respectively). In Set 3, we
+found no significant difference between the transformed datasets and df polyphen. In
+Set 4, we found only marginal benefit: 0.03 (0.01-0.04)increase due to log transform-
+ing and 0.02(0.00-0.04) increase due to Yeo-Johnson transformation. This indicates
+thatinimbalancedclassificationtasks,theskewofthepredictorvariableshasminimal
+effect on model performance.
+13
+Table VII AccuracyAdjustmentsBasedonDataset(Sets 3and4)
+Predictors Estimates CI p
+(Intercept) [df polyphen] 0.56 0.52–0.61 <0.001
+data[df polyphen log] 0.00 -0.02–0.02 0.710
+data[df polyphen yj] 0.00 -0.02–0.03 0.659
+data[df sift] 0.01 -0.01–0.03 0.209
+data[df siftlog] 0.02 -0.00–0.04 0.056
+data[df siftyj] 0.02 -0.00–0.04 0.123
+Random Effects
+σ2 0.00
+τ00 combined factor 0.00
+ICC
+ICC 0.88
+N combined factor
+N 11
+Observations
+Observations 66
+Marginal R2 / Conditional R2 0.011/0.886
+Shown in the table are the dataset predictors (which explain most of the
+variance in the response variable) from Sets 3 and 4. The ICC is reliable,
+thoughnotashighasinprevioustables(Bobaketal.,2018).
+3.2.2 Comparing Different Model Choice
+Random forest performed the best classification for both sets. When the regression
+wasfitwithalldatasets(Sets 3and4),the accuracyincreaseestimatewas0.11(0.07-
+0.15). The SVC classifier was close to meeting the statistical significance cutoff (p =
+0.072), but its effect size was almost half, at a 0.06 increase in accuracy.
+3.3 Issues with Data Analysis for Feature Selection Techniques
+Employed In Both Tasks
+Unfortunately, we were not able to make any conclusions on the highest-performing
+feature selection techniques for either the regression or classification tasks. We ran
+linear mixed effects regression on each set (Sets 1, 2, 3, 4) separately and then on
+multiple sets at once (Sets 1 and 2, Sets 3 and 4), but all attempts resulted in very
+lowmarginalandconditionalR-squaredaswellasanon-existentICC(0.00).Weleave
+the construction of more suitable statistical models to analyze the results for future
+research.
+4 Discussion and Conclusion
+We begin with our findings from the imbalanced regressiontask; we found that drop-
+ping outliers had no impact on model performance, indicating that outliers/skew in
+the target variable may not be causing the issue. Our result is a characterization of
+the problem;outliers holdinformationandamodel trainedonly onthe “maingroup”
+14
+Table VIII AccuracyAdjustmentsforDifferentDatasets (Set3)
+Predictors Estimates CI p
+(Intercept) [dfpolyphen] 0.56 0.51–0.61 <0.001
+data[dfpolyphen log] -0.00 -0.00–0.00 0.709
+data[dfpolyphen yj] -0.00 -0.00–0.00 0.723
+Random Effects
+σ2 0.00
+τ00 grouping variable 0.01
+ICC
+ICC 1.00
+N grouping variable
+N 11
+Observations
+Observations 33
+Marginal R2 / Conditional R2 0.000/0.998
+Similarlyto Table 7, this table shows the accuracy adjustment values based
+ondatasetswithinSet3.99.8percentofthevarianceinaccuracyadjustment
+valuesisduetothedatasetused,andtheICCismostreliableat1.00(Bobak
+etal.,2018).
+ofobservationsis onlygeneralizableto thatgroup.However,aspreviouslyestablished
+in the introduction section, imbalanced regression has been shown to pose challenges
+to model performance (Ribeiro and Moniz, 2020), so there must be some property
+of datasets like ours where a skewed target variable does not pose a threat to model
+performance. Sylvia et al. carried out a study where they focused on the optimiza-
+tionofmodelsperformingimbalancedregressiontasks(Silvaetal.,2022).Theytested
+using the SERA (Squared Error Relevance Area) optimization parameter. It places
+focus on errors of outlier values in a regression problem. They tested models using
+SERAagainststandardboostingalgorithmsandfound thatSERA models performed
+better. This could be a helpful jump-off point for future research: perhaps the best-
+performing combinations of models could be selected from this study and regression
+could be optimized using SERA.
+We found that the skew of predictor variables does not seem to make a difference
+when the target variable is already normalized through outliers being dropped. Log
+transforming both predictor and target variables leads to abysmally reduced perfor-
+mance.Whenadatasethaspredictorvariablesnormalizedwiththelog-transform,it’s
+better to drop outliers in the target instead of log-transforming the target variable,
+even though dropping outliers still only leads to a marginalbenefit. This follows logi-
+callyfromresearchquestioning the validity ofthe logtransformation,especiallywhen
+dealing with biological data: Feng et al point out that log transformation does not
+decrease the variability of data and the results of whichever statistical model is being
+built from the log-transformed information is often not relevant for the original data
+set(Changyongetal.,2014).Likewise,Keene suggeststhatthetransformationshould
+be classified separately from other types of transformations, as it’s crucial to look at
+the data being transformed beyond just assessing non-normality (Keene, 1995). Our
+15
+Table IX AccuracyAdjustmentsforDifferentDatasets (Set4)
+Predictors Estimates CI p
+(Intercept) [dfsift] 0.55 0.50–0.60 <0.001
+data[dfsiftlog] 0.03 0.01–0.04 0.001
+data[dfsiftyj] 0.02 0.00–0.04 0.012
+Random Effects
+σ2 0.00
+τ00 grouping variable 0.01
+ICC
+ICC 0.95
+N grouping variable
+N 11
+Observations
+Observations 33
+Marginal R2 / Conditional R2 0.018/0.956
+AlowmarginalR-squaredwithaconditionalR-squaredofover0.95forthe
+regressionmodelsindicatesthatarelativelysmallpercentageofthevariance
+is explained by fixed effects and a relatively large amount is explained by
+random effects (levels of the data variable). An ICC of over 0.95 indicates
+themodel’sreliability(Bobaketal.,2018).
+study can extend these studies which were focusing on statistical models to machine
+learning models, acting as a confirmation that log-transformation is not a suitable
+transform to apply to data in an imbalanced regressiontask on biomedical data.
+Random Forest was the best-performing model for both the imbalanced regres-
+sionandclass-imbalancedclassificationtask.Randomforestshowsrobustnesstonoise
+(Breiman, 2001), quickness, flexibility, and a unique approach to mining high dimen-
+sional data (Ziegler and K¨onig, 2014). Random forest works well on datasets with
+manyfeatures,evenwithasmallnumberofobservations.Randomforest’sin-builtfea-
+tureselectiontechniquecantakerankandrelationshipsbetweenfeaturesintoaccount
+(Nyongesa, 2020). Essentially, each tree in Random Forest builds multiple trees with
+different subsets of training data.Out-of-bagsamples areleft outand later tested.At
+each tree, the Random Forest also considers a randomly selected subset of features.
+While testing different features and subsets, it keeps track of the importance of each
+variable. A ranking of variables is created from the importance scores, allowing the
+model to use the most influential variables.
+Wefoundnosignificantdifferenceinperformancebetweendf siftanddf polyphen,
+indicating that for some reason, class imbalance did not cause an issue in these
+datasets. As mentioned in the introduction, however,severalstudies have shownthat
+this is a well-established problem in machine learning. We took a look at the effect of
+skewedpredictorvariablesonmodelperformanceforthe classificationtasks.Forboth
+sets 3 and 4, transforming skewed predictor variables had only a marginal positive
+effect on the performance of machine learning models. Yousefi et al concluded that
+skewness has a significant effect on classification accuracy, as data distributions in
+machine learning are expected to have an approximately symmetric distribution with
+16
+Table X AccuracyAdjustmentsBasedonDifferentModelChoices(Sets 3
+and4)
+Predictors Estimates CI p
+(Intercept) [dtclassifier] 0.52 0.46–0.57 <0.001
+model[knnclassifier] 0.02 -0.04–0.09 0.518
+model[nbayes classifier] 0.05 -0.02–0.12 0.155
+model[rfclassifier] 0.11 0.07–0.15 <0.001
+model[svcclassifier] 0.06 -0.01–0.13 0.072
+Random Effects
+σ2 0.00
+τ00 grouping variable 0.00
+ICC
+ICC 0.77
+N grouping variable
+N 24
+Observations
+Observations 66
+Marginal R2 / Conditional R2 0.138/0.804
+Shownaretheaccuracyadjustmentvaluesbasedonmodelchoice.TheICCis
+semi-reliablebutfallsshortofotherregressionmodelsinothertables(Bobak
+etal.,2018).Themajorityofthevarianceinaccuracyisexplainedbymodel
+choice.
+centraltendency (Yousefiand Hamilton-Wright,2016).While some studies haveindi-
+catedthatincertaincases,normalizingtheinputvariablesleadstoincreasedaccuracy
+inclassificationtasks(ChittineniandBhogapathi,2012),Yousefi et al suggestthatin
+the domainofbiomedicaldata,transformationinterfereswiththetransparencyofthe
+classification process. Therefore, instead of data transformation, feature selection or
+modelchoiceissuggestedtooptimizemodelperformance.Toconclude,werecommend
+further research to look into optimizing the combinations of model choice, feature
+selection,anddatatransformationsshowntobethemosteffectivehere(RandomFor-
+est). We also encourage future researchto go beyond the limitations of our study; we
+could not make any conclusions on best or worst feature selection techniques.
+5 Competing Interests
+The authors declare no competing interests as no funding, grant or other form of
+support was provided for this work.
+6 Data Availability Statement
+The data used in this study can be found at (Arvai, 2020). All code and datasets
+generated in this study can be found at https://doi.org/10.5281/zenodo.10694637.
+17
+References
+Abd Elrahman, S.M., Abraham, A.: A review of class imbalance problem. Journal of
+Network and Innovative Computing 1(2013), 332–340 (2013)
+Arvai, K.: Genetic Variant Classifications. Kaggle
+(2020). https://doi.org/10.34740/KAGGLE/DSV/1030915 .
+https://www.kaggle.com/dsv/1030915
+Bobak,C.A.,Barr,P.J.,O’Malley,A.J.:Estimationofaninter-raterintra-classcorre-
+lationcoefficientthatovercomescommonassumptionviolationsintheassessmentof
+healthmeasurementscales.BMCmedicalresearchmethodology18(1),1–11(2018)
+Bates, D., Ma¨chler, M., Bolker, B., Walker, S.: Fitting linear mixed-effects models
+using lme4. arXiv preprint arXiv:1406.5823(2014)
+Breiman, L.: Random forests. Machine Learning 45, 5–32 (2001)
+Branco, P., Torgo, L.: A study on the impact of data characteristics in imbalanced
+regression tasks. In: 2019 IEEE International Conference on Data Science and
+Advanced Analytics (DSAA), pp. 193–202(2019). IEEE
+Chittineni, S., Bhogapathi, R.B.: A study on the behavior of a neural network for
+grouping the data. arXiv preprint arXiv:1203.3838(2012)
+Charilaou, P., Battat, R.: Machine learning models and over-fitting considerations.
+World Journal of Gastroenterology 28(5), 605 (2022)
+Curran-Everett, D.: Explorations in statistics: the log transformation. Advancxes in
+physiology education 42(2), 343–347 (2018)
+Changyong, F., Hongyue, W., Naiji, L., Tian, C., Hua, H., Ying, L., et al.:
+Log-transformation and its implications for data analysis. Shanghai archives of
+psychiatry 26(2), 105 (2014)
+Derpanis, K.G.: Overview of the ransac algorithm. Image Rochester NY 4(1), 2–3
+(2010)
+Eddy, S.R.: Where did the blosum62 alignment score matrix come from? Nature
+biotechnology 22(8), 1035–1036(2004)
+Ensembl:PathogenicityPredictions.http://useast.ensembl.org/info/genome/variation/prediction/protein
+function.html#:∼:text=The%20PolyPhen%20score%20represents%20the,used%20to%20make%20the%20pr
+Accessed: [Insert Access Date] (2014)
+Esteves, V.M.S.: Techniques to deal with imbalanced data in
+multi-class problems: A review of existing methods. (2020).
+https://api.semanticscholar.org/CorpusID:226157632
+18
+Feng, C., Wang, H., Lu, N., Tu, X.M.: Log transformation: application and interpre-
+tation in biomedical research. Statistics in medicine 32(2), 230–239(2013)
+Guo, X., Yin, Y., Dong, C., Yang, G., Zhou, G.: On the class imbalance problem. In:
+2008Fourth InternationalConferenceon NaturalComputation,vol.4,pp. 192–201
+(2008). https://doi.org/10.1109/ICNC.2008.871
+Keene, O.N.: The log transformation is special. Statistics in medicine 14(8), 811–819
+(1995)
+Khoshgoftaar, T.M., Gao, K., Hulse, J.V.: A novel feature selection technique for
+highlyimbalanceddata.2010IEEEInternationalConferenceonInformationReuse
+& Integration, 80–85 (2010)
+Koo, T.K., Li, M.Y.: A guideline of selecting and reporting intraclass correlation
+coefficients for reliability research. Journal of chiropractic medicine 15(2), 155–163
+(2016)
+Koller, M.: robustlmm: an r package for robust estimation of linear mixed-effects
+models. Journal of statistical software 75, 1–24 (2016)
+Kryukov, G.V., Pennacchio, L.A., Sunyaev, S.R.: Most rare missense alleles are dele-
+terious in humans: implications for complex disease and association studies. The
+American Journal of Human Genetics 80(4), 727–739(2007)
+Kryukov,G.V.,Pennacchio,L.A.,Sunyaev,S.R.:Mostraremissenseallelesaredelete-
+riousinhumans:implicationsforcomplexdiseaseandassociationstudies.American
+journal of human genetics 80 4, 727–39(2007)
+Kaur, A., Sarmadi, M.: Predicting loss-of-function impact of
+genetic mutations: a machine learning approach. (2024).
+https://api.semanticscholar.org/CorpusID:267364864
+Luo,H.,Pan,X.,Wang,Q.,Ye,S.,Qian,Y.:Logisticregressionandrandomforestfor
+effective imbalanced classification. In: 2019 IEEE 43rd Annual Computer Software
+and Applications Conference (COMPSAC), vol. 1, pp. 916–917(2019). IEEE
+Mirza, B., Kok, S., Lin, Z., Yeo, Y.K., Lai, X., Cao, J., Sepulveda, J.: Efficient repre-
+sentationlearningforhigh-dimensionalimbalancedata.In:2016IEEEInternational
+Conference on Digital Signal Processing (DSP), pp. 511–515(2016). IEEE
+Montesinos Lo´pez, O.A., Montesinos Lo´pez, A., Crossa, J.: Overfitting, model tun-
+ing, and evaluation of prediction performance. In: Multivariate Statistical Machine
+Learning Methods for Genomic Prediction, pp. 109–139.Springer, ??? (2022)
+Maldonado, S., Weber, R., Famili, F.: Feature selection for high-dimensional class-
+imbalanceddata sets using support vector machines. Inf. Sci. 286, 228–246(2014)
+19
+Nguwi, Y.-Y., Cho, S.-Y.: An unsupervised self-organizinglearning with support vec-
+tor ranking for imbalanced datasets. Expert Syst. Appl. 37(12), 8303–8312 (2010)
+https://doi.org/10.1016/j.eswa.2010.05.054
+Ni, W.: A review and comparative study on univariate feature selection techniques
+(2012)
+Nakagawa, S., Schielzeth, H.: A general and simple method for obtaining r2 from
+generalized linear mixed-effects models. Methods in ecology and evolution 4(2),
+133–142 (2013)
+Niroula, A., Vihinen, M.: How good are pathogenicity predictors in detecting benign
+variants? PLoS computational biology 15(2), 1006481(2019)
+Nyongesa, D.B.: Variable selection using random forests in sas®. (2020).
+https://api.semanticscholar.org/CorpusID:215753090
+Palmeri, M.: Chapter 18: Testing the Assumptions of Multilevel Models. Accessed:
+[Feb 5, 2024]. https://ademos.people.uic.edu/Chapter18.html#61 assumption 1 -
+linearity
+Pargent, F., Pfisterer, F., Thomas, J., Bischl, B.: Regularized target encoding out-
+performs traditional methods in supervised machine learning with high cardinality
+features. Computational Statistics 37(5), 2671–2692(2022)
+Pant, H.R., Srivastava, D.R.: A survey on feature selection methods for imbalanced
+datasets. (2015). https://api.semanticscholar.org/CorpusID:212490984
+Ribeiro,R.P.,Moniz,N.:Imbalancedregressionandextremevalueprediction.Machine
+Learning 109, 1803–1835(2020)
+Schielzeth, H., Dingemanse, N.J., Nakagawa, S., Westneat, D.F., Allegue, H., Teplit-
+sky,C.,R´eale,D.,Dochtermann,N.A.,Garamszegi,L.Z.,Araya-Ajoy,Y.G.:Robust-
+ness of linear mixed-effects models to violations of distributional assumptions.
+Methods in ecology and evolution 11(9), 1141–1152(2020)
+Sim, N.-L., Kumar, P., Hu, J., Henikoff, S., Schneider, G., Ng, P.C.: Sift web server:
+predicting effects of amino acid substitutions on proteins. Nucleic acids research
+40(W1), 452–457(2012)
+Shahadat, N., Pal, B.: An empirical analysis of attribute skewness over class imbal-
+ance on probabilistic neural network and na¨ıve bayes classifier. 2015 International
+Conference on Computer and Information Engineering (ICCIE), 150–153(2015)
+Sunyaev, S., Ramensky, V., Koch, I., Lathe III, W., Kondrashov, A.S., Bork, P.:
+Prediction of deleterious human alleles. Human molecular genetics 10(6), 591–597
+(2001)
+20
+Silva, A., Ribeiro, R.P., Moniz, N.: Model optimization in imbalanced regression. In:
+International Conference on Discovery Science, pp. 3–21 (2022). Springer
+Weisberg, S.: Yeo-johnson power transformations. Department of Applied Statistics,
+University of Minnesota. Retrieved June 1, 2003 (2001)
+Yousefi, J., Hamilton-Wright, A.: Classification confusion within nefclass
+caused by feature value skewness in multi-dimensional datasets. In:
+International Joint Conference on Computational Intelligence (2016).
+https://api.semanticscholar.org/CorpusID:7673454
+Yeo,I.-K.,Johnson,R.A.:Anewfamilyofpowertransformationstoimprovenormality
+or symmetry. Biometrika 87(4), 954–959(2000)
+Ziegler, A., K¨onig, I.R.: Mining data with random forests: current options for real-
+world applications. Wiley Interdisciplinary Reviews: Data Mining and Knowledge
+Discovery 4 (2014)
+Zuliani,M.:Ransacfordummies.VisionResearchLab,UniversityofCalifornia,Santa
+Barbara (2009)
+21

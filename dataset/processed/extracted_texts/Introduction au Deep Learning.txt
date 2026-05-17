@@ -1,0 +1,1633 @@
+Introduction au Deep Learning (notes
+de cours)
+Romain Tavenard
+11 août 2025
+̀
+TABLE DES MATIERES
+1 Introduction 3
+1.1 Unpremiermodèle:leperceptron . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
+1.2 Optimisation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+1.3 Récapitulatif . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+2 Perceptronsmulticouches 9
+2.1 Empilerdescouchespourunemeilleureexpressivité . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+2.2 Déciderdel’architectured’unMLP. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+2.3 Fonctionsd’activation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+2.4 DéclarerunMLPenkeras . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13
+3 Fonctionsdecoût 17
+3.1 Erreurquadratiquemoyenne . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
+3.2 Pertelogistique . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+4 Optimisation 19
+4.1 Descentedegradientstochastique . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+4.2 UnenotesurAdam . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+4.3 Lamalédictiondelaprofondeur . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+4.4 Codertoutcelaenkeras . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 24
+4.5 Prétraitementdesdonnées . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+5 Régularisation 27
+5.1 Earlystopping . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 27
+5.2 Pénalisationdelaperte . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+5.3 DropOut . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
+6 Réseauxneuronauxconvolutifs 33
+6.1 Réseauxdeneuronesconvolutifspourlessériestemporelles . . . . . . . . . . . . . . . . . . . . . . . 33
+6.2 Réseauxdeneuronesconvolutifspourlesimages. . . . . . . . . . . . . . . . . . . . . . . . . . . . . 34
+7 Réseauxneuronauxrécurrents 41
+7.1 Réseauxrécurrentsstandard . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 42
+7.2 LongShortTermMemory . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 43
+7.3 GatedRecurrentUnit . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 44
+7.4 Conclusion . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 45
+i
+8 Mécanismed’attention 47
+8.1 Motivation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 47
+8.2 Principegénéral . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 48
+8.3 Métaphore:Queries,Keys,Values . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 48
+8.4 Formulationmathématique . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 48
+8.5 Auto-attention(ouself-attention) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 49
+8.6 Multi-headattention . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 49
+8.7 Schémagénéral . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 49
+8.8 Résumé . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 49
+9 Réseauxneuronauxgénératifs 51
+9.1 Auto-encodeurs . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 51
+9.2 VariationalAuto-Encoders(VAE) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 52
+9.3 GenerativeAdversarialNetworks(GAN). . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 52
+9.4 Modèlesdedi(cid:7837)usion . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 52
+9.5 ConditionalFlowMatching . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 52
+9.6 Résumé . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 53
+Bibliographie 55
+ii
+IntroductionauDeepLearning(notesdecours)
+parRomainTavenard
+Ce document sert de notes de cours pour un cours dispensé à l’Université de Rennes 2 (France) et à l’EDHEC Lille
+(France).
+Le cours traite des bases des réseaux de neurones pour la classi(cid:7838)cation et la régression sur des données tabulaires (y
+comprislesalgorithmesd’optimisationpourlesperceptronsmulticouches),lesréseauxdeneuronesconvolutifspourla
+classi(cid:7838)cationd’images(ycomprislesnotionsd’apprentissagepartransfert)etlaclassi(cid:7838)cation/prévisiondeséquences.
+Lesséancesdetravauxpratiquesdececoursutiliserontkeras,toutcommecesnotesdecours.
+NB : ces notes ont été traduites vers le français de manière semi-automatique, n’hésitez pas à vous référer à la version
+anglaiseencasdedoute.
+TABLEDESMATIÈRES 1
+IntroductionauDeepLearning(notesdecours)
+2 TABLEDESMATIÈRES
+CHAPITRE 1
+INTRODUCTION
+Danscechapitred’introduction,nousallonsprésenterunpremierréseauneuronalappelélePerceptron.Cemodèleestun
+réseauneuronalconstituéd’unseulneurone,etnousl’utiliseronsicipourintroduiredesconcepts-clésquenousdétaillerons
+plustarddanslecours.
+1.1 Un premier modèle : le perceptron
+Danslaterminologiedesréseauxdeneurones,unneuroneestunefonctionparamétréequiprendunvecteurxenentrée
+etsortunevaleurunique commesuit:
+wx
+où lesparamètresduneuronesontsespoidsstockésdansw.etuntermedebiais ,et estunefonctiond’activationqui
+estchoisieapriori(nousyreviendronsplusendétailplustarddanslecours):
+Unmodèleconstituéd’unseulneuroneestappeléperceptron.
+3
+0
+(cid:1318)
+1
+(cid:1418) 3
+(cid:1297)
+0
+1
+(cid:1318)
+2
+2
+(cid:1318)
+3
+𝑎
+𝑎=(cid:4488)(⏟+(cid:1297)),
+(cid:1297) (cid:4488)
+(cid:1319)
+(cid:1319)
+(cid:1318) (cid:4488)
+(cid:1319) (cid:1310) 𝑎
+(cid:1319)
++1
+IntroductionauDeepLearning(notesdecours)
+1.2 Optimisation
+Lesmodèlesprésentésdanscedocumentontpourbutderésoudredesproblèmesdeprédictiondanslesquelsl’objectifest
+detrouverdesvaleursdeparamètres«su(cid:7840)sammentbonnes»pourlemodèleenjeucomptetenudedonnéesobservées.
+Le problème de la recherche de telles valeurs de paramètres est appelé optimisation. L’apprentissage profond (ou deep
+learning)faitunusageintensifd’unefamillespéci(cid:7838)quedestratégiesd’optimisationappeléedescentegradiente.
+1.2.1 Descente de gradient
+Poursefaireuneidéedeladescentedegradient,supposonsquel’onnousdonnelejeudedonnéessuivantsurlesprixde
+l’immobilier:
+import pandas as pd
+boston = pd.read_csv("../data/boston.csv")[["RM", "PRICE"]]
+boston
+RM PRICE
+0 6.575 24.0
+1 6.421 21.6
+2 7.185 34.7
+3 6.998 33.4
+4 7.147 36.2
+.. ... ...
+501 6.593 22.4
+502 6.120 20.6
+503 6.976 23.9
+504 6.794 22.0
+505 6.030 11.9
+[506 rows x 2 columns]
+Dansnotrecas,nousessaierons(pourcommencer)deprédirelavaleurcible"PRICE"decejeudedonnées,quiestla
+valeurmédianedesmaisonsoccupéesparleurpropriétaireenmilliersdedollarsenfonctiondunombremoyendepièces
+parlogement"RM":
+sns.scatterplot(data=boston, x="RM", y="PRICE");
+4 Chapitre1. Introduction
+IntroductionauDeepLearning(notesdecours)
+Unecourtenotesurcemodèle
+DanslaterminologieduPerceptron,cemodèle:
+— n’apasdefonctiond’activation(i.e. estlafonctiond’identité)
+— n’apasdebiais(i.e. est(cid:7838)xéà ,iln’estpasappris)
+Supposonsquenousayonsuneapprochenaïvedanslaquellenotremodèledeprédictionestlinéairesansbiais,c’est-à-dire
+quepouruneentréedonnée lasortiepréditeestcalculéecommesuit:
+où estleseulparamètredenotremodèle.
+Supposonsenoutrequelaquantitéquenouscherchonsà minimiser(notreobjectif,égalementappeléfonctiondeperte)
+est:
+où estlavaleurcibleassociéeau -èmeéchantillondejeudedonnées.
+Examinonscettequantitéenfonctionde :
+import numpy as np
+def loss(w, x, y):
+w = np.array(w)
+return np.sum(
+(w[:, None] * x.to_numpy()[None, :] - y.to_numpy()[None, :]) ** 2,
+axis=1
+)
+w = np.linspace(-2, 10, num=100)
+x = boston["RM"]
+y = boston["PRICE"]
+plt.plot(w, loss(w, x, y), "r-");
+1.2. Optimisation 5
+(cid:1412)
+(cid:1412) (cid:1412)
+2
+(cid:1412) (cid:1412)
+(cid:1412)
+(cid:1412)
+(cid:4488)
+(cid:1297) 0
+(cid:1319)
+(cid:1320)̂ =(cid:1318)(cid:1319)
+(cid:1318)
+ℒ((cid:1318))=∑((cid:1320)̂ −(cid:1320) )
+(cid:1320) (cid:1304)
+(cid:1318)
+IntroductionauDeepLearning(notesdecours)
+Ici,ilsemblequ’unevaleurde autourde4devraitêtreunbonchoix.Cetteméthode(générerdenombreusesvaleurspour
+leparamètreetcalculerlapertepourchaquevaleur)nepeutpass’adapterauxmodèlesquiontbeaucoupdeparamètres,
+doncnousallonsdoncessayerautrechose.
+Supposons que nous ayons accès, à chaque fois que nous choisissons une valeur candidate pour , à la fois à la perte
+etauxinformationssurlafaçondont varie,localement.Nouspourrions,danscecas,calculerunenouvellevaleur
+candidatepour ennousdéplaçantàpartirdelavaleurcandidateprécédentedansladirectiondeladescentelaplusraide.
+C’estl’idéedebasedel’algorithmededescentedugradientqui,àpartird’uncandidatinitial ,calculeitérativementde
+nouveauxcandidatscomme:
+où est un hyper-paramètre (appelé taux d’apprentissage) qui contrôle la taille des pas à e(cid:7837)ectuer, et est le
+gradientde parrapportà ,évalué en .Commevouspouvezlevoir,ladirectiondeladescentelaplusraide
+estl’opposédeladirectionindiquéeparlegradient(etcelavautaussipourlesparamètresvectoriels).
+Ceprocessusestrépétéjusqu’à laconvergence,commel’illustrela(cid:7838)guresuivante:
+rho = 1e-5
+def grad_loss(w_t, x, y):
+return np.sum(
+2 * (w_t * x - y) * x
+)
+ww = np.linspace(-2, 10, num=100)
+plt.plot(ww, loss(ww, x, y), "r-", alpha=.5);
+w = [0.]
+for t in range(10):
+w_update = w[t] - rho * grad_loss(w[t], x, y)
+w.append(w_update)
+plt.plot(w, loss(w, x, y), "ko-")
+plt.text(x=w[0]+.1, y=loss([w[0]], x, y), s="$w_{0}$")
+plt.text(x=w[10]+.1, y=loss([w[10]], x, y), s="$w_{10}$");
+(cid:1369)
+6 Chapitre1. Introdu(cid:1369)ction
+0
+(cid:1423)+1 (cid:1423)
+(cid:1426)=(cid:1426)
+(cid:4573)ℒ
+(cid:4573)(cid:1426) (cid:1426)=(cid:1426)
+(cid:1423)
+(cid:1318)
+(cid:1318)
+ℒ ℒ
+(cid:1318)
+(cid:1318)
+(cid:4489)ℒ
+(cid:1318) =(cid:1318) −(cid:4475) ∣
+(cid:4489)(cid:1318)
+(cid:4475) ∣
+ℒ (cid:1318) (cid:1318) = (cid:1318)
+IntroductionauDeepLearning(notesdecours)
+Qu’obtiendrions-noussinousutilisionsuntauxd’apprentissageplusfaible?
+rho = 1e-6
+ww = np.linspace(-2, 10, num=100)
+plt.plot(ww, loss(ww, x, y), "r-", alpha=.5);
+w = [0.]
+for t in range(10):
+w_update = w[t] - rho * grad_loss(w[t], x, y)
+w.append(w_update)
+plt.plot(w, loss(w, x, y), "ko-")
+plt.text(x=w[0]+.1, y=loss([w[0]], x, y), s="$w_{0}$")
+plt.text(x=w[10]+.1, y=loss([w[10]], x, y), s="$w_{10}$");
+Cela prendrait certainement plus de temps pour converger. Mais attention, un taux d’apprentissage plus élevé n’est pas
+toujoursunebonneidée:
+1.2. Optimisation 7
+IntroductionauDeepLearning(notesdecours)
+rho = 5e-5
+ww = np.linspace(-2, 10, num=100)
+plt.plot(ww, loss(ww, x, y), "r-", alpha=.5);
+w = [0.]
+for t in range(10):
+w_update = w[t] - rho * grad_loss(w[t], x, y)
+w.append(w_update)
+plt.plot(w, loss(w, x, y), "ko-")
+plt.text(x=w[0]-1., y=loss([w[0]], x, y), s="$w_{0}$")
+plt.text(x=w[10]-1., y=loss([w[10]], x, y), s="$w_{10}$");
+Vousvoyezcommentnousdivergeonslentementparcequenospassonttropgrands?
+1.3 Récapitulatif
+Danscettesection,nousavonsintroduit:
+— unmodèletrèssimple,appelélePerceptron:ceseraunebriquedebasepourlesmodèlesplusavancésquenous
+détailleronsplustarddanslecours,telsque:
+— lePerceptronmulti-couches
+— lesarchitecturesconvolutionnelles
+— lesarchitecturesrécurrentes
+— lesarchitecturesbaséesattention
+— lefaitqu’unetâches’accompagned’unefonctiondeperteàminimiser(ici,nousavonsutilisél’erreurquadratique
+moyennepournotretâchederégression),quiseradiscutéedansunchapitredédié;
+— leconceptdedescentedegradientpouroptimiserlapertechoisiesurleparamètreuniqued’unmodèle,etceci
+seraétendudansnotrechapitresurl’optimisation.
+8 Chapitre1. Introduction
+CHAPITRE 2
+PERCEPTRONS MULTICOUCHES
+Danslechapitreprécédent,nousavonsvuunmodèletrèssimpleappeléleperceptron.Danscemodèle,lasortieprédite
+estcalculéecommeunecombinaisonlinéairedescaractéristiquesd’entréeplusunbiais:
+End’autrestermes,nousoptimisionsparmilafamilledesmodèleslinéaires,quiestunefamilleassezrestreinte.
+2.1 Empiler des couches pour une meilleure expressivité
+A(cid:7838)n de couvrir un plus large éventail de modèles, on peut empiler des neurones organisés en couches pour former un
+modèlepluscomplexe,commelemodèleci-dessous,quiestappelémodèleàunecouchecachée,carunecouchesupplé-
+mentairedeneuronesestintroduiteentrelesentréesetlasortie:
+Couche d'entrée Couche cachée Couche de sortie
+x h1 ŷ
+w0 w1
+9
+(cid:1407)
+(cid:1413) (cid:1413)
+(cid:1413)=1
+( )
+(cid:1320)̂
+(cid:1320)̂=∑(cid:1319) (cid:1318) +(cid:1297)
+( ) ( )
+IntroductionauDeepLearning(notesdecours)
+Laquestionquel’onpeutseposermaintenantestdesavoirsicettecouchecachéesupplémentairepermete(cid:7837)ectivement
+decouvriruneplusgrandefamilledemodèles.C’està celaquesertlethéorèmed’approximationuniverselleci-dessous.
+(cid:174) Théorèmed’approximationuniverselle
+Lethéorèmed’approximationuniversellestipulequetoutefonctioncontinuedé(cid:7838)niesurunensemblecompactpeut
+êtreapprochéed’aussiprèsquel’onveutparunréseauneuronalà unecouchecachéeavecactivationsigmoïde.
+En d’autres termes, en utilisant une couche cachée pour mettre en correspondance les entrées et les sorties, on peut
+maintenant approximer n’importe quelle fonction continue, ce qui est une propriété très intéressante. Notez cependant
+quelenombredeneuronescachésnécessairepourobtenirunequalité d’approximationdonnéen’estpasdiscuté ici.De
+plus, il n’est pas su(cid:7840)sant qu’une telle bonne approximation existe, une autre question importante est de savoir si les
+algorithmesd’optimisationquenousutiliseronsconvergerontin(cid:4111)neverscettesolutionounon,cequin’estpasgaranti,
+commediscutéplusendétaildanslechapitredédié.
+Enpratique,nousobservonsempiriquementquepouratteindreunequalité d’approximationdonnée,ilestpluse(cid:7840)cace
+(entermesdenombredeparamètresrequis)d’empilerplusieurscouchescachéesplutôtquedes’appuyersuruneseule:
+Première Seconde
+Couche d'entrée Couche de sortie
+couche cachée couche cachée
+x ŷ
+h1 h2
+w0 w1 w2
+Lareprésentationgraphiqueci-dessuscorrespondaumodèlesuivant:
+(2.1)
+out
+(2.2)
+(2.3)
+Pourêtreprécis,lestermesdebiais nesontpasreprésentésdanslareprésentationgraphiqueci-dessus.
+DetelsmodèlesavecuneouplusieurscouchescachéessontappelésPerceptronsmulticouches(ouMulti-LayerPercep-
+trons,MLP).
+10 Chapitre2. Perceptronsmulticouches
+( ) ( )
+( ) ( ) ( )
+(2) (2) (2)
+(cid:1412) (cid:1412)
+(cid:1412)
+(2) (1) (1) (1)
+(cid:1412) (cid:1412)(cid:1413) (cid:1413) (cid:1412)
+(cid:1413)
+(1) (0) (0)
+(cid:1412) (cid:1412)(cid:1413) (cid:1413) (cid:1412)
+(cid:1413)
+((cid:1415))
+(cid:1412)
+(cid:1320)̂=(cid:4488) (∑(cid:1318) ℎ +(cid:1297) )
+∀(cid:1304),ℎ =(cid:4488)(∑(cid:1318) ℎ +(cid:1297) )
+∀(cid:1304),ℎ =(cid:4488)(∑(cid:1318) (cid:1319) +(cid:1297) )
+(cid:1297)
+IntroductionauDeepLearning(notesdecours)
+2.2 Décider de l’architecture d’un MLP
+Lorsdelaconceptiond’unmodèledeperceptronmulticouchedestinéàêtreutilisépourunproblèmespéci(cid:7838)que,certaines
+quantitéssont(cid:7838)xéesparleproblèmeenquestionetd’autressontdeshyper-paramètresdumodèle.
+Prenonsl’exempleducélèbrejeudedonnéesdeclassi(cid:7838)cationd’iris:
+import pandas as pd
+iris = pd.read_csv("../data/iris.csv", index_col=0)
+iris
+sepal length (cm) sepal width (cm) petal length (cm) petal width (cm) \
+0 5.1 3.5 1.4 0.2
+1 4.9 3.0 1.4 0.2
+2 4.7 3.2 1.3 0.2
+3 4.6 3.1 1.5 0.2
+4 5.0 3.6 1.4 0.2
+.. ... ... ... ...
+145 6.7 3.0 5.2 2.3
+146 6.3 2.5 5.0 1.9
+147 6.5 3.0 5.2 2.0
+148 6.2 3.4 5.4 2.3
+149 5.9 3.0 5.1 1.8
+target
+0 0
+1 0
+2 0
+3 0
+4 0
+.. ...
+145 2
+146 2
+147 2
+148 2
+149 2
+[150 rows x 5 columns]
+L’objectificiestd’apprendreàdéduirel’attribut«cible»(3classesdi(cid:7837)érentespossibles)àpartirdesinformationsconte-
+nuesdansles4autresattributs.
+Lastructuredecejeudedonnéesdicte:
+— le nombre de neurones dans la couche d’entrée, qui est égal au nombre d’attributs descriptifs dans notre jeu de
+données(ici,4),et
+— le nombre de neurones dans la couche de sortie, qui est ici égal à 3, puisque le modèle est censé produire une
+probabilitéparclassecible.
+Demanièreplusgénérale,pourlacouchedesortie,onpeutêtreconfrontéà plusieurssituations:
+— lorsqu’ils’agitderégression,lenombredeneuronesdelacouchedesortieestégalaunombredecaractéristiques
+à prédireparlemodèle,
+— quandils’agitdeclassi(cid:7838)cation
+— Danslecasd’uneclassi(cid:7838)cationbinaire,lemodèleauraunseulneuronedesortiequiindiqueralaprobabilité
+delaclassepositive,
+2.2. Déciderdel’architectured’unMLP 11
+IntroductionauDeepLearning(notesdecours)
+— danslecasd’uneclassi(cid:7838)cationmulti-classes,lemodèleauraautantdeneuronesdesortiequelenombrede
+classesduproblème.
+Unefoisquecesnombresdeneuronesd’entrée/sortiesont(cid:7838)xés,lenombredeneuronescachésainsiquelenombrede
+neuronesparcouchecachéerestentdeshyper-paramètresdumodèle.
+2.3 Fonctions d’activation
+Unautrehyper-paramètreimportantdesréseauxneuronauxestlechoixdelafonctiond’activation .
+Ilestimportantdenoterquesinousutilisonslafonctionidentitécommefonctiond’activation,quellequesoitlaprofondeur
+de notre MLP, nous ne couvrirons plus que la famille des modèles linéaires. En pratique, nous utiliserons donc des
+fonctionsd’activationquiontuncertainrégimelinéairemaisquinesecomportentpascommeunefonctionlinéairesur
+toutelagammedesvaleursd’entrée.
+Historiquement,lesfonctionsd’activationsuivantesontétéproposées:
+tanh
+sigmoid
+si
+ReLU
+sinon
+Enpratique,lafonctionReLU(etcertainesdesesvariantes)estlaplusutiliséedenosjours,pourdesraisonsquiseront
+discutéesplusendétaildansnotrechapitreconsacréàl’optimisation.
+2.3.1 Le cas particulier de la couche de sortie
+Vousavezpeut-êtreremarquéquedanslaformulationduMLPfournieparl’équation(1),lacouchedesortiepossèdesa
+proprefonctiond’activation,notée .Celas’expliqueparlefaitquelechoixdelafonctiond’activationpourlacouche
+out
+desortied’unréseauneuronalestspéci(cid:7838)queauproblèmeà résoudre.
+En e(cid:7837)et, vous avez pu constater que les fonctions d’activation abordées dans la section précédente ne partagent pas la
+mêmeplagedevaleursdesortie.Ilestdoncprimordialdechoisirunefonctiond’activationadéquatepourlacouchede
+sortie,desortequenotremodèleproduisedesvaleurscohérentesaveclesquantitésqu’ilestcenséprédire.
+Si,parexemple,notremodèleestcensé êtreutilisé dansl’ensemblededonnéessurleslogementsdeBostondontnous
+avonsparlédanslechapitreprécédent,l’objectifestdeprédirelesprixdeslogements,quisontcensésêtredesquantitésnon
+−2(cid:1427)
+12 −(cid:1427) Chapitre2. Perceptronsmulticouches
+(cid:4488)
+2
+((cid:1319))= −1
+1+(cid:1300)
+1
+((cid:1319))=
+1+(cid:1300)
+(cid:1319) (cid:1319)>0
+((cid:1319))={
+0
+(cid:4488)
+IntroductionauDeepLearning(notesdecours)
+négatives.Ilseraitdoncjudicieuxd’utiliserReLU(quipeutproduiretoutevaleurpositive)commefonctiond’activation
+pourlacouchedesortiedanscecas.
+Comme indiqué précédemment, dans le cas de la classi(cid:7838)cation binaire, le modèle aura un seul neurone de sortie et ce
+neurone produira la probabilité associée à la classe positive. Cette quantité devra se situer dans l’intervalle , et la
+fonctiond’activationsigmoïdeestalorslechoixpardéfautdanscecas.
+En(cid:7838)n,lorsquelaclassi(cid:7838)cationmulti-classesestenjeu,nousavonsunneuroneparclassedesortieetchaqueneuroneest
+censé fournirlaprobabilité pouruneclassedonnée.Danscecontexte,lesvaleursdesortiedoiventêtrecomprisesentre
+0et1,etleursommedoitêtreégaleà 1.À cette(cid:7838)n,nousutilisonslafonctiond’activationsoftmaxdé(cid:7838)niecommesuit:
+softmax
+où,pourtousles ,les sontlesvaleursdesneuronesdesortieavantapplicationdelafonctiond’activation.
+2.4 Déclarer un MLP en keras
+Pourdé(cid:7838)nirunmodèleMLPdanskeras,ilsu(cid:7840)td’empilerdescouches.Atitred’exemple,sil’onveutcoderunmodèle
+composéde:
+— unecouched’entréeavec10neurones,
+— d’unecouchecachéede20neuronesavecactivationReLU,
+— unecouchedesortiecomposéede3neuronesavecactivationsoftmax,
+lecodeseralesuivant:
+import keras
+from keras.layers import Dense, InputLayer
+from keras.models import Sequential
+model = Sequential([
+InputLayer(input_shape=(10, )),
+Dense(units=20, activation="relu"),
+Dense(units=3, activation="softmax")
+])
+model.summary()
+(cid:1358)
+(cid:1359)
+Model: "sequential"
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃ Layer (type) ┃ Output Shape ┃ Param # ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│ dense (Dense) │ (None, 20) │ 220 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense_1 (Dense) │ (None, 3) │ 63 │
+└─────────────────────────────────┴────────────(cid:1418)────────────┴───────────────┘
+(cid:1412) (cid:1418)
+(cid:1413)
+Total params: 283 (1.11 KB)
+(cid:1412)
+Trainable params: 283 (1.11 KB)
+[0,1]
+2.4. DéclarerunMLPenkeras 13
+(cid:1300)
+∀(cid:1304), ((cid:1310) )=
+∑ (cid:1300)
+(cid:1304) (cid:1310)
+IntroductionauDeepLearning(notesdecours)
+Non-trainable params: 0 (0.00 B)
+Notezquemodel.summary()fournitunaperçuintéressantd’unmodèledé(cid:7838)nietdesesparamètres.
+(cid:174) Exercice#1
+Envousbasantsurcequenousavonsvudanscechapitre,pouvez-vousexpliquerlenombredeparamètresretournés
+parmodel.summary()ci-dessus?
+(cid:174) Solution
+Notrecouched’entréeestcomposéede10neurones,etnotrepremièrecoucheestentièrementconnectée,donc
+chacundecesneuronesestconnectéàunneuronedelacouchecachéeparunparamètre,cequifaitdéjà
+paramètres.Deplus,chacundesneuronesdelacouchecachéepossèdesonpropreparamètredebiais,cequi
+fait paramètressupplémentaires.Nousavonsdonc220paramètres,telsquesortisparmodel.summary()
+pourlacouche"dense (Dense)".
+Delamêmemanière,pourlaconnexiondesneuronesdelacouchecachéeàceuxdelacouchedesortie,lenombre
+totaldeparamètresestde pourlespoidsplus paramètressupplémentairespourlesbiais.
+Autotal,nousavons paramètresdanscemodèle.
+(cid:174) Exercice#2
+Déclarez,enkeras,unMLPavecunecouchecachéecomposéede100neuronesetuneactivationReLUpourle
+jeudedonnéesIrisprésentéci-dessus.
+(cid:174) Solution
+model = Sequential([
+InputLayer(input_shape=(4, )),
+Dense(units=100, activation="relu"),
+Dense(units=3, activation="softmax")
+])
+(cid:174) Exercice#3
+MêmequestionpourlejeudedonnéessurlelogementàBostonprésentéci-dessous(lebuticiestdeprédirel’attribut
+PRICEenfonctiondesautres).
+(cid:174) Solution
+model = Sequential([
+InputLayer(input_shape=(6, )),
+Dense(units=100, activation="relu"),
+Dense(units=1, activation="relu")
+])
+14 Chapitre2. Perceptronsmulticouches
+10×20=
+200
+20
+20×3=60 3
+220+63=283
+IntroductionauDeepLearning(notesdecours)
+RM CRIM INDUS NOX AGE TAX PRICE
+0 6.575 0.00632 2.31 0.538 65.2 296.0 24.0
+1 6.421 0.02731 7.07 0.469 78.9 242.0 21.6
+2 7.185 0.02729 7.07 0.469 61.1 242.0 34.7
+3 6.998 0.03237 2.18 0.458 45.8 222.0 33.4
+4 7.147 0.06905 2.18 0.458 54.2 222.0 36.2
+.. ... ... ... ... ... ... ...
+501 6.593 0.06263 11.93 0.573 69.1 273.0 22.4
+502 6.120 0.04527 11.93 0.573 76.7 273.0 20.6
+503 6.976 0.06076 11.93 0.573 91.0 273.0 23.9
+504 6.794 0.10959 11.93 0.573 89.3 273.0 22.0
+505 6.030 0.04741 11.93 0.573 80.8 273.0 11.9
+[506 rows x 7 columns]
+2.4. DéclarerunMLPenkeras 15
+IntroductionauDeepLearning(notesdecours)
+16 Chapitre2. Perceptronsmulticouches
+CHAPITRE 3
+̂
+FONCTIONS DE COUT
+Nousavonsmaintenantprésenté unepremièrefamilledemodèles,quiestlafamilleMLP.A(cid:7838)nd’entraînercesmodèles
+(i.e.d’ajusterleursparamètrespourqu’ilss’adaptentauxdonnées),nousdevonsdé(cid:7838)nirunefonctiondecoût(aussiappelée
+fonction de perte, ou loss function) à optimiser. Une fois cette fonction choisie, l’optimisation consistera à régler les
+paramètresdumodèledemanièreà laminimiser.
+Danscettesection,nousprésenteronsdeuxfonctionsdepertesstandard,à savoirl’erreurquadratiquemoyenne(princi-
+palementutiliséepourlarégression)etlafonctiondepertelogistique(utiliséeenclassi(cid:7838)cation).
+Danscequisuit,noussupposonsconnuunensemblededonnées composé de échantillonsannotés ,etnous
+désignonslasortiedumodèle:
+où estnotremodèleet estl’ensembledetoussesparamètres(poidsetbiais).
+3.1 Erreur quadratique moyenne
+L’erreurquadratiquemoyenne(ouMeanSquaredError,MSE)estlafonctiondepertelapluscourammentutiliséedans
+lescontextesderégression.Elleestdé(cid:7838)niecommesuit
+Saformequadratiquetendà pénaliserfortementleserreursimportantes:
+17
+(cid:1412) (cid:1412)
+(cid:1412) (cid:4550) (cid:1412)
+(cid:4550)
+2
+(cid:4550) (cid:1412) (cid:1412)
+(cid:1412)
+(cid:3555) (cid:1309) ((cid:1319) ,(cid:1320) )
+2
+(cid:4550) (cid:1412) (cid:1412)
+(cid:1412)
+∀(cid:1304),(cid:1320)̂ =(cid:1308) ((cid:1319) )
+(cid:1308) (cid:4466)
+1
+ℒ((cid:3555);(cid:1308) )= ∑‖(cid:1320)̂ −(cid:1320) ‖
+(cid:1309)
+1
+= ∑‖(cid:1308) ((cid:1319) )−(cid:1320) ‖
+(cid:1309)
+IntroductionauDeepLearning(notesdecours)
+3.2 Perte logistique
+La perte logistique est la fonction de perte la plus largement utilisée pour entraîner des réseaux neuronaux dans des
+contextesdeclassi(cid:7838)cation.Elleestdé(cid:7838)niecommesuit
+log
+où estlaprobabilitépréditeparlemodèle pourlaclassecorrecte .
+Saformulationtendàfavoriserlescasoù lemodèlepréditlaclassecorrecteavecuneprobabilitéprochede1,commeon
+peuts’yattendre:
+18 Chapitre3. Fonctionsdecoût
+(cid:4550) (cid:1412) (cid:1412) (cid:4550)
+(cid:1412)
+(cid:1412) (cid:1412) (cid:4550) (cid:4550) (cid:1412)
+1
+ℒ((cid:3555);(cid:1308) )= ∑− (cid:1311)((cid:1320)̂ =(cid:1320) ;(cid:1308) )
+(cid:1309)
+(cid:1311)((cid:1320)̂ =(cid:1320) ;(cid:1308) ) (cid:1308) (cid:1320)
+CHAPITRE 4
+OPTIMISATION
+Danscechapitre,nousprésenteronsdesvariantesdelastratégied’optimisationdedescentedegradientetmontrerons
+commentellespeuventêtreutiliséespouroptimiserlesparamètresdesréseauxdeneurones.
+Commençonsparl’algorithmedebasedeladescentedegradientetseslimites.
+(cid:174) Algorithm1(DescentedeGradient)
+Entrée:Unjeudedonnées
+1. Initialiserlesparamètres dumodèle
+2. for
+1. for
+1. Calculerlaprédiction
+2. Calculerlegradientindividuel
+2. Calculerlegradienttotal
+3. Mettreà jourlesparamètres à partirde
+Larègledemiseà jourtypiquepourlesparamètres à l’itération est
+où estunhyper-paramètreimportantdelaméthode,appelé letauxd’apprentissage(oulearningrate).Ladescentede
+gradientconsisteà jouritérativement dansladirectiondelaplusfortediminutiondelaperte .
+Commeonpeutlevoirdansl’algorithmeprécédent,lorsd’undescentedegradient,lesparamètresdumodèlesontmis
+à jourunefoisparepoch,cequisigni(cid:7838)equ’unpassagecompletsurl’ensembledesdonnéesestnécessaireavantlamise
+à jour. Lorsque l’on traite de grands jeux de données, cela constitue une forte limitation, ce qui motive l’utilisation de
+variantesstochastiques.
+19
+(cid:1412) (cid:1412)
+(cid:1412) (cid:4550) (cid:1412)
+(cid:4550) (cid:1412)
+1
+(cid:4550) (cid:1417) (cid:1412) (cid:4550) (cid:1412)
+(cid:4550)
+((cid:1423)+1) ((cid:1423))
+(cid:4550)
+(cid:3555)=((cid:1293),(cid:1320))
+(cid:4466)
+(cid:1300)=1..(cid:1274)
+((cid:1319) ,(cid:1320) )∈(cid:3555)
+(cid:1320)̂ =(cid:1308) ((cid:1319) )
+∇ ℒ
+∇ ℒ= ∑ ∇ ℒ
+(cid:4466) ∇ ℒ
+(cid:4466) (cid:1315)
+(cid:4466) ←(cid:4466) −(cid:4475)∇ ℒ
+(cid:4475)
+(cid:4466) ℒ
+IntroductionauDeepLearning(notesdecours)
+4.1 Descente de gradient stochastique
+L’idéederrièrel’algorithmededescentedegradientstochastique(ouStochasticGradientDescent,SGD)estd’obtenirdes
+estimationsbonmarché(ausensdelaquantitédecalculsnécessaires)pourlaquantité
+où estl’ensembled’apprentissage.Pourcefaire,ontiredessous-ensemblesdedonnées,appelésminibatchs,et
+estutilisécommeestimateurde .Ilenrésultel’algorithmesuivantdanslequellesmisesàjourdesparamètres
+seproduisentaprèschaqueminibatch,c’est-à-direplusieursfoisparepoch.
+(cid:174) Algorithm2(Descentedegradientstochastique)
+Input:Adataset
+1. Initialiserlesparamètres dumodèle
+2. for
+1. for
+minibatches
+1. Tirerunéchantillonaléatoiredetaillle dans quel’onappelleminibatch
+2. for
+1. Calculerlaprédiction
+2. Calculerlegradientindividuel
+3. Calculerlegradientsommésurleminibatch
+4. Mettreà jourlesparamètres à partirde
+Parconséquent,lorsdel’utilisationdeSGD,lesmisesàjourdesparamètressontplusfréquentes,maisellessont«brui-
+(cid:1358) (cid:1358)
+tées » puisqu’elles sont basées sur une estimation du gradient par minibatch au lieu de s’appuyer sur le vrai gradient,
+commeillustréci-dessous:
+(cid:1358) (cid:1358)
+(cid:4550) (cid:4550) (cid:4550) (cid:1412) (cid:1412) (cid:4550)
+((cid:1427) ,(cid:1428) )∈(cid:3607)
+(cid:4550) (cid:4550) (cid:4550) (cid:1412) (cid:1412) (cid:4550)
+((cid:1427) ,(cid:1428) )∈ℬ
+(cid:4550) (cid:4550)
+20 Chapitre4. Optimisation
+1
+∇ ℒ((cid:3555);(cid:1308) )= ∑ ∇ ℒ((cid:1319) ,(cid:1320) ;(cid:1308) )
+(cid:1309)
+(cid:3555)
+(cid:1412) (cid:1412) 1
+∇ ℒ(ℬ;(cid:1308) )= ∑ ∇ ℒ((cid:1319) ,(cid:1320) ;(cid:1308) )
+(cid:1412) (cid:4550) (cid:1412)(cid:1297)
+(cid:4550) (cid:1412)
+1
+∇ ℒ((cid:3555);(cid:1308) ) (cid:4550) ℬ (cid:1405) (cid:1412) (cid:4550) (cid:1412)
+(cid:4550) ℬ
+(cid:3555)=((cid:1293),(cid:1320))
+(cid:4466)
+(cid:1300)=1..(cid:1274)
+(cid:1315)=1..(cid:1309)
+(cid:1297) (cid:3555)
+((cid:1319) ,(cid:1320) )∈ℬ
+(cid:1320)̂ =(cid:1308) ((cid:1319) )
+∇ ℒ
+∇ ℒ = ∑ ∇ ℒ
+(cid:4466) ∇ ℒ
+IntroductionauDeepLearning(notesdecours)
+Outrelefaitqu’elleimpliquedesmisesàjourplusfréquentesdesparamètres,laSGDprésenteunavantagesupplémentaire
+en termes d’optimisation, qui est essentiel pour les réseaux de neurones. En e(cid:7837)et, comme on peut le voir ci-dessous,
+contrairementàcequenousavionsdanslecasduPerceptron,laperteMSE(etilenvademêmepourlapertelogistique)
+n’estplusconvexeenlesparamètresdumodèledèsquecelui-cipossèdeaumoinsunecouchecachée:
+Ladescentedegradientestconnuepoursou(cid:7837)rird’optimalocaux,etdetelsfonctionsdepertesconstituentunproblème
+sérieuxpourladescentedegradient.D’unautrecôté,ladescentedegradientstochastiqueestsusceptibledebéné(cid:7838)cier
+d’estimationsdegradientbruitéespours’échapperdesminimalocaux.
+4.1. Descentedegradientstochastique 21
+IntroductionauDeepLearning(notesdecours)
+4.2 Une note sur Adam
+Adam[KingmaandBa,2015]estunevariantedelaméthodededescentedegradientstochastique.Elledi(cid:7837)èredansla
+règledemiseà jourdesparamètres.
+Tout d’abord, elle utilise ce qu’on appelle le momentum, qui consiste essentiellement à s’appuyer sur les mises à jour
+antérieures du gradient pour lisser la trajectoire dans l’espace des paramètres pendant l’optimisation. Une illustration
+interactivedumomentumpeutêtretrouvéedans[Goh,2017].
+L’estimationdugradientestremplacéeparlaquantité:
+m m
+Lorsque estégalàzéro,nousavonsm etpour ,m l’estimationcourantedugradientutilise
+l’informationsurlesestimationspassées,stockéedansm .
+Uneautredi(cid:7837)érenceimportanteentreSGDetlaAdamconsisteà utiliseruntauxd’apprentissageadaptatif.End’autres
+termes,aulieud’utiliserlemêmetauxd’apprentissage pourtouslesparamètresdumodèle,letauxd’apprentissagepour
+unparamètredonné estdé(cid:7838)nicomme:
+où estuneconstantepetitedevant1et
+Iciaussi,leterme utiliselemomentum.Parconséquent,letauxd’apprentissageseraréduitpourlesparamètresquiont
+subidegrandesmisesà jourdanslesitérationsprécédentes.
+Globalement,larègledemiseà jourd’Adamestlasuivante:
+m
+4.3 La malédiction de la profondeur
+Considéronsleréseauneuronalsuivant:
+w0 w1 w2
+((cid:1423)+1) ((cid:1423))
+(cid:1423) 1 1 (cid:4550)
+1
+((cid:1423)+1) ((cid:1423)+1)
+1 (cid:4550) 1
+((cid:1423))
+(cid:1358)
+(cid:1412)
+22 ((cid:1423)+1) Chapitre4. Optimisation
+(cid:1412)
+((cid:1423)+1)
+(cid:1412)
+2
+((cid:1423)+1) ((cid:1423))
+(cid:1412) (cid:1423) 2 (cid:1412) 2 (cid:4550)
+2
+1
+← [(cid:4460) +(1−(cid:4460) )∇ ℒ]
+1−(cid:4460)
+(cid:4460) =∇ ℒ (cid:4460) ∈]0,1[
+((cid:1423)+1) ((cid:1423)) ((cid:1423)+1) ((cid:1423)+1)
+(cid:4475)
+(cid:4466)
+(cid:4475)
+(cid:4475)̂ ((cid:4466) )=
+√(cid:1314) ((cid:4466) )+(cid:4463)
+(cid:4463)
+1
+(cid:1314) ((cid:4466) )= [(cid:4460) (cid:1314) ((cid:4466) )+(1−(cid:4460) )(∇ ℒ) ]
+1−(cid:4460)
+(cid:1314)
+( ) ( ) ( )
+(cid:4466) ←(cid:4466) −(cid:4475)̂ ((cid:4466))
+IntroductionauDeepLearning(notesdecours)
+etrappelonsque,pourunecouchedonnée ,lasortiedelacoucheestcalculéecommesuit
+où estlafonctiond’activationpourlacouchedonnée(nousignoronslestermesdebiaisdanscetexemplesimpli(cid:7838)é).
+A(cid:7838)nd’e(cid:7837)ectuerunedescentedegradient(stochastique),lesgradientsdelaperteparrapportauxparamètresdumodèle
+doiventêtrecalculés.
+Enutilisantlarègledeladérivationenchaîne,cesgradientspeuventêtreexpriméscommesuit:
+Ilyadesidéesimportantesà saisirici.
+Toutd’abord,ilfautremarquerquelespoidsquisontpluséloignésdelasortiedumodèlehéritentderèglesdegradient
+composéesdeplusdetermes.Parconséquent,lorsquecertainsdecestermesdeviennentdeplusenpluspetits,ilyaun
+risque plus élevé pour ces poids que leurs gradients tombent à 0. C’est ce qu’on appelle l’e(cid:7837)et de gradient évanescent
+(vanishing gradient), qui est un phénomène très courant dans les réseaux neuronaux profonds (c’est-à-dire les réseaux
+composésdenombreusescouches).
+Deuxièmement,certainstermessontrépétésdanscesformules,etengénéral,destermesdelaforme et sont
+présentsà plusieursendroits.Cestermespeuventêtredéveloppéscommesuit:
+Voyonsà quoiressemblentlesdérivéesdesfonctionsd’activationstandard:
+(ℓ) (ℓ) (ℓ−1) (ℓ−1)
+(3) (3)
+OnpeutconstaterqueladérivéedeR(e2L)Uposs(e3̀d)eun(3e)plus(2g)randeplagedevaleursd’entréepourlesquelleselleestnon
+nulle(typiquementtoutelaplagedevaleursd’entréepo(3s)itive(s3))que(2se)sco(n2c)urrentes,cequienfaitunefonctiond’activation
+trèsintéressantepourlesréseauxneur(1o)nauxpr(o3f)onds(3,)carn(2o)usa(v2o)nsv(u1)queleterme apparaîtde(mℓ)anière(ℓr)épétée
+danslesdérivationsenchaîne. (3) (3) (2) (2) (1) (1) (ℓ) (ℓ−1)
+(0) (ℓ) (3) (3) (2) (2) (1) (1) (0)
+𝑎 =(cid:4488)((cid:1310) )=(cid:4488)((cid:1318) 𝑎 )
+4.3(cid:4488). Lamalédictiondelaprofondeur 23
+(cid:4573)(cid:1404) (cid:4573)(cid:1418)
+(cid:4573)(cid:1418) (cid:4573)(cid:1404)
+(cid:4489)ℒ (cid:4489)ℒ (cid:4489)𝑎 (cid:4489)(cid:1310)
+=
+(cid:4489)(cid:1318) (cid:4489)𝑎 (cid:4489)(cid:1310) (cid:4489)(cid:1318)
+(ℓ)
+′ (ℓ)
+(cid:4489)ℒ (cid:4489)ℒ (cid:4489)𝑎 (cid:4489)(cid:1310) (cid:4489)𝑎 (cid:4489)(cid:1310)
+= (ℓ)
+(cid:4489)(cid:1318) (cid:4489)𝑎 (cid:4489)(cid:1310) (cid:4489)𝑎 (cid:4489)(cid:1310) (cid:4489)(cid:1318)
+(ℓ)
+(ℓ−1)
+(cid:4489)ℒ (cid:4489)ℒ (cid:4489)𝑎 (cid:4489)(cid:1310) (cid:4489)𝑎 (cid:4489)(cid:1310) (cid:4489)𝑎 (cid:4489)(cid:1310)
+= (ℓ−1)
+(cid:4489)(cid:1318) (cid:4489)𝑎 (cid:4489)(cid:1310) (cid:4489)𝑎 (cid:4489)(cid:1310) (cid:4489)𝑎 (cid:4489)(cid:1310) (cid:4489)(cid:1318)
+(ℓ)
+(ℓ)
+(cid:4489)𝑎
+=(cid:4488) ((cid:1310) )
+(cid:4489)(cid:1310)
+(cid:4489)(cid:1310)
+=(cid:1318)
+(cid:4489)𝑎
+(cid:4573)(cid:1404)
+(cid:4573)(cid:1418)
+IntroductionauDeepLearning(notesdecours)
+4.4 Coder tout cela en keras
+Danskeras,lesinformationssurlespertesetl’optimiseursonttransmisesaumomentdelacompilation:
+import keras
+from keras.layers import Dense, InputLayer
+from keras.models import Sequential
+model = Sequential([
+InputLayer(input_shape=(10, )),
+Dense(units=20, activation="relu"),
+Dense(units=3, activation="softmax")
+])
+model.summary()
+Model: "sequential"
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃ Layer (type) ┃ Output Shape ┃ Param # ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│ dense (Dense) │ (None, 20) │ 220 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense_1 (Dense) │ (None, 3) │ 63 │
+└─────────────────────────────────┴────────────────────────┴───────────────┘
+Total params: 283 (1.11 KB)
+Trainable params: 283 (1.11 KB)
+Non-trainable params: 0 (0.00 B)
+model.compile(loss="categorical_crossentropy", optimizer="adam")
+Entermesdepertes:
+— "mse"estlaperted’erreurquadratiquemoyenne,
+— "binary_crossentropy"estlapertelogistiquepourlaclassi(cid:7838)cationbinaire,
+— "categorical_crossentropy"estlapertelogistiquepourlaclassi(cid:7838)cationmulti-classes.
+Lesoptimiseursdé(cid:7838)nisdanscettesectionsontdisponiblessousformede"sgd"et"adam".A(cid:7838)nd’avoirlecontrôlesur
+leshyper-paramètresdesoptimiseurs,onpeutalternativementutiliserlasyntaxesuivante:
+from keras.optimizers import Adam, SGD
+# Not a very good idea to tune beta_1
+# and beta_2 parameters in Adam
+adam_opt = Adam(learning_rate=0.001,
+beta_1=0.9, beta_2=0.9)
+# In order to use SGD with a custom learning rate:
+# sgd_opt = SGD(learning_rate=0.001)
+model.compile(loss="categorical_crossentropy", optimizer=adam_opt)
+24 Chapitre4. Optimisation
+IntroductionauDeepLearning(notesdecours)
+4.5 Prétraitement des données
+Enpratique,pourquelaphased’ajustementdumodèlesedéroulecorrectement,ilestimportantdemettreà l’échelleles
+donnéesd’entrée.Dansl’exemplesuivant,nousallonscomparerdeuxentraînementsdumêmemodèle,avecuneinitialisa-
+tionsimilaireetlaseuledi(cid:7837)érenceentrelesdeuxseradesavoirsilesdonnéesd’entréesontcentrées-réduitesoulaissées
+tellesquelles.
+import pandas as pd
+from keras.utils import to_categorical
+iris = pd.read_csv("../data/iris.csv", index_col=0)
+iris = iris.sample(frac=1)
+y = to_categorical(iris["target"])
+X = iris.drop(columns=["target"])
+from keras.layers import Dense, InputLayer
+from keras.models import Sequential
+from keras.utils import set_random_seed
+set_random_seed(0)
+model = Sequential([
+InputLayer(input_shape=(4, )),
+Dense(units=256, activation="relu"),
+Dense(units=256, activation="relu"),
+Dense(units=256, activation="relu"),
+Dense(units=3, activation="softmax")
+])
+n_epochs = 100
+model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
+h = model.fit(X, y, epochs=n_epochs, batch_size=30, verbose=0)
+Standardisonsmaintenantnosdonnéesetcomparonslesperformancesobtenues:
+X -= X.mean(axis=0)
+X /= X.std(axis=0)
+set_random_seed(0)
+model = Sequential([
+InputLayer(input_shape=(4, )),
+Dense(units=256, activation="relu"),
+Dense(units=256, activation="relu"),
+Dense(units=256, activation="relu"),
+Dense(units=3, activation="softmax")
+])
+n_epochs = 100
+model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
+h_standardized = model.fit(X, y, epochs=n_epochs, batch_size=30, verbose=0)
+4.5. Prétraitementdesdonnées 25
+IntroductionauDeepLearning(notesdecours)
+26 Chapitre4. Optimisation
+CHAPITRE 5
+́
+REGULARISATION
+Commenousl’avonsvudansleschapitresprécédents,l’unedesforcesdesréseauxneuronauxestqu’ilspeuventapproximer
+n’importequellefonctioncontinuelorsqu’unnombresu(cid:7840)santdeparamètresestutilisé.Lorsdel’utilisationd’approxima-
+teursuniverselsdansdescontextesd’apprentissageautomatique,unrisqueconnexeimportantestceluidusurajustement
+(over(cid:4111)tting)auxdonnéesd’apprentissage.Plusformellement,étantdonnéunjeudedonnéesd’apprentissage tiréd’une
+distributioninconnue ,lesparamètresdumodèlesontoptimisésdemanièreà minimiserlerisqueempirique:
+alorsquelevéritableobjectifestdeminimiserle«vrai»risque:
+etlesdeuxobjectifsn’ontpaslemêmeminimiseur.
+Pourévitercetécueil,ilfaututiliserdestechniquesderégularisation,tellesquecellesprésentéesci-après.
+5.1 Early stopping
+Comme illustré ci-dessous, on peut observer que l’entraînement d’un réseau neuronal pendant un trop grand nombre
+d”epochspeutconduireà unsurajustement.Notezqu’ici,lerisqueréelestestimé grâceà l’utilisationd’unensemblede
+validationquin’estpasvupendantl’entraînement.
+iris = pd.read_csv("../data/iris.csv", index_col=0)
+iris = iris.sample(frac=1)
+y = to_categorical(iris["target"])
+X = iris.drop(columns=["target"])
+X -= X.mean(axis=0)
+X /= X.std(axis=0)
+(cid:1358) (cid:1358) (cid:1369)
+27
+(cid:1423)
+(cid:1408) (cid:1412) (cid:1412) (cid:4550)
+(cid:1423) ((cid:1427) ,(cid:1428) )∈(cid:3607)
+(cid:1427),(cid:1428)∼(cid:3607) (cid:4550)
+(cid:3555)
+(cid:3555)
+1
+ℛ ((cid:4466))= ∑ ℒ((cid:1319) ,(cid:1320) ;(cid:1308) )
+|(cid:3555) |
+ℛ((cid:4466))=(cid:3497) ℒ((cid:1319),(cid:1320);(cid:1308) )
+IntroductionauDeepLearning(notesdecours)
+import keras
+from keras.layers import Dense, InputLayer
+from keras.models import Sequential
+from keras.utils import set_random_seed
+set_random_seed(0)
+model = Sequential([
+InputLayer(input_shape=(4, )),
+Dense(units=256, activation="relu"),
+Dense(units=256, activation="relu"),
+Dense(units=256, activation="relu"),
+Dense(units=3, activation="softmax")
+])
+n_epochs = 100
+model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
+h = model.fit(X, y, validation_split=0.3, epochs=n_epochs, batch_size=30, verbose=0)
+Ici, le meilleur modèle (en termes de capacités de généralisation) semble être le modèle à l”epoch np.int64(23). En
+d’autres termes, si nous avions arrêté le processus d’apprentissage après l”epoch np.int64(23), nous aurions obtenu un
+meilleurmodèlequesinousutilisonslemodèleentraînépendant70epochs.
+C’esttoutel’idéederrièrelastratégied”earlystopping,quiconsisteàarrêterleprocessusd’apprentissagedèsquelaperte
+devalidationcessedes’améliorer.Cependant,commeonpeutlevoirdanslavisualisationci-dessus,lapertedevalidation
+atendanceàosciller,etonattendsouventplusieursepochsavantdesupposerquelaperteapeudechancesdes’améliorer
+danslefutur.Lenombred”epochsà attendreestappeléleparamètredepatience.
+Danskeras,l’arrêtanticipépeutêtrecon(cid:7838)guréviauncallback,commedansl’exemplesuivant:
+from keras.callbacks import EarlyStopping
+set_random_seed(0)
+(suitesurlapagesuivante)
+28 Chapitre5. Régularisation
+IntroductionauDeepLearning(notesdecours)
+(suitedelapageprécédente)
+model = Sequential([
+InputLayer(input_shape=(4, )),
+Dense(units=256, activation="relu"),
+Dense(units=256, activation="relu"),
+Dense(units=256, activation="relu"),
+Dense(units=3, activation="softmax")
+])
+cb_es = EarlyStopping(monitor="val_loss", patience=10, restore_best_weights=True)
+n_epochs = 100
+model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
+h = model.fit(X, y,
+validation_split=0.3, epochs=n_epochs, batch_size=30,
+verbose=0, callbacks=[cb_es])
+Et maintenant, même si le modèle était prévu pour être entraîné pendant 70 epochs, l’entraînement est arrêté dès qu’il
+atteint 10 epochs consécutives sans amélioration de la perte de validation, et les paramètres du modèle sont restaurés
+commelesparamètresdumodèleà l”epochnp.int64(23).
+5.2 Pénalisation de la perte
+Une autre façon importante d’appliquer la régularisation dans les réseaux neuronaux est la pénalisation des pertes. Un
+exempletypiquedecettestratégiederégularisationestlarégularisationL2.Sinousdésignonspar laperterégularisée
+parL2,ellepeutêtreexpriméecommesuit:
+où estlamatricedepoidsdelacouche .
+Cette régularisation tend à réduire les grandes valeurs des paramètres pendant le processus d’apprentissage, ce qui est
+connupouraiderà améliorerlagénéralisation.
+5.2. Pénalisationdelaperte 29
+(cid:1421)
+(ℓ) 2
+(cid:1421) (cid:4550) (cid:4550) 2
+ℓ
+(ℓ)
+ℒ
+ℒ ((cid:3555);(cid:1308) )=ℒ((cid:3555);(cid:1308) )+(cid:4470)∑‖(cid:4466) ‖
+(cid:4466) ℓ
+IntroductionauDeepLearning(notesdecours)
+Enkeras,ceciestimplémentécomme:
+from keras.regularizers import L2
+λ = 0.01
+set_random_seed(0)
+model = Sequential([
+InputLayer(input_shape=(4, )),
+Dense(units=256, activation="relu", kernel_regularizer=L2(λ)),
+Dense(units=256, activation="relu", kernel_regularizer=L2(λ)),
+Dense(units=256, activation="relu", kernel_regularizer=L2(λ)),
+Dense(units=3, activation="softmax")
+])
+n_epochs = 100
+model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
+h = model.fit(X, y, validation_split=0.3, epochs=n_epochs, batch_size=30, verbose=0)
+5.3 DropOut
+Danscettesection,nousprésentonslastratégieDropOut,quiaétéintroduitedans[Srivastavaetal.,2014].L’idéederrière
+leDropOutestd’éteindrecertainsneuronespendantl’apprentissage.Lesneuronesdésactivéschangentàchaqueminibatch
+desorteque,globalement,touslesneuronessontentraînéspendanttoutleprocessus.
+Le concept est très similaire dans l’esprit à une stratégie utilisée pour l’entraînement des forêts aléatoires, qui consiste
+à sélectionner aléatoirement des variables candidates pour chaque division d’arbre à l’intérieur d’une forêt, ce qui est
+connupourconduireà demeilleuresperformancesdegénéralisationpourlesforêtsaléatoires.Laprincipaledi(cid:7837)érence
+iciestquel’onpeutnonseulementdésactiverlesneuronesd’entréemaisaussilesneuronesdelacouchecachéependant
+l’apprentissage.
+Danskeras,ceciestimplémentécommeunecouche,quiagitendésactivantlesneuronesdelacoucheprécédentedans
+leréseau:
+30 Chapitre5. Régularisation
+IntroductionauDeepLearning(notesdecours)
+FІԌ.5.1–IllustrationdumécanismedeDropOut.A(cid:7838)nd’entraînerunmodèledonné(à gauche),à chaqueminibatch,une
+proportiondonnéedeneuronesestchoisieauhasardpourêtre«désactivée»etlesous-réseaurésultantestutilisé pour
+l’étaped’optimisationencours(cf.(cid:7838)gurededroite,danslaquelle40%desneurones–colorésengris–sontdésactivés).
+from keras.layers import Dropout
+set_random_seed(0)
+switchoff_proba = 0.3
+model = Sequential([
+InputLayer(input_shape=(4, )),
+Dropout(rate=switchoff_proba),
+Dense(units=256, activation="relu"),
+Dropout(rate=switchoff_proba),
+Dense(units=256, activation="relu"),
+Dropout(rate=switchoff_proba),
+Dense(units=256, activation="relu"),
+Dropout(rate=switchoff_proba),
+Dense(units=3, activation="softmax")
+])
+n_epochs = 100
+model.compile(loss="categorical_crossentropy", optimizer="adam", metrics=["accuracy"])
+h = model.fit(X, y, validation_split=0.3, epochs=n_epochs, batch_size=30, verbose=0)
+5.3. DropOut 31
+IntroductionauDeepLearning(notesdecours)
+(cid:174) Exercice#1
+Enobservantlesvaleursdepertedansla(cid:7838)gureci-dessus,pouvez-vousexpliquerpourquoilapertedevalidationest
+presquesystématiquementinférieureà cellecalculéesurlejeud’apprentissage?
+(cid:174) Solution
+En fait, la perte d’apprentissage est calculée comme la perte moyenne sur tous les minibatchs d’apprentissage
+pendantuneepoch.Sinousnousrappelonsquependantl’apprentissage,à chaqueminibatch,30%desneurones
+sont désactivés, on peut voir que seule une sous-partie du modèle complet est utilisée lors de l’évaluation de la
+perted’apprentissagealorsquelemodèlecompletestutilisélorsdelaprédictionsurl’ensembledevalidation,ce
+quiexpliquepourquoilapertedevalidationmesuréeestinférieureà celledel’apprentissage.
+32 Chapitre5. Régularisation
+CHAPITRE 6
+́
+RESEAUX NEURONAUX CONVOLUTIFS
+Lesréseauxdeneuronesconvolutifs(aussiappelésConvNets)sontconçuspourtirerpartidelastructuredesdonnées.
+Danscechapitre,nousaborderonsdeuxtypesderéseauxconvolutifs:nouscommenceronsparlecasmonodimensionnel
+etverronscommentlesréseauxconvolutifsàconvolutions1Dpeuventêtreutilespourtraiterlessériestemporelles.Nous
+présenteronsensuitelecas2D,particulièrementutilepourtraiterlesdonnéesd’image.
+6.1 Réseaux de neurones convolutifs pour les séries temporelles
+Les réseaux de neurones convolutifs pour les séries temporelles reposent sur l’opérateur de convolution 1D qui, étant
+donnéunesérietemporellexetun(cid:7838)ltref,calculeunecarted’activationcomme:
+x f (6.1)
+où le(cid:7838)ltrefestdelongueur .
+Lecodesuivantillustrecettenotionenutilisantun(cid:7838)ltregaussien:
+Lesréseauxdeneuronesconvolutifssontconstituésdeblocsdeconvolutiondontlesparamètressontlescoe(cid:7840)cientsdes
+(cid:7838)ltresqu’ilsintègrent(les(cid:7838)ltresnesontdoncpas(cid:7838)xésaprioricommedansl’exempleci-dessusmaisplutôtappris).Ces
+blocsdeconvolutionsontéquivariantspartranslation,cequisigni(cid:7838)equ’undécalage(temporel)deleurentréeentraînele
+mêmedécalagetemporeldeleursortie:
+/tmp/ipykernel_7364/1028966743.py:32: UserWarning: This figure includes Axes that␣
+are not compatible with tight_layout, so results might be incorrect.
+plt.tight_layout()
+<IPython.core.display.HTML object>
+Lesmodèlesconvolutifssontconnuspourêtretrèsperformantsdanslesapplicationsdevisionparordinateur,utilisant
+des quantités modérées de paramètres par rapport aux modèles entièrement connectés (bien sûr, des contre-exemples
+existent,etleterme«modéré»estparticulièrementvague).
+33
+(cid:1389)
+(cid:1414) (cid:1423)+(cid:1414)
+(cid:1414)=−(cid:1389)
+↪
+( ∗ )((cid:1315))= ∑ (cid:1301) (cid:1319)
+(2(cid:1281)+1)
+IntroductionauDeepLearning(notesdecours)
+Laplupartdesarchitecturesstandarddesériestemporellesquireposentsurdesblocsconvolutionnelssontdesadaptations
+directesdemodèlesdelacommunautédelavisionparordinateur([LeGuennecetal.,2016]s’appuiesurunealternance
+entre couches de convolution et couches de pooling, tandis que des travaux plus récents s’appuient sur des connexions
+résiduellesetdesmodulesd”inception[Fawazetal.,2020]).Cesblocsdebase(convolution,pooling,couchesrésiduelles)
+sontdiscutésplusendétaildanslasectionsuivante.
+Cesmodèlesdeclassi(cid:7838)cationdessériestemporelles(etbiend’autres)sontprésentésetévaluésdans[Fawazetal.,2019]
+quenousconseillonsaulecteurintéressé.
+6.2 Réseaux de neurones convolutifs pour les images
+Nousallonsmaintenantnousintéresseraucas2D,danslequelles(cid:7838)ltresdeconvolutionneglisserontpassurunseulaxe
+commedanslecasdessériestemporelles,maisplutôtsurlesdeuxdimensions(largeurethauteur)d’uneimage.
+6.2.1 Images et convolutions
+Commeonlevoitci-dessous,uneimageestunegrilledepixels,etchaquepixelaunevaleurd’intensitédanschacundes
+canauxdel’image.Lesimagescouleursonttypiquementcomposéesde3canaux(iciRouge,VertetBleu).
+FІԌ.6.1–Uneimageetses3canaux(intensitésdeRouge,VertetBleu,degaucheà droite).
+La sortie d’une convolution sur une image x est une nouvelle image, dont les valeurs des pixels peuvent être calculées
+commesuit:
+x f (6.2)
+End’autrestermes,lespixelsdel’imagedesortiesontcalculéscommeleproduitscalaireentreun(cid:7838)ltredeconvolution
+(quiestuntenseurdeforme )etunpatchd’imagecentréà lapositiondonnée.
+Considérons,parexemple,le(cid:7838)ltredeconvolution9x9suivant:
+34 Chapitre6. Réseauxneuronauxconvolutifs
+(cid:1388) (cid:1389) 3
+(cid:1414),(cid:1415),(cid:1406) (cid:1412)+(cid:1414),(cid:1413)+(cid:1415),(cid:1406)
+(cid:1414)=−(cid:1388)(cid:1415)=−(cid:1389)(cid:1406)=1
+( ∗ )((cid:1304),(cid:1305))= ∑ ∑ ∑(cid:1301) (cid:1319) .
+(2(cid:1280)+1,2(cid:1281)+1,(cid:1298))
+IntroductionauDeepLearning(notesdecours)
+Lerésultatdelaconvolutiondel’imagedechatci-dessusavecce(cid:7838)ltreestl’imagesuivanteenniveauxdegris(c’est-à-dire
+constituéed’unseulcanal):
+Onpeutremarquerquecetteimageestuneversion(cid:7839)ouedel’imageoriginale.C’estparcequenousavonsutiliséun(cid:7838)ltre
+Gaussien.Commepourlessériestemporelles,lorsdel’utilisationd’opérationsdeconvolutiondanslesréseauxneuronaux,
+lecontenudes(cid:7838)ltresseraappris,plutôtquedé(cid:7838)niapriori.
+6.2. Réseauxdeneuronesconvolutifspourlesimages 35
+IntroductionauDeepLearning(notesdecours)
+6.2.2 Réseaux convolutifs de type LeNet
+Dans[LeCunetal.,1998],unempilementdecouchesdeconvolution,depoolingetdecouchesentièrementconnectées
+estintroduitpourunetâchedeclassi(cid:7838)cationd’images,plusspéci(cid:7838)quementuneapplicationdereconnaissancedechi(cid:7837)res.
+Leréseauneuronalrésultant,appeléLeNet,estreprésentéci-dessous:
+FІԌ.6.2–ModèleLeNet-5
+Couchesdeconvolution
+Une couche de convolution est constituée de plusieurs (cid:7838)ltres de convolution (également appelés kernels) qui opèrent
+en parallèle sur la même image d’entrée. Chaque (cid:7838)ltre de convolution génère une carte d’activation en sortie et toutes
+ces cartes sont empilées pour former la sortie de la couche de convolution. Tous les (cid:7838)ltres d’une couche partagent la
+mêmelargeuretlamêmehauteur.Untermedebiaisetunefonctiond’activationpeuventêtreutilisésdanslescouchesde
+convolution,commedansd’autrescouchesderéseauxneuronaux.Dansl’ensemble,lasortied’un(cid:7838)ltredeconvolutionest
+calculéecommesuit:
+x f (6.3)
+où désignelecanaldesortie(notezquechaquecanaldesortieestassociéàun(cid:7838)ltre ), estletermedebiaisquilui
+estassociéet estlafonctiond’activationutilisée.
+(cid:98) Astuce
+Enkeras,unetellecoucheestimplémentéeà l’aidedelaclasseConv2D:
+import keras
+from keras.layers import Conv2D
+layer = Conv2D(filters=6, kernel_size=5, padding="valid", activation="relu")
+(cid:174) Padding
+′ ′
+36 Chapitre6. Réseauxneuronauxconvolutifs
+′
+(cid:1388) (cid:1389)
+(cid:1406)
+(cid:1414),(cid:1415),(cid:1406) (cid:1412)+(cid:1414),(cid:1413)+(cid:1415),(cid:1406) (cid:1406)
+(cid:1414)=−(cid:1388)(cid:1415)=−(cid:1389) (cid:1406)
+(cid:1406)
+(cid:1406)
+( ∗ )((cid:1304),(cid:1305),(cid:1298))=(cid:4488)( ∑ ∑ ∑(cid:1301) (cid:1319) +(cid:1297) )
+(cid:1298) (cid:1301) (cid:1297)
+(cid:4488)
+IntroductionauDeepLearning(notesdecours)
+FІԌ.6.3–Visualisationdel’e(cid:7837)etdupadding(source:V.Dumoulin,F.Visin-Aguidetoconvolutionarithmeticfor
+deeplearning).Gauche:sanspadding,droite:avecpadding.
+Lorsdutraitementd’uneimaged’entrée,ilpeutêtreutiledes’assurerquelacartedecaractéristiques(oucarted’ac-
+tivation)desortiealamêmelargeuretlamêmehauteurquel’imaged’entrée.Celapeutêtreréalisé enagrandissant
+arti(cid:7838)ciellementl’imaged’entréeetenremplissantleszonesajoutéesavecdeszéros,commeillustrédansFig.6.3dans
+lequellazonedepaddingestreprésentéeenblanc.
+Couchesdepooling
+Les couches de pooling e(cid:7837)ectuent une opération de sous-échantillonnage qui résume en quelque sorte les informations
+contenuesdanslescartesdecaractéristiquesdansdescartesà plusfaiblerésolution.
+L’idée est de calculer, pour chaque parcelle d’image, une caractéristique de sortie qui calcule un agrégat des pixels de
+laparcelle.Lesopérateursd’agrégationtypiquessontlesopérateursdemoyenne(danscecas,lacouchecorrespondante
+estappeléeaveragepooling)oudemaximum(pourlescouchesdemaxpooling).A(cid:7838)nderéduirelarésolutiondescartes
+desortie,cesagrégatssontgénéralementcalculéssurdesfenêtresglissantesquinesechevauchentpas,commeillustré
+ci-dessous,pourunmaxpoolingavecunetailledepoolingde2x2:
+6.2. Réseauxdeneuronesconvolutifspourlesimages 37
+IntroductionauDeepLearning(notesdecours)
+max
+Cescouchesétaientlargementutiliséeshistoriquementdanslespremiersmodèlesconvolutifsetlesontdemoinsenmoins
+à mesurequelapuissancedecalculdisponibleaugmente.
+(cid:98) Astuce
+Enkeras,lescouchesdepoolingsontimplémentéesà traverslesclassesMaxPool2DetAvgPool2D:
+from keras.layers import MaxPool2D, AvgPool2D
+max_pooling_layer = MaxPool2D(pool_size=2)
+average_pooling_layer = AvgPool2D(pool_size=2)
+Ajoutd’unetêtedeclassification
+Unempilementdecouchesdeconvolutionetdepoolingproduitunecarted’activationstructurée(quiprendlaformed’une
+grille 2d avec une dimension supplémentaire pour les di(cid:7837)érents canaux). Lorsque l’on vise une tâche de classi(cid:7838)cation
+d’images,l’objectifestdeproduirelaclasselaplusprobablepourl’imaged’entrée,cequiestgénéralementréaliséparune
+têtedeclassi(cid:7838)cation(classi(cid:4111)cationhead)composéedecouchesentièrementconnectées.
+Pourquelatêtedeclassi(cid:7838)cationsoitcapabledetraiterunecarted’activation,lesinformationsdecettecartedoiventêtre
+transforméesenunvecteur.CetteopérationestappeléeFlattendanskeras,etlemodèlecorrespondantà Fig.6.2peut
+êtreimplémentécomme:
+from keras.models import Sequential
+from keras.layers import InputLayer, Conv2D, MaxPool2D, Flatten, Dense
+model = Sequential([
+(suitesurlapagesuivante)
+38 Chapitre6. Réseauxneuronauxconvolutifs
+IntroductionauDeepLearning(notesdecours)
+(suitedelapageprécédente)
+InputLayer(input_shape=(32, 32, 1)),
+Conv2D(filters=6, kernel_size=5, padding="valid", activation="relu"),
+MaxPool2D(pool_size=2),
+Conv2D(filters=16, kernel_size=5, padding="valid", activation="relu"),
+MaxPool2D(pool_size=2),
+Flatten(),
+Dense(120, activation="relu"),
+Dense(84, activation="relu"),
+Dense(10, activation="softmax")
+])
+model.summary()
+Model: "sequential"
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃ Layer (type) ┃ Output Shape ┃ Param # ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│ conv2d (Conv2D) │ (None, 28, 28, 6) │ 156 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ max_pooling2d (MaxPooling2D) │ (None, 14, 14, 6) │ 0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ conv2d_1 (Conv2D) │ (None, 10, 10, 16) │ 2,416 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ max_pooling2d_1 (MaxPooling2D) │ (None, 5, 5, 16) │ 0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ flatten (Flatten) │ (None, 400) │ 0 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense (Dense) │ (None, 120) │ 48,120 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense_1 (Dense) │ (None, 84) │ 10,164 │
+├─────────────────────────────────┼────────────────────────┼───────────────┤
+│ dense_2 (Dense) │ (None, 10) │ 850 │
+└─────────────────────────────────┴────────────────────────┴───────────────┘
+Total params: 61,706 (241.04 KB)
+Trainable params: 61,706 (241.04 KB)
+Non-trainable params: 0 (0.00 B)
+6.2. Réseauxdeneuronesconvolutifspourlesimages 39
+IntroductionauDeepLearning(notesdecours)
+40 Chapitre6. Réseauxneuronauxconvolutifs
+CHAPITRE 7
+́ ́
+RESEAUX NEURONAUX RECURRENTS
+Lesréseauxneuronauxrécurrents(RNN)traitentlesélémentsd’unesérietemporelleunparun.Typiquement,àl’instant
+,unblocrécurrentprendenentrée:
+— l’entréecourante et
+— unétatcaché quiapourbutderésumerlesinformationsclésprovenantdedesentréespassées
+Ceblocretourneunétatcachémisà jour :
+… …
+Ilexistedi(cid:7837)érentescouchesrécurrentesquidi(cid:7837)èrentprincipalementparlafaçondont estcalculée.
+41
+(cid:1423)
+(cid:1423)−1 0 (cid:1423)−1
+(cid:1423)
+(cid:1315)
+(cid:1319)
+ℎ {(cid:1319) ,…,(cid:1319) }
+ℎ
+(cid:1423)
+ℎ
+(cid:1423)−1 (cid:1423) (cid:1423)+1
+(cid:1423)−1 (cid:1423) (cid:1423)+1
+ℎ ℎ ℎ
+(cid:1319) (cid:1319) (cid:1319)
+IntroductionauDeepLearning(notesdecours)
+7.1 Réseaux récurrents standard
+Laformulationoriginaled’uneRNNestlasuivante:
+tanh (7.1)
+où est une matrice de poids associée au traitement de l’état caché précédent, est une autre matrice de poids
+associéeautraitementdelal’entréeactuelleet estuntermedebiais.
+Onnoteraicique , et nesontpasindexéspar ,cequisigni(cid:7838)equequ’ilssontpartagésentretouslestemps.
+Une limitation importante de cette formule est qu’elle échoue à capturer les dépendances à long terme. Pour mieux
+comprendrepourquoi,ilfautserappelerquelesparamètresdecesréseauxsontoptimiséspardesalgorithmesdedescente
+degradientstochastique.
+Pour simpli(cid:7838)er les notations, considérons un cas simpli(cid:7838)é dans lequel et sont tous deux des valeurs scalaires, et
+regardonscequevautlegradientdelasortie parrapportà (quiestalorsaussiunscalaire):
+tanh (7.2)
+où ,donc:
+(7.3)
+Ici,laformede serasimilaireà cellede ci-dessus,et,au(cid:7838)nal,onobtient:
+tanh (7.4)
+tanh tanh (7.5)
+tanh tanh tanh (7.6)
+tanh tanh (7.7)
+End’autrestermes,l’in(cid:7839)uencede seraatténuéeparunfacteur tanh tanh .
+Rappelonsmaintenantà quoiressemblentlafonctiontanhetsadérivée:
+(cid:1423) ℎ (cid:1423)−1 (cid:1427) (cid:1423)
+ℎ (cid:1427)
+ℎ
+ℎ (cid:1427)
+(cid:1369)−1
+ℎ ℎ
+(cid:1423) (cid:1423)
+(cid:1423) ℎ
+ℎ
+′ (cid:1423)
+(cid:1400) (cid:1423) (cid:1423)
+ℎ
+42 (cid:1423) ℎ (cid:1423)−1 (cid:1427) (cid:1423) Chapitre7. Réseauxneuronauxrécurrents
+∀(cid:1315),ℎ = ′ ((cid:1292) ℎ +(cid:1292) (cid:1319) +(cid:1297))
+′ (cid:1423) ′ (cid:1423)−1
+(cid:1423)−1 ℎ
+′
+(cid:1292) ℎ ℎ (cid:1292)
+(cid:4573)ℎ (cid:1297) ′
+(cid:4573)(cid:1400) ′ (cid:1400) (cid:1423) ′
+(cid:1292) (cid:1292) (cid:1297) (cid:1315)
+′ (cid:1423)−1
+(cid:1400) (cid:1423) (cid:1423) (cid:1423)−1 ℎ
+ℎ
+′ ′
+(cid:1423) (cid:1423)−1 ℎ (cid:1423)−1 (cid:1423)−2 ℎ
+′ ′ ′
+(cid:1423)−1 (cid:1423) (cid:1423)−2 ℎ ℎ(cid:1423) (cid:1319) (cid:1423)−1
+(cid:1423)−1
+ℎ (cid:1423)−(cid:1423)−1 ′(cid:1292) ′
+(cid:1423) ℎ (cid:1423)+1 (cid:1423)
+(cid:1423)=1 (cid:4489)(cid:1310)
+∇ (ℎ )= ((cid:1310) )⋅
+(cid:1423)−(cid:4489)(cid:1423)(cid:1292)−1 ′ ′
+(cid:1423) ℎ (cid:1423)+1 (cid:1423)
+(cid:1310) =(cid:1292) ℎ +(cid:1292) (cid:1319) +(cid:1297)
+(cid:4489)(cid:1310) (cid:4489)ℎ
+=ℎ +(cid:1292) ⋅ .
+(cid:4489)(cid:1292) (cid:4489)(cid:1292)
+∇ (ℎ )
+(cid:4489)ℎ
+∇ (ℎ ) = ((cid:1310) )⋅[ℎ +(cid:1292) ⋅ ]
+(cid:4489)(cid:1292)
+= ((cid:1310) )⋅[ℎ +(cid:1292) ⋅ ((cid:1310) )⋅[ℎ +(cid:1292) ⋅[…]]]
+= ℎ ((cid:1310) )+ℎ (cid:1292) ((cid:1310) ) ((cid:1310) )+…
+= ∑ℎ [(cid:1292) ((cid:1310) )⋅⋯⋅ ((cid:1310) )]
+ℎ (cid:1292) ((cid:1310) )⋅⋯⋅ ((cid:1310) )
+IntroductionauDeepLearning(notesdecours)
+Onpeutvoiràquelpointlesgradientsserapprochentrapidementde0pourdesentréesplusgrandes(envaleurabsolue)
+que2,etavoirplusieurstermesdecetypedansunedérivationenchaîneferatendrelestermescorrespondantsvers0.
+End’autrestermes,legradientdel’étatcachéautemps seraseulementin(cid:7839)uencéparquelquesunsdesesprédécesseurs
+etleslesdépendancesàlongtermeserontignoréeslorsdel’actualisationdesparamètresdumodèlepar
+descentedegradient.Ils’agitd’uneoccurrenced’unphénomèneplusgénéralconnusouslenomdevanishinggradient.
+7.2 Long Short Term Memory
+LesblocsLongShortTermMemory(LSTM,[HochreiterandSchmidhuber,1997])ontétéconçuscommeunealternative
+à auxblocsrécurrentsclassiques.Ilsvisentà atténuerl’e(cid:7837)etdevanishinggradient parl’utilisationdeportesquicodent
+explicitementquellepartiedel’informationdoit(resp.nedoitpas)êtreutilisée.
+(cid:174) Lesportesdanslesréseauxneuronaux
+Danslaterminologiedesréseauxdeneurones,uneporte estunvecteurutilisépour(cid:7838)ltrerlesinformations
+d’unvecteurcaractéristiqueentrant detellesortequelerésultatdel’applicationdelaporteest: .où
+estleproduitélément-par-élément.Laporte auradonctendanceà supprimerunepartiedescaractéristiquesde .
+(cellesquicorrespondentà desvaleurstrèsfaiblesde ).
+Danscesblocs,unétatsupplémentaireestutilisé,appeléétatdelacellule .Cetétatestcalculécommesuit:
+(7.8)
+où estappeléeforgetgate(ellepousseleréseauà oublierlespartiesinutilesdel’étatpassé delacellule), estl”input
+7.2. LongShortTermMemory 43
+(cid:1423)−1 (cid:1423)−2
+(cid:1407)
+(cid:1407)
+(cid:1315)
+{ℎ ,ℎ ,…}
+(cid:1423)
+(cid:1423) (cid:1423) (cid:1423)−1 (cid:1423) (cid:1423)
+(cid:1423) (cid:1423)
+(cid:1302) ∈[0,1]
+(cid:1317) ∈ℝ (cid:1302)⊙(cid:1317) ⊙
+(cid:1302) (cid:1317)
+(cid:1302)
+(cid:1272)
+(cid:1272) =(cid:1301) ⊙(cid:1272) +(cid:1304) ⊙(cid:1272)̃
+(cid:1301) (cid:1304)
+IntroductionauDeepLearning(notesdecours)
+gate et est une version actualisée de l’état de la cellule (qui, à son tour, peut être partiellement censurée par l”input
+gate).
+Laissonsdecôtépourl’instantlesdétailsconcernantlecalculdeces3termesetconcentrons-nousplutôtsurlafaçondont
+laformuleci-dessusestestsigni(cid:7838)cativementdi(cid:7837)érentedelarègledemiseàjourdel’étatcachédanslemodèleclassique.
+En e(cid:7837)et, dans ce cas, si le réseau l’apprend (par l’intermédiaire de ), l’information complète de l’état précédent de la
+cellule peutêtrerécupérée,cequipermetauxgradientsdesepropagerà reboursdel’axedutemps(etdeneplus
+disparaître).
+Alors,lelienentrel’étatdelacelluleetl’étatcachéest:
+tanh (7.9)
+End’autrestermes,l’étatcachéestlaversiontransformée(parlafonctiontanh)del’étatdelacellule,encorecensurépar
+uneportedesortie(outputgate) .
+Touteslesportesutiliséesdanslesformulesci-dessussontdé(cid:7838)niesdemanièresimilaire:
+(7.10)
+(7.11)
+(7.12)
+où estlafonctiond’activationsigmoïde(dontlesvaleurssontcomprisesdans )et laconcaténationdes
+caractéristiques et .
+En(cid:7838)n,l’étatdecellulemisà jour estcalculécommesuit:
+tanh (7.13)
+IlexistedanslalittératuredenombreusesvariantesdecesblocsLSTMquireposenttoujourssurlesmêmesprincipesde
+base.
+7.3 Gated Recurrent Unit
+Uneparamétrisationlégèrementdi(cid:7837)érented’unblocrécurrentestutiliséedanslesGatedRecurrentUnits(GRU,[Choet
+al.,2014]).
+Les GRUs reposent également sur l’utilisation de portes pour laisser (de manière adaptative) l’information circuler à
+(cid:1423)
+traversletemps.Unepremièredi(cid:7837)érencesigni(cid:7838)cativeentrelesGRUsetlesLSTMsestquelesGRUsn’ontpasrecours
+à l’utilisationd’unétatdecellule.Aulieudecela,larègledemiseà jourdel’étatcachéestlasuivante:
+(7.14)
+(cid:1423)
+où estuneportequiéquilibre(parcaractéristique)laquantitéd’informationsquiestconservéedel’étatcachéprécédent
+(cid:1423)−1
+aveclaquantitéd’informationsquidoitêtremiseàjourenutilisantlenouvelétatcachécandidat ,calculécommesuit:
+tanh (7.15)
+où estuneportesupplémentairequipeutcacher(cid:1423)unep(cid:1423)artiedel’ét(cid:1423)atcachéprécédent.
+Lesformulespourlesportes et sontsimilairesà cellesfourniespour , et danslecasdesLSTMs.
+Uneétudegraphiquedelacapacit(cid:1423)édecesvariantesderéseauxrécurrentsà apprendredesdépendancesà longtermeest
+fourniedans[Madsen,2019].
+(cid:1272)̃
+(cid:1423) (cid:1409) (cid:1423)−1 (cid:1423) (cid:1409)
+(cid:1423) (cid:1412) (cid:1423)−1 (cid:1423) (cid:1412)
+(cid:1423) (cid:1418) (cid:1423)−1 (cid:1423) (cid:1418)
+44 Chapitre7. Réseauxneuronauxrécurrents
+(cid:1301)
+(cid:1423)−1 (cid:1423)
+(cid:1272)
+(cid:1423)−1 (cid:1423)
+(cid:1423)
+(cid:1423) ℎ =(cid:1310)(cid:1380)⊙ (cid:1423)−1((cid:1272)(cid:1423)). (cid:1380)
+(cid:1310)
+(cid:1301) = (cid:4476)((cid:1292) ⋅[ℎ ,(cid:1319) ]+(cid:1297) )
+(cid:1304) = (cid:4476)((cid:1292) ⋅[ℎ ,(cid:1319) ]+(cid:1297) )
+(cid:1310) = (cid:4476)((cid:1292) ⋅[ℎ ,(cid:1319) ]+(cid:1297) )
+(cid:4476) [0,1] [ℎ ,(cid:1319) ]
+ℎ (cid:1319)
+(cid:1272)̃
+(cid:1272)̃(cid:1423)= ((cid:1292)(cid:1423) ⋅[ℎ(cid:1423)−1,(cid:1319) ](cid:1423)+(cid:1297) )(cid:1423).
+(cid:1423)
+(cid:1423)
+(cid:1423) (cid:1423) (cid:1423)−1 (cid:1423)
+(cid:1423)
+(cid:1423) (cid:1423) (cid:1423) (cid:1423) (cid:1423)
+ℎ =(1−(cid:1321) )⊙ℎ +(cid:1321) ⊙ℎ̃
+(cid:1321)
+ℎ̃
+ℎ̃ = ((cid:1292) ⋅[(cid:1313) ⊙ℎ ,(cid:1319) ]+(cid:1297)),
+(cid:1313)
+(cid:1321) (cid:1313) (cid:1301) (cid:1304) (cid:1310)
+IntroductionauDeepLearning(notesdecours)
+7.4 Conclusion
+Danscechapitreetleprécédent,nousavonspassé enrevuelesarchitecturesderéseauxdeneuronesquisontutilisées
+pour apprendre à partir de données temporelles ou séquentielles. En raison de contraintes de temps, nous n’avons pas
+abordé lesmodèlesbaséssurl’attentiondanscecours.Nousavonsprésenté lesmodèlesconvolutifsquivisentà extraire
+des formes locales discriminantes dans les séries et les modèles récurrents qui exploitent plutôt la notion de séquence.
+Concernantcesderniers,desvariantesvisantàfairefaceàl’e(cid:7837)etdegradientévanescentontétéintroduites.Ilestànoter
+quelesmodèlesrécurrentssontconnuspournécessiterplusdedonnéesd’entraînementqueleurshomologuesconvolutifs.
+7.4. Conclusion 45
+IntroductionauDeepLearning(notesdecours)
+46 Chapitre7. Réseauxneuronauxrécurrents
+CHAPITRE 8
+́
+MECANISME D’ATTENTION
+Dansdenombreuxcontextesd’apprentissageprofond(traductionautomatique,résumédetexte,traitementdeséquences)
+lesmodèlesdoiventmanipulerdesentréesdetaillevariableetseconcentrersurcertainespartiesplusqued’autres.
+Lemécanismed”attentionpermetjustementdedonnerplusdepoidsà certainsélémentsd’uneséquencelorsducalcul
+d’unesortie,enfonctiondeleurpertinence.
+8.1 Motivation
+Considéronslaphrasesuivante:
+«Anapplethathadbeenonthetreeinthegardenforweekshad(cid:4111)nallybeenpickedup.»
+quienfrançaispourraitsetraduirepar:
+«Unepommequiétaitsurl’arbredujardindepuisdessemainesavait(cid:4111)nalementétéramassée.»
+Ici, pour bien orthographier le mot ramassée, il faut avoir conscience qu’il fait référence au nom une pomme qui est
+féminin.
+Pour qu’un modèle de traduction automatique soit capable d’orthographier correctement ce mot, il faut donc qu’il soit
+capabledemodéliserdesdépendancesàlongueportéeentrelesmots.
+Or,lesarchitecturesrécurrentesouconvolutivesclassiquesontdumalà gérere(cid:7840)cacementcesdépendancesà cause:
+— dugoulotd’étranglement(bottleneck)danslesreprésentations,
+— deladi(cid:7840)cultéà mémoriserdesinformationséloignées.
+L’attentionrépondà cettelimiteenpermettantaumodèledesefocaliserdynamiquementsurcertainesentréesaumo-
+mentdeproduireunesortie.
+47
+IntroductionauDeepLearning(notesdecours)
+8.2 Principe général
+Aulieuderésumerl’entréeparunseulvecteur(cid:7838)xe,commedanslesencodeursrécurrentsclassiques,l’attentiongénère
+unesortieenpondérantlesdi(cid:5370)érentespartiesdel’entréeselonleurpertinence.
+Pourchaqueélémentdelasortie,lemodèlee(cid:7837)ectueuneagrégationpondéréedesélémentsd’entrée,oùlespoidsre(cid:7839)ètent
+leurimportance.
+8.3 Métaphore : Queries, Keys, Values
+L’attentionpeutêtreinterprétéevialamétaphoresuivante:
+— Query(Q):cequel’oncherche
+— Key(K):cequel’onacommeréférence
+— Value(V):cequel’onextrait
+Onpeutrapprochercemécanismedecequisepasselorqu’onmanipuleundictionnairePython:dansundictionnaire,
+onchercheuneclé exactepourobtenirlavaleurassociée.Ici,larequêtejouelerôledelaclé recherchée,maisaulieu
+d’unecorrespondanceexacte,oncomparelarequêteà touteslesclésdisponibles(quisontdesvecteursnumériques)en
+mesurantleursimilarité(typiquementviaunproduitscalaire).
+Plutôtquederécupérerlavaleurd’uneseuleclé,one(cid:7837)ectueunemoyennepondéréedesvaleursassociéesauxclésles
+plussimilairesàlarequête.Lespoidsdecettemoyennesontjustementlessimilaritéscalculéesentrelarequêteetchaque
+clé.
+8.4 Formulation mathématique
+Soientdeuxséquencesdevecteursd’entrée et .L’attentionconsisteà projeter en
+requêtes et enclés etvaleurs :
+où sontdesmatricesdepoidsapprises.
+L’attentionestalorsdé(cid:7838)niepar:
+Attention softmax
+où estladimensiondesvecteursclés(utilisépourstabiliserl’entraînement).
+import torch
+import numpy as np
+import torch.nn.functional as F
+torch.manual_seed(0)
+Q = torch.randn(1, 4, 8) # batch, longueur, dim
+K = torch.randn(1, 6, 8) # les clés ne sont pas forcément de la même longueur
+V = torch.randn(1, 6, 10) # la longueur des valeurs est celle des clés, leur dim peut␣
+(suitesurlapagesuivante)
+48 Chapitre8. Mécanismed’attention
+1 (cid:1417) 1 (cid:1416)
+(cid:1394)
+(cid:1388)
+(cid:1399)
+(cid:1394) (cid:1388) (cid:1399)
+(cid:1397)
+(cid:1414)
+(cid:1414)
+(cid:1293) = [(cid:1319) ,…,(cid:1319) ] (cid:1294) = [(cid:1320) ,…,(cid:1320) ] (cid:1293)
+(cid:1286) (cid:1294) (cid:1280) (cid:1291)
+(cid:1286)=(cid:1293)(cid:1292)
+(cid:1280) =(cid:1294)(cid:1292)
+(cid:1291) =(cid:1294)(cid:1292)
+(cid:1292) ,(cid:1292) ,(cid:1292)
+(cid:1286)(cid:1280)
+((cid:1286),(cid:1280),(cid:1291))= ( )(cid:1291)
+√(cid:1299)
+(cid:1299)
+IntroductionauDeepLearning(notesdecours)
+(suitedelapageprécédente)
+être autre
+scores = torch.matmul(Q, K.transpose(-2, -1)) / np.sqrt(8)
+weights = F.softmax(scores, dim=-1)
+output = torch.matmul(weights, V)
+output.shape # (1, 4, 10)
+torch.Size([1, 4, 10])
+8.5 Auto-attention (ou self-attention)
+Dans certains cas, comme en traitement de séquence, les entrées et ne sont qu’une seule et même séquence (on
+souhaitecomparerlesélémentsdelaséquencedeuxà deux):onparlealorsdeself-attention.
+Celasigni(cid:7838)equechaquepositiondelaséquence «regarde»touteslesautrespositionsdecettemêmeséquencepour
+construiresaproprereprésentation.
+8.6 Multi-head attention
+Enpratique,danslaplupartdesmodèles,lemécanismed’attentionestdupliquéplusieursfois(avecdespoidsdi(cid:7837)érents)
+et leurs sorties sont concaténées : on parle alors de multi-head attention. Cela permet, d’une part, à chaque head de se
+foc↪alisersurdesaspectsdi(cid:7837)érentsdelaséquence(syntaxe,structure,position,etc.).Au(cid:7838)nal,celapermetunemodélisation
+plusrichedesdépendances.
+8.7 Schéma général
+8.8 Résumé
+— Lemécanismed’attentionpermetdecapturerlesdépendancesentreélémentsd’uneséquencesanscontraintede
+distance.
+— Ilreposesurlecalculdesimilaritéentrerequêtesetclés,etlapondérationdesvaleursassociées.
+— Ilestà labasedesmodèlesTransformer,aujourd’huiomniprésentsenNLPetenvision.
+8.5. Auto-attention(ouself-attention) 49
+(cid:1293) (cid:1294)
+(cid:1293)
+IntroductionauDeepLearning(notesdecours)
+FІԌ.8.1–Schémad’unblocTransformeravecmulti-headattention(source:HuggingFace).
+50 Chapitre8. Mécanismed’attention
+CHAPITRE 9
+́ ́ ́
+RESEAUX NEURONAUX GENERATIFS
+Lesmodèlesgénératifsontpourobjectifd’apprendreladistributiondesdonnéesd’entraînement.Cettedistributionpeut
+êtreestiméedefaçonexplicite,enapprenantuneformeparamétriquede oudelaprobabilitéconditionnelle ,
+oubienapprochéedemanièreimplicite,sansformeclosemaisenpermettantl’échantillonnagedenouvellesdonnées.
+Parmi les principaux modèles génératifs, on retrouve les modèles de mélange gaussiens (GMM), les auto-encodeurs
+variationnels(VAE),lesréseauxadversairesgénératifs(GAN)etlesmodèlesdedi(cid:7837)usion.Chacundecesmodèlespropose
+une approche di(cid:7837)érente pour modéliser et générer des données, allant de l’estimation directe de la distribution à des
+méthodesplusindirectesbaséessurl’échantillonnageoulacompétitionentreréseaux.
+9.1 Auto-encodeurs
+Lesauto-encodeurs[HintonandSalakhutdinov,2006]sontdesréseauxquiapprennentà compresserl’informationdans
+unespacelatent.Unauto-encodeurestconstituéd’unblocEncodeuretd’unBlocDécodeur,utiliséscommesuit:
+Encodeur (9.1)
+Decodeur (9.2)
+Autrementdit,unencodeurprojettel’entrée versunereprésentationlatente ,généralementdeplusfaibledimension,
+puisundécodeurreconstruituneapproximation àpartirde .Cefonctionnementpeutêtrevucommeunegénéralisation
+del’ACPaucasnonlinéaire.Toutefois,unauto-encodeurstandardn’estpasunmodèlegénératif,cariln’imposepasde
+distributionparticulièresurl’espacelatent etn’o(cid:7837)redoncpasdefaçondetirerdenouveauxsamples.
+51
+(cid:1311)((cid:1319)) (cid:1311)((cid:1319)|(cid:1320))
+(cid:1321) = ((cid:1319))
+(cid:1319)̂= ((cid:1321))
+(cid:1319) (cid:1321)
+(cid:1319)̂ (cid:1321)
+(cid:1321)
+IntroductionauDeepLearning(notesdecours)
+9.2 Variational Auto-Encoders (VAE)
+LesVAE[KingmaandWelling,2014]transformentl’auto-encodeurenmodèlegénératifenimposantunapriorisurla
+variablelatente ,typiquementuneloinormale .Unepénalisation,sousformededivergencedeKullback-
+Leibler(KL),estajoutéeàlafonctiondeperteàoptimiserpourencouragerladistributionlatenteàrespectercetapriori.
+Pourgénérerdenouvellesdonnées:
+1. ontireun selon
+2. oncalcule Decodeur
+gen
+9.3 Generative Adversarial Networks (GAN)
+Proposéspar[Goodfellowetal.,2014],lesGANentraînentdeuxréseaux:
+— unGénérateur quiproduit à partirdebruit
+fake
+— unDiscriminateur quipréditsiuneentrée estréelle( )ougénérée( )
+Lafonctiondeperteoptimiséeestlasuivante:
+log log (9.3)
+Concrètement,l’entraînementalterneentremiseà jourde (meilleurediscrimination,maximisationdelafonctionde
+perte)etmiseà jourde (meilleuregénération,minimisationdelafonctiondeperte).
+Pourlagénération,commepourunVAE,ontireun puisonlefournitenentréeaugénérateurpourgénérer
+unnouveausample .
+Enpratique,l’optimisationd’unGANestsouventinstable,etilestsouventnécessaired’utiliserdesastucespourlestabiliser
+(cf lesWassersteinGANparexemple[Arjovskyetal.,2017]).
+9.4 Modèles de di(cid:3746)usion
+Lesmodèlesdedi(cid:7837)usion,introduitspar[Hoetal.,2020],reposentsuruneidéeoriginale:onajouteprogressivementdu
+bruitgaussienauxdonnées,puisonentraîneunmodèleàinverserceprocessus,c’est-à-direàdébruiterlesdonnéesétape
+parétape.Lorsdelagénération,onpartd’unbruitpuretonletransformeprogressivementenunedonnéeréaliste.
+9.5 Conditional Flow Matching
+LeConditionalFlowMatching,proposépar[Lipmanetal.,2023],consisteàapprendreunchampdevecteursquitrans-
+porteprogressivementleséchantillonsdubruit(étatinitial ,correspondantau introduitplushautpourlesVAEet
+lesGAN)verslesdonnéesréelles(état(cid:7838)nal ,correspodantau plushaut).L’entraînementreposesurlaminimisation
+delafonctiondepertesuivante:
+(9.4)
+(cid:1367) (cid:1375)
+où .
+Unefoislemodèle appris,lagénérations’e(cid:7837)ectueenrésolvantuneéquationdi(cid:7837)érentielle,parexempleavecleschéma
+d’Euler,enpartantd’unsample tiréde :
+(9.5)
+Ceprocessuspeutêtrevucommeuneinterpolationguidéeentrelebruitetlesdonnées.
+(cid:1321) (cid:1321) ∼ (cid:3565)(0,(cid:1278))
+52 (cid:1427)∼(cid:1419) (cid:1429)∼(cid:1419) Chapitre9. Réseauxneuronauxgénératifs
+(cid:1321) (cid:3565)(0,(cid:1278))
+(cid:1319) = ((cid:1319))
+(cid:1276) (cid:1319) =(cid:1276)((cid:1321)) (cid:1321) ∼(cid:3565)(0,(cid:1278))
+(cid:1273) (cid:1319) (cid:1320) =1 (cid:1320) =0
+(cid:3497) [ 0(cid:1273)(1(cid:1319))]+(cid:3497) [ (1−(cid:1273)((cid:1276)((cid:1321))))]
+(cid:1273)
+(cid:1276)
+(cid:1321) ∼(cid:3565)(0,(cid:1278))
+(cid:1276)((cid:1321))
+(cid:4550)
+(cid:1427) ,(cid:1427) ,(cid:1423) 1 0
+0 1
+(cid:4550)
+0
+(cid:4550)
+(cid:1423)+(cid:4567) (cid:1423) (cid:1423)
+(cid:1315)=0 (cid:1321)
+(cid:1315)=1 (cid:1319)
+(cid:3497) [(cid:1316) ((cid:1319),(cid:1315))−((cid:1319) −(cid:1319) )]
+(cid:1319)=(cid:1315)(cid:1319) +(1−(cid:1315))(cid:1319)
+(cid:1316)
+(cid:1319) (cid:3565)(0,(cid:1278))
+(cid:1319) ←(cid:1319) +(cid:4483)(cid:1316) ((cid:1319) ,(cid:1315))
+IntroductionauDeepLearning(notesdecours)
+9.6 Résumé
+Enrésumé,lesmodèlesgénératifso(cid:7837)rentdesoutilspuissantspourmodéliseretéchantillonnerladistributiondesdon-
+nées.Selonl’approchechoisie,ilspeuventconsisteràcompresserl’informationenimposantunestructureprobabilistesur
+l’espacelatent(VAE),àgénérerdesdonnéesparcompétitionentreréseaux(GAN),ouencoreàproduiredeséchantillons
+viadesprocessusdynamiquesetprogressifs(di(cid:7837)usionet(cid:4112)owmatching).
+9.6. Résumé 53
+IntroductionauDeepLearning(notesdecours)
+54 Chapitre9. Réseauxneuronauxgénératifs
+BIBLIOGRAPHIE
+[Goh17] GabrielGoh.Whymomentumreallyworks.Distill,2017.URL:http://distill.pub/2017/momentum.
+[KB15] Diederik P. Kingma and Jimmy Ba. Adam: a method for stochastic optimization. In Yoshua Bengio and
+YannLeCun,editors,ICLR.2015.
+[SHK+14] Nitish Srivastava, Geo(cid:7837)rey Hinton, Alex Krizhevsky, Ilya Sutskever, and Ruslan Salakhutdinov. Dro-
+pout: a simple way to prevent neural networks from over(cid:7838)tting. Journal of Machine Learning Research,
+15(56):1929–1958,2014.URL:http://jmlr.org/papers/v15/srivastava14a.html.
+[FFW+19] HassanIsmailFawaz,GermainForestier,JonathanWeber,LhassaneIdoumghar,andPierre-AlainMuller.
+Deep learningfortime seriesclassi(cid:7838)cation: a review. Data Mining and KnowledgeDiscovery, 33(4):917–
+963,2019.
+[FLF+20] HassanIsmailFawaz,BenjaminLucas,GermainForestier,CharlottePelletier,DanielFSchmidt,Jonathan
+Weber, Geo(cid:7837)rey I Webb, Lhassane Idoumghar, Pierre-Alain Muller, and François Petitjean. Inception-
+time:(cid:7838)ndingalexnetfortimeseriesclassi(cid:7838)cation.DataMiningandKnowledgeDiscovery,34(6):1936–1962,
+2020.
+[LGMT16] ArthurLeGuennec,SimonMalinowski,andRomainTavenard.DataAugmentationforTimeSeriesClas-
+si(cid:7838)cation using Convolutional Neural Networks. In ECML/PKDD Workshop on Advanced Analytics and
+LearningonTemporalData.RivaDelGarda,Italy,September2016.
+[LBBH98] YannLeCun,LéonBottou,YoshuaBengio,andPatrickHa(cid:7837)ner.Gradient-basedlearningappliedtodocu-
+mentrecognition.ProceedingsoftheIEEE,86(11):2278–2324,1998.
+[CVMerrienboerBB14] KyunghyunCho,BartVanMerriënboer,DzmitryBahdanau,andYoshuaBengio.Onthepro-
+pertiesofneuralmachinetranslation:encoder-decoderapproaches.2014.arXiv:1409.1259.
+[HS97] SeppHochreiterandJürgenSchmidhuber.Longshort-termmemory.Neuralcomputation,9(8):1735–1780,
+1997.
+[Mad19] Andreas Madsen. Visualizing memorization in rnns. Distill, 2019. URL: https://distill.pub/2019/
+memorization-in-rnns.
+[ACB17] MartinArjovsky,SoumithChintala,andLéonBottou.Wassersteingenerativeadversarialnetworks.InPro-
+ceedingsoftheInternationalConferenceonMachineLearning,214–223.PMLR,2017.
+[GPAM+14] IanGoodfellow,JeanPouget-Abadie,MehdiMirza,BingXu,DavidWarde-Farley,SherjilOzair,Aaron
+Courville,andYoshuaBengio.Generativeadversarialnets.InNeuralInformationProcessingSystems.2014.
+[HS06] Geo(cid:7837)reyEHintonandRuslanRSalakhutdinov.Reducingthedimensionalityofdatawithneuralnetworks.
+Science,313(5786):504–507,2006.
+[HJA20] JonathanHo,AjayJain,andPieterAbbeel.Denoisingdi(cid:7837)usionprobabilisticmodels.InNeuralInformation
+ProcessingSystems.2020.
+[KW14] Diederik P Kingma and Max Welling. Auto-encoding variational bayes. arXiv preprint arXiv:1312.6114,
+2014.
+55
+IntroductionauDeepLearning(notesdecours)
+[LCBH+23] YaronLipman,RickyTQChen,HeliBen-Hamu,MaximilianNickel,andMatthewLe.Flowmatchingfor
+generativemodeling.InProceedingsoftheInternationalConferenceonLearningRepresentations.2023.
+56 Bibliographie

@@ -1,0 +1,818 @@
+Submitted to Harvard Data Science Review 1
+∗
+Ambitious Data Science Can Be Painless
+Hatef Monajemi1,2, Riccardo Murri3, Eric Jonas4, Percy Liang5, Victoria Stodden6 and David Donoho †,1
+January 28, 2019
+Abstract—Modern data science research, at the cutting I. Introduction
+edge, can involve massive computational experimentation;
+an ambitious PhD in computational fields may conduct Tremendous increases in computing power in recent
+experiments consuming several million CPU hours. Tra- years are opening fundamentally new opportunities
+ditional computing practices, in which researchers use
+in science and engineering. Amazon, IBM, Microsoft
+laptops, PCs, or campus-resident resources with shared
+and Google now make massive and versatile com-
+policies,areawkwardorinadequateforexperimentsatthe
+massivescaleandvariedscopethatwenowseeinthemost pute resources available on demand via their cloud
+ambitious data science. On the other hand, modern cloud infrastructure, making it in principle possible for a
+computing promises seemingly unlimited computational broad audience of researchers to individually con-
+resourcesthatcanbecustomconfigured,andseemstooffer
+duct ambitious computational experiments consuming
+a powerful new venue for ambitious data-driven science.
+millions of CPU hours within calendar time scales
+Exploiting the cloud fully, it seems the amount of raw
+experimental work that could be completed in a fixed of days or weeks. We anticipate the emergence of
+amountofcalendartimeoughttoexpandbyseveralorders widespreadmassivecomputationalexperimentationas
+of magnitude. afundamentalavenuetowardsscientificprogress,com-
+As potentially powerful as cloud-based experimentation plementing traditional avenues of induction (in ob-
+may be in the abstract, it has not yet become a standard servational sciences) and deduction (in mathematical
+option for researchers in many academic disciplines. The
+sciences) (Monajemi, Donoho, & Stodden, 2017; Hey,
+prospect of actually conducting massive computational
+Tansley, & Tolle, 2009). Indeed, there have been recent
+experiments in today’s cloud systems with today’s stan-
+dard approaches forcefully confronts the potential user calls by funding agencies (e.g., NSF (Enabling Access
+with daunting challenges. The user schooled in traditional to Cloud Computing Resources for CISE Research and
+interactive personal computing likely expects that a cloud Education (Cloud Access), 2018), NIH (“NIH Strategic
+experiment will involve an intricate collection of moving
+Plan for Data Science”, 2018; The Science and Technology
+parts seemingly requiring extensive monitoring and in-
+ResearchInfrastructureforDiscovery,Experimentation,and
+volvement.Leadingconsiderationsinclude:(i)theseeming
+complexity of today’s cloud computing interface, (ii) the Sustainability(STRIDES)Initiative,2018))forthegreater
+difficulty of executing and managing an overwhelmingly adoption of cloud computing and Massive Computa-
+large number of computational jobs, and (iii) the difficulty tional Experiments (MCEs) in scientific research.
+of keeping track of, collating, and combining a massive
+In some fields, this emergence is already quite pro-
+collection of separate results. Starting a massive experi-
+ment‘bare-handed’seemsthereforehighlyproblematicand nounced. The current remarkable wave of enthusiasm
+prone to rapid ‘researcher burn out’. for machine learning (and its deep learning variety)
+New software stacks are emerging that render massive seems, to us, evidence that massive computational
+cloud-based experiments relatively painless. Such stacks experimentation has begun to pay off, big time. Deep
+simplifyexperimentationbysystematizingexperimentdef- neural networks have been around for the better part
+inition, automating distribution and management of all
+of 30 years; but only in recent years have they been
+tasks, and allowing easy harvesting of results and doc-
+able to successfully penetrate in certain applications.
+umentation. In this article, we discuss several painless
+computing stacks that abstract away the difficulties of Whatchangedrecentlyisthatresearchersatthecutting
+massive experimentation, thereby allowing a proliferation edgecanexperimentextensivelywithtuningsuchnets
+of ambitious experiments for scientific discovery. and refactoring them; with enough experimentation,
+dramaticimprovements overolder methodshave been
+found, thereby changing the game.
+Indeed, experimental success has disrupted field af-
+* This article is based on a series of lectures given in a Stanford ter field. In machine translation, many major players,
+courseStats285intheFallof2017.
+† CorrespondingAuthor,donoho@stanford.edu including Google and Microsoft, moved away recently
+1 Dept.ofStatistics,StanfordUniversity from Statistical Machine Translation (SMT) to Neural
+2 DataScienceInitiative,StanfordUniversity MachineTranslation(NMT)(MicrosoftTranslator,2016;
+3 S3IT,UniversityofZurich Lewis-Kraus, 2016).
+4 Dept.ofComputerScience,UniversityofCaliforniaBerkeley
+5 Dept.ofComputerScience,StanfordUniversity Similar trends can be found in computer vision
+6 SchoolofInformation,UniversityofIllinoisUrbana-Champaign (Krizhevsky, Sutskever, & Hinton, 2012; Simonyan &
+9102
+naJ
+52
+]CD.sc[
+1v50780.1091:viXra
+TABLEI
+FeaturesofthePainlessComputingStacksPresentedinThisPaper2
+ElastiCluster/ClusterJob CodaLab PyWren
+ScientificServiceLayer Interface Interface Framework
+ServiceType EMS EMS ServerlessExecution
+Input Script Script Function/Values
+Language Python/R/Matlab Agnostic Python
+ServerProvisioning Yes Yes Automatic
+ResourceManager SLURM/SGE Agnostic Automatic
+JobSubmission Yes Yes Yes
+JobManagement Yes Yes Automatic
+AutoScriptParallelization1 Yes No No
+AutoMimic No Yes No
+AutoStorage No Yes No
+ExperimentDocumentation Yes Yes No
+Reproducible Yes Yes Yes
+1Forembarrassinglyparallelscriptsonly.
+2ThistableincludesavailablefeaturesasofDecember2018.
+Zisserman, 2014), and many other areas of artificial interactive‘personal’computingmayexpectoperations
+intelligence. Tesla Motors is now using predominantly at such a massive scale to be infeasible, anticipating a
+deep neural networks in their decision-making sys- lengthy and painful process involving many moving
+tems, according to Andrej Karpathy, the head of their parts and manual interactions with complex cloud ser-
+AI department1. vices. Conducting computations at such massive scale
+In a nutshell, if in the past the answer to “how to can thus be perceived as an insurmountable obstacle
+improvetaskaccuracy”wasto“useabettermathemat- bymanyexperiencedresearchers,whootherwisemight
+ical model for the situation”, today’s answer seems to naturally design and conduct MCEs for scientific dis-
+be “exploit a bigger database” and “experiment with covery. This paper presents several emerging stacks
+different approaches until you find a better way.”2 that minimize the difficulties of conducting MCEs us-
+Evidently, this shift towards adopting computational ing the cloud. These stacks offer high-level support for
+experimentsforproblemsolvingistightlylinkedtothe MCEs, masking almost all of the low-level computa-
+explosion of computational resources in recent years.3 tional and storage details.
+More generally, massive experimentation can solve
+complex problems lying beyond the reach of any the-
+ory. Successful examples of ambitious computational II. ScienceInTheCloud
+experimentation as a fundamental method of scien-
+We have argued that today’s most ambitious data
+tific discovery abound: in (Brunton, Proctor, & Kutz,
+science studies have the potential to be computation-
+2016), the authors take a data science approach to
+ally very demanding, often involving millions of CPU
+discover governing equations of various dynamical
+hours. Traditional computing approaches, in which re-
+systems including the strongly nonlinear Lorenz-63
+searchersusetheirpersonalcomputersorcampus-wide
+model; in (Monajemi, Jafarpour, Gavish, Collaboration,
+shared HPC clusters can be inadequate for such am-
+& Donoho, 2013) and (Monajemi & Donoho, 2018), the
+bitious studies: laptop and desktop computers simply
+authors conducted data science studies involving sev-
+cannotprovidethenecessarycomputingpower;shared
+eralmillionCPUhourstodiscoverfundamentallymore
+HPC clusters, which are still the dominant paradigm
+practical sensing methods in the area of Compressed
+for computational resources in academia today, are
+Sensing; in (Huang et al., 2015), MCEs solved a 30-
+becoming more and more limiting because of the mis-
+year-old puzzle in the design of a particular protein.
+match between the variety and volume of computa-
+Intheemergingparadigmforambitiousdatascience,
+tional demands, and the inherent inflexibility of provi-
+scientists pose bold research questions to settle via
+sioning compute resources governed by capital expen-
+MCEs, followed by careful statistical analysis of data
+ditures. For example, Deep Learning (DL) researchers
+and inductive reasoning (Donoho, 2017; Tukey, 1962;
+who depend on fixed departmental or campus-level
+Berman et al., 2018). Under this paradigm researchers
+clusters face a serious obstacle: today’s DL demands
+may launch and manage historically unprecedented
+heavy use of GPU accelerators; researchers can find
+numbers of computational jobs (e.g. possibly even mil-
+themselves waiting for days to get access to such
+lions of jobs). Users trained in an older paradigm of
+resources, as GPUs are rare commodities on many
+1Source: a public lecture titled “Software 2.0” by Karpathy, at general-purpose clusters at present.
+Stanford’sComputerSciencedepertmentonJanuary17,2018. In addition, shared HPC clusters are subject to fixed
+2EveninAcademicPsychology!(Yarkoni&Westfall,2017) policies while different projects may have completely
+3ArecentanalysisbyOpenAIshowsthattheamountofcompute
+different (and even conflicting) requirements. As an
+usedinmodernAIsystemsgrewexponentiallysince2012,doubling
+each3.5months(OpenAI,2018). example, consider two different types of experiments:
+2
+(i) an embarrassingly-parallel4 experiment character- needs — they are thus monitored 24×7 and offer
+ized by many short-lived jobs that produce a large excellent uptime and reliability. A good example
+numberofsmallfiles,and(ii)alargeMPIjobthatruns is Netflix that now operates fully on AWS. In fact,
+for a week to produce a small number of very large Netflix originally decided to migrate entirely to
+files. These two experiments have different technical AWS because the cloud offered a more reliable
+requirements in terms of network latency, memory, infrastructure (Izrailevsky, 2016).
+storage, software and even scheduler configuration; Despitemassiveuseofthecloudbybusiness,andthe
+however,whenbuildingandconfiguringanHPCclus- cloud’s great potential for hosting ambitious computa-
+ter, a decision must be taken over a class of target tionalstudies,manyacademicinstitutionsandresearch
+computetasks:subsequently,clusterhardwareisbought, groups have not yet widely adopted the cloud as a
+and scheduler policies are set and enforced, according computational resource and continue to use personal
+to this decision. Batch jobs whose characteristics are computersorin-housesharedHPCclusters.Webelieve
+closetothesetargetconditionswillfindanoptimalen- that much of the in-house computing inertia is due
+vironment,whereasothertypesofcomputationaltasks to the perceived complexity of doing massive compu-
+will be penalized in terms of turnaround time or other tational experiments in the cloud. Users schooled in
+policy-determined limitations. As a specific example, the interactive personal computing model that domi-
+consider low-latency high-speed networking, which is nated academic computing in the 1990-2010 period are
+still expensive: organizations providing clusters with psychologically prepared to see computing as a very
+such a network would naturally want to maximize hands-on process. This hands-on viewpoint is likely to
+the return of their investment; as a result, they set a perceive a large computing experiment in terms of the
+policy that incentivizes tightly-coupled parallel jobs, many underlying individual computers, file systems,
+whichcanmakeheavyuseofthelow-latencynetwork. management layers, files, and processes. Users coming
+This policy then penalizes “embarassingly parallel” from that background may expect MCEs to require
+workloadsanddisappointstheuserswhorunthiskind raw unassisted manual interaction with these moving
+of experiments. parts,andwouldprobablyanticipatethatsuchmanual
+On the other hand, the advent of cloud computing interaction would be very problematic to complete, as
+offersinstanton-demandaccesstovirtuallyinfinitecom-
+therecouldbemanymisstepsandmisconfigurationsin
+putational resources that can be custom configured to carrying out such a complex procedure.
+satisfytheneedsofindividualresearchprojects.Google If, truly, the cloud-based experiments involved such
+Cloud Platform (GCP), Amazon Web Services (AWS), manual interaction, the process would at best be ex-
+Microsoft Azure and other cloud provides now offer haustingandatworstpainful.Themanypossibleprob-
+easy access to a large array of virtual machines that lems that could crop up in managing processes manu-
+cost pennies per CPU hour, making it possible for ally at the indicated scale would likely be experienced
+individual research groups to perform 1 Million CPU as an overwhelming drag, sapping the experimenter’s
+hours of computation over a few calendar days at a desire to persevere. Even once the experiment was
+retail cost of perhaps ten thousand dollars. The cloud completed, the burden of having conducted it would
+providers also offer access to many GPUs for as low as likely cast a longer shadow, having drained the ana-
+45 cents/hour, making them an affordable medium for lyst’s energy and clarity of purpose, thereby reducing
+Deep Learning research. the analyst’s ability to think clearly about the results.
+The cloud thus offers several advantages over tradi- Summing up, such negative perspectives on cloud-
+tional HPC clusters: based experiments stem from: (i) the perceived com-
+• Scalability and Speed. With millions of servers plexity of today’s cloud computing interfaces, (ii) the
+spread across the globe, cloud providers today perceived difficulty of managing an unprecedentedly
+own the biggest computing infrastructures in the largenumberofcomputationaljobs,and(iii)theunmet
+world. Therefore, any research group with suffi- challenge of ensuring that the results of the experi-
+cient research funding can almost instantly scale ments can be understood and/or reproduced by other
+out its computational tasks to thousands of cores independent scientists.
+withouthavingtowaitinalongqueueonashared
+HPC cluster. III. TheNeedforAutomationandPainless
+• Flexibility. Researchers can adjust the number and Computing
+configuration of compute nodes depending on
+their individual computational needs. Proper automation of computational research activi-
+• Reliability. Public cloud infrastructures have been ties(Waltz&Buchanan,2009)seemsacompellingway
+initially built by large IT companies for their own to make massive computational experiments painless
+needsandarenowrelieduponbymillionsofbusi- and reproducible. In fact the vision dates back more
+nessesallovertheworldfortheirdailycomputing than 50 years.
+Inparticular,inhisseminalpaper“thefutureofdata
+4SeedefinitioninSectionV-C. analysis”(Tukey,1962),JohnTukeycalledfortheuseof
+3
+ClusterJob, CodaLab,
+I n terface S a aS
+TissueMAPS, JupyterHub
+ElastiCluster, PyWren,
+F r amework
+Tensorflow, Spark, MPI
+P a aS
+Clusters, Hadoop,
+E x ecution
+SLURM, Kubernetes
+Virtualized or Physical
+I n frastructure I a a S
+Compute Resources
+Fig.1. Thelayeringofservicesforscientificcomputinginthecloud(middle)withsomeexamples(left),comparedtotheNISTclassification
+ofcloud-basedITservices(right).
+automationindataanalysis,arguing,againstthecritics al., n.d.) and ClusterJob (Monajemi & Donoho, 2015),
+of automation (see his Section 17) that which are discussed in detail later in the paper. More
+• properly automated tools encourage busy data generally,weusePainlessComputingStack(PCS)torefer
+analysts to study the data more, to a software stack that abstracts away the difficulties
+• automation of known procedures provide data ofdoinglarge-scalecomputationonremotecomputing
+analysts with the time and the stimulation to try
+infrastructures5.
+out new procedures, and As we have already argued in the previous sec-
+• it is much easier to intercompare automated pro- tion, unassisted cluster computing (i.e. without EMS
+cedures. assistance) would indeed be painful and draining.
+Consider the scientist wanting to spread an ambitious
+Tukey could not have foreseen the modern context
+workload across multiple shared clusters available via
+for such automation, which we now formalize. As we
+XSEDE6 ecosystem.Wecanenvisionthescientistusing
+see it, an ambitious data science study involves:
+traditional practices quickly becoming frustrated with
+1) Precise specification of an experiment, which in- differences in policies, software environment, choice
+cludes defining performance metrics and a range of scheduler, submission rules, licensing differences
+of systems to be studied. (Stodden, 2009), and other requirements for differ-
+2) Distribution, execution, and monitoring of all the
+ent clusters. Refactoring existing properly working
+jobs implicitly required in 1).
+single-processor ‘laptop-scale’ scripts might also be
+3) Harvesting of all the data produced in 2).
+required, imposing an extra unnecessary development
+4) Analysis of the data collected in 3).
+and source code management burden for the scien-
+5) Iterations of steps (1-4) to run new jobs that may
+tist. Finally merely keeping track of progress on each
+be suggested or required by the results obtained of several different clusters could be distracting and
+in 4).
+confusing. Crucially, computational reproducibility is
+6) Reporting and dissemination of acquired knowl-
+a core requirement of scientific data science, because
+edge.
+the scientific context requires trust in computational
+Additionally, the underlying experiment, to be con-
+findings and safeguards against possible errors. En-
+sidered ambitious, may involve either ambitious scale
+suring that computations done on a cluster can be re-
+in the data, the computations, or both.
+produced at a later time requires additional important
+Asmustnowbeapparent,tooperateatanambitious
+considerations often neglected when manual interven-
+level, it is crucial to automate all these steps and inte-
+tion is involved (Donoho, Maleki, Rahman, Shahram,
+gratethemseamlessly.Unlike50yearsago,automation
+& Stodden, 2009; Stodden, Seiler, & Ma, 2018; Stod-
+ofdatascienceactivitiesisnolongerachoicebutinstead
+den et al., 2016; Berman et al., 2018). Fortunately, the
+a necessity.
+advent of open-source container technologies such as
+In this article, we describe a few examples of soft-
+Docker (Merkel, 2014) and Singularity (G. M. Kurtzer,
+ware stacks that facilitate such automation; we call
+them Experiment Management Systems (EMSs). Exam- 5SeesectionIVforafiner-grainedclassificationofthesesystems.
+ples we discuss include CodaLab Worksheets (Liang et 6https://www.xsede.org/ecosystem/resources
+4
+2017), language-agnostic package managers such as
+Conda(Conda,2012),andcommondataplatformssuch
+as Google’s dataCommons (https://datacommons
+.org) provides a path for facilitating reproducibility
+in ambitious cloud experiments.
+The common vision motivating the development of
+theseveralPCS’swedescribebelowisthatsuchdrain-
+ing and ultimately confusing demands be abstracted
+away. This increase in abstraction ought to encourage Fig. 2. Elasticluster-ClusterJob stack first provisions a personal
+a proliferation of ever more ambitious experiments, cluster in the cloud using ElastiCluster, and then links ClusterJob
+tothisclustertorunambitiousexperimentsinvolvingmanyparallel
+while enabling better clarity of interpretation, better
+jobs.Experimentsaredocumentedreproducibly,andcanberetrieved
+reproducibility, and ultimately better science. at a latertime via ClusterJob interface. This stackis agnostic to the
+choiceofcloudproviderandprogramminglanguage.
+IV. ATaxonomyofServicesforScientificComputing
+intheCloud
+The purpose of the framework layer is to map
+To better describe how computing stacks presented the abstract computation graph onto a format
+in the next section interact with cloud infrastructures, that can be understood by the execution layer.
+we propose a taxonomy of currently available services Examples the framework layer are PyWren (see
+for doing scientific computing in the cloud. The reader (Jonas, Pu, Venkataraman, Stoica, & Recht, 2017)
+should keep in mind that the PCS’s presented in this and Section V-C later in this paper), Apache
+articlearenotnecessarilycloud-based,andcanwellbe Spark (Zaharia, Chowdhury, Franklin, Shenker,
+usedintraditionalon-premisesHPCclusters.Wehow- & Stoica, 2010), TensorFlow (Abadi et al., 2016),
+ever believe that the coupling of these systems with MPI(Walker&Dongarra,1996;Forum,2015),and
+cloud infrastructures results in greater advantages for GC3Pie (Maffioletti & Murri, 2012; Mafioletti &
+scientificresearchbyenablingverylargecomputational Murri, 2012).
+experiments. 3) Interface layer: This layer is the topmost layer in
+In 2011, NIST introduced (Mell & Grance, 2011) a our taxonomy and includes services tailored to a
+widely-accepted classification of services offered by specificsetoftasks,maskingalmostallthedetails
+cloud providers into three layers: of actual computation and storage management.
+• Infrastructure-as-a-Service (IaaS): provisioning of Examples are ClusterJob (Monajemi & Donoho,
+compute, storage, networking or other fundamen- 2015) (see Section V-A), CodaLab (Liang et al.,
+tal computing resources. n.d.) (see Section V-B), and TissueMAPS (an inte-
+• Platform-as-a-Service (PaaS): high-level frameworks grated platform for large-scale microscope image
+and tools to create and run applications on the analysis) (Herrmann, 2017).
+cloud infrastructure;
+• Software-as-a-Service (SaaS): end-user applications, V. PainlessComputingStacks
+whose interface (accessed programmatically or
+In this section, we present several examples of com-
+through a web client) is tailored to specific tasks.
+puting stacks that we consider relatively pain-free for
+Scientific computing services typically fall under
+doing large-scale data science studies in the cloud.
+PaaSorSaaSintheNISTdefinition;wewillintroducea
+In some cases, these systems permit ambitious ex-
+finer-grained classification applicable to scientific com-
+periments that otherwise would be inconceivable to
+puting applications (see Figure II):
+conduct. In some other cases, they - without a doubt
+1) Executionlayer:inourdefinition,thisisthebottom - render experimentation painless, thereby allowing
+layer and includes services that can take and scientists to experiment more. An exact assessment of
+run a user-provided program, possibly together the extent to which experimentation pain is removed
+with some specification of the raw computing when these stacks are used is beyond the scope of the
+resources needed at runtime (e.g., number of currentarticleandrequiresfurtherinvestigation.There
+CPUcores,amountofRAM).Examplesarebatch- howeverisampleanecdotalevidencefromscientistsin
+computing clusters, Hadoop/YARN clusters, con- different disciplines, which shows a substantial degree
+tainer orchestration systems such as Mesos or of ease and efficiency in experimental research where
+Kubernetes, and serverless computing services these tools are exploited.
+such as AWS Lambda and AWS Batch.
+2) Framework layer: This layer sits on top of the
+A. ElastiCluster-ClusterJob Stack
+execution layer and provides users with a way
+to describe computation in a way that is dictated This stack leverages two different components to
+by an abstract computation model - independent conduct massive experiments in the cloud: It first
+of the raw computing resources actually used. provisions services at the execution layer and then
+5
+exploits services at the interface layer to run the actual Using this stack and the cloud computing credits
+compute payload. We are focusing in particular on that were provided to the students of Stats285 through
+ElastiCluster (Murri, Messina, Ba¨r, et al., 2013) to build Google Cloud Education, students were able to setup
+the virtualized batch-queuing clusters, and ClusterJob their own personal GPU clusters in the cloud and
+(Monajemi & Donoho, 2015; Monajemi et al., 2017) collectively train nearly 2000 deep nets with vari-
+to drive the experiments (see Figure V-A); We must ous architectures and datasets in one calendar day to
+however emphasize the generality of this model in the replicate an important and well-cited article (Zhang,
+sensethattheuserscanuseothersoftwaresystemsthat Bengio, Hardt, Recht, & Vinyals, 2016) and discover
+offer similar functionalities. new phenomena in Deep Learning 7. This model has
+On a more abstract level, this stack includes build- also been used extensively during 2018 Stats285 Data
+ing ephemeral clusters as an additional component of Science Hackathon8 to attack challenging problems in
+a computational experiment through adopting a In- politicalscience,medicalimagingandnaturallanguage
+frastructure as Code (IaC) approach to cloud resource processing.Forourownresearch,eachofourmembers
+management.Currently,theuserisresponsibletomake regularlyusethismodelofcomputing.Ourexperience
+acalltoElastiClustertobuildacluster,butinthefuture shows that it takes roughly 15-18 minutes to setup a
+we expect this step to be handled automatically by CPU cluster with less than 10 computational nodes9
+ClusterJob. and 20-23 minutes if GPU accelerators are attached to
+This stack was first proposed and implemented by the nodes (Extra 5 min is due to time it takes to install
+Hatef Monajemi and Riccardo Murri during Stats285 CUDA)10.
+course at Stanford in the Fall of 2017. Below, we will The exact details of this stack are explained thor-
+introduce ElastiCluster and ClusterJob in more detail. oughly in the GitHub companion page of this article
+• ElastiCluster. ElastiCluster is an open-source soft- (Monajemi et al., 2018). The reader is encouraged to
+ware that provides a command line tool and a setup a personal cluster following the guide therein.
+Python API to create, set up and resize compute We will briefly explain the general idea here.
+clustershostedonIaaScloudcomputingplatforms. An individual can spin up a personal HPC cluster
+It uses Ansible (Red Hat, Inc., 2016) as an IaC tool (say gce) by providing a simple configuration file to
+togetacomputeclusterupandrunninginapush- ElastiCluster and typing the following command in a
+button way on multiple cloud platforms, such as terminal:
+AWS, Google Cloud, Microsoft Azure and Open-
+Stack. It offers computational clusters with vari-
+$ elasticluster start gce
+ous base operating systems (e.g., Debian, Ubuntu,
+CentOS) and job schedulers (e.g., SLURM, SGE,
+Torque, HTCondor and Mesos). It also supports here elasticluster is simply a 0-install bash script
+Spark/Hadoop clusters and several distributed file that is provided to the user. This script uses a docker-
+systems such as CephFS, GlusterFS, HDFS and izedversionofElastiClustertoexecuteyourcommand;
+OrangeFS/PVFS. it pulls ElastiCluster’s docker image from DockerHub,
+• ClusterJob(CJ).ClusterJobisanopen-sourceEMS and then runs elasticluster in a docker container. If
+that makes doing massive reproducible compu- Docker is not installed on your machine, the script
+tational experiments on remote compute clusters asks for your permission to automatically install it.
+a push-button affair. CJ is written in Perl and ElastiCluster’s 0-install script thus brings additional
+currentlysupportsbatchsubmissionofPythonand convenience to the user by eliminating the need for
+Matlab jobs to compute clusters via SLURM and the installation of ElastiCluster’s API and various de-
+SGE batch-queuing systems. For embarrassingly pendencies.
+paralleltasks,CJoffersautomaticparallelizationof Once gce cluster is setup, you can run your exper-
+scripts that are written serially. In addition, CJ au- iments on it using CJ. All that is needed from your
+tomates reproducibility by generating and saving cluster to link it to CJ is the IP address of the frontend
+random seeds for each experiment, list of depen-
+denciesandextracodetoensuretheresultscanbe 7TheresultsanddiscoveriesmadeinStats285collaborativestudy
+reproducedatalatertime.Givenamainscriptand on Deep Learning are expected to be compiled into a peer-review
+article.
+itsdependencies,CJproducesareproduciblecom-
+8Seecoursewebsitehttp://stats285.github.io
+putationalpackagewithdistinctPackageIDentifier 9ElastiClustercurrentlysetsupnodesinbatchesof10atatime.So,
+(PID) (a SHA-1 code), automatically sets up the foraclusterwithNnodethesetuptimeisroughly(1+(cid:98)(N−1)/10(cid:99))×T
+execution environment and submits the jobs to a
+whereTisthesetuptimeforonebatch(T≈20min).
+10Thetimeittakestosetupaclusterinthecloudcanvaryslightly
+remote cluster. Having the PID, one can track the duetovariousfactorssuchastheproximityandnetworktrafficofthe
+progress of the runs, harvest the data, and get cloud provider’s data center, responsiveness of the cloud provider
+other information about the experiments at any API (e.g. starting a VM on Azure is much more complex than on
+Google),thebootprocessofthechosenoperatingsystem(e.g.,Debian
+time using various commands provided by CJ’s
+is faster to boot than Ubuntu), the number and speed of CPUs on
+command line interface. thelocalmachine,etc.
+6
+(master)node,whichcanbeobtainedviathefollowing
+command:
+$ elasticluster list-nodes gce
+To use CJ, one has to install it on a local machine. CJ
+is written entirely in Perl and features a very straight-
+forward installation guide that is provided in the com-
+panionpageofthisarticle(Monajemietal.,2018).Once
+CJisavailableonyourmachine,youcanconfigureyour
+cluster via either of the following commands:
+$ cj config gce --update
+$ cj config-update gce
+Fig.3. ExecutioninCodaLabWorksheetsproceedsbytakingaset
+of input bundles (immutable files/directories representing code or
+This command prompts the user to setup the data), running arbitrary code in a docker container, and producing
+new gce cluster by providing the IP address and anoutputbundle,whichcanbeusedfurtherdownstream.
+other optional configuration options such as the de-
+sired runtime libraries11. The information provided
+Theresultsobtainedmaythensuggestdesigningand
+by the user will be saved in CJ’s configuration file
+runningnewexperiments,whichcanbeeasilyhandled
+˜/CJinstall/ssh_config.Forclustersthatalready
+through CJ. Once all necessary data are collected and
+exist in this configuration file, a user can update only
+the experimenter is satisfied with the current round of
+the corresponding IP address to avoid altering an
+experiments, the personal cluster is no longer needed
+earlier specification of optional parameters each time
+and so it can be destroyed:
+a new machine is created.
+$ elasticluster stop gce
+$ cj config-update gce host=35.185.238.124
+The information about the computations conducted
+After this step, running MCEs on gce is a push-
+through CJ is logged and can be retrieved at a later
+button affair. As a simple example, consider a Deep
+time.CJprovidesaverysimplecommand-lineinterface
+Learning experiment (written in PyTorch or Tensor-
+(CLI)withmanyfeaturesformanagingdatascienceex-
+flow) that involves training 50 networks for a grid of
+periments.ThereaderisreferredtoCJ’sdocumentation
+10 architectures and 5 datasets. The experimenter first available on www.clusterjob.org for a comprehen-
+implements a main Python script DLexperiment.py
+sive list of features. It should be emphasized that both
+thatloopsoverall50(architecture,dataset)combinations
+ElastiCluster and ClusterJob are open-source software
+and executes a certain task for each. She then includes
+underactivedevelopmentandthereaderisencouraged
+all additional dependencies including datasets in a
+to follow their future enhancements on GitHub.
+directory-saybin/12.ThefollowingCJcommandthen
+automatically parallelize for loops inside the main
+Python script, creates 50 different separate jobs for all B. CodaLab Worksheets
+the combinations and reproducibly runs them on gce CodaLabWorksheets(Liangetal.,n.d.)offeranEMS
+while assigning 1 GPU to each job. developed by a team at Stanford University led by
+Percy Liang and supported by Microsoft. CodaLab’s
+$ cj parrun DLexperiment.py gce -dep bin/
+premise is that in order to accelerate computational
+-alloc ’--gres:gpu:1’ -m ’reminder message’
+research, we need to make it more reproducible. Just
+Once the computations associated with certain <PID> as version control systems like Git have enabled de-
+arefinished,theexperimentercanharvesttheresultsof velopers to scale up software engineering, CodaLab
+all jobs and transfer them to a local machine through hopes to do the same for computational experiments.
+various available harvesting commands. As an exam- CodaLab allows users to upload code, data, and run
+ple, below we reduce all the results.txt files of all cloud experiments. CodaLab automatically keeps track
+jobs into one file and transfer the package to the local ofthefullprovenanceofcomputation,sothatitiseasy
+machine: to introspect, reproduce, and modify existing experi-
+ments.
+$ cj reduce results.txt <PID>
+CodaLab is built around two concepts13: bundles and
+$ cj get <PID>
+worksheets. Bundles are immutable files/directories that
+representthecode,data,andresultsofanexperimental
+11CJ uses conda package manager https://conda.io/docs/ pipeline. There are two ways to create bundles. First,
+to automatically setup software environment according to libraries
+determinedinsshconfigfile. users can upload bundles, which are datasets in any
+12ItisalsopossibletodirectCJtousedatasetsalreadyonacluster,
+hencenotmovingdatafromlocalmachinetoremoteclusterifdata 13Formoreinformation,visithttps://github.com/codalab/
+willbeusedformorethanoneexperiment. codalab-worksheets/wiki.
+7
+format or programs in any programming language. current directory, which are saved as the contents of
+Second, users can create run bundles by executing shell the run bundle once the bundle finishes executing.
+commands that depend on the contents of previous The CodaLab execution model is based on dataflow,
+bundles. A run bundle is specified by a set of bundle in which bundles represent information processed in
+dependencies and an arbitrary shell command. This a pipeline. In particular, bundles are immutable, so
+shell command is executed in a docker container in eachcommandproducesanewrunbundleratherthan
+a directory with the dependencies. The contents of the modifying an existing bundle. Note that the Docker
+runbundlearethefiles/directorieswhicharewrittento environment is only used temporarily to run the com-
+the current directory by the shell command (Figure 3). mand; only the outputs of the run are saved. This im-
+In the end, the global dependency graph over bundles mutabilitystandsincontrasttootherexecutionmodels
+precisely captures the research process of the entire where one might have an entire virtual machine at
+community in an immutable way. one’s disposal or in the case of Jupyter notebook, the
+Worksheets organize and present an experimental entire Python kernel. The dataflow model of CodaLab
+pipeline in a comprehensible way, and can be used isimportantforintrospectionanddecentralizedcollab-
+as a lab notebook, a tutorial, or an executable paper. oration:onecanseeexactlythechainofcommandsthat
+Worksheets contain references to a subset of bundles were run, and another researcher can build off of an
+and can be thought of as a view on the bundle existing result by simply running more commmands
+graph. Worksheets are written in a custom markdown on it without a danger of overriding anything.
+language, and in the spirit of literate programming, One of the most powerful features in CodaLab is
+allow one to interleave textual descriptions, images, calledmimic,whichisenabledbyhavingthedataflow
+and bundles, which can be rendered as tables with model of computation. In brief, mimic allows you
+various statistics. to rerun a computation with modifications. The basic
+The CodaLab server takes execution requests and usage is as follows:
+assigns jobs to workers. The user can view the results
+$ cl mimic A B
+(stdout and any files) in real-time and also communi-
+cate with the running process via ports. One unique This command examines all the bundles downstream
+property about CodaLab is that users can also connect of A, and re-executes them all, but now with B instead.
+their own computing resources (from one’s laptop to Forexample,AcouldbetheolddatasetandBcouldbe
+one’s local compute cluster to AWS Batch) to the Co- the new dataset, or A could be the old algorithm and
+daLab server, allowing for more decentralization and B could be the new algorithm. In principle, whenever
+larger potential for scaling up organically. someone creates a new method, she should be able to
+A CodaLab user can either use the public instance painlessly execute it on all existing datasets as long as
+(worksheets.codalab.org) or setup a custom in- the new method conforms to a standard interface.
+stance (e.g., for a research lab). CodaLab can be used One of the two main uses of CodaLab Worksheets is
+either from a web interface or from a command-line in running the Stanford Question Answering Dataset
+interface (CLI), which provides experts with more pro- (SQuAD) competition (stanford-qa.com). In this
+grammatic control. The CLI is easily installed from competition, researchers have to develop a system that
+PyPI: can answer factual questions on Wikipedia articles.
+Over the last two years, over 70 teams have submitted
+$ pip install codalab
+solutions to the highly competitive leaderboard. Each
+This provides the command cl, which is the main team runs their models on the development set, which
+entry point to CodaLab functionality. is public; this allows teams to independently configure
+To upload a bundle (either source code or data): their own environment and manage their own depen-
+dencies. Once the team is ready, they submit their
+$ cl upload cnn.py
+$ cl upload mnist system, which is actually the bundle corresponding
+to the result on the development set. The SQuAD
+Recall that bundles can either be files or directories. organizers use cl mimic to re-run the experiment on
+To execute an experiment, one must specify the input the hidden test set instead. Here, we see that CodaLab
+bundles (in this case, two of them) and a command to providesbothflexibilityandstandardization.Asacase
+be run, producing a run bundle: study, in the past two years, one of the homeworks
+in the Stanford Natural Language Processing class has
+$ cl run :cnn.py data:mnist \
+’python cnn.py data/train.dat data/test.dat’ beentodevelopamodelforSQuAD.In2017,162teams
+from the class participated using the public instance of
+For each input bundle, one specifies a name (e.g., CodaLab, which was able to scale up and handle the
+data). The execution of the command takes place in load.
+aDockerimagewheretheinputbundlesarepresented The other main use case of CodaLab is to help
+asfiles/directorieswiththegivennamesinatemporary people run and manage many experiments at once.
+directory. The command outputs additional files in the Thishappensatseverallevels:First,CodaLabisbacked
+8
+by a cluster, so that the user needs to only focus on thousands of CPU cores, run the resulting parallel task
+what experiments to run rather than where to run transparently, and then shut down those machines.
+them (although the user can specify resource require- Serverless computing (a.k.a. Function as a Service
+ments). Second, the dataflow model means that for (FaaS)) is a fairly new cloud execution model in which
+every experiment, which version of the code and data the cloud provider removes much of the complexity
+used to produce that experiment is fully documented; of the cloud usage by abstracting away server provi-
+as a result, one will never find oneself in a situation sioning (Miller, 2015). In this model, a function and its
+withapositiveresultthatisnotreproducibleanymore. dependencies are sent to a remote server that is man-
+Third, the worksheets in CodaLab offer a flexible way aged by the cloud provider and then executed. AWS
+of monitoring and visualizing runs. One can define a Lambda,GoogleCloudFunctionsandAzureFunctions
+table schema, which specifies the custom fields to dis- are amongst popular serverless compute offerings.
+play(e.g.,accuracymetrics,resourceutilization,dataset Current serverless computing services are suitable
+size); a run is a row in this table. This allows one to for short-lived jobs with small storage and memory
+easily compare the metrics on many variants of the requirements because of the limits set by the cloud
+same algorithm, leading to faster prototyping. providers (See Table II). This is because serverless
+In summary, CodaLab provides a collaborative plat- computing is originally designed to execute event-
+formthatallowsresearcherstocontributetooneglobal driven,statelessfunctions(code)inresponsetotriggers
+ecosystem by uploading code, data, and other assets, such as actions by users, or changes in data or system
+runningexperimentstogenerateotherassets(bundles), state. Nevertheless, serverless computing provides an
+etc. CodaLab keeps the full provenance and provides efficient model for applications such as processing and
+full transparency (though one can opt to keep some transforming large amount of data, encoding videos,
+bundles private if necessary). CodaLab starts as a and applications such as simulations and Monte Carlo
+mechanismforenablingresearcherstobemoreefficient methodwithlargeinnateamountsofparallelism(Jonas
+atrunningexperiments,andalsoservesasapublishing et al., 2017; Ishakian, Muthusamy, & Slominski, 2018).
+platform for published research or competitions. Hav- PyWren can easily be installed via PyPI and follow-
+ing a common substrate that supports these use cases ing a number of setup prompts which involve pro-
+opens up the opportunity to bring development and viding credentials for authentication to the underlying
+publication closer together. cloud computing provider:
+$ pip install pywren
+$ pywren-setup
+C. PyWren’s serverless execution model
+Many scientific computing tasks exhibit a significant Asanexample,considerthefollowingMatVecfunc-
+degree of innate parallelism, which if properly ex- tion that performs the relatively trivial task of generat-
+ploited can dramatically accelerate computational sci- ing a random matrix and vector from a N(0,b) distri-
+ence.TheserangefromclassicMonteCarlomethods,to butionandcomputingtheirmatrix-vectorproduct,and
+the optimization of hyperparameters, to featurization returning the result.
+and preprocessing of large input volumes of data. In
+many of these cases, large amounts of code are written def MatVec(b):
+aprioriforoneinstanceofsuchtaskswithoutregardto x = np.random.normal(0, b, 1024)
+potential parallel or distributed execution. Indeed, it is A = np.random.normal(0, b, (1024, 1024))
+return np.dot(A, x)
+only at the end (i.e., the outer per-instance processing
+loop) that parallelism is even apparent. The code writ-
+Using PyWren’s map command, one can painlessly
+ten in this way is called embarrassingly parallel because
+invoke 1,000 distinct instances of this function to be
+it is trivial to execute in parallel; each operation does
+executed transparently in the cloud:
+notdependontheresultofanyother.Ifthecomputing
+resourcesavailableweretrulyinfinite,thetotalruntime
+pwex = pywren.default_executor()
+fortheseoperationswouldbeboundedbytheduration
+res = pwex.map(MatVec,
+oftheslowestsinglescalarpiece.Runningasingletask np.linspace(0.1, 100, 1000))
+and running 10,000 tasks would take the same amount
+of time. Behind the scenes, PyWren exploits Python’s dy-
+PyWren (Jonas et al., 2017) is a system developed namic nature to inspect all dependencies required by
+to enable this kind of massively-parallel, transparent thefunction,andmarshalsasmanyofthoseaspossible
+execution. PyWren is built in the Python program- over to the remote executor. The resulting function is
+ming language, and exploits the language’s inherent run on the remote machine, and the return value is
+dynamism to transparently identify dependencies and serialized and delivered to the client.
+relatedlibrariesandmarshalthemtoremoteserversfor Thedynamic,language-embeddednatureofPyWren
+execution. It uses recent serverless platforms offered by makesitidealforexploratorydataanalysisfromwithin
+cloudproviderstoquicklycommandcontrolsoftensof a Jupyter notebook or similar interactive environment.
+9
+TABLEII
+Serverlesscomputingresourcelimitsperinvocation
+AWSLambda1 GoogleCloudFunctions AzureFunctions
+Deployment(MB) 50 100 N/A
+Memory(GB) 3.0 2.0 1.5
+EphemeralDisk(GB) 0.5 2.0−Mem2 5000
+Max.runtime(sec) 300 540 600
+1https://docs.aws.amazon.com/lambda/latest/dg/limits.html
+2Diskspaceconsumesfromthememorylimit.
+PyWren is currently limited to exploiting map-style captureanddocumentthenumerousiterativeattempts
+parallelism, although active research is underway to that get tried in typical ambitious research.
+broaden the capabilities of the serverless execution We look forward to a future where every researcher
+model.Thefunctionserializationtechnologyisnotper- can dream up ambitious computational experiments,
+fect–currentlyitstruggleswithPythonmoduleswhich openuphis/herlaptop,andcommandacomputational
+haveembeddedCcode,requiringthemtobepackaged agent to fire up millions of jobs to study a certain
+independentlyaspartofaruntime.Thistooisanactive problem of interest. A future where instead of manual
+area of research. Finally, the limitations provided by human intervention, computational agents seamlessly
+thecloudproviders’serverlessexecutionenvironments run jobs in the cloud, manage their progress, harvest
+(including runtime and memory) constrain the exact the results of the experiments, run specified analyses
+functionsthatcanberun,althoughweanticipatethese on those results and package them in a unified format
+constraints lessening with time. that is transparent, reproducible and easily sharable.
+Such automation of research activities will, we believe,
+empower data scientists to deliver many more break-
+D. Third-Party Unified Analytics Interfaces
+throughs and will accelerate scientific progress.
+Severalcompaniesprovidepaidservicesforpainless
+computing in some third-party cloud; researchers may VII. ListofAbbreviations
+choose to use their services for conducting their ambi- AWS Amazon Web Services
+tious experiments. A few examples of such companies CJ ClusterJob
+are Databricks (Databricks, 2013), Domino Data Lab EMS Experiment Management System
+(Domino Data Lab, 2013), FloydHub (FloydHub, 2016) GCP Google Cloud Platform
+and Civis Analytics (Civis Analytics, 2013). Each of HPC High Performance Computing
+these companies have a slightly different focus (e.g, IaaS Infrastructure as a Service
+DatabricksfocusesonSparkapplicationswhereasFloy- IaC Infrastructure as Code
+dHub focuses on Deep Learning) and may use a dif- MCE Massive Computational Experiment
+ferent computing model for managing computations NMT Neural Machine Translation
+in the cloud. Nevertheless, all of them build wrappers PaaS Platform as a Service
+around the cloud so that individual users can conduct PCS Painless Computing Stack
+theirMCEswithouthavingtodirectlyinteractwiththe SaaS Software as a Service
+cloud. They provide graphical user interfaces through SLURM Simple Linux Utility for Resource
+which users can setup their desired computational
+Management
+environment, upload their data and codes, run their
+experiments and track their progress. They also offer a
+community edition of their services that can be used VIII. Acknowledgements
+for initial testing before buying their computing and
+This work was supported by National Science Foun-
+storage services.
+dation grants DMS-0906812 (American Reinvestment
+and Recovery Act), DMS-1418362 (‘Big-Data’ Asymp-
+VI. ConcludingRemarks totics: Theory and Large-Scale Experiments) and DMS-
+1407813 (Estimation and Testing in Low Rank Multi-
+We have presented several computing stacks that
+variateModels).WethankGoogleCloudEducationfor
+can be used to dramatically scale up computational
+providingStanford’sStats285classwithcloudcomput-
+experiments, painlessly. Such stacks constitute what
+ing credits. We would like to thank Eun Seo Jo for
+we have called experiment management systems, a
+helpful discussions.
+fundamental concept in modern data science research.
+Theyofferefficiencyandclarityofmindtoresearchers,
+References
+by organizing the specification and execution of large
+collections of experiments, removing the apparent bar- Abadi, M., Barham, P., Chen, J., Chen, Z., Davis, A.,
+riers to using the cloud. In addition they painlessly Dean, J., ... others (2016). Tensorflow: a system
+10
+for large-scale machine learning. In Osdi (Vol. 16, Ishakian, V., Muthusamy, V., & Slominski, A. (2018).
+pp. 265–283). Servingdeeplearningmodelsinaserverlessplat-
+Berman, F., Rutenbar, R., Hailpern, B., Christensen, form.
+H., Davidson, S., Estrin, D., ... Szalay, A. S. (arXiv:1710.08460)
+(2018, March). Realizing the potential of data Izrailevsky, Y. (2016). Completing the netflix
+science. Commun. ACM, 61(4), 67–72. Re- cloud migration. Retrieved from https://
+trievedfromhttp://doi.acm.org/10.1145/ techcrunch.com/2015/11/24/aws-lamda
+3188721 doi: 10.1145/3188721 -makes-serverless-applications-a
+Brunton, S. L., Proctor, J. L., & Kutz, J. N. -reality/
+(2016). Discovering governing equations from Jonas, E., Pu, Q., Venkataraman, S., Stoica, I., & Recht,
+data by sparse identification of nonlinear dy- B. (2017). Occupythecloud:Distributedcomput-
+namical systems. Proceedings of the National ing for the 99%.
+AcademyofSciences,113(15),3932–3937. Retrieved (arXiv:1702.04024)
+from http://www.pnas.org/content/113/ Krizhevsky, A., Sutskever, I., & Hinton, G. E. (2012).
+15/3932 doi: 10.1073/pnas.1517384113 Imagenet classification with deep convolutional
+Civis Analytics. (2013). Retrieved from https://new neuralnetworks. InAdvancesinneuralinformation
+.civisanalytics.com processing systems.
+Conda. (2012). Retrieved from https://conda.io/ Lewis-Kraus, G. (2016). The great A.I. awakening.
+docs/ Retrieved from https://www.nytimes.com/
+Databricks. (2013). Retrieved from https:// 2016/12/14/magazine/the-great-ai
+databricks.com -awakening.html
+Domino Data Lab. (2013). Retrieved from https:// Liang, P., et al. (n.d.). Codalab worksheets: Accelerating
+www.dominodatalab.com reproducible computational research. Retrieved from
+Donoho, D. L. (2017). 50 years of data science. Jour- http://worksheets.codalab.org
+nal of Computational and Graphical Statistics, 26(4), Maffioletti, S., & Murri, R. (2012). GC3PIE: a python
+745-766. Retrieved from https://doi.org/ framework for high-throughput computing. In
+10.1080/10618600.2017.1384734 doi: 10 Egi community forum 2012/emi second technical con-
+.1080/10618600.2017.1384734 ference (Vol. 162, p. 143).
+Donoho, D. L., Maleki, A., Rahman, I. U., Shahram, Mafioletti, S., & Murri, R. (2012). Computational
+M., & Stodden, V. (2009). Reproducible research workflows with GC3Pie. In Egi community fo-
+in computational harmonic analysis. Computing rum 2012/emi second technical conference (Vol. 162,
+in Science & Engineering, 11(1), 8–18. p. 063).
+Enabling access to cloud computing resources for CISE Mell, P., & Grance, T. (2011). The NIST
+research and education (cloud access). (2018). Definition of Cloud Computing. Retrieved from
+Retrieved from https://www.nsf.gov/pubs/ https://csrc.nist.gov/publications/
+2019/nsf19510/nsf19510.htm (NSF19-510) detail/sp/800-145/final doi:
+FloydHub. (2016). Retrieved from https://www 10.6028/NIST.SP.800-145
+.floydhub.com Merkel, D. (2014, March). Docker: Lightweight
+Forum, M. (2015). MPI: A Message-Passing linux containers for consistent development
+Interface Standard, Version 3.1. Retrieved and deployment. Linux J., 2014(239). Re-
+from https://www.mpi-forum.org/docs/ trieved from http://dl.acm.org/citation
+mpi-3.1/mpi31-report.pdf .cfm?id=2600239.2600241
+G. M. Kurtzer, M. B., V. Sochat. (2017). Microsoft Translator. (2016). Microsoft translator
+launching neural network based translations
+Herrmann, M. D. (2017). Computational Methods and for all its speech languages. Retrieved from
+ToolsforReproducibleandScalableBioimageAnalysis https://blogs.msdn.microsoft.com/
+(Unpublished doctoral dissertation). Universitt translation/2016/11/15/microsoft
+Zrich. -translator-launching-neural-network
+Hey, T., Tansley, S., & Tolle, K. (2009). The fourth -based-translations-for-all-its
+paradigm: Data-intensive scientific discovery. -speech-languages/
+Microsoft Research. Retrieved from https:// Miller, R. (2015). AWS Lambda makes serverless
+www.microsoft.com/en-us/research/ applications a reality. Retrieved from
+publication/fourth-paradigm-data https://techcrunch.com/2015/11/
+-intensive-scientific-discovery/ 24/aws-lamda-makes-serverless
+Huang, P., Feldmeier, K., Parmeggiani, F., Fernandez- -applications-a-reality/
+Velasco, D. A., Ho¨cker, B., & Baker, D. (2015). De Monajemi, H., & Donoho, D. L. (2015). Clusterjob: An
+novo design of a four-fold symmetric TIM-barrel automated system for painless and reproducible
+protein with atomic-level accuracy. , 12, 29-34. massive computational experiments. Retrieved
+11
+from https://github.com/monajemi/ analysisofjournalpolicyeffectivenessforcompu-
+clusterjob tational reproducibility. Proceedings of the National
+Monajemi,H.,&Donoho,D.L. (2018). Sparsity/under- AcademyofSciences,115(11),2584–2589. Retrieved
+samplingtradeoffs inanisotropicundersampling, from http://www.pnas.org/content/115/
+with applications in mr imaging/spectroscopy. 11/2584 doi: 10.1073/pnas.1708290115
+Information and Inference: A Journal of the IMA, Tukey, J. W. (1962, 03). The future of data analysis.
+iay013. Retrieved from http://dx.doi.org/ Ann. Math. Statist., 33(1), 1–67. Retrieved
+10.1093/imaiai/iay013 doi: 10.1093/imaiai/ from https://doi.org/10.1214/aoms/
+iay013 1177704711 doi: 10.1214/aoms/1177704711
+Monajemi, H., Donoho, D. L., & Stodden, V. (2017, Walker,D.W.,&Dongarra,J.J. (1996). Mpi:Astandard
+February). Makingmassivecomputationalexper- message passing interface. Supercomputer, 12, 56–
+iments painless. Big Data (Big Data), 2016 IEEE 68.
+International Conference on. Waltz, D., & Buchanan, B. G. (2009). Au-
+Monajemi, H., Jafarpour, S., Gavish, M., Collaboration, tomating science. Science, 324(5923), 43–44.
+S. C. ., & Donoho, D. L. (2013). Deterministic Retrieved from http://science.sciencemag
+matrices matching the compressed sensing .org/content/324/5923/43 doi: 10.1126/
+phase transitions of Gaussian random matrices. science.1172781
+PNAS, 110(4), 1181-1186. Retrieved from Yarkoni, T., & Westfall, J. (2017, Nov). Choosing pre-
+http://www.pnas.org/content/110/4/ diction over explanation in psychology: Lessons
+1181.abstract doi: 10.1073/pnas.1219540110 from machine learning. Perspect Psychol Sci, 12,
+Monajemi, H., et al. (2018). Companion page for the 1100-1122.
+paper painless computing models for ambitious Zaharia, M., Chowdhury, M., Franklin, M. J., Shenker,
+data science. Retrieved from https:// S., & Stoica, I. (2010). Spark: Cluster computing
+monajemi.github.io/datascience/ with working sets. HotCloud, 10(10-10), 95.
+pages/painless-computing-models Zhang, C., Bengio, S., Hardt, M., Recht, B., & Vinyals,
+Murri, R., Messina, A., Ba¨r, N., et al. (2013). Elasti- O. (2016). Understanding deep learning requires
+Cluster. Retrievedfromhttps://github.com/ rethinking generalization.
+gc3-uzh-ch/elasticluster (arXiv:1611.03530)
+NIH strategic plan for data science. (2018,
+Sept). NIH, 1-31. Retrieved from
+https://datascience.nih.gov/sites/
+default/files/NIH Strategic Plan for
+Data Science Final 508.pdf
+OpenAI. (2018). AI and Compute. Retrieved
+from https://blog.openai.com/
+ai-and-compute/
+Red Hat, Inc. (2016). Ansible is simple IT automation.
+Retrieved from https://www.ansible.com/
+The science and technology research infrastructure for dis-
+covery, experimentation, and sustainability (strides)
+initiative. (2018). Retrieved from https://
+commonfund.nih.gov/strides (NIH)
+Simonyan, K., & Zisserman, A. (2014). Very deep con-
+volutional networks for large-scale image recog-
+nition.
+(arxiv:1409.1556)
+Stodden, V. (2009). The legal framework for repro-
+ducible scientific research: Licensing and copy-
+right. Computing in Science Engineering, 11(1), 35-
+40. doi: 10.1109/MCSE.2009.19
+Stodden, V., McNutt, M., Bailey, D. H., Deelman, E.,
+Gil, Y., Hanson, B., ... Taufer, M. (2016). En-
+hancing reproducibility for computational meth-
+ods. Science, 354(6317), 1240–1241. Re-
+trieved from http://science.sciencemag
+.org/content/354/6317/1240 doi: 10.1126/
+science.aah6168
+Stodden, V., Seiler, J., & Ma, Z. (2018). An empirical
+12

@@ -1,0 +1,2437 @@
+Byzantine-Resilient High-Dimensional Federated Learning
+Deepesh Data and Suhas Diggavi
+University of California, Los Angeles
+Email: {deepesh.data@gmail.com, suhas@ee.ucla.edu}
+Abstract
+Westudystochasticgradientdescent(SGD)withlocaliterationsinthepresenceofmalicious/Byzantine
+clients, motivated by the federated learning. The clients, instead of communicating with the central
+serverineveryiteration,maintaintheirlocalmodels,whichtheyupdatebytakingseveralSGDiterations
+based on their own datasets and then communicate the net update with the server, thereby achieving
+communication-efficiency. Furthermore, only a subset of clients communicate with the server, and this
+subset may be different at different synchronization times. The Byzantine clients may collaborate and
+send arbitrary vectors to the server to disrupt the learning process. To combat the adversary, we employ
+an efficient high-dimensional robust mean estimation algorithm from Steinhardt et al. [SCV18, ITCS
+2018] at the server to filter-out corrupt vectors; and to analyze the outlier-filtering procedure, we develop
+a novel matrix concentration result that may be of independent interest.
+We provide convergence analyses for strongly-convex and non-convex smooth objectives in the
+heterogeneous data setting, where different clients may have different local datasets, and we do not make
+any probabilistic assumptions on data generation. We believe that ours is the first Byzantine-resilient
+algorithmandanalysiswithlocaliterations. Wederiveourconvergenceresultsunderminimalassumptions
+of bounded variance for SGD and bounded gradient dissimilarity (which captures heterogeneity among
+local datasets). We also extend our results to the case when clients compute full-batch gradients.
+1 Introduction
+In the federated learning (FL) paradigm [Kon17,KMRR16,MMR+17,MSS19], several clients (e.g., mobiles
+devices, organizations, etc.) collaboratively learn a machine learning model, where the training process is
+facilitated by the data held by the participating clients (without data centralization) and is coordinated
+by a central server (e.g., the service provider). Due to its many advantages over the traditional centralized
+learning [DCM+12] (e.g., training a machine learning model without collecting the clients’ data, which, in
+additiontoreducingthecommunicationloadonthenetwork,providesabasiclevelofprivacytoclients’data),
+FL has emerged as an active area of research recently; see [K+19] for a detailed survey. Stochastic gradient
+descent (SGD) has become a de facto standard in optimization for training machine learning models at such
+a large scale [Bot10,MMR+17,K+19], where clients iteratively communicate the gradient updates with the
+central server, which aggregates the gradients, updates the learning model, and sends the aggregated gradient
+back to the clients. The promise of FL comes with its own set of challenges [K+19]: (i) optimizing with
+heterogeneous data at different clients, who may have different local datasets, which may be “non-i.i.d.”, i.e.,
+can be thought of as being generated from different underlying distributions; (ii) slow and unreliable network
+connections between the server and the clients, so communication in every iteration may not be feasible; (iii)
+availability of only a subset of clients for training at a given time (maybe due to low connectivity, as clients
+may be located in different geographic locations); and (iv) robustness against the malicious/Byzantine clients
+who may send incorrect gradient updates to the central server to disrupt the training process. In this paper,
+we propose and analyze a single SGD algorithm that addresses all these challenges together. First we setup
+the problem, put our work in context with the related work, and then summarize our contributions.
+We consider an empirical risk minimization problem, where data is stored at R clients, each having
+a different dataset (with no probabilistic assumption on data generation); client r ∈ [R] has dataset D .
+r
+1
+0202
+guA
+61
+]LM.tats[
+2v14031.6002:viXra
+Let F : Rd → R denote the local loss function associated with the dataset D , which is defined as
+r r
+F (x)(cid:44)E [F (x)], where n =|D |, i is uniformly distributed over [n ](cid:44){1,2,...,n }, and F (x)
+r i∈U[nr] r,i r r r r r,i
+is the loss associated with the i’th data point at client r with respect to (w.r.t.) x. Our goal is to solve the
+following minimization problem:
+R
+(cid:16) 1 (cid:88) (cid:17)
+arg min F(x)(cid:44) E [F (x)] . (1)
+x∈Rd R i∈U[nr] r,i
+r=1
+Let x∗ ∈ argmin F(x) denote a minimizer of the global loss function F(x). In absence of the above-
+x∈Rd
+mentioned FL challenges, we can minimize (1) using distributed vanilla SGD, where in any iteration, server
+broadcasts the current model parameters to all the clients, each of them then computes a stochastic gradient
+from its local dataset and sends it back to the server, who aggregates the received gradients and updates the
+global model parameters. However, this simple solution does not satisfy the FL challenges, as every client
+communicates with the server (i.e., no sampling of clients) in every SGD iteration (i.e., no local iterations),
+and furthermore, this solution breaks down even with a single malicious client [BMGS17].
+1.1 Related Work
+Recentworkhasproposedvariantsoftheabove-describedvanillaSGDthataddresssomeoftheFLchallenges.
+The algorithms in [HKMC19,HM19,KKM+19,KMR19,LHY+20,SLS+20,YYZ19,BDKD19] work under
+different heterogeneity assumptions but do not provide any robustness to malicious clients. On the other
+hand, [CSX17,BMGS17,YCRB18,AAL18,SX19,XKG19b,YCRB19] provide robustness, but with no local
+iterations or sampling of clients; furthermore, they assume homogeneous (either same or i.i.d.) data across all
+clients. Adifferentlineofwork[CWCP18,RWCP19,DSD19b,DD19,DSD19a,LXC+19,GHYR19,DD20,HKJ20]
+provides robustness with heterogeneous data, but without local iterations or sampling of clients, which we
+briefly explain in the following. [CWCP18,RWCP19,DSD19b,DD19,DSD19a] use coding across datasets,
+which is hard to implement in FL. [LXC+19] changes the objective function and adds a regularizer term to
+combat the adversary. [GHYR19] effectively reduces the heterogeneous problem to a homogeneous problem
+by clustering, and then learning happens within each cluster having homogeneous data. [HKJ20] proposed a
+resampling technique that effectively adapts existing robust algorithms (which might have been designed
+to work with homogeneous – identical or i.i.d. – datasets) to work with heterogeneous datasets. Note
+that [HKJ20] provides convergence guarantees of their resampling techniques applied to only Krum, which is
+the robust aggregation rule from [BMGS17].
+[DD20] is the closest related work to ours, in the sense that they also proposed an SGD algorithm on
+heterogeneous data that uses robust mean estimation subroutines to filter out corrupt gradients and analyzed
+itunderthesameminimalassumptionsasours. Wewanttoemphasizethat[DD20]doesnotincorporatelocal
+iterations and sampling of clients in their algorithm and analyses, which makes our analyses fundamentally
+different from theirs. We had to develop new tools (a matrix concentration inequality) to analyze our
+algorithm, andalsotheconvergenceanalysesinourpaperareverydifferentfromthoseinliterature, including
+that in [DD20]. Our analyses differ from those of local SGD without adversaries, as (apart from differing in
+other technical details) our method requires establishing two separate recurrences, one at synchronization
+indices and the other one for the rest of the indices. Our analyses also differ from those of SGD without
+local iterations and without adversaries, as local SGD causes drift in the local parameter vectors at clients in
+between any two synchronization indices – this drift occurs even when all clients have identical data. Note
+that bounding this drift is necessary for convergence but is non-trivial with heterogeneous data and without
+having strong assumptions. Our matrix concentration result and its analysis is also very different from that
+of [DD20], as we need to prove it in the presence of local iterations.
+We believe that ours is the first work that combines local iterations with Byzantine-resilience for SGD.1
+Not only that, we also analyze our algorithm on heterogeneous data and allow sampling of clients. Note that,
+1Atthecompletionofourwork,wefoundthat[XKG19a]alsoanalyzedSGDintheFLsetting,butwiththefollowingmajor
+differences: Notonlydotheymakeboundedgradientassumption,theapproximationerror(evenintheByzantine-freesetting)
+oftheirsolutioncouldbeaslargeasO(D2+G2),whereGisthegradientboundandD isthediameteroftheparameterspace
+2
+apartfromthenotableexceptionof[DD20],theearlierworkthatprovidesrobustness(withoutlocaliterations
+or sampling of clients) either assume homogeneous data across clients [CSX17,BMGS17,YCRB18,AAL18,
+SX19,YCRB19] or require strong assumptions, such as the bounded gradient assumption on local functions
+(i.e., (cid:107)∇F (x)(cid:107)≤G for some finite G) [XKG19b]. Note that even without robustness, assuming bounded
+r
+gradientsisacommonwaytomaketheanalysisonheterogeneousdatasimple[YYZ19,LHY+20],asunderthis
+assumption, we can trivially bound the heterogeneity among local datasets by (cid:107)∇F (x)−∇F (x)(cid:107)≤2G,2
+r s
+which makes handling heterogeneity vacuous.
+1.2 Our Contributions
+In this paper, we tackle heterogeneity assuming only that the gradient dissimilarity among local datasets
+is bounded (see (6)), and propose and analyze a Byzantine-resilient SGD algorithm with local iterations
+and sampling of clients under the bounded variance assumption for SGD (see (2)); see Algorithm 1. We
+provide convergence analyses for strongly-convex and non-convex smooth objectives. Our convergence results
+are summarized below, where b is the mini-batch size for stochastic gradients, σ2 is the variance bound,
+κ2 captures the gradient dissimilarity, H is the number of local iterations in between any two consecutive
+synchronization indices, K is the number of clients sampled at synchronization times, (cid:15)< K is the fraction
+4R
+of Byzantine clients, and (cid:15)(cid:48) is any constant such that ((cid:15)+(cid:15)(cid:48))≤ K .
+4R
+For strongly-convex objectives, our algorithm can find approximate optimal parameters within an error
+of Γ = O (cid:16) Hσ2 (cid:0) 1+ d(cid:1) ((cid:15)+(cid:15)(cid:48))+Hκ2 (cid:17) exponentially (in T) fast, and for non-convex objectives, it can
+b(cid:15)(cid:48) K H
+reach to a stationary point within the same error Γ with a speed of 1 . Note that the convergence rate of
+T/H
+vanilla SGD (i.e., without local iterations and in Byzantine-free settings) decays exponentially (in T) fast
+for strongly-convex objectives and with a speed of 1 for non-convex objectives, whereas, our convergence
+T
+rates are affected by the number of local iterations H. This is a result of working with weak assumptions – if
+we work with the bounded gradient assumption, then we can also get exponential (in T) convergence in the
+strongly-convex case and 1 convergence in the non-convex case.
+T
+In the approximation error Γ, the first error term Hσ2 (cid:0) 1+ d(cid:1) ((cid:15)+(cid:15)(cid:48)) mainly arises because of the
+b(cid:15)(cid:48) K
+stochasticity in gradients due to SGD and is equal to zero if we work with full-batch gradients (which gives
+σ =0), and the second error term Hκ2 arises because of heterogeneity in local datasets. Note that Γ only
+has a linear dependence on H.
+We also give a simplified analysis of our algorithm with full-batch gradients for all three objectives. See
+Theorem 1 and Theorem 2 for our mini-batch SGD and full-batch GD convergence results, respectively. See
+a detailed discussion on the approximation error analysis and the convergence rates in Section 2.4.
+To tackle the malicious behavior of Byzantine clients, we borrow tools from recent advances in high-
+dimensional robust statistics [LRV16,SCV18,DKK+19,DK19]; in particular, we use the polynomial-time
+outlier-filtering procedure from [SCV18], which was developed for robust mean estimation in high dimensions.
+In order to use this algorithm, we develop a novel matrix concentration result (see Theorem 3) which may
+be of independent interest. For full-batch gradients, we give our matrix concentration result with better
+guarantees,whichcanbeprovedbyamuchsimplifiedanalysisthanitsmini-batchcounterpart;seeTheorem4.
+1.3 Paper Organization
+We describe our algorithm and state the main convergence results in Section 2. We describe the core part of
+our algorithm, the robust accumulated gradient estimation (RAGE), and our new matrix concentration result
+thatcontainstheoptimalparametersx∗ andallthelocalparametersxt everemergedatanyclientr∈[R]inanyiteration
+r
+t∈[T];this,inouropinion,makestheboundvacuous. Inoptimization,onewouldideallyliketohavetheconvergencerates
+dependondiameteroftheparameterspacewithafactorthatdecayswiththenumberofiterations,e.g.,with 1 or √1 ,and
+T T
+alsoseeTheorem1.
+2See[KMR19]foradetaileddiscussionontheinappropriatenessofmakingboundedgradientassumptioninheterogeneous
+datasettingsandexaminetheeffectofheterogeneityonconvergencerates(evenwithoutrobustness).
+3
+in Section 3 and also prove it there. We prove our main convergence results for mini-batch SGD in Section 4
+and Section 5 and for full-batch SGD in Section 6.
+1.4 Notation
+For any n∈N, we denote the set {1,2,...,n} by [n], and for any n ,n ∈N such that n ≤n , we denote
+1 2 1 2
+the set {n ,n +1,...,n } by [n :n ]. We denote vectors by bold small letters x,y, etc., and matrices by
+1 1 2 1 2
+bold capital letters A,B, etc. For any finite set K, we write k ∈ K to denote that k is chosen uniformly at
+U
+random from K. All vector norms in this paper are (cid:96) norms, and for convenience, we simply denote them by
+2
+(cid:107)·(cid:107). For a square matrix A, we write λ (A) to denote the largest eigenvalue of A.
+max
+2 Problem Setup and Our Results
+In this section, we state our assumptions, describe the adversary model and our algorithm, and state our
+main convergence results.
+2.1 Assumptions
+As mentioned in Section 1, we make minimal assumptions to analyze our algorithm. Our first assumption is
+a standard one in SGD, which assumes bounded variance for stochastic gradients. Our second assumption is
+for heterogeneous data and assumes that the heterogeneity in different local datasets is bounded.
+Assumption 1 (Bounded local variances). The stochastic gradients sampled from any local dataset have
+uniformly bounded variance over Rd, i.e., there exists a finite σ ≥0, such that
+E (cid:107)∇F (x)−∇F (x)(cid:107)2 ≤σ2, ∀x∈Rd,r ∈[R]. (2)
+i∈U[nr] r,i r
+It will be helpful to formally define mini-batch stochastic gradients, where instead of computing stochastic
+gradients based on just one data point, each client selects a subset of size b uniformly at random from its
+own local dataset and computes the average of b gradients. For any x∈Rd,r ∈[R],b∈[n ], consider the
+r
+following set
+(cid:40) (cid:18) (cid:19)(cid:41)
+F⊗b(x):= 1 (cid:88) ∇F (x):H ∈ [n r ] . (3)
+r b r,i b b
+i∈Hb
+Note that g (x)∈ F⊗b(x) is a mini-batch stochastic gradient with batch size b at client r. It is not hard to
+r U r
+see the following:
+E[g (x)]=∇F (x), ∀x∈Rd,r ∈[R] (4)
+r r
+σ2
+E(cid:107)g (x)−∇F (x)(cid:107)2 ≤ , ∀x∈Rd,r ∈[R] (5)
+r r b
+where (4) says that g (x) is an unbiased gradient and (5) says that the variance of mini-batch stochastic
+r
+gradients reduces by the same factor as the batch size. Though the bound in (5) goes down with b, it does
+not become zero when we compute full-batch gradients, which uses all n data points. This is because (5)
+r
+only uses that the clients sample b data points with replacement. However, in reality, since this sampling is
+done without replacement, we can show a finer variance bound of E(cid:107)g (x)−∇F (x)(cid:107)2 ≤ (nr−b) σ2; see [Sa]
+r r b(nr−1)
+for a proof. We can slightly improve our results by using this finer variance bound instead of (5) everywhere
+in this paper, but, for simplicity, we only use the weaker bound (5) throughout.
+Assumption 2 (Bounded gradient dissimilarity). The difference between the local gradients ∇F (x),r ∈[R]
+r
+and the global gradient ∇F(x) = 1 (cid:80)R ∇F (x) is uniformly bounded over Rd for all clients, i.e., there
+R r=1 r
+exists a finite κ, such that
+(cid:107)∇F (x)−∇F(x)(cid:107)2 ≤κ2, ∀x∈Rd,r ∈[R]. (6)
+r
+4
+In Assumption 2, κ quantifies the bounded deviation between the local loss functions F ,r ∈[R] and the
+r
+global loss function F; see also [YJY19,LYWZ19], where this assumption has been used in heterogeneous
+data settings in decentralized SGD without Byzantine clients. The gradient dissimilarity bound in (6) can be
+seen as a deterministic condition on local datasets, under which we derive our results.
+2.1.1 Need of Assumption 2
+For any method that filters out malicious updates from the clients and work with heterogeneous (“non i.i.d.”)
+data, as the server does not know the identities of the adversarial clients, we need to have some regularity
+condition relating the datasets, and we believe Assumption 2 is a natural way to model that. Assumption 2
+intuitively captures the heterogeneity among local datasets, without making any statistical assumptions on
+the data. To see the necessity of bounding heterogeneity even without adversary, note that we allow clients to
+perform local SGD steps, where, in between any two synchronization indices, clients compute gradients from
+their local datasets and update their local parameter vectors; as a result, their local parameter vectors can
+drift away from each other. This drift needs to be bounded for convergence analyses, and if we do not assume
+bounded heterogeneity, it is impossible to bound this drift. As we have discussed at the end of Section 1.1,
+Assumption 2 is much weaker than the bounded gradient assumption, which not only makes bounding the
+drift (and the convergence analyses) trivial, but also obscure the dependence of the convergence bounds on
+the heterogeneity of datasets, which is clearly brought out in our convergence results.
+2.1.2 Bounds on σ2 and κ2 in the statistical heterogeneous model
+Since all results (matrix concentration and convergence) in this paper are given in terms of σ2 and κ2,
+to show the clear dependence of our results on the dimensionality of the problem, we can bound these
+quantities in the statistical heterogeneous data model under different distributional assumptions on local
+gradients. For the variance bound (2), it was shown in [DD20, Theorem 7] that if local gradients have
+sub-Gaussian distribution, then σ =O
+(cid:16)(cid:112)
+dlog(d)
+(cid:17)
+. For the gradient dissimilarity bound (6), it was shown
+in [DD20, Theorem 6] that if either the local gradients have sub-exponential distribution and each client
+has at least n = Ω(dlog(nd)) data points or local gradients have sub-Gaussian distribution and n ∈ N is
+(cid:18)(cid:113) (cid:19)
+arbitrary, thenκ≤κ +O dlog(nd) , where κ denotesthe distanceof theexpected local gradients
+mean n mean
+from the global gradient.
+2.2 Adversary Model
+We assume that an (cid:15) fraction of R clients are malicious; as we see later, we can tolerate (cid:15) < K ,3 where
+4R
+K ≤R is the number of clients sampled at synchronization indices. The malicious clients can collaborate and
+arbitrarily deviate from their pre-specified programs: In any SGD iteration, instead of sending true stochastic
+gradients, corrupt clients may send adversarially chosen vectors (they may not even send anything if they
+wish, in which case, the server can treat them as erasures and replace them with a fixed value). Note that, in
+the erasure case, server knows which clients are corrupt; whereas, in the Byzantine problem, server does not
+have this information.
+2.3 Main Results
+Let I ={t ,t ,...,t ,...}, with t =0, denote the set of synchronization indices at which clients communi-
+T 1 2 k 1
+cate their net updates with the server. Let H denote the difference between any two consecutive indices, i.e.,
+every worker performs the same number H of local iterations between any two consecutive synchronization
+indices. At synchronization indices, server samples a subset of K clients (denoted by K⊆[R]) and sends the
+global model (denoted by x) to them; each client r ∈ K updates its local model x by taking SGD steps
+r
+3Actually,wecantolerate(cid:15)< 1 fractionofmaliciousclientsfromtheK clientsthatweselect;so,(cid:15)< K isaworstcase
+4 4R
+boundincasewesampleallthemaliciousclientsinaselection,whichisanunlikelyevent.
+5
+Algorithm 1 Byzantine-Resilient SGD with Local Iterations
+1: Initialize. Set t:=0, x0 :=0,∀r ∈[R], and x:=0. Here, x denotes the global model and x0 denotes
+r r
+the local model at client r at time 0. Fix a constant step-size η and a mini-batch size b.
+2: while (t≤T) do
+3: Server selects an arbitrary subset of clients K⊆[R] of size |K|=K and sends x to all clients in K.
+4: All clients r ∈K do in parallel:
+5: Set xt =x.
+r
+6: while (true) do
+7: Take a mini-batch stochastic gradient g r (xt r )∈ U F r ⊗b(xt r ) and update the local model:
+xt+1 ←xt −ηg (xt); t←(t+1).
+r r r r
+8: if (t∈I T ) then
+9: Let x (cid:101) t r =xt r , if client r is honest, otherwise x (cid:101) t r can be an arbitrary vector in Rd.
+10: Send x (cid:101) t r to the server and break the inner while loop.
+11: end if
+12: end while
+13: At Server:
+14: Receive {x (cid:101)r ,r ∈K} from the clients in K.
+15: For every r ∈K, let g (cid:101)r,accu :=(x (cid:101)r −x)/η.
+16: Apply the decoding algorithm RAGE (see Algorithm 2 in Section 3.2) on {g (cid:101)r,accu ,r ∈K}. Let
+g :=RAGE(g ,r ∈K).
+(cid:98)accu (cid:101)r,accu
+17: Update the global model x←x−ηg (cid:98)accu .
+18: end while
+based on its local dataset until the next synchronization time, when all clients in K send their local models to
+the server. Note that some of these clients may be corrupt and may send arbitrary vectors. Server employs a
+decoding algorithm RAGE4 and update the global model x based on that.
+Remark 1. Note that the only disruption that the corrupt clients can cause in the training process is during
+the gradient aggregation at synchronization indices by sending adversarially chosen vectors to the server, and
+we give unlimited power to the adversary for that. Because of this and for the purpose of analysis, we can
+assume, without loss of generality, that in between the synchronization indices, the corrupt clients sample
+stochastic gradients and update their local parameters honestly.
+We present our Byzantine-resilient SGD algorithm with local iterations in Algorithm 1.
+Before we present our results, we need some definitions.
+• L-smoothness: A function F : Rd → R is called L-smooth over Rd, if for every x,y ∈ Rd, we have
+(cid:107)∇F(x)−∇F(y)(cid:107) ≤ L(cid:107)x−y(cid:107) (this property is also known as L-Lipschitz gradients). This is also
+equivalent to F(y)≤F(x)+(cid:104)∇F(x),y−x(cid:105)+ L(cid:107)x−y(cid:107)2.
+2
+• µ-strong convexity: A function F :Rd →R is called µ-strongly convex over Rd for µ≥0, if for every
+x,y ∈Rd, we have F(y)≥F(x)+(cid:104)∇F(x),y−x(cid:105)+ µ(cid:107)x−y(cid:107)2.
+2
+4Ourdecodingalgorithm,whichwecallRAGE,isthesameastherobustmeanestimationalgorithmproposedbySteinhardt
+etal.[SCV18]. Wegaveitadifferentname,asweuseitinamuchmoregeneralFLsettingofrunningSGDwithlocaliterations
+onheterogeneousdata. Notethatthesamealgorithmhasalsobeenusedin[SX19,YCRB19]inthecontextofByzantine-robust
+full batchgradientdescentwithoutlocaliterations,assuminghomogeneousi.i.d.data,whereas,weemploythatalgorithminthe
+FLsetting,whichmakesitsanalysissignificantlymorechallenging.
+6
+All convergence results in this paper only require properties of the global loss function F; the local loss
+functions F ,r ∈[R] may be arbitrary. For example, in the smooth strongly-convex case, we only require F
+r
+to be smooth and strongly-convex, and F ,r ∈[R] may be arbitrary. Similarly for the non-convex case.
+r
+Our convergence results are for strongly-convex and non-convex smooth objectives.
+Theorem 1 (Mini-Batch Local Stochastic Gradient Descent). Suppose an (cid:15) > 0 fraction of clients are
+adversarially corrupt. Let K denote the set of K clients that are active at any given time t∈[0:T]. For a
+t
+global objective function F :Rd →R, let Algorithm 1 generate a sequence of iterates {xt :t∈[0:T],r ∈K }
+r t
+when run with a fixed step-size η = 1 . Fix an arbitrary constant (cid:15)(cid:48) >0. If (cid:15)≤ K −(cid:15)(cid:48), then with probability
+8HL 4R
+at least 1− T exp(−(cid:15)(cid:48)2(1−(cid:15))K), the sequence of average iterates {xt = 1 (cid:80) xt :t∈[0:T]} satisfy the
+following con
+H
+vergence gu
+1
+a
+6
+rantees:
+K r∈Kt r
+• Strongly-convex: If F is L-smooth for L≥0 and µ-strongly convex for µ>0, we get:
+E(cid:13) (cid:13)xT −x∗(cid:13) (cid:13) 2 ≤ (cid:16) 1− µ (cid:17)T (cid:13) (cid:13)x0−x∗(cid:13) (cid:13) 2 + 13 Γ. (7)
+16HL µ2
+• Non-convex: If F is L-smooth for L≥0, we get:
+T
+1 (cid:88) E(cid:13) (cid:13)∇F(xt) (cid:13) (cid:13) 2 ≤ 16HL(cid:2)E[F(x0)]−E[F(x∗)] (cid:3) + 9 Γ. (8)
+T T 2
+t=0
+In (7), (8), Γ = (cid:16) 3Υ2 + 11Hσ2 +36Hκ2 (cid:17) with Υ2 =O (cid:0) σ2((cid:15)+(cid:15)(cid:48)) (cid:1), where σ2 = 25H2σ2 (cid:0) 1+ 4d(cid:1) +28H2κ2,
+H b 0 0 b(cid:15)(cid:48) 3K
+and expectation is taken over the sampling of mini-batch stochastic gradients.
+We prove (7) and (8) in Section 4 and Section 5, respectively. In addition to other complications arising
+due to handing Byzantine clients together with local iterations, our proof deviates from the standard proofs
+for local SGD without adversary, as we need to show two recurrences, one at synchronization indices and the
+other at non-synchronization indices. This is because at synchronization indices, server performs decoding to
+filter-out the corrupt clients, while at other indices there is no decoding, as there is no communication.
+The failure probability of our algorithm is at most T exp(−(cid:15)(cid:48)2(1−(cid:15))K), which though scales linearly with
+H 16
+T, also goes down exponentially with K. As a result, in settings such as federated learning, where number of
+clients could be very large (e.g., in millions) and server samples a few thousand clients, we can get a very
+small probability of error, even if we run our algorithm for a very long time. Note that the error probability is
+due to the stochastic sampling of gradients, and if we want a “zero” probability of error, we can run full-batch
+gradient descent, for which we get the following result, which we prove in Section 6 with a much simplified
+analysis than that of Theorem 1.
+Theorem 2 (Full-Batch Local Gradient Descent). In the same setting as that of Theorem 1, except for that
+we run Algorithm 1 with a fixed step-size η = 1 , and in any iteration, instead of sampling mini-batch
+5HL
+stochastic gradients, every honest client takes full-batch gradients from their local datasets. If (cid:15)≤ K , then
+with probability 1, the sequence of average iterates {xt = 1 (cid:80) xt : t ∈ [0 : T]} satisfy the f 4 o R llowing
+convergence guarantees:
+K r∈Kt r
+• Strongly-convex: If F is L-smooth for L≥0 and µ-strongly convex for µ>0, we get:
+(cid:16) µ (cid:17)T 14
+(cid:107)xT −x∗(cid:107)2 ≤ 1− (cid:107)x0−x∗(cid:107)2+ Γ . (9)
+10HL µ2 GD
+• Non-convex: If F is L-smooth for L≥0, we get:
+T
+T 1 (cid:88)(cid:13) (cid:13)∇F(xt) (cid:13) (cid:13) 2 ≤ 10 T HL(cid:2) F(x0)−F(x∗) (cid:3) + 2 5 4 Γ GD . (10)
+t=0
+√
+In (9), (10), Γ GD = 2Υ H G 2 D +25Hκ2, where Υ GD =O(Hκ (cid:15)).
+7
+2.4 Important Remarks About Theorem 1 and Theorem 2
+Analysis of the approximation error. In Theorem 1, the approximation error Γ essentially consists of
+twotypesoferrorterms: Γ =O (cid:16) Hσ2 (cid:0) 1+ 4d(cid:1) ((cid:15)+(cid:15)(cid:48)) (cid:17) andΓ =O(Hκ2),whereΓ arisesduetostochastic
+1 b(cid:15)(cid:48) 3K 2 1
+sampling of gradients and Γ arises due to dissimilarity in the local datasets. Observe that Γ decreases as
+2 1
+we increase the batch size b of stochastic gradients and becomes zero if we take full-batch gradients (which
+implies σ = 0), as is the case in Theorem 2. Note that both Γ and Γ have a linear dependence on the
+1 2
+number of local iterations H. Observe that since we are working with heterogeneous datasets, the presence of
+gradient dissimilarity bound κ2 (which captures the heterogeneity) in the approximation error is inevitable,
+and will always show up when bounding the deviation of the true “global” gradient from the decoded one in
+the presence of Byzantine clients, even when H =1.
+Convergence rates. In the strongly-convex case, Algorithm 1 approximately finds the optimal parameters
+x∗(withinΓ error)with(cid:0) 1− µ (cid:1)T speed,wherec=16forSGDandc=10forGD.Notethat(cid:0) 1− µ (cid:1)T ≤
+cHL cHL
+exp− c µ LH T , where the inequality follows from (1− 1)x ≤ 1. This implies that the convergence rate in this case
+x e
+is exponentially fast (but in T). In the non-convex case, Algorithm 1 reaches to a stationary point (within Γ
+H
+error) with a speed of 1 . Note that the convergence rate of vanilla SGD (i.e., without local iterations and
+T/H
+in Byzantine-free settings) is exponentially fast (in T) for strongly-convex objectives and with a speed of 1
+T
+for non-convex objectives, whereas, our convergence rates are affected by the number of local iterations H.
+The reason for this is precisely because, under standard SGD assumptions we need η ≤ 1 to bound the
+8HL
+drift in local parameters across different clients; see Lemma 2. Instead, if we had assumed a stronger bounded
+gradient assumption (which trivially bound the heterogeneity, as explained at the end of Section 1.1), then
+Lemma 2 would hold for a constant step-size that does not depend on H (e.g., η = 1 would suffice), which
+2L
+would lead to an exponentially fast (in T) convergence for strongly-convex objectives and 1 convergence rate
+T
+for non-convex objectives.
+3 Robust Accumulated Gradient Estimation (RAGE)
+In this section, we provide our main result on robust accumulated gradient estimation (RAGE), which is the
+subroutine for robustly estimating the average of uncorrupted accumulated gradients at every synchronization
+index; see Footnote 4. First we setup the notation. Let Algorithm 1 generate a sequence of iterates
+{xt :t∈[0:T],r ∈K } when run with a fixed step-size η satisfying η ≤ 1 , where K denotes the set of K
+r t 8HL t
+clients that are active at time t ∈ [0 : T]. Take any two consecutive synchronization indices t ,t ∈ I .
+k k+1 T
+Note that |t −t |≤H. For an honest client r ∈K , let gtk,tk+1 := (cid:80)tk+1−1g (xt) denote the sum of
+k+1 k tk r,accu t=tk r r
+localmini-batchstochasticgradientssampledbyclientr betweentimet andt , whereg (xt)∈ F⊗b(xt)
+k k+1 r r U r r
+satisfies (4), (5). At iteration t , every honest client r ∈K reports its local model xtk+1 to the server,
+k+1 tk r
+from which server computes gtk,tk+1 (see line 15 of Algorithm 1), whereas, the corrupt clients may report
+r,accu
+arbitrary and adversarially chosen vectors in Rd. Server does not know the identity of the corrupt clients,
+and its goal is to produce an estimate gtk,tk+1 of the average accumulated gradients from honest clients as
+(cid:98)accu
+best as possible.
+To this end, first we show that there exists a large subset S ⊆K of accumulated gradients from honest
+tk
+clients that are concentrated around their average, i.e., have bounded empirical covariance. Once we have
+shown that, then we will use the polynomial-time outlier-filtering algorithm from [SCV18] to estimate the
+average of the accumulated gradients in S. Our main result on RAGE is as follows:
+Theorem3(RobustAccumulatedGradientEstimation). Supposean(cid:15)fractionofK clientsthatcommunicate
+with the server are corrupt. In the setting described above, suppose we are given K ≤R accumulated gradients
+gtk,tk+1,r ∈K in Rd, where gtk,tk+1 =gtk,tk+1 if the r’th client is honest, otherwise can be arbitrary. For
+(cid:101)r,accu tk (cid:101)r,accu r,accu
+any constant (cid:15)(cid:48) >0, if ((cid:15)+(cid:15)(cid:48))≤ 1, then we have:
+4
+1. Matrix concentration: With probability 1 − exp(−(cid:15)(cid:48)2(1−(cid:15))K), there exists a subset S ⊆ K of
+16 tk
+8
+uncorrupted gradients of size (1−((cid:15)+(cid:15)(cid:48)))K ≥ 3K, such that
+4
+λ (cid:32) 1 (cid:88) (g −g )(g −g )T (cid:33) ≤ 25H2σ2 (cid:18) 1+ 4d (cid:19) +28H2κ2, (11)
+max |S| i S i S b(cid:15)(cid:48) 3K
+i∈S
+where, for i∈S, g =gtk,tk+1,g = 1 (cid:80) gtk,tk+1; and λ denotes the largest eigenvalue.
+i i,accu S |S| i∈S i,accu max
+2. Outlier-filtering algorithm: We can find an estimate g of g in polynomial-time with probability 1,
+√ (cid:98) S
+such that (cid:107)g−g (cid:107)≤O (cid:0) σ (cid:15)+(cid:15)(cid:48) (cid:1), where σ2 = 25H2σ2 (cid:0) 1+ 4d(cid:1) +28H2κ2.
+(cid:98) S 0 0 b(cid:15)(cid:48) 3K
+Proving the matrix concentration bound stated in the first part of Theorem 3 is non-trivial and we prove
+it separately in Section 3.1. For the second part, we use the polynomial-time outlier-filtering procedure
+of [SCV18], which is a robust mean estimation algorithm, that takes a collection of vectors as input, out of
+which an unknown large subset (at least a 3-fraction) is promised to be well-concentrated around its sample
+4
+mean (i.e., has a bounded covariance), and outputs an estimate of the sample mean of the vectors in that
+subset. Forcompleteness, wedescribethisprocedureinSection3.2andreferthereaderto[DD20,Appendices
+E, F] for more details.
+Note that the same filtering procedure has also been used in [SX19,YCRB19] in the context of Byzantine-
+robust full batch gradient descent without local iterations for minimizing the population risk, assuming
+homogeneous i.i.d. data. Our setting is very different from theirs, as we minimize the empirical risk by
+mini-batchstochasticgradientdescentwithlocaliterationsonheterogeneousdata. Theyalsoderivedamatrix-
+concentration result, whose need arises because they minimize the population risk, whereas, we need a matrix
+concentration bound because we use SGD. On top of that our setting is much more complicated than theirs,
+as clients have heterogeneous data and do not communicate with the server in every iteration. As a result, as
+opposed to their matrix concentration bound (which they proved assuming sub-exponential/sub-Gaussian
+distribution on local gradients and also assuming i.i.d. data across clients), our matrix concentration result is
+of a very different nature, and we use entirely different tools to derive that.
+3.1 Matrix Concentration
+Now we prove the first part of Theorem 3. For that, we need to show an existence of a subset S of the
+K accumulated gradients (out of which an (cid:15) < 1 fraction is corrupted) that has good concentration, as
+4
+quantified by the matrix concentration bound in (11). To prove this, we use a separate matrix concentration
+result stated in the following lemma from [DD20].
+Lemma 1 (Lemma 1 in [DD20]). Suppose there are m independent distributions p ,p ,...,p in Rd such
+1 2 m
+that E [y]=µ ,i∈[m] and each p has a bounded variance in all directions, i.e., E [(cid:104)y−µ ,v(cid:105)2]≤
+y∼pi i i y∼pi i
+σ2 ,∀v ∈Rd,(cid:107)v(cid:107)=1. Take any (cid:15)(cid:48) >0. Then, given m independent samples y ,y ,...,y , where y ∼p ,
+w p itih probability 1−exp(−(cid:15)(cid:48)2m/16), there is a subset S of (1−(cid:15)(cid:48))m points such 1 tha 2 t m i i
+λ (cid:32) 1 (cid:88) (y −µ )(y −µ )T (cid:33) ≤ 4σ p 2 max (cid:18) 1+ d (cid:19) , where σ2 = maxσ2 .
+max |S| i i i i (cid:15)(cid:48) (1−(cid:15)(cid:48))m pmax i∈[m] pi
+i∈S
+Now we prove the first part of Theorem 3 with the help of Lemma 1.
+Let t ,t ∈I be any two consecutive synchronization indices. For i∈K corresponding to an honest
+k k+1 T tk
+client, let Ytk,Ytk+1,...,Ytk+1−1 be a sequence of (t −t )≤H (dependent) random variables, where,
+i i i k+1 k
+for any t∈[t :t −1], the random variable Yt is distributed as
+k k+1 i
+Yt ∼Unif (cid:16) F⊗b(cid:0) xt(cid:0) xtk,Ytk,...,Yt−1(cid:1)(cid:1)(cid:17) . (12)
+i i i i i i
+Here, Yt is a random variable that corresponds to the stochastic sampling of mini-batch gradients from the
+set F⊗b i(cid:0) xt(cid:0) xtk,Ytk,...,Yt−1(cid:1)(cid:1), which itself depends on the local parameters xtk (which is a deterministic
+i i i i i i
+9
+quantity) at the last synchronization index and the past realizations of Ytk,...,Yt−1. This is because the
+i i
+evolution of local parameters xt depends on xtk and the choice of gradients in between time indices t and
+i i k
+t−1. Now define Y := (cid:80)tk+1−1Yt; and let p be the distribution of Y . This is the distribution p we will
+take when using Lem
+i
+ma 1.
+t=tk i i i i
+Claim 1. For any honest client i∈K , we have E(cid:107)Y −E[Y ](cid:107)2 ≤ H2σ2, where expectation is taken over
+tk i i b
+sampling stochastic gradients by client i between synchronization indices t and t .
+k k+1
+Claim 1 is proved in Appendix A.
+It is easy to see that the hypothesis of Lemma 1 is satisfied with µ =E[Y ],σ2 = H2σ2 for all honest
+clients i∈K (note that p is the distribution of Y ):
+i i pi b
+tk i i
+(d) (e) H2σ2
+E [(cid:104)y −E[y ],v(cid:105)2] ≤ E[(cid:107)y −E [y ](cid:107)2]·(cid:107)v(cid:107)2 ≤ ,
+yi∼pi i i i yi∼pi i b
+where (d) follows from the Cauchy-Schwarz inequality and (e) follows from Claim 1 and (cid:107)v(cid:107)≤1.
+We are given K different (summations of H) gradients, out of which at least (1−(cid:15))K are according to the
+correct distribution. By considering only the uncorrupted gradients (i.e., taking m=(1−(cid:15))K), we have from
+Lemma 1 that there exists a subset S ⊆K of K gradients of size (1−(cid:15)(cid:48))(1−(cid:15))K ≥(1−((cid:15)+(cid:15)(cid:48)))K ≥ 3K
+tk 4
+(where in the last inequality we used ((cid:15)+(cid:15)(cid:48))≤ 1) that satisfies
+4
+λ (cid:32) 1 (cid:88) (y −E[y ])(y −E[y ])T (cid:33) ≤ 4H2σ2 (cid:18) 1+ 4d (cid:19) . (13)
+max |S| i i i i b(cid:15)(cid:48) 3K
+i∈S
+Note that (13) bounds the deviation of the points in S from their respective means E[y ]. However, in (11),
+i
+we need to bound the deviation of the points in S from their sample mean 1 (cid:80) y . As it turns out, due
+|S| i∈S i
+to our use of local iterations, bounding this requires a substantial amount of technical work, which we do in
+the rest of this subsection.
+From the alternate definition of the largest eigenvalue of symmetric matrices A∈Rd×d, we have
+λ (A)= sup vTAv. (14)
+max
+v∈Rd,(cid:107)v(cid:107)=1
+Applying this with A= 1 (cid:80) (y −E[y ])(y −E[y ])T, we can equivalently write (13) as
+|S| i∈S i i i i
+(cid:32) 1 (cid:88) (cid:33) 4H2σ2 (cid:18) 4d (cid:19)
+sup (cid:104)y −E[y ],v(cid:105)2 ≤σ2 := 1+ . (15)
+|S| i i (cid:98)0 b(cid:15)(cid:48) 3K
+v∈Rd:(cid:107)v(cid:107)=1
+i∈S
+Define y := 1 (cid:80) y to be the sample mean of the points in S. Take an arbitrary v ∈ Rd such that
+S |S| i∈S i
+(cid:107)v(cid:107)=1.
+1 (cid:88) (cid:104)y −y ,v(cid:105)2 = 1 (cid:88) [(cid:104)y −E[y ],v(cid:105)+(cid:104)E[y ]−y ,v(cid:105)]2
+|S| i S |S| i i i S
+i∈S i∈S
+2 (cid:88) 2 (cid:88)
+≤ (cid:104)y −E[y ],v(cid:105)2+ (cid:104)E[y ]−y ,v(cid:105)2 (using (a+b)2 ≤2a2+2b2)
+|S| i i |S| i S
+i∈S i∈S
+Using (15) to bound the first term, we get
+2 (cid:88)(cid:68) 1 (cid:88) (cid:69)2 2 (cid:88)(cid:104) 1 (cid:88) (cid:105)2
+≤2σ2+ E[y ]− y ,v =2σ2+ (cid:104)y −E[y ],v(cid:105)
+(cid:98)0 |S| i |S| j (cid:98)0 |S| |S| j i
+i∈S j∈S i∈S j∈S
+2 (cid:88) 1 (cid:88)
+≤2σ2+ (cid:104)y −E[y ],v(cid:105)2 (using the Jensen’s inequality)
+(cid:98)0 |S| |S| j i
+i∈S j∈S
+10
+=2σ2+ 2 (cid:88) 1 (cid:88) [(cid:104)y −E[y ],v(cid:105)+(cid:104)E[y ]−E[y ],v(cid:105)]2
+(cid:98)0 |S| |S| j j j i
+i∈S j∈S
+2 (cid:88) 2 (cid:88) 2 (cid:88) 2 (cid:88)
+≤2σ2+ (cid:104)y −E[y ],v(cid:105)2+ (cid:104)E[y ]−E[y ],v(cid:105)2
+(cid:98)0 |S| |S| j j |S| |S| j i
+i∈S j∈S i∈S j∈S
+(using (a+b)2 ≤2a2+2b2)
+4 (cid:88) 4 (cid:88) 1 (cid:88)
+≤2σ2+ (cid:104)y −E[y ],v(cid:105)2+ (cid:107)E[y ]−E[y ](cid:107)2
+(cid:98)0 |S| j j |S| |S| j i
+j∈S i∈S j∈S
+(using the Cauchy-Schwarz inequality and that (cid:107)v(cid:107)≤1)
+4 (cid:88) 1 (cid:88)
+≤6σ2+ (cid:107)E[y ]−E[y ](cid:107)2 (16)
+(cid:98)0 |S| |S| j i
+i∈S j∈S
+Claim 2. For any r,s∈K , we have
+tk
+(cid:107)E[y ]−E[y ](cid:107)2 ≤H
+tk(cid:88)+1−1
+(cid:0) 6κ2+3L2E(cid:107)xt −xt(cid:107)2(cid:1) , (17)
+r s r s
+t=tk
+where expectations in E[y ] and E[y ] are taken over sampling stochastic gradients between the synchronization
+r s
+indices t ,...,t by client r and client s, respectively.
+k k+1
+Proof. Note that we can equivalently write E[y ]=E[Y ] and E[y ]=E[Y ].
+r r s s
+(cid:107)E[Y ]−E[Y ](cid:107)2 =(cid:107)E[Y ]−E[Y ](cid:107)2 =
+(cid:13)
+(cid:13)
+(cid:13)
+tk(cid:88)+1−1
+(cid:16)
+E[Yt]−E[Yt]
+(cid:17)
+(cid:13)
+(cid:13)
+(cid:13)
+2
+r s r s (cid:13) r s (cid:13)
+(cid:13) (cid:13)
+t=tk
+≤(t k+1 −t k )
+tk(cid:88)+1−1
+(cid:13) (cid:13) E[Y r t]−E[Y s t] (cid:13) (cid:13) 2 (18)
+t=tk
+BydefinitionofYt from(12),wehaveYt ∼Unif (cid:16) F⊗b(cid:0) xt(cid:0) xtk,Ytk,...,Yt−1(cid:1)(cid:1)(cid:17) ,whichimpliesusing(4)that
+s s s s s s s
+E[Y
+s
+t]=E(cid:2) ∇F
+s
+(cid:0) xt
+s
+(cid:0) xt
+s
+k,Y
+s
+tk,...,Y
+s
+t−1(cid:1)(cid:1)(cid:3), where on the RHS, expectation is taken over (Y
+s
+tk,...,Y
+s
+t−1). To
+makethenotationlesscluttered,inthefollowing,foranys∈K
+tk
+,wewritext
+s
+todenotext
+s
+(cid:0) xt
+s
+k,Y
+s
+tk,...,Y
+s
+t−1(cid:1)
+with the understanding that expectation is always taken over the sampling of stochastic gradients between t
+k
+and t . With these substitutions, the t’th term from (19) can be written as:
+k+1
+(cid:13) (cid:13) E[Y r t]−E[Y s t] (cid:13) (cid:13) 2 = (cid:13) (cid:13) E(cid:2) ∇F r (xt r )−∇F s (xt s ) (cid:3)(cid:13) (cid:13) 2
+( ≤ a) E(cid:13) (cid:13)∇F r (cid:0) xt r (cid:1) −∇F s (cid:0) xt s (cid:1)(cid:13) (cid:13) 2 (19)
+( ≤ b) 3E(cid:13) (cid:13)∇F r (cid:0) xt r (cid:1) −∇F (cid:0) xt r (cid:1)(cid:13) (cid:13) 2 +3E(cid:13) (cid:13)∇F s (cid:0) xt s (cid:1) −∇F (cid:0) xt s (cid:1)(cid:13) (cid:13) 2
++3E(cid:13)
+(cid:13)∇F
+(cid:0) xt(cid:1)
+−∇F
+(cid:0) xt(cid:1)(cid:13)
+(cid:13)
+2
+r s
+(c)
+≤ 6κ2+3L2E(cid:107)xt −xt(cid:107)2. (20)
+r s
+Here, (a) and (b) both follow from the Jensen’s inequality. (c) used the gradient dissimilarity bound from (6)
+to bound the first two terms5 and L-Lipschitzness of ∇F to bound the last term.
+Substituting the bound from (20) back in (18) and using (t −t )≤H proves Claim 2.
+k+1 k
+5Note that though xt r ’s are random quantities, we can still bound E(cid:13) (cid:13)∇Fr(xt r )−∇Fs(xt s ) (cid:13) (cid:13) 2 ≤ κ2 because the gradient
+dissimilaritybound(6)holdsuniformlyovertheentiredomain.
+11
+Using the bound from (17) in (16) gives
+1 (cid:88) (cid:104)y −y ,v(cid:105)2 ≤6σ2+ 4 (cid:88) 1 (cid:88) H
+tk(cid:88)+1−1
+(cid:0) 6κ2+3L2E(cid:107)xt −xt(cid:107)2(cid:1)
+|S| i S (cid:98)0 |S| |S| r s
+i∈S i∈S j∈S t=tk
+12HL2 (cid:88) 1 (cid:88)
+tk(cid:88)+1−1
+=6σ2+24H2κ2+ E(cid:107)xt −xt(cid:107)2 (21)
+(cid:98)0 |S| |S| r s
+i∈S j∈S t=tk
+Now we bound the last term of (21), which is the drift in local parameters at different clients in between
+any two synchronization indices.
+Lemma 2. For any r,s∈K , if η ≤ 1 , we have
+tk 8HL
+tk(cid:88)+1−1
+E(cid:13) (cid:13)xt −xt(cid:13) (cid:13) 2 ≤7H3η2
+(cid:18) σ2
++3κ2
+(cid:19)
+, (22)
+r s b
+t=tk
+where expectation is taken over sampling stochastic gradients at clients r,s between the synchronization indices
+t and t .
+k k+1
+Proof. For any t∈[t :t −1] and r,s∈K , define Dt =E(cid:107)xt −xt(cid:107) 2. Note that at synchronization
+k k+1 tk r,s r s
+time t k , all clients in the active set K tk have the same parameters, i.e., xt r k =xtk for every r ∈K tk .
+(cid:13)   (cid:13)2
+(cid:13) t−1 t−1 (cid:13)
+D r t ,s =E(cid:13) (cid:13)xt r −xt s (cid:13) (cid:13) 2 =E(cid:13) (cid:13) (cid:13) xt r k −η (cid:88) g r (xj r )−xt s k −η (cid:88) g s (xj s ) (cid:13) (cid:13) (cid:13)
+(cid:13) j=tk j=tk (cid:13)
+(cid:13) (cid:13)2
+(cid:13)t−1 (cid:13)
+=η2E(cid:13) (cid:13) (cid:13) (cid:88) (cid:0) g r (xj r )−g s (xj s ) (cid:1)(cid:13) (cid:13) (cid:13) (Since xt r k =xtk,∀r ∈K tk )
+(cid:13)j=tk (cid:13)
+t−1
+≤η2(t−t k ) (cid:88) E(cid:13) (cid:13)g r (xj r )−g s (xj s ) (cid:13) (cid:13) 2
+j=tk
+t−1
+≤η2H (cid:88) (cid:16) 3E(cid:13) (cid:13)g r (xj r )−∇F r (xj r ) (cid:13) (cid:13) 2 +3E(cid:13) (cid:13)g s (xj s )−∇F s (xj s ) (cid:13) (cid:13) 2
+j=tk
++3E(cid:13) (cid:13)∇F r (xj r )−∇F s (xj s ) (cid:13) (cid:13) 2 (cid:17) (23)
+To bound the first and the second terms we use the variance bound from (5).6 We can bound the third term
+in the same way as we bounded it in (19) and obtained (20). This gives
+(cid:88) t−1 (cid:18) 6σ2 (cid:19)
+Dt ≤η2H +18κ2+9L2E(cid:107)xj −xj(cid:107)2
+r,s b r s
+j=tk
+≤ 6H2σ2η2 +18H2η2κ2+9L2Hη2 (cid:88) t−1 Dj (Since Dj =E(cid:13) (cid:13)xj −xj (cid:13) (cid:13) 2)
+b r,s r,s r s
+j=tk
+Taking summation from t=t to t −1 gives
+k k+1
+ 
+tk(cid:88)+1−1 tk(cid:88)+1−1 6H2σ2η2 (cid:88) t−1
+D r t ,s ≤  b +18H2η2κ2+9L2Hη2 D r j ,s
+t=tk t=tk j=tk
+6Note that xj r’s are random quantities, however, since the variance bound (5) holds uniformly over the entire domain,
+E (cid:13) (cid:13) (cid:13) gr(xj r)−∇Fr(xj r) (cid:13) (cid:13) (cid:13) 2 ≤ σ b 2 holdsforarandomxj r ∈Rd.
+12
+6H3σ2η2
+tk(cid:88)+1−1
+≤ +18H3η2κ2+9L2H2η2 Dt .
+b r,s
+t=tk
+After rearranging terms, we get
+tk(cid:88)+1−1
+6H3σ2η2
+(1−9L2H2η2) Dt ≤ +18H3η2κ2. (24)
+r,s b
+t=tk
+If we take η ≤ 1 , we get (cid:0) 1−9η2L2H2(cid:1) ≥ 6. Substituting this in the LHS of (24) yields (cid:80)tk+1−1Dt ≤
+8HL 7 t=tk r,s
+7H3σ2η2 +21H3η2κ2, which proves Lemma 2.
+b
+Substituting the bound from (22) for the last term in (21) gives
+1 (cid:88) 12HL2 (cid:88) 1 (cid:88) (cid:18) (cid:18) σ2 (cid:19)(cid:19)
+(cid:104)y −y ,v(cid:105)2 ≤6σ2+24H2κ2+ 7H3η2 +3κ2
+|S| i S (cid:98)0 |S| |S| b
+i∈S i∈S j∈S
+(cid:18) σ2 (cid:19)
+=6σ2+24H2κ2+84H4L2η2 +3κ2
+(cid:98)0 b
+21H2σ2
+≤6σ2+28H2κ2+ (Using η ≤ 1 )
+(cid:98)0 16b 8LH
+≤ 24H2σ2 (cid:18) 1+ 4d (cid:19) + 21H2σ2 +28H2κ2 (Since σ2 = 4H2σ2 (cid:0) 1+ 4d(cid:1))
+b(cid:15)(cid:48) 3K 16b (cid:98)0 b(cid:15)(cid:48) 3K
+25H2σ2 (cid:18) 4d (cid:19)
+≤ 1+ +28H2κ2. (25)
+b(cid:15)(cid:48) 3K
+In the last inequality we used 21 ≤ 1 ≤ 1 (cid:0) 1+ 4d(cid:1), where the first inequality follows because (cid:15)(cid:48) ≤ 1. Note
+16 (cid:15)(cid:48) (cid:15)(cid:48) 3K 4
+that (25) holds for every unit vector v ∈Rd. Using this and substituting gtk,tk+1 =y ,gtk,tk+1 =y in (25),
+i,accu i S,accu S
+we get
+sup
+1 (cid:88)(cid:68)
+gtk,tk+1 −gtk,tk+1,v
+(cid:69)2
+≤
+25H2σ2 (cid:18)
+1+
+4d (cid:19)
++28H2κ2.
+|S| i,accu S,accu b(cid:15)(cid:48) 3K
+v∈Rd:(cid:107)v(cid:107)=1
+i∈S
+This, in view of the alternate definition of the largest eigenvalue given in (14), is equivalent to (11), which
+proves the first part of Theorem 3.
+3.2 Proof of the Second Part of Theorem 3
+In this section, we describe the procedure for robust mean estimation in high dimensions from [SCV18]
+that we use in the second part of Theorem 3 to filter-out corrupt vectors and compute an estimate of the
+average of uncorrupted accumulated gradients. We refer the reader to [DD20, Section 4] to get an intuition
+on why filtering-out corrupt gradients (even when H =1, i.e., without local iterations) is difficult in high
+dimensions.
+We describe the procedure in Algorithm 2 and refer the reader to [DD20, Appendix E] to get an intuition
+behind Algorithm 2 and its running-time analysis. Though our algorithm for robust accumulated gradient
+estimation (RAGE) is the same as the one proposed by Steinhardt et al. [SCV18] for high-dimensional robust
+mean estimation, we give it a different name, as we are applying the procedure in a much more general
+federated learning setting; see Footnote 4.
+For simplicity, we reorder the received gradient indices from 1,2,...,K. Now, the proof of the second
+part of Theorem 3 follows from [SCV18, Proposition 16], which we state below for completeness.
+13
+Algorithm 2 Robust Accumulated Gradient Estimation (RAGE) [SCV18]
+1: Initialize. c i :=1,i∈[K], α:=(1−(cid:15)˜)≥3/4 , A:={1,2,...,K}; G:=[g 1 , g 2 , ..., g K ]∈Rd×K.
+2: while true do
+3: Let W∗ ∈R|A|×|A| and Y∗ ∈Rd×d be the minimizer/maximizer of the saddle point problem:
+max min Φ(W,Y), (26)
+tr Y (Y (cid:23) ) 0 ≤ , 1 (cid:80) 0≤ j∈ W A j W i≤ ji α = (2 4 1 + − ,∀ α α i ) ∈ R A ,
+where the cost function Φ(W,Y) is defined as
+(cid:88)
+Φ(W,Y):= c (g −G w )TY(g −G w ), (27)
+i i A i i A i
+i∈A
+To avoid cluttered notation, we index the |A| rows/columns of W by the elements of A; G denotes
+A
+the restriction of G to the columns in A; for i∈A, w denotes the column of W indexed by i.
+i
+4:
+For i∈A, let
+τ =(g −G w∗)TY∗(g −G w∗) (28)
+i i A i i A i
+5: if (cid:80) i∈A c i τ i >4Rσ 0 2 then
+(cid:16) (cid:17)
+6: For i∈A, c i ← 1− τm τi ax c i , where τ max =max j∈A τ j .
+7: For all i with c i < 2 1, remove i from A.
+8: else
+9:
+Break while-loop
+10: end if
+11: end while
+12: return g (cid:98) = |A 1 | (cid:80) i∈A g i .
+Lemma 3 (Proposition 16 in [SCV18]). Suppose we are given K arbitrary vectors g ,...,g ∈ Rd with
+1 K
+the promise that there exists a subset S of these K vectors such that |S| = (1−(cid:15)˜)K for some (cid:15)˜> 0 and
+(cid:16) (cid:17)
+S satisfies λ 1 (cid:80) (g −g )(g −g )T ≤σ2, where g = 1 (cid:80) g denotes the sample mean of
+max |S| i∈S i S i S 0 S |S| i∈S i
+the vectors in S. Then, if (cid:15)˜≤ 1, Algorithm 2 can find an estimate g of g in polynomial-time, such that
+√ 4 (cid:98) S
+(cid:107)g−g (cid:107)≤O(σ (cid:15)˜).
+(cid:98) S 0
+Note that Lemma 3 takes arbitrary vectors as inputs, which are not required to have been generated from
+a probability distribution.
+We refer the reader to [DD20, Appendix F] for a comprehensive proof of Lemma 3. To analyze the
+running time complexity of Algorithm 2, first note that (26) can be solved by computing the singular value
+decomposition (SVD) of a certain d×K matrix (see [SCV18, Appendix F] for more details), and second, that
+Algorithm 2 removes at least one vector in each iteration of the while loop. So, in the worst case, Algorithm 2
+requires O(dK2min{d,K}) time to execute; see [DD20, Appendix E] for more details on the running time
+analysis of Algorithm 2. Note that this running time does not depend on the total number R of clients
+(which may be in millions), and only depends on K, which is the number of clients selected by the server at
+synchronization indices. In federated learning, R may be in millions, but K is typically a small number, in
+1000’s.
+This completes the proof of the second part of Theorem 3.
+14
+4 Convergence Proof of the Strongly-Convex Part of Theorem 1
+Atanyiterationt∈[T], letK ⊆[R]denotethesetofclientsthatareactiveattimet. Letxt := 1 (cid:80) xt
+denote the average parameter t vector of the clients in the active set K . Note that, for any t ∈I K , the r∈ cl K ietnt r s
+t i T
+in K remain active at all t∈[t :t −1].
+ti i i+1
+In the following, we denote the decoded gradient at the server at any synchronization time t by gti,ti+1,
+i+1 (cid:98)accu
+which is an estimate of the average of the accumulated gradients between time t and t of the honest
+i i+1
+clients in K , as in Theorem 3. From Algorithm 1, we can write the parameter update rule for the global
+ti
+model at the synchronization indices as:
+xti+1 =xti −ηgti,ti+1.
+(cid:98)accu
+Note that at any synchronization index t ∈ I , when the server selects a subset K of clients and sends
+i T ti
+the global parameter vector xti , all clients in K
+ti
+set their local model parameters to be equal to the global
+model parameters, i.e., xt r i =xti holds for every r ∈K ti .
+First we derive a recurrence relation for the synchronization indices and then for non-synchronization
+indices. Consider the (i+1)’st synchronization index t ∈I . We have
+i+1 T
+xti+1 =xti −ηgti,ti+1
+(cid:98)accu
+ 
+1 (cid:88)
+ti(cid:88)+1−1
+1 (cid:88)
+ti(cid:88)+1−1
+=xti −η
+K
+∇F
+r
+(xt
+r
+)−ηg
+(cid:98)a
+ti
+c
+,
+c
+t
+u
+i+1 −
+K
+∇F
+r
+(xt
+r
+)
+r∈Kti t=ti r∈Kti t=ti
+(cid:16) (cid:17)
+Forsimplicityofnotation,defineE (cid:44) gti,ti+1 − 1 (cid:80) (cid:80)ti+1−1∇F (xt) . Substitutingthisintheabove
+and using xti = 1 (cid:80) xti gives
+(cid:98)accu K r∈Kti t=ti r r
+K r∈Kti r
+1 (cid:88) 1 (cid:88)
+ti(cid:88)+1−1
+xti+1 = xti −η ∇F (xt)−ηE
+K r K r r
+r∈Kti r∈Kti t=ti
+1 (cid:88)
+(cid:32) ti(cid:88)+1−1 (cid:33)
+= xti −η ∇F (xt) −ηE
+K r r r
+r∈Kti t=ti
+= 1 (cid:88) (cid:0) xti+1−1−η∇F (xti+1−1) (cid:1) −ηE
+K r r r
+r∈Kti
+1 (cid:88)
+=xti+1−1−η ∇F (xti+1−1)−ηE
+K r r
+r∈Kti
+=xti+1−1−η∇F(xti+1−1)+η 1 (cid:88) (cid:0) ∇F(xti+1−1)−∇F (xti+1−1) (cid:1) −ηE (29)
+K r r
+r∈Kti
+Subtracting x∗ from both sides gives:
+xti+1 −x∗ =xti+1−1−x∗−η∇F(xti+1−1)+η 1 (cid:88) (cid:0) ∇F(xti+1−1)−∇F (xti+1−1) (cid:1) −ηE (30)
+K r r
+(cid:124) (cid:123)(cid:122) (cid:125)
+=: u
+r∈Kti
+(cid:124) (cid:123)(cid:122) (cid:125)
+=: v
+This gives xti+1 −x∗ =u+η(v−E). Taking norm on both sides and then squaring gives
+(cid:13) (cid:13)xti+1 −x∗(cid:13)
+(cid:13)
+2 =(cid:107)u(cid:107)2+η2(cid:107)v−E(cid:107)2+2η(cid:104)u,v−E(cid:105) (31)
+15
+Now we use a simple but powerful trick on inner-products together with the inequality 2(cid:104)a,b(cid:105)≤(cid:107)a(cid:107)2+(cid:107)b(cid:107)2
+and get:
+(cid:28)(cid:114) (cid:114) (cid:29)
+ηµ 2η ηµ 2η
+2η(cid:104)u,v−E(cid:105)=2 u, (v−E) ≤ (cid:107)u(cid:107)2+ (cid:107)v−E(cid:107)2 (32)
+2 µ 2 µ
+Substituting this back into (31) gives
+(cid:13) (cid:13)xti+1 −x∗(cid:13) (cid:13) 2 ≤ (cid:16) 1+ ηµ(cid:17) (cid:107)u(cid:107)2+η (cid:18) η+ 2 (cid:19) (cid:107)v−E(cid:107)2
+2 µ
+(cid:16) ηµ(cid:17) (cid:18) 2 (cid:19) (cid:18) 2 (cid:19)
+≤ 1+ (cid:107)u(cid:107)2+2η η+ (cid:107)v(cid:107)2+2η η+ (cid:107)E(cid:107)2
+2 µ µ
+Substituting the values of u,v,E and taking expectation w.r.t. the stochastic sampling of gradients by clients
+in K between iterations t and t (while conditioning on the past) gives:
+ti i i+1
+E(cid:13) (cid:13)xti+1 −x∗(cid:13) (cid:13) 2 ≤ (cid:16) 1+ µη(cid:17) E(cid:13) (cid:13)xti+1−1−η∇F(xti+1−1)−x∗(cid:13) (cid:13) 2
+2
+(cid:13) (cid:13)2
+(cid:18) (cid:19) (cid:13) (cid:13)
++2η η+ µ 2 E(cid:13) (cid:13) (cid:13)K 1 (cid:88) (cid:0) ∇F(xti+1−1)−∇F r (x r ti+1−1) (cid:1)(cid:13) (cid:13) (cid:13)
+(cid:13) r∈Kti (cid:13)
+(cid:13) (cid:13)2
++2η
+(cid:18)
+η+ µ 2
+(cid:19)
+E
+(cid:13)
+(cid:13) (cid:13) (cid:13) g (cid:98)a ti c , c t u i+1 − K 1 (cid:88)
+ti(cid:88)+1−1
+∇F r (xt r )
+(cid:13)
+(cid:13) (cid:13) (cid:13) (33)
+(cid:13) r∈Kti t=ti (cid:13)
+Now we bound each of the three terms on the RHS of (33) separately in Claim 3, Claim 4, and Claim 5
+below. We prove these claims in Appendix B.
+Claim 3. For η < 1, we have
+L
+E(cid:13) (cid:13)xti+1−1−η∇F(xti+1−1)−x∗(cid:13) (cid:13) 2 ≤(1−µη)E(cid:13) (cid:13)xti+1−1−x∗(cid:13) (cid:13) 2 . (34)
+Claim 4. For η ≤ 1 , we have
+8HL
+(cid:13) (cid:13)2
+E (cid:13) (cid:13) (cid:13) (cid:13)K 1 (cid:88) (cid:0) ∇F r (xt r i+1−1)−∇F(xti+1−1) (cid:1) (cid:13) (cid:13) (cid:13) (cid:13) ≤2κ2+ 7 3 H 2 (cid:18) σ b 2 +3κ2 (cid:19) . (35)
+(cid:13) r∈Kti (cid:13)
+(cid:16) (cid:17)
+Claim 5. If η ≤ 1 , then with probability at least 1−exp −(cid:15)(cid:48)2(1−(cid:15))K , we have
+8HL 16
+(cid:13) (cid:13)2
+E (cid:13) (cid:13) (cid:13) (cid:13) g (cid:98)a ti c , c t u i+1 − K 1 (cid:88) ti(cid:88)+1−1 ∇F r (xt r ) (cid:13) (cid:13) (cid:13) (cid:13) ≤3Υ2+ 8H b 2σ2 +30H2κ2, (36)
+(cid:13) r∈Kti t=ti (cid:13)
+where Υ2 =O (cid:0) σ2((cid:15)+(cid:15)(cid:48)) (cid:1) and σ2 = 25H2σ2 (cid:0) 1+ 4d(cid:1) +28H2κ2.
+0 0 b(cid:15)(cid:48) 3K
+Substituting the bounds from (34), (35), (36) into (33) and using (cid:0) 1+ µη(cid:1) (1−µη)≤ (cid:0) 1− µη(cid:1) for the
+2 2
+first term gives
+E(cid:13) (cid:13)xti+1 −x∗(cid:13) (cid:13) 2 ≤ (cid:16) 1− µη(cid:17) E(cid:13) (cid:13)xti+1−1−x∗(cid:13) (cid:13) 2 +2η (cid:18) η+ 2 (cid:19)(cid:18) 2κ2+ 7H (cid:18) σ2 +3κ2 (cid:19)(cid:19)
+2 µ 32 b
+(cid:18) 2 (cid:19)(cid:18) 8H2σ2 (cid:19)
++2η η+ 3Υ2+ +30H2κ2
+µ b
+16
+≤ (cid:16) 1− µη(cid:17) E(cid:13) (cid:13)xti+1−1−x∗(cid:13) (cid:13) 2 + 6η (cid:18) 3Υ2+ 9H2σ2 +33H2κ2 (cid:19) , (37)
+2 µ b
+where Υ2 = O (cid:0) σ2((cid:15)+(cid:15)(cid:48)) (cid:1) and σ2 = 25H2σ2 (cid:0) 1+ 4d(cid:1) +28H2κ2. In the last inequality (37) we used η ≤
+0 0 b(cid:15)(cid:48) 3K
+(cid:16) (cid:17)
+1 ≤ 1 ≤ 1,whichimplies(η+2)≤ 3. Notethat(37)holdswithprobabilityatleast1−exp −(cid:15)(cid:48)2(1−(cid:15))K .
+8LH L µ µ µ 16
+Note that the above recurrence in (37) holds only at the synchronization indices t ∈I for i=1,2,3,....
+i T
+However,inordertoestablisharecurrencethatwecanusetoproveconvergence,weneedtoshowarecurrence
+relation for all t. Now we give a recurrence at non-synchronization indices.
+Take an arbitrary t∈[T] and let t ∈I be such that t∈[t :t −1]; when H ≥2, such t’s exist. Note
+i T i i+1
+that xt = 1 (cid:80) xt. We have
+K r∈Kti r
+1 (cid:88)
+xt+1 =xt−η g (xt)
+K r r
+r∈Kti
+ 
+1 (cid:88) 1 (cid:88) 1 (cid:88)
+=xt−η
+K
+∇F
+r
+(xt
+r
+)−η
+K
+g
+r
+(xt
+r
+)−
+K
+∇F
+r
+(xt
+r
+)
+r∈Kti r∈Kti r∈Kti
+=xt−η∇F(xt)+ η (cid:88) (cid:0) ∇F(xt)−∇F (xt) (cid:1) − η (cid:88) (cid:0) g (xt)−∇F (xt) (cid:1) (38)
+K r r K r r r r
+r∈Kti r∈Kti
+Now, subtracting x∗ from both sides and following the same steps that we used to go from (30) to (33), we
+get (in the following, expectation is taken w.r.t. the stochastic sampling of gradients at the t’th iteration
+while conditioning on the past):
+E(cid:13) (cid:13)xt+1−x∗(cid:13) (cid:13) 2 ≤ (cid:16) 1+ µη(cid:17) E(cid:13) (cid:13)xt−x∗−η∇F(xt) (cid:13) (cid:13) 2
+2
+(cid:13) (cid:13)2
+(cid:18) (cid:19) (cid:13) (cid:13)
++2η η+ µ 2 E(cid:13) (cid:13) (cid:13)K 1 (cid:88) (cid:0) ∇F(xt)−∇F r (xt r ) (cid:1)(cid:13) (cid:13) (cid:13)
+(cid:13) r∈Kti (cid:13)
+(cid:13) (cid:13)2
+(cid:18) (cid:19) (cid:13) (cid:13)
++2η η+ µ 2 E(cid:13) (cid:13) (cid:13)K 1 (cid:88) (cid:0) g r (xt r )−∇F r (xt r ) (cid:1)(cid:13) (cid:13) (cid:13) (39)
+(cid:13) r∈Kti (cid:13)
+We can bound the first and the second terms on the RHS of (39) using (34) and (35), respectively,
+(cid:13) (cid:13)2
+as E(cid:107)xt−η∇F(xt)−x∗(cid:107) 2 ≤ (1−µη)E(cid:107)xt−x∗(cid:107) 2 and E(cid:13)1 (cid:80) (∇F(xt)−∇F (xt))(cid:13) ≤ 2κ2 +
+(cid:16) (cid:17)
+(cid:13)K r∈Kti r r (cid:13)
+7H σ2 +3κ2 . To bound the third term on the RHS of (39), we use the fact that variance of the sum of
+32 b
+independentrandomvariablesisequaltothesumofthevariancesandthatclientssamplestochasticgradients
+(cid:13) (cid:13)2
+g (xt) independent of each other; using this fact and (5), we have E(cid:13)1 (cid:80) (g (xt)−∇F (xt))(cid:13) ≤ σ2.
+S
+r
+ubst
+r
+ituting these in (39) and using (cid:0) 1+ µη(cid:1) (1−µη)≤ (cid:0) 1− µη(cid:1) fo
+(cid:13)
+r
+K
+the
+r
+fi
+∈
+r
+K
+st
+ti
+term
+r
+a
+r
+nd (η+
+r
+2)≤
+r
+3
+(cid:13)
+(wh
+b
+ic
+K
+h
+2 2 µ µ
+follows because η ≤ 1 ≤ 1 ≤ 1) give
+8HL L µ
+E(cid:13) (cid:13)xt+1−x∗(cid:13) (cid:13) 2 ≤ (cid:16) 1− µη(cid:17) E(cid:13) (cid:13)xt−x∗(cid:13) (cid:13) 2 + 6η (cid:18) 2κ2+ 7H (cid:18) σ2 +3κ2 (cid:19) + σ2 (cid:19)
+2 µ 32 b bK
+≤ (cid:16) 1− µη(cid:17) E(cid:13) (cid:13)xt−x∗(cid:13) (cid:13) 2 + 6η (cid:18) 3Hκ2+ 2Hσ2(cid:19) (40)
+2 µ b
+Note that (40) holds with probability 1.
+Now we have a recurrence at the synchronization indices given in (37) and at non-synchronization indices
+given in (40). Let α = (cid:0) 1− µη(cid:1), β = (cid:16) 3Υ2+ 9H2σ2 +33H2κ2 (cid:17) , and β = (cid:16) 3Hκ2+ 2Hσ2 (cid:17) . Substituting
+2 1 b 2 b
+17
+these and using (37) for the synchronization indices and (40) for the rest of the indices, we get:
+ 
+E(cid:13) (cid:13)xT −x∗(cid:13) (cid:13) 2 ≤αT (cid:13) (cid:13)x0−x∗(cid:13) (cid:13) 2 + 6 µ η  (cid:88)
+T/HH
+(cid:88)
+−1
+αiH+jβ 2 + (cid:88)
+T/H
+αiHβ 1 (41)
+i=0 j=1 i=0
+(cid:32) ∞ ∞ (cid:33)
+≤αT (cid:13) (cid:13)x0−x∗(cid:13) (cid:13) 2 + 6 µ η (cid:88) αiβ 2 + (cid:88) αiHβ 1
+i=0 i=0
+(cid:18) (cid:19)
+=αT (cid:13) (cid:13)x0−x∗(cid:13) (cid:13) 2 + 6 µ η 1− 1 α β 2 + 1− 1 αH β 1 (42)
+Since α= (cid:0) 1− µη(cid:1), we have αH = (cid:0) 1− µη(cid:1)H ( ≤ a) exp(−µηH) ( ≤ b) 1− µηH + (cid:16) µηH (cid:17)2 ( ≤ c) 1− µηH + 1 µηH =
+2 2 2 2 2 2 16 2
+1 − 15µηH. In (a) we used the inequality (1 − 1)x ≤ 1 which holds for any x > 0; in (b) we used
+16 2 x e
+exp(−x)≤1−x+x2 which holds for any x≥0; in (c) we used η ≤ 1 and µ≤L, which together imply
+8HL
+µηH ≤ 1 . Substituting these in (42) gives
+2 16
+E(cid:13) (cid:13)xT −x∗(cid:13) (cid:13) 2 ≤ (cid:16) 1− µ 2 η(cid:17)T (cid:13) (cid:13)x0−x∗(cid:13) (cid:13) 2 + 6 µ η (cid:18) µ 2 η β 2 + 15µ 32 ηH β 1 (cid:19)
+≤
+(cid:16)
+1−
+µ
+2
+η(cid:17)T (cid:13) (cid:13)x0−x∗(cid:13)
+(cid:13)
+2
++
+6
+1
+×
+5µ
+3
+2
+2 (cid:18) 1
+1
+5
+6 β 2 + H
+1
+β 1
+(cid:19)
+≤ (cid:16) 1− µη(cid:17)T (cid:13) (cid:13)x0−x∗(cid:13) (cid:13) 2 + 13 (cid:18) 3Υ2 + 11Hσ2 +36Hκ2 (cid:19) (43)
+2 µ2 H b
+Note that the last term on the RHS of (43) is independent of η, which together with the dependence of η
+on the first term implies that bigger the η, faster the convergence. Since we need η ≤ 1 for Claim 4 and
+8HL
+Claim 5 to hold, we choose η = 1 . Substituting this in (43) yields the convergence rate (7) of Theorem 1.
+8HL
+(cid:16) (cid:17)
+Error probability analysis. Note that (37) holds with probability at least 1−exp −(cid:15)(cid:48)2(1−(cid:15))K and (40)
+16
+holds with probability 1. Since to arrive at (41) (which leads to our final bound (43)), we used (37) T times
+H
+and (40) (cid:0) T − T(cid:1) times; as a consequence, by union bound, we have that (43) holds with probability at least
+H
+(cid:16) (cid:17)
+1− T exp −(cid:15)(cid:48)2(1−(cid:15))K , which is at least (1−δ), for any δ >0, provided we run our algorithm for at most
+H 16
+T ≤δHexp((cid:15)(cid:48)2(1−(cid:15))K) iterations.
+16
+This concludes the proof of the strongly-convex part of Theorem 1.
+5 Convergence Proof of the Non-Convex Part of Theorem 1
+LetK ⊆[R]denotethesubsetofclientsofsize|K |=K sampledatthet’thiteration. Foranyt∈[t :t −1],
+t t i i+1
+let xt = 1 (cid:80) xt denote the average of the local parameters of clients in the sampling set K .
+Simila
+K
+r to
+k
+t
+∈
+h
+K
+e
+tipro k
+of given in Section 4, here also, first we derive a recurrence for the synchr
+ti
+onization
+indices and then for non-synchronization indices. For the synchronization indices t ,t ,...,t ,...∈I , from
+1 2 k T
+(29), we have
+xti+1 =xti+1−1−η∇F(xti+1−1)+ηC (44)
+where
+ 
+C =
+K
+1 (cid:88) (cid:0) ∇F(xti+1−1)−∇F
+r
+(xt
+r
+i+1−1) (cid:1) −g
+(cid:98)a
+ti
+c
+,
+c
+t
+u
+i+1 −
+K
+1 (cid:88)
+ti(cid:88)+1−1
+∇F
+r
+(xt
+r
+). (45)
+r∈Kti r∈Kti t=ti
+18
+Now, using the definition of L-smoothness in (44), we have
+F(xti+1)≤F(xti+1−1)+ (cid:10) ∇F(xti+1−1),xti+1 −xti+1−1(cid:11) + L(cid:13) (cid:13)xti+1 −xti+1−1(cid:13) (cid:13) 2
+2
+=F(xti+1−1)−η (cid:10) ∇F(xti+1−1),∇F(xti+1−1)−C (cid:11) +
+η2L(cid:13)
+(cid:13)∇F(xti+1−1)−C (cid:13) (cid:13) 2
+2
+=F(xti+1−1)−η (cid:13) (cid:13)∇F(xti+1−1) (cid:13) (cid:13) 2 +η (cid:10) ∇F(xti+1−1),C (cid:11) +
+η2L(cid:13)
+(cid:13)∇F(xti+1−1)−C (cid:13) (cid:13) 2
+2
+( ≤ a) F(xti+1−1)−η (cid:13) (cid:13)∇F(xti+1−1) (cid:13) (cid:13) 2 +η (cid:32)(cid:13) (cid:13)∇F(xti+1−1) (cid:13) (cid:13) 2 +(cid:107)C(cid:107)2 (cid:33)
+4
++
+η2L(cid:13)
+(cid:13)∇F(xti+1−1)−C (cid:13) (cid:13) 2
+2
+( ≤ b) F(xti+1−1)− 3η (cid:13) (cid:13)∇F(xti+1−1) (cid:13) (cid:13) 2 +η(cid:107)C(cid:107)2+η2L (cid:16)(cid:13) (cid:13)∇F(xti+1−1) (cid:13) (cid:13) 2 +(cid:107)C(cid:107)2 (cid:17)
+4
+(cid:18) (cid:19)
+=F(xti+1−1)−η 3 −ηL (cid:13) (cid:13)∇F(xti+1−1) (cid:13) (cid:13) 2 +η(1+ηL)(cid:107)C(cid:107)2 (46)
+4
+In(a), weusedtheinequality2(cid:104)a,b(cid:105)≤τ(cid:107)a(cid:107)2+1(cid:107)b(cid:107)2, whichholdsforeveryτ >0, andweusedτ = 1 in(a).
+τ 2
+In (b), we used the inequality (cid:107)a+b(cid:107)2 ≤2((cid:107)a(cid:107)2+(cid:107)b(cid:107)2). For η ≤ 1 ≤ 1 , we have (3/4−ηL)≥1/2 and
+8HL 8L
+(1+ηL)≤ 9. Substituting these in (46) and taking expectation w.r.t. the stochastic sampling of gradients at
+8
+clients in K between iterations t and t (while conditioning on the past) gives:
+it i i+1
+E[F(xti+1)]≤E[F(xti+1−1)]− η E(cid:13) (cid:13)∇F(xti+1−1) (cid:13) (cid:13) 2 + 9η E(cid:107)C(cid:107)2. (47)
+2 8
+Now we bound E(cid:107)C(cid:107)2. Substituting the value of C from (45) gives:
+(cid:13) (cid:13)2 (cid:13) (cid:13)2
+E(cid:107)C(cid:107)2 ≤2E
+(cid:13)
+(cid:13) (cid:13) (cid:13)K 1 (cid:88) (cid:0) ∇F(xti+1−1)−∇F r (xt r i+1−1) (cid:1)
+(cid:13)
+(cid:13) (cid:13) (cid:13) +2E
+(cid:13)
+(cid:13) (cid:13) (cid:13) g (cid:98)a ti c , c t u i+1 − K 1 (cid:88)
+ti(cid:88)+1−1
+∇F r (xt r )
+(cid:13)
+(cid:13) (cid:13) (cid:13)
+(cid:13) r∈Kti (cid:13) (cid:13) r∈Kti t=ti (cid:13)
+(cid:18) 7H (cid:18) σ2 (cid:19)(cid:19) (cid:18) 8H2σ2 (cid:19)
+≤2 2κ2+ +3κ2 +2 3Υ2+ +30H2κ2
+32 b b
+(cid:18) 9H2σ2 (cid:19)
+≤2 3Υ2+ +33H2κ2 (48)
+b
+Here, the first inequality used (cid:107)a+b(cid:107)2 ≤2((cid:107)a(cid:107)2+(cid:107)b(cid:107)2) and the second inequality used the bounds from
+(35) and (36).
+Substituting the bound from (48) into (47) gives
+E[F(xti+1)]≤E[F(xti+1−1)]− η E(cid:13) (cid:13)∇F(xti+1−1) (cid:13) (cid:13) 2 + 9η (cid:18) 3Υ2+ 9H2σ2 +33H2κ2 (cid:19) (49)
+2 4 b
+where Υ2 = O (cid:0) σ2((cid:15)+(cid:15)(cid:48)) (cid:1) and σ2 = 25H2σ2 (cid:0) 1+ 4d(cid:1) +28H2κ2. Note that (49) holds with probability at
+0 0 b(cid:15)(cid:48) 3K
+(cid:16) (cid:17)
+least 1−exp −(cid:15)(cid:48)2(1−(cid:15))K .
+16
+Note that the above recurrence in (49) holds only at the synchronization indices t ∈I for i=1,2,3,....
+i T
+Now we give a recurrence at non-synchronization indices.
+We have done a similar calculation in the strongly-convex part of Theorem 1 in Section 4. Take an
+arbitrary t ∈ [T] and let t ∈ I be such that t ∈ [t : t −1]; when H ≥ 2, such t’s exist. Note that
+i T i i+1
+xt = 1 (cid:80) xt.
+K r∈Kti r
+19
+From (38), we have xt+1 =xt−η∇F(xt)+ηD, where
+D = 1 (cid:88) (cid:0) ∇F(xt)−∇F (xt) (cid:1) − 1 (cid:88) (cid:0) g (xt)−∇F (xt) (cid:1) .
+K r r K r r r r
+r∈Kti r∈Kti
+Using L-smoothness of F, and then performing similar algebraic manipulations that we used in order to
+arrive at (47), we get:
+E[F(xt+1)]≤E[F(xt)]− η E(cid:13) (cid:13)∇F(xt) (cid:13) (cid:13) 2 + 9η E(cid:107)D(cid:107)2 (50)
+2 8
+Now we bound E(cid:107)D(cid:107)2:
+(cid:13) (cid:13)2 (cid:13) (cid:13)2
+(cid:13) (cid:13) (cid:13) (cid:13)
+E(cid:107)D(cid:107)2 ≤2E(cid:13) (cid:13) (cid:13)K 1 (cid:88) (cid:0) ∇F(xt)−∇F r (xt r ) (cid:1)(cid:13) (cid:13) (cid:13) +2E(cid:13) (cid:13) (cid:13)K 1 (cid:88) (cid:0) g r (xt r )−∇F r (xt r ) (cid:1)(cid:13) (cid:13) (cid:13)
+(cid:13) r∈Kti (cid:13) (cid:13) r∈Kti (cid:13)
+(cid:18) 7H (cid:18) σ2 (cid:19) σ2 (cid:19)
+≤2 2κ2+ +3κ2 +
+32 b bK
+(cid:18) 2Hσ2(cid:19)
+≤2 3Hκ2+ (51)
+b
+Here, the second inequality used the same bounds on both the quantities on the RHS of the first inequality
+that we used to go from (39) to (40).
+Substituting the bound on E(cid:107)D(cid:107)2 from (51) into (50) gives
+E[F(xt+1)]≤E[F(xt)]− η E(cid:13) (cid:13)∇F(xt) (cid:13) (cid:13) 2 + 9η
+(cid:18)
+3Hκ2+
+2Hσ2(cid:19)
+(52)
+2 4 b
+Note that (52) holds with probability 1.
+Now we have a recurrence at synchronization indices given in (49) and at non-synchronization indices
+given in (52). Adding (49) and (52) from t=0 to T (use (49) for the synchronization indices and (52) for
+the rest of the indices) gives:
+(cid:88) T E[F(xt+1)]≤ (cid:88) T E[F(xt)]− η (cid:88) T E(cid:13) (cid:13)∇F(xt) (cid:13) (cid:13) 2 + 9η (cid:20) T (cid:18) 3Υ2+ 9H2σ2 +33H2κ2 (cid:19)
+2 4 H b
+t=0 t=0 t=0
+(cid:18)
+T
+(cid:19)(cid:18) 2Hσ2(cid:19)(cid:21)
++ T − 3Hκ2+ (53)
+H b
+We can simplifying the constant term in the RHS of (53) as follows:
+1 (cid:18) 9H2σ2 (cid:19) (cid:18) 1 (cid:19)(cid:18) 2Hσ2(cid:19)
+3Υ2+ +33H2κ2 + 1− 3Hκ2+
+H b H b
+1 (cid:18) 9H2σ2 (cid:19) (cid:18) 2Hσ2(cid:19)
+≤ 3Υ2+ +33H2κ2 + 3Hκ2+
+H b b
+3Υ2 11Hσ2
+≤ + +36Hκ2
+H b
+Substituting this in (53) and then rearranging, we get:
+1 (cid:88) T E(cid:13) (cid:13)∇F(xt) (cid:13) (cid:13) 2 ≤ 2 (cid:2)E[F(x0)]−E[F(xT+1)] (cid:3) + 9 (cid:18) 3Υ2 + 11Hσ2 +36Hκ2 (cid:19) (54)
+T ηT 2 H b
+t=0
+20
+Notethatthelasttermin(54)isaconstant. So,itwouldbebesttotakethestep-sizeηtobeaslargeaspossible
+such that it satisfies η ≤ 1 . We take η = 1 . Substituting this in (54) and using F(xT+1)≥F(x∗) gives
+8HL 8HL
+1 (cid:88) T E(cid:13) (cid:13)∇F(xt) (cid:13) (cid:13) 2 ≤ 16HL(cid:2)E[F(x0)]−E[F(x∗)] (cid:3) + 9 (cid:18) 3Υ2 + 11Hσ2 +36Hκ2 (cid:19) , (55)
+T T 2 H b
+t=0
+where Υ2 =O (cid:0) σ2((cid:15)+(cid:15)(cid:48)) (cid:1) and σ2 = 25H2σ2 (cid:0) 1+ 4d(cid:1) +28H2κ2. Note that (55) is the convergence rate (8)
+0 0 b(cid:15)(cid:48) 3K
+in Theorem 1.
+(cid:16) (cid:17)
+Error probability analysis. Note that (49) holds with probability at least 1−exp −(cid:15)(cid:48)2(1−(cid:15))K and (52)
+16
+holds with probability 1. Since to arrive at (53) (which leads to our final bound (55)), we used (49) T times
+H
+and (52) (cid:0) T − T(cid:1) times; as a consequence, by union bound, we have that (55) holds with probability at least
+H
+(cid:16) (cid:17)
+1− T exp −(cid:15)(cid:48)2(1−(cid:15))K , which is at least (1−δ), for any δ >0, provided we run our algorithm for at most
+H 16
+T ≤δHexp((cid:15)(cid:48)2(1−(cid:15))K) iterations.
+16
+This concludes the proof of the non-convex part of Theorem 1.
+6 Convergence Proof of Theorem 2
+In this section, we focus on the case when in each local iteration clients compute full-batch gradients (instead
+of computing mini-batch stochastic gradients) in Algorithm 1 and prove Theorem 2. Note that the robust
+accumulated gradient estimation (RAGE) result of Theorem 3 (which is for stochastic gradients) is one of the
+main ingredients behind the convergence analyses of Theorem 1. So, in order to prove Theorem 2, first we
+need to show a RAGE result for full-batch gradients. Note that we can obtain such a result by substituting
+σ =0 in both the parts of Theorem 3; however, this would give a loose bound on the approximation error
+in the second part. In the following, we get a tighter bound (both for RAGE and the convergence rates in
+Theorem 2) by working directly with full-batch gradients. To get a RAGE result for full-batch gradients, we
+do a much simplified analysis than what we did before to prove Theorem 3, and the resulting result is stated
+and proved below in Theorem 4.
+Note that, in order to prove Theorem 3, we showed an existence of a subset S of honest clients (from
+the set K of clients who communicate with the server) from whom the accumulated stochastic gradients are
+well-concentrated, as stated in form of a matrix concentration bound (11) in the first part of Theorem 3. It
+turns out that for full-batch gradients, an analogous result can be proven directly (as there is no randomness
+due to stochastic gradients); and below we provide such a result. Note that Theorem 3 is a probabilistic
+statement, where we show that with high probability, there exists a large subset S ⊆ K of honest clients
+whose stochastic accumulated gradients are well-concentrated. In contrast, in the following result, we can
+deterministically take the set of all honest clients in K to be that subset for which we can directly show the
+concentration.
+First we setup the notation to state our main result on RAGE for full-batch gradients. Let K ⊆ [R]
+t
+denote the subset of clients of size K that are active at any time t ∈ [0 : T]. Let Algorithm 1 generate a
+sequence of iterates {xt : t ∈ [0 : T],r ∈ K } when run with a fixed step-size η satisfying η ≤ 1 while
+r t 5HL
+minimizing a global objective function F :Rd →R, where in any iteration, instead of sampling mini-batch
+stochastic gradients, every honest client takes full-batch gradients from their local datasets. Take any two
+consecutive synchronization indices t ,t ∈I . Note that |t −t |≤H. For an honest client r ∈K ,
+k k+1 T k+1 k tk
+let ∇Ftk,tk+1 := (cid:80)tk+1−1∇F (xt) denote the sum of local full-batch gradients taken by client r between
+r,accu t=tk r r
+time t and t . Note that at iteration t , every honest client r ∈K reports its local parameters xtk+1
+k k+1 k+1 tk r
+to the server, from which server can compute ∇Ftk,tk+1, whereas, corrupt clients may report arbitrary and
+r,accu
+adversarially chosen vectors in Rd. The goal of the server is to produce an estimate ∇F(cid:98)a t
+c
+k
+c
+,
+u
+tk+1 of the average
+accumulated gradients from honest clients as best as possible.
+21
+Theorem 4 (Robust Accumulated Gradient Estimation for Full-Batch Gradient Descent). Suppose an
+(cid:15) fraction of clients who communicate with the server are corrupt. In the setting and notation described
+above, suppose we are given K ≤ R accumulated full-batch gradients ∇F(cid:101)r t
+,
+k
+a
+,
+c
+t
+c
+k
+u
++1,r ∈ K
+tk
+in Rd, where
+∇F(cid:101)r t
+,
+k
+a
+,
+c
+t
+c
+k
+u
++1 =∇F
+r
+t
+,
+k
+a
+,
+c
+t
+c
+k
+u
++1 if the r’th client is honest, otherwise can be arbitrary. Let S ⊆K
+tk
+be the subset of
+all honest clients in K and ∇Ftk,tk+1 := 1 (cid:80) ∇Ftk,tk+1 be the sample average of uncorrupted full-batch
+tk S,accu |S| i∈S i,accu
+gradients. If(cid:15)≤
+4
+1, thenwithprobability1, wecanfindanestimate∇F(cid:98)a t
+c
+k
+c
+,
+u
+tk+1 of∇F
+S
+tk
+,a
+,t
+c
+k
+c
++
+u
+1 inpolynomial-time,
+(cid:13) (cid:13) √
+such that (cid:13)
+(cid:13)
+∇F(cid:98)a t
+c
+k
+c
+,
+u
+tk+1 −∇F
+S
+tk
+,a
+,t
+c
+k
+c
++
+u
+1(cid:13)
+(cid:13)
+≤O(Hκ (cid:15)).
+Proof. First we prove that
+(cid:32) (cid:33)
+λ
+1 (cid:88)(cid:16)
+∇Ftk,tk+1 −∇Ftk,tk+1
+(cid:17)(cid:16)
+∇Ftk,tk+1 −∇Ftk,tk+1
+(cid:17)T
+≤11H2κ2. (56)
+max |S| i,accu S,accu i,accu S,accu
+i∈S
+In view of the alternate characterization the largest eigenvalue given in (14), this is equivalent to showing
+sup
+1 (cid:88)(cid:68)
+∇Ftk,tk+1 −∇Ftk,tk+1,v
+(cid:69)2
+≤11H2κ2, (57)
+|S| i,accu S,accu
+v∈Rd:(cid:107)v(cid:107)=1
+i∈S
+which we prove below. Define Ftk,tk+1 := (cid:80)tk+1−1F(xt), where xt = 1 (cid:80) xt for any t∈[t :t −1].
+accu t=tk K r∈Ktk r k k+1
+Take an arbitrary unit vector v ∈Rd.
+1 (cid:88)(cid:68)
+∇Ftk,tk+1 −∇Ftk,tk+1,v
+(cid:69)2
+|S| i,accu S,accu
+i∈S
+=
+1 (cid:88)(cid:104)(cid:68)
+∇Ftk,tk+1 −∇Ftk,tk+1 +∇Ftk,tk+1 −∇Ftk,tk+1,v
+(cid:69)(cid:105)2
+|S| i,accu accu accu S,accu
+i∈S
+≤
+2 (cid:88)(cid:68)
+∇Ftk,tk+1 −∇Ftk,tk+1,v
+(cid:69)2
++
+2 (cid:88)(cid:68)
+∇Ftk,tk+1 −∇Ftk,tk+1,v
+(cid:69)2
+|S| i,accu accu |S| S,accu accu
+i∈S i∈S
+(Using (cid:107)a+b(cid:107)2 ≤2(cid:107)a(cid:107)2+2(cid:107)b(cid:107)2)
+=
+2 (cid:88)(cid:68)
+∇Ftk,tk+1 −∇Ftk,tk+1,v
+(cid:69)2
++2
+(cid:68)
+∇Ftk,tk+1 −∇Ftk,tk+1,v
+(cid:69)2
+|S| i,accu accu S,accu accu
+i∈S
+(cid:34) (cid:35)2
+=
+2 (cid:88)(cid:68)
+∇Ftk,tk+1 −∇Ftk,tk+1,v
+(cid:69)2
++2
+1 (cid:88)(cid:68)
+∇Ftk,tk+1 −∇Ftk,tk+1,v
+(cid:69)
+|S| i,accu accu |S| i,accu accu
+i∈S i∈S
+≤
+2 (cid:88)(cid:68)
+∇Ftk,tk+1 −∇Ftk,tk+1,v
+(cid:69)2
++
+2 (cid:88)(cid:68)
+∇Ftk,tk+1 −∇Ftk,tk+1,v
+(cid:69)2
+|S| i,accu accu |S| i,accu accu
+i∈S i∈S
+=
+4 (cid:88)(cid:68)
+∇Ftk,tk+1 −∇Ftk,tk+1,v
+(cid:69)2
+|S| i,accu accu
+i∈S
+≤
+4 (cid:88)(cid:13)
+(cid:13)∇Ftk,tk+1 −∇Ftk,tk+1
+(cid:13)
+(cid:13)
+2
+|S| (cid:13) i,accu accu (cid:13)
+i∈S
+(Using Cauchy-Schwarz inequality (cid:104)u,v(cid:105)≤(cid:107)u(cid:107)(cid:107)v(cid:107) and that (cid:107)v(cid:107)=1)
+= 4 (cid:88)
+(cid:13)
+(cid:13) (cid:13)
+tk(cid:88)+1−1
+(cid:0) ∇F (xt)−∇F(xt) (cid:1)
+(cid:13)
+(cid:13) (cid:13)
+2
+(Since Ftk,tk+1 = (cid:80)tk+1−1F(xt))
+|S| (cid:13)
+(cid:13)
+i i (cid:13)
+(cid:13)
+accu t=tk
+i∈S t=tk
+≤ |S 4 | (cid:88) (t k+1 −t k )
+tk(cid:88)+1−1
+(cid:13) (cid:13)∇F i (xt i )−∇F(xt) (cid:13) (cid:13) 2 (Using Jensen’s inequality)
+i∈S t=tk
+22
+≤ 4 |S H | (cid:88)
+tk(cid:88)+1−1
+(cid:16) 2 (cid:13) (cid:13)∇F i (xt i )−∇F(xt i ) (cid:13) (cid:13) 2 +2 (cid:13) (cid:13)∇F(xt i )−∇F(xt) (cid:13) (cid:13) 2 (cid:17)
+i∈S t=tk
+(
+≤
+a) 4H (cid:88)
+tk(cid:88)+1−1
+(cid:16) 2κ2+2L2(cid:13) (cid:13)xt−xt(cid:13)
+(cid:13)
+2 (cid:17)
+|S| i
+i∈S t=tk
+≤8H2κ2+8HL2
+tk(cid:88)+1−1
+1 (cid:88)(cid:13) (cid:13)xt− 1 (cid:88) xt (cid:13) (cid:13) 2 (Since xt = 1 (cid:80) xt)
+|S| (cid:13) i K j(cid:13) K j∈Ktk j
+t=tk i∈S j∈Ktk
+≤8H2κ2+8HL2
+tk(cid:88)+1−1
+1 (cid:88) 1 (cid:88) (cid:13) (cid:13)xt−xt(cid:13)
+(cid:13)
+2 (58)
+|S| K i j
+t=tk i∈S j∈Ktk
+The last inequality follows from the Jensen’s inequality. In (a) we used (6) to bound (cid:107)∇F (xt)−∇F(xt)(cid:107) 2 ≤
+i i i
+κ2 and L-Lipschitz gradient property of F to bound (cid:107)∇F(xt)−∇F(xt)(cid:107)≤L(cid:107)xt−xt(cid:107).
+i i
+Now we bound the last term of (58).
+Lemma 4. For any r,s∈K , if η ≤ 1 , we have
+tk 5HL
+tk(cid:88)+1−1
+(cid:13) (cid:13)xt −xt(cid:13)
+(cid:13)
+2 ≤7η2H3κ2. (59)
+r s
+t=tk
+Proof. Note that we have shown a similar result (but, in expectation) in Lemma 2 (on page 12), which is
+for stochastic gradients. We will simplify that proof to prove Lemma 4, which is for full-batch deterministic
+gradients.
+Take an arbitrary t∈[t :t −1]. Following the proof of Lemma 2 until (23) and removing the factor
+k k+1
+of 3 inside the summation (the factor of 3 appeared because we applied the Jensen’s inequality earlier to
+separate the deterministic gradient term and the stochastic gradient terms) would give
+t−1
+(cid:13) (cid:13)xt r −xt s (cid:13) (cid:13) 2 ≤η2H (cid:88) (cid:13) (cid:13)∇F r (xj r )−∇F s (xj s ) (cid:13) (cid:13) 2 . (60)
+j=tk
+Following the remaining proof of Lemma 2 from (23) until the end and substituting σ =0 gives the desired
+result.
+Substituting the bound from (59) into (58) gives
+1 (cid:88)(cid:68)
+∇Ftk,tk+1 −∇Ftk,tk+1,v
+(cid:69)2
+≤8H2κ2+56H4L2η2κ2
+|S| i,accu S,accu
+i∈S
+56
+≤8H2κ2+ H2κ2 (Substituting η ≤ 1 )
+25 5HL
+≤11H2κ2. (61)
+Note that (61) holds for an arbitrary unit vector v ∈Rd, implying that (57) holds true. Since (57) and (56)
+are equivalent, we have thus shown (56).
+NowapplythesecondpartofTheorem3withS beingthesetofallhonestclients,andgtk,tk+1 =∇Ftk,tk+1,
+i,accu i,accu
+g
+S
+tk
+,
+,
+a
+t
+c
+k
+c
++
+u
+1 = ∇F
+S
+tk
+,a
+,t
+c
+k
+c
++
+u
+1 g
+(cid:98)a
+tk
+cc
+,t
+u
+k+1 = ∇F(cid:98)a t
+c
+k
+c
+,
+u
+tk+1, (cid:15)(cid:48) = 0, and σ
+0
+2 = 11H2κ2. We would get that we can find an
+(cid:13) (cid:13) √
+estimate ∇F(cid:98)a t
+c
+k
+c
+,
+u
+tk+1 of ∇F
+S
+tk
+,a
+,t
+c
+k
+c
++
+u
+1 in polynomial-time, such that (cid:13)
+(cid:13)
+∇F(cid:98)a t
+c
+k
+c
+,
+u
+tk+1 −∇F
+S
+tk
+,a
+,t
+c
+k
+c
++
+u
+1(cid:13)
+(cid:13)
+≤O(Hκ (cid:15)) holds
+with probability 1.
+Theorem 2 can be proved with appropriate modifications in the proof of Theorem 1, and we prove it in
+Appendix C.
+23
+Acknowledgement
+This work was supported by the NSF grants #1740047, #1514731, and by the UC-NL grant LFR-18-548554.
+References
+[AAL18] Dan Alistarh, Zeyuan Allen-Zhu, and Jerry Li. Byzantine stochastic gradient descent. In Neural
+Information Processing Systems (NeurIPS), pages 4618–4628, 2018.
+[BDKD19] Debraj Basu, Deepesh Data, Can Karakus, and Suhas N. Diggavi. Qsparse-local-sgd: Distributed
+SGD with quantization, sparsification and local computations. In NeurIPS, pages 14668–14679,
+2019.
+[BMGS17] Peva Blanchard, El Mahdi El Mhamdi, Rachid Guerraoui, and Julien Stainer. Machine learning
+with adversaries: Byzantine tolerant gradient descent. In NIPS, pages 119–129, 2017.
+[Bot10] L. Bottou. Large-scale machine learning with stochastic gradient descent. In COMPSTAT, pages
+177–186, 2010.
+[CSX17] Yudong Chen, Lili Su, and Jiaming Xu. Distributed statistical machine learning in adversarial
+settings: Byzantine gradient descent. POMACS, 1(2):44:1–44:25, 2017.
+[CWCP18] Lingjiao Chen, Hongyi Wang, Zachary B. Charles, and Dimitris S. Papailiopoulos. DRACO:
+byzantine-resilient distributed training via redundant gradients. In ICML, pages 902–911, 2018.
+[DCM+12] Jeffrey Dean, Greg Corrado, Rajat Monga, Kai Chen, Matthieu Devin, Quoc V. Le, Mark Z.
+Mao, Marc’Aurelio Ranzato, Andrew W. Senior, Paul A. Tucker, Ke Yang, and Andrew Y. Ng.
+Large scale distributed deep networks. In Neural Information Processing Systems (NIPS), pages
+1232–1240, 2012.
+[DD19] Deepesh Data and Suhas N. Diggavi. Byzantine-tolerant distributed coordinate descent. In ISIT,
+pages 2724–2728, 2019.
+[DD20] DeepeshDataandSuhasN.Diggavi.Byzantine-resilientSGDinhighdimensionsonheterogeneous
+data. CoRR, abs/2005.07866, 2020.
+[DK19] Ilias Diakonikolas and Daniel M. Kane. Recent advances in algorithmic high-dimensional robust
+statistics. CoRR, abs/1911.05911, 2019.
+[DKK+19] Ilias Diakonikolas, Gautam Kamath, Daniel Kane, Jerry Li, Ankur Moitra, and Alistair Stewart.
+Robustestimatorsinhigh-dimensionswithoutthecomputationalintractability. SIAMJ.Comput.,
+48(2):742–864, 2019. Preliminary version appeared in FOCS 2016.
+[DSD19a] DeepeshData,LinqiSong,andSuhasN.Diggavi.Dataencodingforbyzantine-resilientdistributed
+optimization. CoRR, abs/1907.02664, 2019.
+[DSD19b] Deepesh Data, Linqi Song, and Suhas N. Diggavi. Data encoding methods for byzantine-resilient
+distributed optimization. In ISIT, pages 2719–2723, 2019.
+[GHYR19] Avishek Ghosh, Justin Hong, Dong Yin, and Kannan Ramchandran. Robust federated learning
+in a heterogeneous environment. CoRR, abs/1906.06629, 2019.
+[HKJ20] LieHe,SaiPraneethKarimireddy,andMartinJaggi. Byzantine-robustlearningonheterogeneous
+datasets via resampling. CoRR, abs/2006.09365, 2020.
+24
+[HKMC19] Farzin Haddadpour, Mohammad Mahdi Kamani, Mehrdad Mahdavi, and Viveck R. Cadambe.
+Local SGD with periodic averaging: Tighter analysis and adaptive synchronization. In Neural
+Information Processing Systems (NeurIPS), pages 11080–11092, 2019.
+[HM19] Farzin Haddadpour and Mehrdad Mahdavi. On the convergence of local descent methods in
+federated learning. CoRR, abs/1910.14425, 2019.
+[K+19] Peter Kairouz et al. Advances and open problems in federated learning. CoRR, abs/1912.04977,
+2019.
+[KKM+19] Sai Praneeth Karimireddy, Satyen Kale, Mehryar Mohri, Sashank J. Reddi, Sebastian U. Stich,
+andAnandaTheerthaSuresh.SCAFFOLD:stochasticcontrolledaveragingforon-devicefederated
+learning. CoRR, abs/1910.06378, 2019.
+[KMR19] Ahmed Khaled, Konstantin Mishchenko, and Peter Richtárik. Tighter theory for local sgd on
+identical and heterogeneous data. CoRR, abs/1909.04746, 2019. To appear in AISTATS 2020.
+[KMRR16] Jakub Konecný, H. Brendan McMahan, Daniel Ramage, and Peter Richtárik. Federated op-
+timization: Distributed machine learning for on-device intelligence. CoRR, abs/1610.02527,
+2016.
+[Kon17] Jakub Konecný. Stochastic, distributed and federated optimization for machine learning. CoRR,
+abs/1707.01155, 2017.
+[LHY+20] Xiang Li, Kaixuan Huang, Wenhao Yang, Shusen Wang, and Zhihua Zhang. On the convergence
+of fedavg on non-iid data. In International Conference on Learning Representations (ICLR),
+2020.
+[LRV16] KevinA.Lai,AnupB.Rao,andSantoshS.Vempala. Agnosticestimationofmeanandcovariance.
+In FOCS, pages 665–674, 2016.
+[LXC+19] Liping Li, Wei Xu, Tianyi Chen, Georgios B. Giannakis, and Qing Ling. RSA: byzantine-
+robust stochastic aggregation methods for distributed learning from heterogeneous datasets. In
+Conference on Artificial Intelligence (AAAI), pages 1544–1551, 2019.
+[LYWZ19] XiangLi,WenhaoYang,ShusenWang,andZhihuaZhang. Communicationefficientdecentralized
+training with multiple local updates. CoRR, abs/1910.09126, 2019.
+[MMR+17] Brendan McMahan, Eider Moore, Daniel Ramage, Seth Hampson, and Blaise Agüera y Arcas.
+Communication-efficient learning of deep networks from decentralized data. In International
+Conference on Artificial Intelligence and Statistics (AISTATS), pages 1273–1282, 2017.
+[MSS19] Mehryar Mohri, Gary Sivek, and Ananda Theertha Suresh. Agnostic federated learning. In
+International Conference on Machine Learning (ICML), pages 4615–4625, 2019.
+[RWCP19] Shashank Rajput, Hongyi Wang, Zachary B. Charles, and Dimitris S. Papailiopoulos. DETOX:
+A redundancy-based framework for faster and more robust gradient aggregation. In NeurIPS,
+pages 10320–10330, 2019.
+[Sa] Christopher De Sa. Simple techniques for improving sgd. CS6787 Lecture 2 – Fall 2017.
+[SCV18] Jacob Steinhardt, Moses Charikar, and Gregory Valiant. Resilience: A criterion for learning in
+the presence of arbitrary outliers. In ITCS, pages 45:1–45:21, 2018.
+[SLS+20] AnitKumarSahu,TianLi,MaziarSanjabi,ManzilZaheer,AmeetTalwalkar,andVirginiaSmith.
+Federated optimization in heterogeneous networks. In Conference on Machine Learning and
+Systems (MLSys), 2020.
+25
+[SX19] Lili Su and Jiaming Xu. Securing distributed gradient descent in high dimensional statistical
+learning. POMACS, 3(1):12:1–12:41, 2019.
+[XKG19a] Cong Xie, Oluwasanmi Koyejo, and Indranil Gupta. SLSGD: secure and efficient distributed
+on-device machine learning. In Machine Learning and Knowledge Discovery in Databases -
+European Conference, ECML PKDD, Proceedings, Part II, pages 213–228, 2019.
+[XKG19b] Cong Xie, Sanmi Koyejo, and Indranil Gupta. Zeno: Distributed stochastic gradient descent
+with suspicion-based fault-tolerance. In International Conference on Machine Learning (ICML),
+pages 6893–6901, 2019.
+[YCRB18] Dong Yin, Yudong Chen, Kannan Ramchandran, and Peter L. Bartlett. Byzantine-robust
+distributed learning: Towards optimal statistical rates. In ICML, pages 5636–5645, 2018.
+[YCRB19] Dong Yin, Yudong Chen, Kannan Ramchandran, and Peter L. Bartlett. Defending against saddle
+point attack in byzantine-robust distributed learning. In ICML, pages 7074–7084, 2019.
+[YJY19] Hao Yu, Rong Jin, and Sen Yang. On the linear speedup analysis of communication efficient
+momentum SGD for distributed non-convex optimization. In ICML, pages 7184–7193, 2019.
+[YYZ19] Hao Yu, Sen Yang, and Shenghuo Zhu. Parallel restarted SGD with faster convergence and less
+communication: Demystifying why model averaging works for deep learning. In Conference on
+Artificial Intelligence (AAAI), pages 5693–5700, 2019.
+A Omitted Details from Section 3.1
+In this section, we prove Claim 1.
+Claim (RestatingClaim1). For any honest client i∈K , we have E(cid:107)Y −E[Y ](cid:107)2 ≤ H2σ2, where expectation
+tk i i b
+is taken over sampling stochastic gradients by client i between the synchronization indices t and t .
+k k+1
+Proof. Take an arbitrary honest client i∈K .
+tk
+E(cid:107)Y −E[Y ](cid:107)2 =E
+(cid:13)
+(cid:13) (cid:13)
+tk(cid:88)+1−1
+(cid:0) Yt−E[Yt] (cid:1)
+(cid:13)
+(cid:13) (cid:13)
+2
+( ≤ a) (t −t )
+tk(cid:88)+1−1
+E(cid:107)Yt−E[Yt](cid:107)2 ( ≤ b) H2σ2 ,
+i i (cid:13) i i (cid:13) k+1 k i i b
+(cid:13) (cid:13)
+t=tk t=tk
+where (a) follows from the Jensen’s inequality; in (b) we used (t −t )≤H and that E(cid:107)Yt−E[Yt](cid:107)2 ≤ σ2
+k+1 k i i b
+for all j ∈[H], which follows from the explanation below:
+(cid:88) (cid:104) (cid:105)
+E(cid:107)Yt−E[Yt](cid:107)2 = Pr Yj =yj,j ∈[t :t−1]
+i i i i k
+ytk,...,yt−1
+i i
+(cid:104) (cid:105)
+×E (cid:107)Yt−E[Yt](cid:107)2 |Yj =yj,j ∈[t :t−1]
+i i i i k
+(c) (cid:88) (cid:104) (cid:105) σ2
+≤ Pr Yj =yj,j ∈[t :t−1] ·
+i i k b
+ytk,...,yt−1
+i i
+σ2
+= .
+b
+Note that Yt ∼Unif (cid:16) F⊗b(cid:0) xt(cid:0) xtk,Ytk,...,Yt−1(cid:1)(cid:1)(cid:17) . So, when we fix the values Ytk =ytk,...,Yt−1 =yt−1,
+i i i i i i i i i i
+the parameter vector xt(cid:0) xtk,Ytk...,Yt−1(cid:1) becomes a deterministic quantity. Now we can use the variance
+i i i i
+(cid:104) (cid:105)
+bound (5) in order to bound E (cid:107)Yt−E[Yt](cid:107)2 |Yj =yj,j ∈[t :t−1] ≤ σ2. This is what we used in
+i i i i k b
+(c).
+26
+B Omitted Details from Section 4
+In this section, we prove Claim 3, Claim 4, and Claim 5.
+Claim (Restating Claim 3). For η < 1, we have
+L
+E(cid:13) (cid:13)xti+1−1−η∇F(xti+1−1)−x∗(cid:13)
+(cid:13)
+2 ≤(1−µη)E(cid:13) (cid:13)xti+1−1−x∗(cid:13)
+(cid:13)
+2
+.
+Proof. Expand the LHS.
+E(cid:13) (cid:13)xti+1−1−x∗−η∇F(xti+1−1) (cid:13)
+(cid:13)
+2 =E(cid:13) (cid:13)xti+1−1−x∗(cid:13)
+(cid:13)
+2 +η2E(cid:13) (cid:13)∇F(xti+1−1) (cid:13)
+(cid:13)
+2
++2ηE(cid:10) x∗−xti+1−1,∇F(xti+1−1) (cid:11) (62)
+We can bound the second term on the RHS using L-smoothness of F, which implies that (cid:107)∇F(x)(cid:107)2 ≤
+2L(F(x)−F(x∗))holdsforeveryx∈Rd;seeFact1onpage30. WecanboundthethirdtermontheRHSusing
+µ-strong convexity of F as follows: (cid:10) x∗−xti+1−1,∇F(xti+1−1) (cid:11) ≤F(x∗)−F(xti+1−1)− µ(cid:107)xti+1−1−x∗(cid:107)2.
+2
+Substituting these back in (62) gives:
+E(cid:13) (cid:13)xti+1−1−x∗−η∇F(xti+1−1) (cid:13)
+(cid:13)
+2 ≤(1−µη)E(cid:13) (cid:13)xti+1−1−x∗(cid:13)
+(cid:13)
+2
+−2η(1−ηL)E(cid:0) F(xti+1−1)−F(x∗) (cid:1) (63)
+Since η < 1, we have (1−ηL)>0. We also have F(xti+1−1)≥F(x∗). Using these together, we can ignore
+L
+the last term in the RHS of (63). This proves Claim 3.
+Claim (Restating Claim 4). For η ≤ 1 , we have
+8HL
+(cid:13) (cid:13)2
+E (cid:13) (cid:13) (cid:13) (cid:13)K 1 (cid:88) (cid:0) ∇F r (xt r i+1−1)−∇F(xti+1−1) (cid:1) (cid:13) (cid:13) (cid:13) (cid:13) ≤2κ2+ 7 3 H 2 (cid:18) σ b 2 +3κ2 (cid:19) .
+(cid:13) r∈Kti (cid:13)
+Proof. By definition, we have xti+1−1 = 1 (cid:80) xti+1−1.
+K r∈Kti
+(cid:13) (cid:13)2
+(cid:13) (cid:13)
+E(cid:13) (cid:13) (cid:13)K 1 (cid:88) (cid:0) ∇F r (xt r i+1−1)−∇F(xti+1−1) (cid:1)(cid:13) (cid:13) (cid:13) ≤ K 1 (cid:88) E(cid:13) (cid:13)∇F r (x r ti+1−1)−∇F(xti+1−1) (cid:13) (cid:13) 2
+(cid:13) r∈Kti (cid:13) r∈Kti
+≤ K 2 (cid:88) (cid:16) E(cid:13) (cid:13)∇F r (xt r i+1−1)−∇F(xt r i+1−1) (cid:13) (cid:13) 2 +E(cid:13) (cid:13)∇F(xt r i+1−1)−∇F(xti+1−1) (cid:13) (cid:13) 2 (cid:17)
+r∈Kti
+(
+≤
+a) 2 (cid:88) (cid:16) κ2+L2E(cid:13) (cid:13)xti+1−1−xti+1−1(cid:13)
+(cid:13)
+2 (cid:17)
+K r
+r∈Kti
+2L2 (cid:88) (cid:13) 1 (cid:88) (cid:13)2
+=2κ2+ E(cid:13)xti+1−1− xti+1−1(cid:13)
+K (cid:13) r K s (cid:13)
+r∈Kti s∈Kti
+≤2κ2+ 2L2 (cid:88) 1 (cid:88) E(cid:13) (cid:13)xti+1−1−xti+1−1(cid:13)
+(cid:13)
+2 (64)
+K K r s
+r∈Kti s∈Kti
+(b) 2L2 (cid:88) 1 (cid:88) (cid:18) (cid:18) σ2 (cid:19)(cid:19)
+≤ 2κ2+ 7H3η2 +3κ2
+K K b
+r∈Kti s∈Kti
+(cid:18) σ2 (cid:19) (c) 7H (cid:18) σ2 (cid:19)
+=2κ2+14L2H3η2 +3κ2 ≤ 2κ2+ +3κ2
+b 32 b
+27
+In (a) we used the gradient dissimilarity bound from (6) to bound the first term and L-Lipschitz gradient
+propertyofF toboundthesecondterm. For(b),notethatwehavealreadybounded(cid:80)ti+1−1E(cid:107)xt −xt(cid:107) 2 ≤
+(cid:16) (cid:17)
+t=ti r s
+7H3η2 σ2 +3κ2 in (22) in Lemma 2. Since each term in the summation is trivially bounded by the
+b
+(cid:13) (cid:13)2 (cid:16) (cid:17)
+same quantity, which we used in (b) to bound E(cid:13)xti+1−1−xti+1−1(cid:13) ≤7H3η2 σ2 +3κ2 . In (c) we used
+(cid:13) r s (cid:13) b
+η ≤ 1 .
+8HL
+(cid:16) (cid:17)
+Claim (Restating Claim 5). If η ≤ 1 , then with probability at least 1−exp −(cid:15)(cid:48)2(1−(cid:15))K , we have
+8HL 16
+(cid:13) (cid:13)2
+E (cid:13) (cid:13) (cid:13) (cid:13) g (cid:98)a ti c , c t u i+1 − K 1 (cid:88) ti(cid:88)+1−1 ∇F r (xt r ) (cid:13) (cid:13) (cid:13) (cid:13) ≤3Υ2+ 8H b 2σ2 +30H2κ2,
+(cid:13) r∈Kti t=ti (cid:13)
+where Υ2 =O (cid:0) σ2((cid:15)+(cid:15)(cid:48)) (cid:1) and σ2 = 25H2σ2 (cid:0) 1+ 4d(cid:1) +28H2κ2.
+0 0 b(cid:15)(cid:48) 3K
+Proof. Let S ⊆K denote the subset of honest clients of size (1−((cid:15)+(cid:15)(cid:48)))K, whose average accumulated
+ti
+gradient between time t and t that server approximates at time t in Theorem 3. Let the average
+i i+1 i+1
+accumulated gradient be denoted by gti,ti+1 = 1 (cid:80) gti,ti+1, where gti,ti+1 = (cid:80)ti+1−1g (xt), and server
+S,accu |S| r∈S r,accu r,accu
+(cid:16)
+t=ti r
+(cid:17)
+r
+approximates it by gti,ti+1. Note that S exists with probability at least 1−exp −(cid:15)(cid:48)2(1−(cid:15))K . To make the
+(cid:98)accu 16
+notation less cluttered, for every r ∈K , define ∇Fti,ti+1 := (cid:80)ti+1−1∇F (xt).
+ti r t=ti r r
+E (cid:13) (cid:13) (cid:13) (cid:13) (cid:13) (cid:13) g (cid:98)a ti c , c t u i+1 − K 1 r (cid:88) ∈Kti ∇F r ti,ti+1 (cid:13) (cid:13) (cid:13) (cid:13) (cid:13) (cid:13) 2 ≤3E (cid:13) (cid:13) (cid:13) (cid:13) (cid:13) g (cid:98)a ti c , c t u i+1 − |S 1 | r (cid:88) ∈S g r ti ,a ,t c i c + u 1 (cid:13) (cid:13) (cid:13) (cid:13) (cid:13) 2
+(cid:13) (cid:13)2
+(cid:13) 1 (cid:88) 1 (cid:88) (cid:13)
+3E(cid:13) gti,ti+1 − ∇Fti,ti+1(cid:13)
+(cid:13)|S| r,accu |S| r (cid:13)
+(cid:13) (cid:13)
+r∈S r∈S
+(cid:13) (cid:13)2
+(cid:13) (cid:13)
++3E(cid:13) (cid:13) 1 (cid:88) ∇Fti,ti+1 − 1 (cid:88) ∇Fti,ti+1 (cid:13) (cid:13) (65)
+(cid:13)|S| r K s (cid:13)
+(cid:13) r∈S s∈Kti (cid:13)
+Now we bound each term on the RHS of (65).
+Bounding the first term on the RHS of (65). We can bound this using the second part of Theorem 3
+as follows (note that given the first part of Theorem 3 is satisfied, the second part provides deterministic
+approximation guarantees, which implies that it also holds in expectation):
+(cid:13) (cid:13)2
+(cid:13) 1 (cid:88) (cid:13)
+E(cid:13)gti,ti+1 − gti,ti+1(cid:13) ≤Υ2, (66)
+(cid:13)(cid:98)accu |S| r,accu(cid:13)
+(cid:13) (cid:13)
+r∈S
+where Υ2 =O (cid:0) σ2((cid:15)+(cid:15)(cid:48)) (cid:1) and σ2 = 25H2σ2 (cid:0) 1+ 4d(cid:1) +28H2κ2.
+0 0 b(cid:15)(cid:48) 3K
+Bounding the second term on the RHS of (65). We can bound this using the variance bound (5).
+E
+(cid:13)
+(cid:13) (cid:13) 1 (cid:88)(cid:0) gti,ti+1 −∇Fti,ti+1 (cid:1)
+(cid:13)
+(cid:13) (cid:13)
+2
+=E
+(cid:13)
+(cid:13) (cid:13)
+ti(cid:88)+1−1
+1 (cid:88)(cid:0) g (xt)−∇F (xt) (cid:1)
+(cid:13)
+(cid:13) (cid:13)
+2
+(cid:13)|S| r,accu r (cid:13) (cid:13) |S| r r r r (cid:13)
+(cid:13) (cid:13) (cid:13) (cid:13)
+r∈S t=ti r∈S
+( ≤ a) (t −t )
+ti(cid:88)+1−1
+E
+(cid:13)
+(cid:13) (cid:13) 1 (cid:88)(cid:0) g (xt)−∇F (xt) (cid:1)
+(cid:13)
+(cid:13) (cid:13)
+2
+i+1 i (cid:13)|S| r r r r (cid:13)
+(cid:13) (cid:13)
+t=ti r∈S
+28
+( ≤ b) H
+ti(cid:88)+1−1
+1 E
+(cid:13)
+(cid:13) (cid:13) (cid:88)(cid:0) g (xt)−∇F (xt) (cid:1)
+(cid:13)
+(cid:13) (cid:13)
+2
+|S|2 (cid:13) r r r r (cid:13)
+(cid:13) (cid:13)
+t=ti r∈S
+( = c) H
+ti(cid:88)+1−1
+|S 1 |2 (cid:88) E(cid:13) (cid:13)g r (xt r )−∇F r (xt r ) (cid:13) (cid:13) 2
+t=ti r∈S
+(d)
+ti(cid:88)+1−1
+1 σ2 (e) 4H2σ2
+≤ H ≤ . (67)
+|S| b 3bK
+t=ti
+In (a) we used the Jensen’s inequality. In (b) used |t −t | ≤ H. In (c) we used (4) (which states that
+i+1 i
+E[g (x)]=∇F (x)holdsforeveryhonestclientr ∈[R]andx∈Rd)togetherwiththatthestochasticgradients
+r r
+at different clients are sampled independently, and then we used the fact that the variance of independent
+random variables is equal to the sum of the variances. Note that Var(g (xt))=E(cid:107)g (xt)−∇F (xt)(cid:107) 2. In
+r r r r r r
+(d) we used the variance bound (5). In (e) we used |S|≥(1−((cid:15)+(cid:15)(cid:48)))K ≥ 3K, where the last inequality uses
+4
+((cid:15)+(cid:15)(cid:48))≤ 1.
+4
+Bounding the third term on the RHS of (65).
+(cid:13) (cid:13)2 (cid:13) (cid:13)2
+E
+(cid:13)
+(cid:13) (cid:13) (cid:13)|S 1 | (cid:88) ∇F r ti,ti+1 − K 1 (cid:88) ∇F s ti,ti+1
+(cid:13)
+(cid:13) (cid:13) (cid:13) =E
+(cid:13)
+(cid:13) (cid:13) (cid:13)
+ti(cid:88)+1−1
+(cid:16) |S 1 | (cid:88) ∇F r (xt r )− K 1 (cid:88) ∇F s (xt s ) (cid:17)
+(cid:13)
+(cid:13) (cid:13) (cid:13)
+(cid:13) r∈S s∈Kti (cid:13) (cid:13) t=ti r∈S s∈Kti (cid:13)
+(cid:13) (cid:13)2
+( ≤ a) H
+ti(cid:88)+1−1
+E
+(cid:13)
+(cid:13) (cid:13) (cid:13)|S 1 | (cid:88) ∇F r (xt r )− K 1 (cid:88) ∇F s (xt s )
+(cid:13)
+(cid:13) (cid:13) (cid:13) (68)
+t=ti (cid:13) r∈S s∈Kti (cid:13)
+In (a), first we used the Jensen’s inequality and then substituted |t −t |≤H. In order to bound (68), it
+i+1 i
+(cid:13) (cid:13)2
+suffices to bound E(cid:13) 1 (cid:80) ∇F (xt)− 1 (cid:80) ∇F (xt)(cid:13) for every t∈[t :t −1]. We bound this in
+(cid:13)|S| r∈S r r K s∈Kti s s (cid:13) i i+1
+the following. Take an arbitrary t∈[t :t −1].
+i i+1
+E (cid:13) (cid:13) (cid:13) (cid:13) (cid:13) (cid:13) |S 1 | r (cid:88) ∈S ∇F r (xt r )− K 1 s (cid:88) ∈Kti ∇F s (xt s ) (cid:13) (cid:13) (cid:13) (cid:13) (cid:13) (cid:13) 2 ≤3E (cid:13) (cid:13) (cid:13) (cid:13) (cid:13) |S 1 | r (cid:88) ∈S (cid:0) ∇F r (xt r )−∇F(xt r ) (cid:1) (cid:13) (cid:13) (cid:13) (cid:13) (cid:13) 2
+(cid:13) (cid:13)2 (cid:13) (cid:13)2
+(cid:13) (cid:13) (cid:13) (cid:13)
++3E(cid:13) (cid:13) (cid:13)|S 1 | (cid:88) ∇F(xt r )− K 1 (cid:88) ∇F(xt s ) (cid:13) (cid:13) (cid:13) +3E(cid:13) (cid:13) (cid:13)K 1 (cid:88) (cid:0) ∇F(xt s )−∇F s (xt s ) (cid:1)(cid:13) (cid:13) (cid:13)
+(cid:13) r∈S s∈Kti (cid:13) (cid:13) s∈Kti (cid:13)
+≤ |S 3 | (cid:88) E(cid:13) (cid:13)∇F r (xt r )−∇F(xt r ) (cid:13) (cid:13) 2 + K 3 (cid:88) E(cid:13) (cid:13)∇F(xt s )−∇F r (xt r ) (cid:13) (cid:13) 2
+r∈S s∈Kti
+(cid:13) (cid:13)2
+(cid:13) (cid:13)
++3E(cid:13) (cid:13) 1 (cid:88)(cid:0) ∇F(xt)−∇F(xt) (cid:1) − 1 (cid:88) (cid:0) ∇F(xt)−∇F(xt) (cid:1)(cid:13) (cid:13)
+(cid:13)|S| r K s (cid:13)
+(cid:13) r∈S s∈Kti (cid:13)
+≤3κ2+3κ2+6E (cid:13) (cid:13) (cid:13) (cid:13) (cid:13) |S 1 | r (cid:88) ∈S ∇F(xt r )−∇F(xt) (cid:13) (cid:13) (cid:13) (cid:13) (cid:13) 2 +6E (cid:13) (cid:13) (cid:13) (cid:13) (cid:13) (cid:13) K 1 s (cid:88) ∈Kti (cid:0) ∇F(xt s )−∇F(xt) (cid:1) (cid:13) (cid:13) (cid:13) (cid:13) (cid:13) (cid:13) 2
+≤6κ2+ 6 (cid:88) E(cid:13) (cid:13)∇F(xt)−∇F(xt) (cid:13) (cid:13) 2 + 6 (cid:88) E(cid:13) (cid:13)∇F(xt)−∇F(xt) (cid:13) (cid:13) 2
+|S| r K s
+r∈S s∈Kti
+≤6κ2+ 6 (cid:88) L2E(cid:13) (cid:13)xt −xt(cid:13) (cid:13) 2 + 6 (cid:88) L2E(cid:13) (cid:13)xt −xt(cid:13) (cid:13) 2
+|S| r K s
+r∈S s∈Kti
+29
+6L2 (cid:88) (cid:13) 1 (cid:88) (cid:13)2 6L2 (cid:88) (cid:13) 1 (cid:88) (cid:13)2
+=6κ2+ E(cid:13)xt − xt(cid:13) + E(cid:13)xt − xt(cid:13)
+|S| (cid:13) r K s(cid:13) K (cid:13) r K s(cid:13)
+r∈S s∈Kti r∈Kti s∈Kti
+≤6κ2+ 6L2 (cid:88) 1 (cid:88) E(cid:13) (cid:13)xt −xt(cid:13) (cid:13) 2 + 6L2 (cid:88) 1 (cid:88) E(cid:13) (cid:13)xt −xt(cid:13) (cid:13) 2
+|S| K r s K K r s
+r∈S s∈Kti r∈Kti s∈Kti
+Substituting this back in (68) gives:
+(cid:13) (cid:13)2
+E
+(cid:13)
+(cid:13) (cid:13) 1 (cid:88) ∇Fti,ti+1 − 1 (cid:88) ∇Fti,ti+1
+(cid:13)
+(cid:13) (cid:13) ≤H
+ti(cid:88)+1−1
+6κ2
+(cid:13)|S| r K s (cid:13)
+(cid:13) r∈S s∈Kti (cid:13) t=ti
+ 
++H
+ti(cid:88)+1−1
+ 6 |S L | 2 (cid:88) K 1 (cid:88) E(cid:13) (cid:13)xt r −xt s (cid:13) (cid:13) 2 + 6 K L2 (cid:88) K 1 (cid:88) E(cid:13) (cid:13)xt r −xt s (cid:13) (cid:13) 2 
+t=ti r∈S s∈Kti r∈Kti s∈Kti
+(a) (cid:18) (cid:18) σ2 (cid:19)(cid:19) (cid:18) (cid:18) σ2 (cid:19)(cid:19)
+≤ 6H2κ2+6HL2 7H3η2 +3κ2 +6HL2 7H3η2 +3κ2
+b b
+(cid:18) σ2 (cid:19)
+=6H2κ2+84L2H4η2 +3κ2
+b
+(b) 21H2σ2
+≤ 10H2κ2+ . (69)
+16b
+(cid:16) (cid:17)
+In (a) we used t −t ≤H and the bound (cid:80)ti+1−1E(cid:107)xt −xt(cid:107) 2 ≤7H3η2 σ2 +3κ2 , which holds when
+i+1 i t=ti r s b
+η ≤ 1 ; we have already shown this in (22) in Lemma 2. In (b) we used η ≤ 1 .
+8HL 8HL
+Substituting the bounds from (66), (67), (69) into (65) gives
+(cid:13) (cid:13)2
+E (cid:13) (cid:13) (cid:13) (cid:13) g (cid:98)a ti c , c t u i+1 − K 1 (cid:88) ∇F r ti,ti+1 (cid:13) (cid:13) (cid:13) (cid:13) ≤3Υ2+ 4H bK 2σ2 +3 (cid:18) 10H2κ2+ 21 1 H 6 2 b σ2(cid:19)
+(cid:13) r∈Kti (cid:13)
+4H2σ2 4H2σ2
+≤3Υ2+ +30H2κ2+
+bK b
+8H2σ2
+=3Υ2+ +30H2κ2,
+b
+where Υ2 =O (cid:0) σ2((cid:15)+(cid:15)(cid:48)) (cid:1) and σ2 = 25H2σ2 (cid:0) 1+ 4d(cid:1) +28H2κ2.
+0 0 b(cid:15)(cid:48) 3K
+This completes the proof of Claim 5.
+Fact 1. Let F :Rd →R be an L-smooth function with a global minimizer x∗. Then, for every x∈Rd, we
+have
+(cid:107)∇F(x)(cid:107)2 ≤2L(F(x)−F(x∗)).
+Proof. By definition of L-smoothness, we have F(y)≤F(x)+(cid:104)∇F(x),y−x(cid:105)+ L(cid:107)y−x(cid:107)2 holds for every
+2
+x,y ∈Rd. Fix an arbitrary x∈Rd and take infimum over y on both sides:
+(cid:18) (cid:19)
+L
+infF(y)≤inf F(x)+(cid:104)∇F(x),y−x(cid:105)+ (cid:107)y−x(cid:107)2
+y y 2
+(a)
+(cid:18) Lt2(cid:19)
+= inf inf F(x)+t(cid:104)∇F(x),v(cid:105)+
+v:(cid:107)v(cid:107)=1 t 2
+(cid:18) (cid:19)
+( = b) inf F(x)− 1 (cid:104)∇F(x),v(cid:105)2
+v:(cid:107)v(cid:107)=1 2L
+30
+(cid:18) (cid:19)
+( = c) F(x)− 1 (cid:107)∇F(x)(cid:107)2
+2L
+The value of t that minimizes the RHS of (a) is t = −1(cid:104)∇F(x),v(cid:105), this implies (b); (c) follows from the
+L
+Cauchy-Schwarz inequality: (cid:104)u,v(cid:105)≤(cid:107)u(cid:107)(cid:107)v(cid:107), where equality is achieved whenever u=v. Now, substituting
+infF(y)=F(x∗) yields the result.
+y
+C Omitted Details from Section 6
+In this section, we prove Theorem 2. This can be proved along the lines of the proof of Theorem 1. Here we
+only write what changes in those proofs. We prove the strongly-convex and non-convex parts of Theorem 2
+in Appendix C.1 and Appendix C.2, respectively.
+C.1 Strongly-convex
+Let K ⊆ [R] denote the subset of clients of size |K | = K that are active at the t’th iteration. For any
+t t
+t∈[t :t −1], let xt = 1 (cid:80) xt denote the average of the local parameters of clients in the sampling
+set K
+i
+.
+i+1 K k∈Kti k
+ti
+Following the proof of the strongly-convex part of Theorem 1 given in Section 4 until (33) gives
+(cid:13) (cid:13)xti+1 −x∗(cid:13) (cid:13) 2 ≤ (cid:16) 1+ µη(cid:17)(cid:13) (cid:13)xti+1−1−η∇F(xti+1−1)−x∗(cid:13) (cid:13) 2
+2
+(cid:13) (cid:13)2
+(cid:18) (cid:19)(cid:13) (cid:13)
++2η η+ µ 2 (cid:13) (cid:13) (cid:13)K 1 (cid:88) (cid:0) ∇F(xti+1−1)−∇F r (xt r i+1−1) (cid:1)(cid:13) (cid:13) (cid:13)
+(cid:13) r∈Kti (cid:13)
+(cid:13) (cid:13)2
++2η
+(cid:18)
+η+ µ 2
+(cid:19)(cid:13)
+(cid:13) (cid:13) (cid:13) F(cid:98) a t c i c ,t u i+1 − K 1 (cid:88)
+ti(cid:88)+1−1
+∇F r (xt r )
+(cid:13)
+(cid:13) (cid:13) (cid:13) (70)
+(cid:13) r∈Kti t=ti (cid:13)
+We have already bounded the first term in Claim 3 (on page 16) by
+(cid:13) (cid:13)xti+1 −η∇F(xti+1−1)−x∗(cid:13) (cid:13) 2 ≤(1−ηµ) (cid:13) (cid:13)xti+1−1−x∗(cid:13) (cid:13) 2 . (71)
+In order to bound the second term, we follow the proof of Claim 4 exactly until (64), and then to bound
+(cid:13) (cid:13)2
+(cid:13)xti+1−1−xti+1−1(cid:13) for every r,s∈K , we use the bound from (59) in Lemma 4 and use η ≤ 1 , which
+(cid:13) r s (cid:13) ti 5HL
+gives
+(cid:13) (cid:13)2
+(cid:13) (cid:13)
+(cid:13) (cid:13) (cid:13)K 1 (cid:88) (cid:0) ∇F r (xti+1−1)−∇F r (xt r i+1−1) (cid:1)(cid:13) (cid:13) (cid:13) ≤3Hκ2. (72)
+(cid:13) r∈Kti (cid:13)
+To bound the third term in the RHS of (70), we can simplify the proof of Claim 5: Firstly, note that with
+full-batch gradients, the variance σ2 becomes zero; secondly, as shown in Theorem 4, the robust estimation of
+accumulated gradients holds with probability 1. Following the proof of Claim 5 with these changes and using
+η ≤ 1 , we get
+5HL
+(cid:13) (cid:13)2
+(cid:13)
+(cid:13) (cid:13) (cid:13) F(cid:98) a t c i c ,t u i+1 − K 1 (cid:88)
+ti(cid:88)+1−1
+∇F r (xt r )
+(cid:13)
+(cid:13) (cid:13) (cid:13) ≤2Υ G 2 D +20H2κ2, (73)
+(cid:13) r∈Kti t=ti (cid:13)
+31
+√
+where Υ =O(Hκ (cid:15)). Substituting all these bounds from (71)-(73) into (70) and simplifying further using
+GD
+(cid:0) 1+ µη(cid:1) (1−µη)≤ (cid:0) 1− µη(cid:1) and (cid:16) η+ 2 (cid:17) ≤ 3 gives
+2 2 µ µ
+(cid:13) (cid:13)xti+1 −x∗(cid:13) (cid:13) 2 ≤ (cid:16) 1− µη(cid:17)(cid:13) (cid:13)xti+1−1−x∗(cid:13) (cid:13) 2 + 6η (cid:0) 2Υ2 +23H2κ2(cid:1) (74)
+2 µ GD
+Note that (74) gives a recurrence at the synchronization indices. Now we give a recurrence at non-
+synchronization indices. Take an arbitrary t ∈ [T] and let t ∈ I be such that t ∈ [t : t − 1];
+i T i i+1
+when H ≥2, such t’s exist. Following the steps that we used to arrive at (39), we get the following (note
+that the last term on the RHS of (39) is zero, as g (xt)=∇F (xt) holds for every r ∈[R] and t∈[T]; this
+r r r r
+will also save us the factor of 2 in the previous term as we don’t have to use the Jensen’s inequality to get to
+(39)):
+(cid:13) (cid:13)xt+1−x∗(cid:13) (cid:13) 2 ≤ (cid:16) 1+ µ 2 η(cid:17)(cid:13) (cid:13)xt−x∗−η∇F(xt) (cid:13) (cid:13) 2 +η (cid:18) η+ µ 2 (cid:19) (cid:13) (cid:13) (cid:13) (cid:13)K 1 (cid:88) (cid:0) ∇F(xt)−∇F r (xt r ) (cid:1) (cid:13) (cid:13) (cid:13) (cid:13) 2 (75)
+(cid:13) (cid:13)
+r∈Kt
+Substituting the bounds from (71) and (72) into (75) and simplifying the coefficients as above, we get
+(cid:13) (cid:13)xt+1−x∗(cid:13) (cid:13) 2 ≤ (cid:16) 1− µη(cid:17)(cid:13) (cid:13)xt−x∗(cid:13) (cid:13) 2 + 3η (3Hκ2) (76)
+2 µ
+Now we have a recurrence at the synchronization indices given in (74) and at non-synchronization indices
+given in (76). Let α= (cid:0) 1− µη(cid:1), β = (cid:0) 2Υ2 +23H2κ2(cid:1), and β = (cid:0)3Hκ2(cid:1). Following the same steps that
+2 1 GD 2 2
+we used to arrive at (42) gives:
+(cid:18) (cid:19)
+(cid:13) (cid:13)xT −x∗(cid:13) (cid:13) 2 ≤αT (cid:13) (cid:13)x0−x∗(cid:13) (cid:13) 2 + 6 µ η 1− 1 α β 2 + 1− 1 αH β 1 (77)
+Since α= (cid:0) 1− µη(cid:1), we have αH = (cid:0) 1− µη(cid:1)H ( ≤ a) exp(−µηH) ( ≤ b) 1− µηH + (cid:16) µηH (cid:17)2 ( ≤ c) 1− µηH + 1 µηH =
+2 2 2 2 2 2 10 2
+1 − 9 µηH. In (a) we used the inequality (1 − 1)x ≤ 1 which holds for any x > 0; in (b) we used
+10 2 x e
+exp(−x)≤1−x+x2 which holds for any x≥0; in (c) we used η ≤ 1 and µ≤L, which imply µηH ≤ 1 .
+5HL 2 10
+Substituting these in (77) gives
+(cid:13) (cid:13)xT −x∗(cid:13) (cid:13) 2 ≤ (cid:16) 1− µ 2 η(cid:17)T (cid:13) (cid:13)x0−x∗(cid:13) (cid:13) 2 + 6 µ η (cid:18) µ 2 η β 2 + 9µ 2 η 0 H β 1 (cid:19)
+≤
+(cid:16)
+1−
+µ
+2
+η(cid:17)T (cid:13) (cid:13)x0−x∗(cid:13)
+(cid:13)
+2
++
+6
+9
+×
+µ2
+20 (cid:18)
+1
+9
+0 β 2 + H
+1
+β 1
+(cid:19)
+≤ (cid:16) 1− µη(cid:17)T (cid:13) (cid:13)x0−x∗(cid:13) (cid:13) 2 + 14 (cid:18) 2Υ G 2 D +25Hκ2 (cid:19) , (78)
+2 µ2 H
+√
+where Υ =O(Hκ (cid:15)). Substituting the value of η = 1 yields the convergence rate (9) in the strongly-
+GD 5HL
+convex part of Theorem 2. Note that (78) holds with probability 1.
+C.2 Non-convex
+Following the proof of the non-convex part of Theorem 1 given in Section 5 until (47) and using η ≤ 1
+5HL
+gives:
+F(xti+1)≤F(xti+1−1)− η (cid:13) (cid:13)∇F(xti+1−1) (cid:13) (cid:13) 2 + 6η (cid:107)C(cid:107)2, (79)
+2 5
+(cid:16) (cid:17) (cid:16) (cid:17)
+where C =
+K
+1 (cid:80)
+r∈Kti
+∇F(xti+1−1)−∇F
+r
+(x
+r
+ti+1−1) − F(cid:98)a t
+c
+i
+c
+,t
+u
+i+1 −
+K
+1 (cid:80)
+r∈Kti
+(cid:80)
+t
+t
+=
+i+
+t
+1
+i
+−1∇F
+r
+(xt
+r
+) .
+32
+Usingtheboundsfrom(72)and(73), togetherwiththeJensen’sinequality, wecanbound(cid:107)C(cid:107)2 asfollows:
+(cid:107)C(cid:107)2 ≤2(3Hκ2)+2(2Υ2 +20H2κ2)≤2(2Υ2 +23H2κ2) (80)
+GD GD
+Substituting the bound from (80) into (79) gives:
+F(xti+1)≤F(xti+1−1)− η (cid:13) (cid:13)∇F(xti+1−1) (cid:13) (cid:13) 2 + 12η (cid:0) 2Υ2 +23H2κ2(cid:1) , (81)
+2 5 GD
+√
+where Υ =O(Hκ (cid:15)).
+GD
+Note that above recurrence in (81) holds only at the synchronization indices. Now we give a recurrence at
+non-synchronization indices.
+We have done a similar calculations in the non-convex part of Theorem 1 in Section 5.
+Take an arbitrary t ∈ [T] and let t ∈ I be such that t ∈ [t : t −1]; when H ≥ 2, such t’s exist.
+i T i i+1
+Following the same steps until (50) and using η ≤ 1 gives:
+5HL
+F(xt+1)≤F(xt)− η (cid:13) (cid:13)∇F(xt) (cid:13) (cid:13) 2 + 6η (cid:107)D(cid:107)2, (82)
+2 5
+where D = 1 (cid:80) (∇F(xt)−∇F (xt)).
+K r∈Kti r r
+Using the bound from (72), we have (cid:107)D(cid:107)2 ≤3Hκ2. Substituting this in (82) gives:
+F(xt+1)≤F(xt)− η (cid:13) (cid:13)∇F(xt) (cid:13) (cid:13) 2 + 6η (3Hκ2) (83)
+2 5
+Now we have a recurrence at the synchronization indices given in (81) and at non-synchronization indices
+given in (83). Adding (81) and (83) from t=0 to T (use (81) for the synchronization indices and (83) for
+the rest of the indices) gives:
+T T T (cid:20) (cid:18) (cid:19)(cid:18) (cid:19)(cid:21)
+(cid:88) F(xt+1)≤ (cid:88) F(xt)− η (cid:88)(cid:13) (cid:13)∇F(xt) (cid:13) (cid:13) 2 + 12η T (cid:0) 2Υ2 +23H2κ2(cid:1) + T − T 3 Hκ2 (84)
+2 5 H GD H 2
+t=0 t=0 t=0
+After rearranging and simplifying the last constant terms, we get:
+1 (cid:88) T (cid:13) (cid:13)∇F(xt) (cid:13) (cid:13) 2 ≤ 2 (cid:2) F(x0)−F(xT+1) (cid:3) + 24 (cid:18) 2Υ G 2 D +25Hκ2 (cid:19) (85)
+T ηT 5 H
+t=0
+Notethatthelasttermin(85)isaconstant. So,itwouldbebesttotakethestep-sizeηtobeaslargeaspossible
+such that it satisfies η ≤ 1 . We take η = 1 . Substituting this in (85) and using F(xT+1)≥F(x∗) gives
+5HL 5HL
+1 (cid:88) T (cid:13) (cid:13)∇F(xt) (cid:13) (cid:13) 2 ≤ 10HL(cid:2) F(x0)−F(x∗) (cid:3) + 24 (cid:18) 2Υ G 2 D +25Hκ2 (cid:19) , (86)
+T T 5 H
+t=0
+√
+where Υ =O(Hκ (cid:15)). This yields the convergence rate (10) in the non-convex part of Theorem 2. Note
+GD
+that (86) holds with probability 1.
+This concludes the proof of Theorem 2.
+33

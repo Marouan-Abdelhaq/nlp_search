@@ -1,0 +1,229 @@
+SocialNetworkAnalysis:FromGraphTheorytoApplicationswithPython
+DMITRIGOLDENBERG,Booking.com,TelAviv
+Socialnetworkanalysisistheprocessofinvestigatingsocialstructuresthroughtheuseofnetworksandgraphtheory.Itcombinesa
+varietyoftechniquesforanalyzingthestructureofsocialnetworksaswellastheoriesthataimatexplainingtheunderlyingdynamics
+andpatternsobservedinthesestructures.Itisaninherentlyinterdisciplinaryfieldwhichoriginallyemergedfromthefieldsofsocial
+psychology,statisticsandgraphtheory.Thistalkwillcoversthetheoryofsocialnetworkanalysis,withashortintroductiontograph
+theoryandinformationspread.ThenwewilldeepdiveintoPythoncodewithNetworkXtogetabetterunderstandingofthenetwork
+components,followed-upbyconstructingandimplyingsocialnetworksfromrealPandasandtextualdatasets.Finallywewillgoover
+codeexamplesofpracticaluse-casessuchasvisualizationwithmatplotlib,social-centralityanalysisandinfluencemaximizationfor
+informationspread.
+CCSConcepts:•Human-centeredcomputing→Socialnetworkanalysis.
+AdditionalKeyWordsandPhrases:SocialNetworkAnalysis,Python
+ACMReferenceFormat:
+DmitriGoldenberg.2019.SocialNetworkAnalysis:FromGraphTheorytoApplicationswithPython.InProceedingsofIsraeliPython
+Conference2019(PyCon’19).ACM,NewYork,NY,USA,9pages.https://doi.org/10.13140/RG.2.2.36809.77925/1
+1 INTRODUCTION
+Socialnetworkanalysisistheprocessofinvestigatingsocialstructuresthroughtheuseofnetworksandgraphtheory.
+Thisarticleintroducesdatascientiststothetheoryofsocialnetworks,withashortintroductiontographtheory,
+informationspreadandinfluencemaximization[6].ItdivesintoPythoncodewithNetworkX[8]constructingand
+implyingsocialnetworksfromrealdatasets.AvideoversionofthisarticleisavailableonPyconYoutubechannel 1.
+2 NETWORKTHEORY
+2.1 NetworkComponents
+We’llstartwithabriefintroinnetwork’sbasiccomponents:nodesandedges.
+Nodes(A,B,C,D,Eintheexample)areusuallyrepresentingentitiesinthenetwork,andcanholdself-properties(such
+asweight,size,positionandanyotherattribute)andnetwork-basedproperties(suchasDegree-numberofneighbours
+orCluster-aconnectedcomponentthenodebelongstoetc.).
+Edgesrepresenttheconnectionsbetweenthenodes,andmightholdpropertiesaswell(suchasweightrepresenting
+thestrengthoftheconnection,directionincaseofasymmetricrelationortimeifapplicable).
+Thesetwobasicelementscandescribemultiplephenomena,suchassocialconnections,virtualroutingnetwork,
+physicalelectricitynetworks,roadsnetwork,biologyrelationsnetworkandmanyotherrelationships.
+1https://www.youtube.com/watch?v=px7ff2_Jeqw
+Permissiontomakedigitalorhardcopiesofpartorallofthisworkforpersonalorclassroomuseisgrantedwithoutfeeprovidedthatcopiesarenot
+madeordistributedforprofitorcommercialadvantageandthatcopiesbearthisnoticeandthefullcitationonthefirstpage.Copyrightsforthird-party
+componentsofthisworkmustbehonored.Forallotheruses,contacttheowner/author(s).
+©2019Copyrightheldbytheowner/author(s).
+ManuscriptsubmittedtoACM
+1
+1202
+beF
+5
+]IS.sc[
+1v41001.2012:viXra
+PyCon’19,May2019,Israel DmitriGoldenberg
+Fig.1. Examplenetworkandcomponents
+2.2 Real-worldnetworks
+Real-worldnetworksandinparticularsocialnetworkshaveauniquestructurewhichoftendiffersthemfromrandom
+mathematicalnetworks.Figure2providesexamplesofcomplexnetworks(takenfrom[10]).
+• SmallWorldphenomenon[12]claimsthatrealnetworksoftenhaveveryshortpaths(intermsofnumber
+ofhops)betweenanyconnectednetworkmembers.Thisappliesforrealandvirtualsocialnetworks(thesix
+handshakestheory)andforphysicalnetworkssuchasairportsorelectricityofweb-trafficrouting.
+• ScaleFree[1]networkswithpower-lawdegreedistributionhaveaskewedpopulationwithafewhighly-
+connectednodes(suchassocial-influences)andalotofloosely-connectednodes.
+• Homophily[13]isthetendencyofindividualstoassociateandbondwithsimilarothers,whichresultsin
+similarpropertiesamongneighbors.
+Fig.2. Complexnetworks(takenfrom[10])
+2
+SocialNetworkAnalysis:FromGraphTheorytoApplicationswithPython PyCon’19,May2019,Israel
+Fig.3. Illustrationofvariouscentralitymeasures(takenfrom[15]).
+2.3 CentralityMeasures
+Highlycentralnodesplayakeyroleofanetwork,servingashubsfordifferentnetworkdynamics.Howeverthe
+definitionandimportanceofcentralitymightdifferfromcasetocase,andmayrefertodifferentcentralitymeasures,as
+depictedinfigure3(takenfrom[15]).
+• Degree—theamountofneighborsofthenode
+• EigenVector[3]/PageRank[16]—iterativecirclesofneighbors
+• Closeness[14]—thelevelofclosenesstoallofthenodes
+• Betweenness[5]—theamountofshortpathgoingthroughthenode
+Differentmeasurescanbeusefulindifferentscenariossuchweb-ranking(page-rank),criticalpointsdetection
+(betweenness),transportationhubs(closeness)andotherapplications.
+3 BUILDINGANETWORK
+Networkscanbeconstructedfromvariousdatasets,aslongaswe’reabletodescribetherelationsbetweennodes.In
+thefollowingexamplewe’llbuildandvisualizetheEurovision2018votesnetwork(basedonofficialdata2)withPython
+networkx[8]package.We’llreadthedatafromexcelfiletoapandasdataframetogetatabularrepresentationofthe
+votes.Sinceeachrowrepresentsallofthevotesofeachcountry,we’llmeltthedatasettomakesurethateachrow
+representsasinglevote(edge)betweentwocountries(nodes).Then,wewillbuildadirectedgraphusingnetworkx
+fromtheedgelistwehaveasapandasdataframe.Finally,we’lltrythegenericmethodtovisualize,asshownincode1
+(fullcodecanbefoundatGithubrepository3)
+2https://eurovision.tv/story/the-results-eurovision-2018-dive-into-numbers
+3https://github.com/dimgold/pycon_social_networkx
+3
+PyCon’19,May2019,Israel DmitriGoldenberg
+Listing1. CreatinganetworkwithNetworkx
+votes_data = pd. read_excel( 'data. xlsx ')
+votes_melted = votes_data .melt(
+[ 'Rank' , 'Running␣order ' , 'Country ' , 'Total '],
+var_name = 'Source␣Country ' ,value_name='points ')
+G = nx.from_pandas_edgelist(votes_melted , source='Source␣Country ' ,
+target='Country ' , edge_attr='points ' , create_using=nx.DiGraph())
+nx.draw_networkx(G)
+3.1 Visualization
+Unfortunatelythebuilt-indrawmethodresultsinaveryincomprehensiblefigureasshowninfigure4.Themethod
+triestoplotahighlyconnectedgraph,butwithnouseful“hints”it’sunabletomakealotofsensefromthedata.We
+willenhancethefigurebydividingandconqueringdifferentvisualaspectsoftheplotwithapriorknowledgethatwe
+haveabouttheentities:
+• Position—eachcountryisassignedaccordingtoitsgeo-position
+• Style—eachcountryisrecognizedbyitsflagandflagcolors
+• Size—thesizeofnodesandedgesrepresentstheamountofpoints
+Plottingofthenetworkcomponentsinpartsisshownincode2.
+Listing2. Networkcomponentsplotting
+Fig.4. nx.draw_networkx(G)outcomeonEurovision2018votesnetwork
+4
+SocialNetworkAnalysis:FromGraphTheorytoApplicationswithPython PyCon’19,May2019,Israel
+for e in G.edges(data=True):
+width = e[2][ 'points ']/24
+style=styles[int(width∗3)]
+nx.draw_networkx_edges(G,pos , edgelist=[e],width=width , style=style ,
+edge_color = RGB(∗ flag_color[e[0]] )
+for node in G.nodes ():
+imsize = G.in_degree(node, weight='points ')
+flag = mpl.image.imread(flags[node])
+(x,y) = pos[node]
+xx,yy = trans ((x,y))
+xa,ya = trans2 ((xx,yy))
+country = plt .axes( [xa−imsize/2.0 , ya−imsize/2.0 , imsize , imsize ])
+country.imshow(flag)
+country. set_aspect( 'equal ')
+country.tick_params (∗∗ tick_params)
+Thenewfigure5isabitmorereadable,andgivingusabriefoverviewofthevotes.Asageneralside-note,plotting
+networksisoftenhardandrequirestoperformthoughtfultradeoffsbetweentheamountofdatapresentedandthe
+communicatedmessage.(YoucantrytoexploreothernetworkvisualizationtoolssuchasGephi,PyvisorGraphChi).
+Fig.5. Step-by-stepEurovisionnetworkplot
+5
+PyCon’19,May2019,Israel DmitriGoldenberg
+4 INFORMATIONFLOW
+Informationdiffusion[17]processmayresembleaviralspreadofadisease,followingcontagiousdynamicsofhopping
+fromoneindividualtohissocialneighbors.Twopopularbasicmodelsareoftenusedtodescribetheprocess:
+LinearThreshold[18]definesathreshold-basedbehavior,wheretheinfluenceaccumulatesfrommultipleneighbors
+ofthenode,whichbecomesactivatedonlyifthecumulativeinfluencepassedacertainthresholdaccordingtothe
+followingformula:
+∑︁
+𝑊
+𝑢𝑣
+≥𝜃
+𝑣
+𝑎𝑐𝑡𝑖𝑣𝑒𝑢
+Suchbehavioristypicaltomovierecommendations,whereatipfromofoneofyourfriendsmighteventuallyconvince
+youtoseeamovie,afterhearingalotaboutit.
+IntheIndependentCascademodel[7],eachofthenode’sactiveneighborshasaprobabilisticandindependent
+chancetoactivatethenode.Thisresemblesaviralvirusspread,suchasinCovid-19,whereeachofthesocialinteractions
+mighttriggertheinfection.
+4.1 InformationFlowExample
+Toillustrateaninformationdiffusionprocesswe’llusetheStormofSwordsnetwork,basedonGameofThronesshow
+characters.Thenetworkwasconstructedbasedonco-appearanceinthe“SongofIceandFirebooks”[2].
+Relyingontheindependentcascademodel,we’lltrytotrackdownrumorspreadingdynamics,whicharequite
+commoninthisshow.SupposeJonSnowknowsnothingatthebeginningoftheprocess,whilehistwoloyalfriends,
+BranStarkandSamwellTarly,knowaveryimportantsecretabouthislife.Let’swatchhowtherumorspreadsunder
+theIndependentCascademodel:
+Listing3. IndependentCascadeCode
+def ind_cascade(G,t , infection_times ):
+max_w = max([e[2][ 'weight '] for e in G.edges(data=True)])
+current_infectious = [n for n in infection_times
+if infection_times[n]==t]
+for n in current_infectious :
+for v in G.neighbors(n):
+if v not in infection_times :
+if G.get_edge_data(n,v)[ 'weight ']>=np.random.random()∗max_w:
+infection_times[v] = t+1
+return infection_times
+inf_times = { 'Bran−Stark ':−1, 'Samwell−Tarly ':−1, 'Jon−Snow' :0}
+for t in range(10):
+plot_G(subG,pos , infection_times ,t)
+inf_times=ind_cascade(subG,t , inf_times)
+6
+SocialNetworkAnalysis:FromGraphTheorytoApplicationswithPython PyCon’19,May2019,Israel
+Table1. Leadingcharacterspercentralitymeasure
+Degree WeightedDegree Pagerank Betweenness
+Name Score Name Score Name Score Name Score
+Tyrion 40 Tyrion 1842 Tyrion 0.052 Robert 0.22
+Robert 37 Cersei 1627 JonSnow 0.048 Brienne 0.12
+Joffrey 35 Joffrey 1518 Cersei 0.046 Rodrik 0.11
+Asshowninfigure6therumorreachesJonatt=1,spreadstohisneighborsinthefollowingtime-stepsandquickly
+spreadsallaroundthenetwork,resultinginbeingapublicknowledge.Suchdynamicsarehighlydependentonmodel
+parameters,whichcandrivethediffusionprocesstodifferentpatterns.
+5 INFLUENCEMAXIMIZATION
+Theinfluencemaximizationproblem[11]describesamarketing(butnotonly)setup,wherethegoalofthemarketeris
+toselectalimitedsetofnodesinthenetwork(seedingset)suchthatwillnaturallyspreadtheinfluencetoasmuch
+nodesaspossible.Forexample,considerinvitingalimitedamountofinfluencerstoaprestigiousproductlaunchevent,
+inordertospreadthewordtotherestoftheirnetwork.Suchinfluencerscanbeidentifiedwithnumeroustechniques,
+suchasusingthecentralitymeasures[4,9]we’vementionedabove.ThemostcentralnodesinGameofThrones
+networkaccordingtodifferentmeasuresarelistedintable1.
+Aswecanseeintable1,someofthecharactersre-occuratthetopofdifferentmeasures,andarealsowellknown
+fortheirsocialinfluenceintheshow.Bysimulatingtheselectionofmostcentralnodesweobservethatpickingasingle
+nodeofthenetworkcanachieveabout50%ofnetworkcoverage—That’showimportantsocialinfluencersmightbe.
+OntheotherhandInfluenceMaximizationisHard.Infactit’sconsideredasanNP-Hardproblem.Manyheuristics
+weredevelopedtofindthebestseedingsetinanefficientcalculation.Tryingabrute-forcemethodtofindthebest
+Fig.6. IndependentCascadediffusionsimulationonGameofThronesnetwork
+7
+PyCon’19,May2019,Israel DmitriGoldenberg
+Fig.7. Networkinfluencecoveragebydifferentmethodsandbudgets
+seedingcoupleinournetworkresultedinspending41minutesandachieving56%ofcoverage(byselectingRobert
+BaratheonandKhalDrogo)-aresultthatwouldbehardtoachievewithcentralityheuristics.
+6 CONCLUSION
+Networkanalysisisacomplexandusefultoolforvariousdomains,inparticularintherapidlygrowingsocialnetworks.
+Theapplicationsofsuchanalysisincludemarketinginfluencemaximization,frauddetectionorrecommendersystems.
+Therearemultipletoolsandtechniquesthatcanbeappliedonnetworkdatasets,buttheyneedtobechosenwisely,
+takingintoaccounttheproblem’sandthenetwork’suniqueproperties.
+REFERENCES
+[1] Albert-LászlóBarabási,RékaAlbert,andHawoongJeong.2000.Scale-freecharacteristicsofrandomnetworks:thetopologyoftheworld-wideweb.
+PhysicaA:statisticalmechanicsanditsapplications281,1(2000),69–77.
+[2] AndrewBeveridgeandJieShan.2016.Networkofthrones.MathHorizons23,4(2016),18–22.
+[3] PhillipBonacich.2007.Someuniquepropertiesofeigenvectorcentrality.Socialnetworks29,4(2007),555–564.
+[4] StephenPBorgatti.2005.Centralityandnetworkflow.Socialnetworks27,1(2005),55–71.
+[5] UlrikBrandes.2001.Afasteralgorithmforbetweennesscentrality.Journalofmathematicalsociology25,2(2001),163–177.
+[6] DmitriGoldenberg,AlonSela,andErezShmueli.2018.Timingmatters:Influencemaximizationinsocialnetworksthroughscheduledseeding.IEEE
+TransactionsonComputationalSocialSystems5,3(2018),621–638.
+[7] JacobGoldenberg,BarakLibai,andEitanMuller.2001.Talkofthenetwork:Acomplexsystemslookattheunderlyingprocessofword-of-mouth.
+Marketingletters12,3(2001),211–223.
+[8] AricA.Hagberg,DanielA.Schult,andPieterJ.Swart.2008.ExploringNetworkStructure,Dynamics,andFunctionusingNetworkX.InProceedings
+ofthe7thPythoninScienceConference,GaëlVaroquaux,TravisVaught,andJarrodMillman(Eds.).Pasadena,CAUSA,11–15.
+[9] OliverHinz,BerndSkiera,ChristianBarrot,andJanUBecker.2011.Seedingstrategiesforviralmarketing:Anempiricalcomparison.Journalof
+Marketing75,6(2011),55–71.
+[10] Chung-YuanHuang,Chuen-TsaiSun,andHsun-ChengLin.2005.Influenceoflocalinformationonsocialsimulationsinsmall-worldnetwork
+models.JournalofArtificialSocietiesandSocialSimulation8,4(2005).
+[11] DavidKempe,JonKleinberg,andÉvaTardos.2003.Maximizingthespreadofinfluencethroughasocialnetwork.InProceedingsoftheninthACM
+SIGKDDinternationalconferenceonKnowledgediscoveryanddatamining.ACM,137–146.
+8
+SocialNetworkAnalysis:FromGraphTheorytoApplicationswithPython PyCon’19,May2019,Israel
+[12] JonKleinberg.2000.Thesmall-worldphenomenon:Analgorithmicperspective.InProceedingsofthethirty-secondannualACMsymposiumon
+Theoryofcomputing.ACM,163–170.
+[13] MillerMcPherson,LynnSmith-Lovin,andJamesMCook.2001.Birdsofafeather:Homophilyinsocialnetworks.Annualreviewofsociology27,1
+(2001),415–444.
+[14] KazuyaOkamoto,WeiChen,andXiang-YangLi.2008.Rankingofclosenesscentralityforlarge-scalesocialnetworks.InInternationalworkshopon
+frontiersinalgorithmics.Springer,186–195.
+[15] DanielOrtiz-Arroyo.2010.Discoveringsetsofkeyplayersinsocialnetworks.InComputationalsocialnetworkanalysis.Springer,27–47.
+[16] LawrencePage,SergeyBrin,RajeevMotwani,andTerryWinograd.1999.ThePageRankcitationranking:Bringingordertotheweb.TechnicalReport.
+StanfordInfoLab.
+[17] PauloShakarian,AbhinavBhatnagar,AshkanAleali,ElhamShaabani,andRuochengGuo.2015.Diffusioninsocialnetworks.Springer.
+[18] PauloShakarian,SeanEyre,andDamonPaulo.2013.Ascalableheuristicforviralmarketingunderthetippingmodel.SocialNetworkAnalysisand
+Mining3,4(2013),1225–1248.
+9

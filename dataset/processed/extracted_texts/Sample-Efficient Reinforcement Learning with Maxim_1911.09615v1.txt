@@ -1,0 +1,443 @@
+Sample-Efficient Reinforcement Learning with
+Maximum Entropy Mellowmax Episodic Control
+MartaSarrico KaiArulkumaran
+DepartmentofBioengineering DepartmentofBioengineering
+ImperialCollegeLondon ImperialCollegeLondon
+mvs918@ic.ac.uk kailash.arulkumaran13@imperial.ac.uk
+AndreaAgostinelli PierreRichemond AnilA.Bharath
+DepartmentofBioengineering DataScienceInstitute DepartmentofBioengineering
+ImperialCollegeLondon ImperialCollegeLondon ImperialCollegeLondon
+aa7918@ic.ac.uk phr17@ic.ac.uk a.bharath@imperial.ac.uk
+Abstract
+Deep networks have enabled reinforcement learning to scale to more complex
+andchallengingdomains,butthesemethodstypicallyrequirelargequantitiesof
+trainingdata. Analternativeistousesample-efficientepisodiccontrolmethods:
+neuro-inspired algorithms which use non-/semi-parametric models that predict
+values based on storing and retrieving previously experienced transitions. One
+waytofurtherimprovethesampleefficiencyoftheseapproachesistousemore
+principledexplorationstrategies. Inthiswork, wethereforeproposemaximum
+entropymellowmaxepisodiccontrol(MEMEC),whichsamplesactionsaccording
+toaBoltzmannpolicywithastate-dependenttemperature. Wedemonstratethat
+MEMECoutperformsotheruncertainty-andsoftmax-basedexplorationmethods
+onclassicreinforcementlearningenvironmentsandAtarigames,achievingboth
+morerapidlearningandhigherfinalrewards.
+1 Introduction
+Despitethesuccessesofdeepreinforcementlearning(DRL)agents[1],thesemodelshaveasample-
+efficiencylimitation: DRLagentstypicallyrequirehundredsoftimesmoreexperiencethanahuman
+toreachsimilarlevels,suggestingalargegapbetweencurrentDRLalgorithmsandtheoperation
+ofthehumanbrain[33,15]. Recently,newneuro-inspiredepisodiccontrol(EC)algorithmshave
+demonstratedrapidlearning,ascomparedtostate-of-the-artDRLmethods[5,27]. Thesealgorithms
+wereinspiredbyhumanlong-termmemory,whichcanbedividedintosemanticandepisodicmemory:
+theformerisresponsibleforstoringgeneralknowledgeandfactsabouttheworld,whilstthelatteris
+relatedtorecollectingourpersonalexperiences[11]. EC,introducedbyLengyel&Dayan[17],is
+inspiredbythisbiologicalepisodicmemory,andmodelsoneoftheseveraldifferentcontrolsystems
+usedforbehaviouraldecisionsassuggestedbyneuroscienceresearch[9]. AsopposedtootherRL
+systems,ECenablesrapidlylearningapolicyfromsparseamountsofexperience.
+Analternativefactorinthesample-efficiencyofRLmethodsistheexistenceofaneffectiveexploration
+policythatisabletocollectdiverseexperiencesfromtheenvironmenttolearnfrom. ThedeepQ-
+network(DQN)[21],anotableDRLalgorithm,aswellascurrentECalgorithms[5,27],usethenaive
+(cid:15)-greedyexplorationpolicy[29]. Moreprincipledexplorationmethods,suchasupperconfidence
+bound(UCB)[3,8]andThompsonsampling(TS)[25],sampleactionsbasedonuncertaintyover
+theirconsequences. Anotheralternativeistosamplefromadistributionoveractions,suchasthe
+Boltzmanndistribution[29],performingimportanceweightingofactionsproportionallytotheGibbs-
+WorkshoponBiologicalandArtificialReinforcementLearning,NeurIPS2019.
+9102
+voN
+12
+]GL.sc[
+1v51690.1191:viXra
+Boltzmannweightsoftheirstate-actionvalues. Yetanothersolutionistouseanalternativeobjective,
+yieldingapolicythatbalancesbetweenmaximisingboththeexpectedreturnanditsentropyover
+states[2,13]. Similarlytosupervisedlearningsettings,thelatterapproachcorrespondstoanentropic
+regularisationoverthesolution[10,22,23,28].
+Inthiswork,wehenceproposemaximumentropymellowmaxepisodiccontrol(MEMEC),which
+combinesECmodelswiththemaximumentropymellowmaxpolicy[2]forprincipledexploration.
+WithoutresortingtomaximumentropyRL,hencedecouplingexplorationbenefitsfromtheobjective,
+weshowthatthissoftmax-basedexplorationstrategycanstillimproveboththesample-efficiency
+andfinalreturnsofECmethods,whileretainingtheirsimple,low-biasMonteCarloreturns. Wetest
+MEMEConawidevarietyofdomains,whereitshowsimprovementsovertheoriginalECmethods,
+aswellasthesameECmethodswithalternativeexplorationpolicies.
+2 Background
+Reinforcement Learning: The RL setting is formalised by Markov decision processes (MDPs).
+MDPsarecharacterisedbyatuple(cid:104)S,A,R,T,γ(cid:105),whereS isthesetofstates,Aisthesetofactions,
+R is a reward function which is the immediate, intrinsic desirability of a certain state, T is the
+transitiondynamics,andγ ∈[0,1)isadiscountfactorthattradesoffthevalueofcurrentandfuture
+rewards. ThegoalofRListofindtheoptimalpolicy,π∗,thatmaximizestheexpectedcumulative
+discountedreturnwhenfollowedfromanystates∈S.
+Q-learning [32], a widely used temporal difference (TD) method, can learn value functions by
+bootstrapping. The DQN uses Q-learning, updating a neural-network-based state-action value
+function,Qπ(s,a;θ),parameterisedbyθ. Asabaselineacrossallenvironmentsweusedastrong
+DRLmethod—theduelingdoubleDQN(D3QN)[21,30,31](furtherdetailedinSection7).
+Figure1: ArchitectureofNEC(forAtarigames): aconvolutionalneuralnetworkreceivesastate
+(4framesofthegame)asinputandoutputsakeyh,anembeddingofthatstate. Lookup: Keyhis
+comparedtothestoredkeysinthedifferentiableneuraldictionary(DND)andthek mostsimilar
+ones(k =3inthiscase)areretrieved. QhiscomputedasaweightedsumoftheQ-valuesassociated
+withtheretrievedkeys.
+EpisodicControl: ECmodelsuseamemorybufferthatstoresstate-actionpairsandtheirassociated
+episodicreturns,(s,a,R),withcontrolperformedbyreplayingthemostrewardingactionsbasedon
+thesimilaritybetweenthecurrentandstoredstates. ImplementationsoftheseECmethodsincludethe
+non-parametricmodel-freeEC(MFEC)[5],andthesemi-parametricneuralEC(NEC)[27]. Further
+detailsonMFECandNECcanbefoundinFigure1andSection7.
+3 ExplorationStrategies
+For both MFEC and NEC, in order to trade off exploration and exploitation in the environment,
+theagentfollowsan(cid:15)-greedypolicy. Thisconsistsofasamplingstrategywheretheagenteither
+uniformlypicksoverallactionswithprobability(cid:15),orinsteadchoosestheactionthatmaximisesthe
+predictedreturn.
+Uncertainty-based: UCB and TS are two exploration strategies that sample actions based on
+predicteduncertaintiesoverthevalueofthereturn,andhencerequirelearningadistributionover
+eachQ-value. Commonpracticeistoassumea(sub-)GaussiandistributionoverQ-values,whichis
+bothconvenientandyieldstightregretlowerbounds[14].
+2
+InUCB,theactionthatischosenateachtimestepistheonethatisthemaximumoverthesumofthe
+value(estimatedmeanofthedistribution)anditsuncertaintyU(s,a)(afunctionoftheestimated
+standarddeviationofthedistribution): argmax Q(s,a)+U(s,a). TScanbeimplementedby
+a∈A
+sampling from a posterior over Q-functions: Q˜(s,a)∼N(Q(s,a),σ˜(Q(s,a)) ∀a∈A, where
+σ˜(Q(s,a))istheestimatedstandarddeviationoftheQ-value,andweareassumingindependence
+ofstate-actionvaluefunctions. Then,theargmaxactionischosengreedilyfromthesampledQ-
+function: argmax Q˜(s,a). The difficulty with these methods is that they require learning a
+a∈A
+probabilisticQ-function,andlearningwell-calibrateduncertaintiesusingneuralnetworksisstilla
+challengingproblem[24]. Furthermore,theactionsaresampledindependentlypertimestep,andso
+theresultingpolicycanbeinconsistentovertime[26].
+Softmax-based: Analternativewhichdoesnothavethesedisadvantagesistouseasoftmax-based
+policy,whichonlyrequireslearningtheexpectedQ-values. ByapplyingtheBoltzmannoperator
+(withinversetemperatureβ)totheQ-values,boltz β (Q) = (cid:80) (cid:80) n i= n i= 1 1 Q e i β e Q βQ i i,onecansampleactions
+fromtheresultingBoltzmanndistributionoveractions,wheremorepromisingactionswillbesampled
+morefrequently. However,theBoltzmannoperatorisnotanon-expansion(itisnotLipschitzwith
+constant<1)forallvaluesofthetemperatureparameter[19];criticaltotheproofofconvergence
+inTDlearning,thenon-expansionpropertyisasufficientconditiontoguaranteeconvergencetoa
+uniquefixedpoint. Asasolution,Asade&Littman[2]introducedthemellowmaxoperator(with
+log(1 (cid:80)n eωQi)
+hyperparameter ω), mm (Q) = n i=1 , as an alternative softmax function for value
+ω ω
+functionoptimisation,whichisanon-expansionintheinfinitynormforalltemperatures.
+Asthemellowmaxoperatorcanreturnthemaximum(asω →∞)orminimum(asω →−∞)ofa
+setofvalues,Asadi&Littman[2]alsoproposedoptimisingωunderamaximumentropyconstraint.
+This results in the maximum entropy mellowmax policy: π (a|s) = eβQ(s,a) , which is
+mm (cid:80) eβQ(s,a)
+a∈A
+of the same functional form as the Boltzmann policy, but where the optimal β can be solved for
+using a root-finding algorithm, such as Brent’s method [6]. The equation which is solved for is
+(cid:80)
+a∈A
+eβ(Q(s,a)−mmω(Q(s,·)))(Q(s,a)−mm
+ω
+(Q(s,·)))=0.
+MEMEC, which uses the maximum entropy mellowmax policy for exploration, hence benefits
+fromsoftmax-basedexploration, whereactionsarechosenasafunctionoftheirestimatedvalue,
+withastate-dependenttemperatureontheBoltzmanndistributionoveractions. Asweshowinour
+experiments,thisapproachoutperformsboththeoriginalECmethodswith(cid:15)-greedyexploration,as
+wellasthealternativeexplorationmethodsoutlinedhere. Wedonottrainonamaximumentropy
+objective,therebypurelyusingthemaximumentropymellowmaxpolicyforexploration.
+4 Experiments
+Environments: WeevaluatedECmethodswithdifferentexplorationstrategies,aswellasaD3QN
+baseline, in three sets of domains. Firstly, CartPole and Acrobot, two classic RL problems, im-
+plemented in OpenAI Gym [7]. Secondly, OpenRoom, and FourRoom, gridworld domains re-
+implementedfromMachadoetal. [20]. Forthesedomainswetrainedtheagentsfor100,000steps,
+andevaluatedthemevery500steps. Thirdly,Pong,SpaceInvaders,Q*bert,Bowling,andMs. Pac-
+Man,videogameswithhigh-dimensionalvisualobservationsfromtheAtariLearningEnvironment
+[4]. Duetocomputationalresourcelimitations,Ataritrainingwasperformedfor5,000,000steps
+(20,000,000frames)forMFECand3,500,000steps(12,000,000frames)forNEC;evaluationwas
+performedevery100,000steps. ForAtarigames,weusestandardpreprocessingforthestate[21],
+andsimilarlyrepeatactionsfor4gameframes(=1agentstep).WeusedGaussianrandomprojections
+forMFEC,asthisobtainedbetterresultsthanthevariationalautoencoderembeddingsintheoriginal
+work[5]. Forallexperimentswereportthemeanandstandarddeviationofeachmethod,calculated
+overthreerandomseeds.
+Hyperparameters: For all EC methods, we primarily used the original hyperparameters [5, 27],
+butchosetokeepsomeconsistentacrossMFECandNECforconsistency. Theseweretousethe
+more robust inverse distance weighted kernel (Equation 5) for MFEC and NEC, k = 11 nearest
+neighbours,andadiscountfactorγ =0.99acrossalldomains. Fortheepisodicmemories,thebuffer
+sizewassetto150fortheroomdomains,10,000fortheclassiccontroldomainsand100,000(due
+tocomputationalresourcelimitations)fortheAtarigames. Weusedtheoriginalhyperparameters
+3
+forD3QNonAtarigames[31],andtunedthemmanuallyfortheotherdomains. Thefulldetailsare
+presentinSection11.
+ωHyperparameter: Theωhyperparameterinthemellowmaxoperatorrequirestuningperdomain
+[2,13]. Withhighω,mm actsasamaxoperatorandwithωapproachingzeromm actsasamean
+ω ω
+operator. Thus,ωshouldnotbetoolarge,astheagentwillactgreedily,nortoosmall,astheagent
+willbehaverandomly. Totunethishyperparameterweimplementedagridsearchwiththefollowing
+ωvalues: fortheGridworldandclassicControlenvironments,ω ∈{5,7,9,12};forAtaridomain,
+ω ∈{10,20,25,30,40,50,60},dependingonthegame. Asinpriorwork[2,13],weshowresults
+forMEMECwiththebestω. Wesetωto7.5forallnon-Ataridomains,25forPong,40forQ*Bert
+andSpaceInvaders,50forBowlingand60forMs. Pac-Man.
+Uncertainty-basedExploration: Forthefivesimplerdomains,wetested(cid:15)-greedy,UCB,TS,Boltz-
+mannandmaximumentropymellowmaxexplorationstrategies. WhileUCBsometimesperformed
+well,TSperformedextremelybadly. Uponcloserexamination,theuncertaintyestimatesoverthe
+Q-valuesascalculatedviathecovariancematrixdefinedovertheinversedistancekernel[27]embed-
+dingsoverthenearestneighbourkeyswerebothrelativelyconstant,meaningthatUCBwascloseto
+(cid:15)-greedywithsmall(cid:15),andrelativelylarge,causingTS’poorperformance(highvariancesamplesfor
+theQ-values). WewereunabletoimprovetheuncertaintyestimatesbyfittingaGaussianprocessto
+thenearestneighboursandoptimisingoverδintheinversedistanceweightedkernel. Theoretically,
+UCBandTSoftenhavesimilarfrequentistregretbounds[16],butourexperimentsdemonstratehow
+dependenttheseareonwell-calibrateduncertainties.1 Duetocomputationallimitations,andasa
+resultoftheseexperimentsonthesimplerdomains,weonlyevaluated(cid:15)-greedyandmellowmax,as
+wellastheD3QNbaseline,ontheAtarigames.
+5 Results
+Figure2: LearningcurveonAcrobotwithMFEC-basedMEMEC.
+Classic Control: All five methods solved Cartpole (see Section 8), as it is a relatively simple
+environmentwhereevenpurelyrandomexplorationcanreachhighlyrewardingstates. InFigure2
+weshowthemethods’performanceinAcrobot,usingbothMFECandNEC.Inbothcases,MEMEC
+outperformedtheotherexplorationstrategies,notonlygettingtohigherfinalrewards,butstartingto
+learnfaster. Thenextbeststrategy—theBoltzmannpolicy—hadhighvarianceoverrandomseeds.
+AsdiscussedpreviouslyinSection4, UCBperformedpoorly, whichwebelieveisduetopoorly
+calibrateduncertainties. TheD3QNbaselinelearnedmoreslowly,andconvergedtoasuboptimal
+policy.
+Gridworld: MFEC performed best with softmax-based exploration strategies, whilst nearly all
+methodstendedtoperformpoorlywithNEC(seeSection9). WhilstMFECwith(cid:15)-greedywasable
+tosolveOpenRoom,ithadhighvarianceforFourRoom. Incontrasttomostofourotherresults,NEC
+performedbestwith(cid:15)-greedy,butstillhadpoorperformanceonFourRoom. D3QNwasnotableto
+consistentlysolveOpenRoom,andfailedtosolveFourRoom.
+Atari: Figure3andTable1showtheperformanceofourmethodcomparedtotheD3QNbaseline
+andtothe(cid:15)-greedypolicywithECforfivedifferentAtarigames. Overall,MEMECoutperformedthe
+othermethodsinthesegamesmostofthetime,notonlyintermsofthemaximumachievedreward,
+butalsointermsofthelearningspeed(seeSection10foradditionallearningcurves). ForSpace
+1Despitethis,wehaveretainedtheresultsforUCBinanyexperimentsconductedwiththismethod.
+4
+Table 1: Final averaged rewards for the Atari games: the values indicate the mean of the last 5
+evaluations,averagedover3initialrandomseeds,andtheircorrespondingstandarddeviations.
+Environments MFEC D3QN NEC D3QN
+(cid:15)-greedy Mellowmax (cid:15)-greedy Mellowmax
+Bowling 62±.8 666888±±±...777 26±12 11±9 9±7 222222±±±111666
+Q*Bert 3896±710 111111666111000±±±888999888 3743±1100 3951±1321 555666555444±±±444888333 1480±271
+Ms.Pac-Man 4178±510 666999666888±±±777888777 2101±56 3900±852 666999999777±±±222555666 1851±98
+SpaceInvaders 672±13 111000222999±±±111555777 737±29 598±110 999111666±±±222222888 756±30
+Pong 111777±±±222 7±4 6±4 −7±.9 −11±.5 −−−555±±±666
+Figure3: LearningcurvesforMFEC-basedMEMECagentson4Atarigames.
+Invaders,Q*BertandMs. Pac-Man,ourMEMECagents,forbothECmethods,outperformedthe
+otheralgorithms,showingmorerapidlearningandhigherfinalscores. ForBowling,MFEC-based
+MEMECperformedsimilarlyto(cid:15)-greedy,andsomewhatworseinPong. NEC-basedagents—either
+with (cid:15)-greedy or mellowmax policies—failed to solve Bowling and Pong. We note that due to
+computationallimitationswewereunabletousetheverylargebuffersizesfromtheoriginalworks,
+whichcanalsoexplaintheinabilitytoreproducetheperformanceof(cid:15)-greedyEC;itremainstobe
+seenifusinglargerbuffersizeswouldsimilarlyimprovetheperformanceofMEMEC.
+6 Discussion
+Inthisworkwehaveinvestigatedtheuseofmoreprincipledexplorationmethodsincombinationwith
+EC,andproposedMEMEC,amethodthataddressesoneofthemainlimitationsofstate-of-the-art
+RLmodels,namely,sampleefficiency. Weshowoverarangeofdomains,includingAtarigames,
+thatMEMECcanreliablyachievehigherrewardsfaster,withstableperformanceacrossseeds.
+One limitation of mellowmax-based policies is its sensitivity to the value of ω across different
+domains[2,13],andthesubsequentsearchesusedtofindoptimalvalues,whichareprohibitivein
+domainssuchasAtari. Implementingmethodstoautomaticallydetermineandtuneω willbean
+importantareaforfuturework.
+References
+[1] KaiArulkumaran,MarcPeterDeisenroth,MilesBrundage,andAnilAnthonyBharath. Deep
+reinforcementlearning: Abriefsurvey. IEEESignalProcessingMagazine,34(6):26–38,2017.
+[2] Kavosh Asadi and Michael L Littman. An alternative softmax operator for reinforcement
+learning. InInternationalConferenceonMachineLearning,pages243–252,2017.
+[3] Peter Auer, Nicolo Cesa-Bianchi, and Paul Fischer. Finite-time analysis of the multiarmed
+banditproblem. MachineLearning,47(2-3):235–256,2002.
+[4] MarcGBellemare, YavarNaddaf, JoelVeness, andMichaelBowling. Thearcadelearning
+environment: An evaluation platform for general agents. Journal of Artificial Intelligence
+Research,47:253–279,2013.
+[5] CharlesBlundell,BenignoUria,AlexanderPritzel,YazheLi,AvrahamRuderman,JoelZLeibo,
+JackRae,DaanWierstra,andDemisHassabis. Model-freeepisodiccontrol. arXivpreprint
+arXiv:1606.04460,2016.
+5
+[6] RichardPBrent. Algorithmsforminimizationwithoutderivatives. CourierCorporation,2013.
+[7] GregBrockman,VickiCheung,LudwigPettersson,JonasSchneider,JohnSchulman,JieTang,
+andWojciechZaremba. OpenAIGym. arXivpreprintarXiv:1606.01540,2016.
+[8] Richard Y Chen, Szymon Sidor, Pieter Abbeel, and John Schulman. UCB exploration via
+Q-ensembles. arXivpreprintarXiv:1706.01502,2017.
+[9] NathanielDDaw,YaelNiv,andPeterDayan.Uncertainty-basedcompetitionbetweenprefrontal
+anddorsolateralstriatalsystemsforbehavioralcontrol. NatureNeuroscience,8(12):1704,2005.
+[10] RoyFox,AriPakman,andNaftaliTishby. Tamingthenoiseinreinforcementlearningviasoft
+updates. InConferenceonUncertaintyinArtificialIntelligence,2016.
+[11] DanielLGreenbergandMiekeVerfaellie. Interdependenceofepisodicandsemanticmemory:
+evidencefromneuropsychology. JournaloftheInternationalNeuropsychologicalSociety,16
+(5):748–753,2010.
+[12] HadoVHasselt. DoubleQ-learning. InAdvancesinNeuralInformationProcessingSystems,
+pages2613–2621,2010.
+[13] SeungchanKim,KavoshAsadi,MichaelLittman,andGeorgeKonidaris. DeepMellow: Re-
+movingtheNeedforaTargetNetworkinDeepQ-Learning. InInternationalJointConference
+onArtificialIntelligence,2019.
+[14] TzeLeungLaiandHerbertRobbins. Asymptoticallyefficientadaptiveallocationrules. Ad-
+vancesinAppliedMathematics,6(1):4–22,1985.
+[15] BrendenMLake,TomerDUllman,JoshuaBTenenbaum,andSamuelJGershman. Building
+machinesthatlearnandthinklikepeople. BehavioralandBrainSciences,40,2017.
+[16] TorLattimoreandCsabaSzepesvári. Banditalgorithms. CambridgeUniversityPress,2018.
+[17] Máté Lengyel and Peter Dayan. Hippocampal contributions to control: the third way. In
+AdvancesinNeuralInformationProcessingSystems,pages889–896,2008.
+[18] Long-JiLin. Self-improvingreactiveagentsbasedonreinforcementlearning,planningand
+teaching. MachineLearning,8(3-4):293–321,1992.
+[19] MichaelLLittmanandCsabaSzepesvári. Ageneralizedreinforcement-learningmodel: Con-
+vergenceandapplications. InInternationalConferenceonMachineLearning,volume96,pages
+310–318,1996.
+[20] MariosCMachado,MarcGBellemare,andMichaelBowling. ALaplacianframeworkfor
+optiondiscoveryinreinforcementlearning. InInternationalConferenceonMachineLearning,
+pages2295–2304,2017.
+[21] VolodymyrMnih, KorayKavukcuoglu, DavidSilver, AndreiARusu, JoelVeness, MarcG
+Bellemare, Alex Graves, Martin Riedmiller, Andreas K Fidjeland, Georg Ostrovski, et al.
+Human-levelcontrolthroughdeepreinforcementlearning. Nature,518(7540):529,2015.
+[22] Ofir Nachum, Mohammad Norouzi, Kelvin Xu, and Dale Schuurmans. Bridging the gap
+betweenvalueandpolicybasedreinforcementlearning. InAdvancesinNeuralInformation
+ProcessingSystems,pages2775–2785,2017.
+[23] Gergely Neu, Anders Jonsson, and Vicenç Gómez. A unified view of entropy-regularized
+Markovdecisionprocesses. arXivpreprintarXiv:1705.07798,2017.
+[24] IanOsband. Riskversusuncertaintyindeeplearning: Bayes, bootstrapandthedangersof
+dropout. InNIPSWorkshoponBayesianDeepLearning,2016.
+[25] IanOsband,DanielRusso,andBenjaminVanRoy. (More)efficientreinforcementlearningvia
+posteriorsampling. InAdvancesinNeuralInformationProcessingSystems,pages3003–3011,
+2013.
+6
+[26] IanOsband,CharlesBlundell,AlexanderPritzel,andBenjaminVanRoy. Deepexplorationvia
+bootstrappedDQN. InAdvancesinNeuralInformationProcessingSystems,pages4026–4034,
+2016.
+[27] AlexanderPritzel,BenignoUria,SriramSrinivasan,AdriaPuigdomenechBadia,OriolVinyals,
+DemisHassabis,DaanWierstra,andCharlesBlundell. Neuralepisodiccontrol. InInternational
+ConferenceonMachineLearning,pages2827–2836,2017.
+[28] PierreHRichemondandBrendanMaginnis. Ashortvariationalproofofequivalencebetween
+policygradientsandsoftQ-learning. arXivpreprintarXiv:1712.08650,2017.
+[29] RichardSSuttonandAndrewGBarto. Reinforcementlearning: Anintroduction. MITpress,
+2018.
+[30] HadoVanHasselt,ArthurGuez,andDavidSilver. Deepreinforcementlearningwithdouble
+Q-learning. InAAAIConferenceonArtificialIntelligence,2016.
+[31] Ziyu Wang, Tom Schaul, Matteo Hessel, Hado Hasselt, Marc Lanctot, and Nando Freitas.
+Duelingnetworkarchitecturesfordeepreinforcementlearning. InInternationalConferenceon
+MachineLearning,pages1995–2003,2016.
+[32] ChristopherJCHWatkinsandPeterDayan. Q-learning. MachineLearning,8(3-4):279–292,
+1992.
+[33] YangYu. Towardssampleefficientreinforcementlearning. InInternationalJointConference
+onArtificialIntelligence,pages5739–5743,2018.
+7
+7 AdditionalBackground
+DeepQ-network: TheDQNusesQ-learning,updatinganeural-networkbasedstate-actionvalue
+function,Q(s,a;θ),parameterisedbyθ.
+ThedeepQ-networkreceivesthestatesasinputandoutputsavectorwiththestate-actionvalues
+Q(s,a,θ) ∀a ∈ A. In order to improve the stability of RL with function approximators, the
+originalauthorsproposedusingexperiencereplay[18]andatargetnetwork[21]. Thetargetnetwork,
+parameterisedbyθ−,isequaltoanolderversionoftheonlinenetworkanditisupdatedeveryτ
+steps. TheTDtargetfortheDQNisdefinedby:
+yDQN =r +γmaxQ(s ,a;θ−). (1)
+t t+1 t+1 t
+a
+Theexperiencereplayisacyclicbufferthatstoresthe(s ,a ,r ,s )transitionsthattheagent
+t t t+1 t+1
+observes. Samplesareretrievedfromituniformlyatregularintervalstotrainthenetwork.
+Therehavebeenseveralproposedextensionsthatimprovethisalgorithm. Firstly,themaxoperator
+presentinQ-learningisresponsibleforboththeselectionandevaluationofstate-actionvalues,and
+hence can result in overoptimistic estimated Q-values. In double Q-learning [12], an alternative
+updateruleforQ-learning,theselectionofactionsandtheevaluationoftheirvaluesareperformedby
+separateestimators. Todoso,twovaluefunctionsareimplemented,parameterisedbyθandθ(cid:48): One
+isusedforthegreedyselectionofactionswhereastheotherisusedtodeterminethecorresponding
+value. ForthedoubleDQNalgorithm,theonlineandtargetnetworksareusedasthetwoestimators
+[30]. Inthiscase,theTDtargetcanbewrittenas:
+yDDQN =r +γQ(s ,argmaxQ(s ,a;θ );θ−). (2)
+t t+1 t+1 t+1 t t
+a
+Another extension based on the DQN is the dueling double DQN (D3QN) algorithm [31]. The
+dueling architecture extends the standard DQN by calculating separate advantage A and value
+θ
+V streams,sharingthesameconvolutionalneuralnetworkasabase. Thisimposestheformthat
+θ
+state-actionvaluescanbecalculatedasoffsets(“advantages”)fromthestatevalue. TheQ-functionis
+thencomputedas:
+1 (cid:88)
+Q (s,a)=V (s)+(A (s,a)− A (s,a(cid:48))). (3)
+θ θ θ |A| θ
+a(cid:48)
+Model-freeepisodiccontrol: InMFEC,theepisodiccontrollerQEC(s,a)isrepresentedbyafixed-
+size table for each action. Each entry corresponds to the state-action pair and the highest return
+everobtainedfromtakingactionafromstates. Wheneveranewstateisencountered,thereturnis
+estimatedbasedontheaverageoftheobservedreturnsfromthek-neareststatess(i):
+(cid:26) 1 (cid:80)k QEC(cid:0) s(i),a (cid:1) if(s,a)∈/ QEC,
+Q(cid:100)EC(s,a)= k i=1 (4)
+QEC(s,a) otherwise.
+Thestate-actionvaluefunctionQEC(s,a)isupdatedattheendofeachepisode,replacingtheleast-
+recently-usedtransitionswithnewstate-actionpairsandtheircorrespondingepisodicreturns. Ifthe
+pair(s,a)alreadyexistsinthetable,thestoredvaluewillbeupdatedtothemaximumofthestored
+returnandthenewlyobservedreturn.
+Forhigh-dimensionalstatespaces,theoriginalauthorsusedGaussianrandomprojectionsinorderto
+reducethedimensionalityofthestatesbeforeusingthemintheepisodiccontroller.
+NeuralEpisodicControl: NECconsistsoftwocomponents: aneuralnetworkforlearningafeature
+mapping,andadifferentiableneuraldictionary(DND)peraction(seeFigure1). Theneuralnetwork
+receivesasinputthestatesandoutputsakey/embeddingh. EachDNDmemoryperformsalookup
+basedonthecurrentkeyh,bycomparingitwiththekeysh alreadystoredintheDND,andretrieving
+i
+thekmostsimilarkeyswiththeircorrespondingQ values. ThepredictedQ(s,a)value,basedonh,
+i
+(cid:80)
+istheweightedsumoftheretrievedQ values: w Q . Eachweightw iscalculatedbyusingthe
+i i i i i
+inversedistanceweightedkernel:
+1
+k(h,h )= . (5)
+i (cid:107)h−h (cid:107)2+δ
+i 2
+8
+UpdatingtheDNDinvolvesappendingnewkey-valuepairstothedictionaryor,forcaseswherethe
+samestatealreadyexistsinthatdictionary,updatingthevalueofQ(s,a)asinQ-learning:
+(cid:16) (cid:17)
+Q ←Q +α R(n)(s,a)−Q , (6)
+i i i
+where α is the learning rate, and R(n) is the n-step return [29] bootstrapped from the predicted
+Q-valuesfromNECduringeachepisode.
+Theparametersoftheneuralnetworkaretrainedbyminimisingthemeansquarederrorlossbetween
+(cid:16) (cid:17)
+thepredictedQ-valuesandthestoredreturns,usingarandomsampleof s ,a ,R(n) tuplesstored
+t t t
+inexperiencereplay[18],inasimilarfashiontotheDQNalgorithm.
+9
+8 CartpoleResults
+(a)MFEC-basedalgorithms. (b)NEC-basedalgorithms.
+Figure4: LearningcurvesonCartpole.
+10
+9 GridWorldResults
+(a)MFEC-basedalgorithms. (b)NEC-basedalgorithms.
+Figure5: LearningcurvesonOpenRoom.
+(a)MFEC-basedalgorithms. (b)NEC-basedalgorithms.
+Figure6: LearningcurvesonFourRoom.
+11
+10 AtariResults
+(a)Q*Bert (b)Pong
+(c)Ms.Pac-Man (d)SpaceInvaders
+Figure7: LearningcurvesforNEC-basedalgorithms.
+Figure8: LearningcurvesforMFEC-basedalgorithmsonPong.
+12
+11 Hyperparameters
+Table2: HyperparametersusedfortheGridworldandtheClassicControlDomains.
+Parametersname D3QN MFEC NEC
+(cid:15)initial 1 1 1
+(cid:15)final 5×10−3 5×10−3 5×10−3
+(cid:15)annealstart(steps) 1 5×103 5×103
+(cid:15)annealend(steps) 5×104 25×103 25×103
+Discountfactorλ 0.99 0.99 0.99
+Rewardclip Yes No No
+Numberofneighboursk — 11 11
+Kerneldeltaδ — 10−3 10−3
+Experiencereplaysize 105 — 105
+RMSproplearningrate 25×10−5 — 7.92×10−6
+RMSpropmomentum 0.95 — 0.95
+RMSprop(cid:15) 10−2 — 10−2
+Trainingstart(steps) 5×103 — 103
+Batchsize 32 — 32
+Targetnetworkupdate(steps) 7.5×103 — —
+Observationprojection — None —
+Projectionkeysize — None —
+Memorylearningrateα — — 0.1
+n-stepreturn — — 100
+Keysize — — 64
+Table3: HyperparametersusedfortheAtarigames.
+Parametersname D3QN MFEC NEC
+(cid:15)initial 1 1 1
+(cid:15)final 10−2 5×10−3 10−3
+(cid:15)annealstart(steps) 1 5×103 5×103
+(cid:15)annealend(steps) 106 25×103 25×103
+Discountfactorλ 0.99 0.99 0.99
+Rewardclip Yes No No
+Numberofneighboursk — 11 11
+Kerneldeltaδ — 10−3 10−3
+Experiencereplaysize 106 — 105
+RMSproplearningrate 25×10−5 — 7.92×10−6
+RMSpropmomentum 0.95 — 0.95
+RMSprop(cid:15) 10−2 — 10−2
+Trainingstart(steps) 12.5×103 — 5×104
+Batchsize 32 — 32
+Targetnetworkupdate(steps) 103 — —
+Observationprojection — Gaussian —
+Projectionkeysize — 128 —
+Memorylearningrateα — — 0.1
+n-stepreturn — — 100
+Keysize — — 128
+13

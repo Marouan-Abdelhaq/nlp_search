@@ -1,0 +1,752 @@
+AcceptedtotheICLR2020workshop: BeyondtabularasainRL(BeTR-RL)
+TIME ADAPTIVE REINFORCEMENT LEARNING
+ChrisReinke
+InriaGrenobleRhoˆne-Alpes
+France
+chris.reinke@inria.fr
+ABSTRACT
+Reinforcementlearning(RL)allowstosolvecomplextaskssuchasGooftenwith
+astrongerperformancethanhumans. However,thelearnedbehaviorsareusually
+fixedtospecifictasksandunabletoadapttodifferentcontexts. Hereweconsider
+the case of adapting RL agents to different time restrictions, such as finishing a
+taskwithagiventimelimitthatmightchangefromonetaskexecutiontothenext.
+WedefinesuchproblemsasTimeAdaptiveMarkovDecisionProcessesandintro-
+duce two model-free, value-based algorithms: the Independent γ-Ensemble and
+then-StepEnsemble. Indifferencetoclassicalapproaches,theyallowazero-shot
+adaptationbetweendifferenttimerestrictions.Theproposedapproachesrepresent
+generalmechanismstohandletimeadaptivetasksmakingthemcompatiblewith
+manyexistingRLmethods,algorithms,andscenarios.
+1 INTRODUCTION
+Modernreinforcementlearning(RL)algorithmsareabletolearnimpressiveskills,suchasplaying
+Chess or Go, often with a higher competency than humans (Silver et al., 2017a;b). Nonetheless,
+thelearnedskillsarehighlyspecific. Givenadifferentcontext,suchastocollectasmanyopponent
+piecesinthenext5movesinsteadofwinningthefullgame, thealgorithmshavetolearntheirbe-
+haviorfromscratchwhichistimeconsuming. Indifference,humansquicklyadapttosuchchanges
+and still show a high performance. The field of transfer learning (Taylor & Stone, 2009; Lazaric,
+2012) investigates how artificial agents can be more adaptive to such changes. One of the areas
+wherehumansareveryadaptiveandwhichisthefocusofthispaperisinthepresenceofchanging
+timerestrictionsforatask. Takeforexampleoneofourdailyroutines,goingoutforlunch. Several
+restaurantsmightexistinourneighborhood. Eachrequiresadifferentamountoftimetoreachand
+providesfoodofdifferentquality. Thegeneralgoalistolearntheshortestwaytoagoodrestaurant,
+butour specificobjectivemight changefromdayto day. Onedaywe havealot oftimefor lunch
+andwewanttogotothebestrestaurant. Anotherdayweareunderstressandwewanttogotothe
+bestrestaurantgivenafixedtimelimit.
+Standard model-free RL algorithms such as Q-learning (Watkins, 1989; Watkins & Dayan, 1992)
+wouldlearnsuchataskbydefiningaspecificrewardfunctionforeachobjective. Forexample, to
+learn the way to the best restaurant the reward function would simply return the food quality of a
+reachedrestaurant. Thus,anagentwilllearntheshortestwaytothebestrestaurant. Iftheagentis
+understressandhastojudgebetweenfoodqualityandtheinvestedtime,therewardfunctioncould
+include a punishment (a negative reward) for each performed step until a restaurant is reached.
+Thus,theagentmightnotgotothebestrestaurant,buttoonethatiscloser.Withthisapproach,each
+objective represents a different task for which a new policy has to be learned. But learning takes
+timeandanobjectivemightchangefromoneepisodetoanother. Moreover,thenumberofpossible
+objectivescanbeinfinite. Asaresult, classicalagentsmightnothavetimetolearnanappropriate
+policyforeachobjective.
+WeformalizethisnewtypeofadaptationscenarioinformofTimeAdaptiveMDPswhichareexten-
+sions of standard MDPs (Sutton & Barto, 1998). Moreover, we propose two modular, model-free
+algorithms,theIndependentγ -Ensemble(IGE)andthen-StepEnsemble(NSE),tosolvesuchsce-
+narios. Both learn several behaviors by their modules in parallel, each for a different time-scale,
+resultinginabehaviorallibrary. Givenachangeintheobjectivethemostappropriatebehaviorfrom
+the library can be selected without need for relearning. Both algorithms are inspired by neurosci-
+1
+0202
+rpA
+81
+]GL.sc[
+1v00680.4002:viXra
+AcceptedtotheICLR2020workshop: BeyondtabularasainRL(BeTR-RL)
+entificfindingsabouthumandecision-makingwhichsuggeststhathumanslearnbehaviorsnotonly
+foraspecifictime-scale,butforseveraltime-scalesinparallel(Tanakaetal.,2007).
+2 TIME ADAPTIVE MDPS
+WeformalizetimeadaptivereinforcementlearningtasksinformofTimeAdaptiveMDPs:
+TA−MDP(A,S,P,R,J) .
+TA-MDPsareextensionsofstandardMDPsbyhavingafiniteorinfinitesetofobjectivefunctions
+J = (f ,f ,...) with f : R×N (cid:55)→ R. Each objective function f (R,T) evaluates the agent’s
+1 2 k k
+performance in regard to its total collected reward R =
+(cid:80)T
+r and the number of time steps T
+t=1 t
+untilitreachedaterminalstateSG ⊂S forasingleepisode. Duringeachepisode,oneobjectiveis
+activeandthegoalistomaximizetheexpectationoveritwhileusingaminimumnumberofsteps:
+minmaxE [f (R,T)] , (1)
+E[T] πk
+πk k
+where π is the policy used for objective f . Objective functions are monotonic increasing with
+k k
+reward R and decreasing with time T, i.e. getting more reward and using less time is better. The
+agentknowswhichobjectivefunctionisactiveanditsmathematicalexpression. Theagentsgoalis
+tolearnapolicytooptimizethisobjective.
+OurrestaurantselectionexamplecanbeformalizedasaTA-MDP.Theagent’slocationdefinesthe
+state space S and its actions A are different movement directions. Restaurants are terminal states
+s ∈ SG. TherewardfunctionR(s)indicatesthefoodqualityofarestaurantafterreachingit. The
+twotimerestrictionsarerepresentedasobjectivefunctions: J = (f ,f ). Thefirstobjectiveisto
+1 2
+gototherestaurantwithhighestfoodquality:f (R,T)=R. Thesecondobjectivesetsastricttime
+1
+limitoffivestepsandgivesalargepunishmentifmorestepsareneeded: f (R,T) = RifT ≤ 5
+2
+otherwise−10. Dependingontheactiveobjective,theoptimalpolicy,i.e.wheretoeat,changes.
+ThemajorchallengeofTA-MDPsisthatthenumberofobjectivefunctionscanbeinfiniteandthat
+eachepisodecanhaveadifferentobjective.Thus,anagentmightexperienceacertainobjectiveonly
+once. Asaresult,itneedstoimmediatelyadapttoit.
+3 ALGORITHMS
+We propose two algorithms to solve TA-MDPs. Both are modular and learn a set of policies
+Π = (π ,...,π ). The policies represent optimal behaviors on different time scales. Given
+1 M
+the active objective f ∈ J of the episode, one of the policies is selected at the start of the
+k
+episode and used throughout it. The goal is to select the most appropriate policy from the set
+Π. To accomplish this, both algorithms learn for each of its policies π the expected total return
+i
+(cid:104) (cid:105)
+R (s ) = E (cid:80)T−tr and the expected number of steps until a terminal state is reached
+i t πi,st k=1 t+k
+T (s ) = E [T]. Basedontheexpectationsthepolicyπ isselectedatthestartoftheepisode
+i t πi,st j
+(t=0)whichmaximizestheactiveobjectivef whileminimizingthenumberofsteps(Eq.1):
+k
+j =argminargmaxf (R (s ),T (s )). (2)
+k i 0 i 0
+Ti πi∈Π
+Animportantrestrictionofthemethodisthattheselectionofthepolicyisdependentonanapprox-
+imation of the expectedoutcome for the objective (Eq. 1)by using the expectations over the total
+returnR(s)andnumberofstepsT(s)asinputtotheobjectivefunction:
+E [f (R(s),T(s))] ≈ f (R (s),T (s))
+πi k
+=
+k
+f (
+i
+E [R
+i
+(s)],E [T(s)]).
+k πi πi
+This approximation is not correct for all types of objective functions but provides often a good
+heuristictoselectanappropriatepolicy.Theproposedalgorithmsareintroducedinthenextsections.
+TheydifferintheirwaytolearnpolicysetΠ.
+2
+AcceptedtotheICLR2020workshop: BeyondtabularasainRL(BeTR-RL)
+3.1 THEINDEPENDENTγ-ENSEMBLE(IGE)
+The Independent γ-Ensemble (IGE) is composed of several modules (Alg. 1). The modules are
+independentQ-functionswithdifferentdiscountfactors:Γ=(γ ,...,γ )withγ ∈(0,1),similar
+1 M i
+totheHordearchitecture(Modayiletal.,2014):
+foreachγ ∈Γ: Q (s ,a ) = E(cid:2) r +γr +γ2r +··· (cid:3)
+γ t t
+=
+E(cid:2)
+r
+t+1
++γm
+t+
+a
+2
+x Q
+t+
+(
+3
+s ,a )
+(cid:3)
+.
+(3)
+t+1 at+1 γ t+1 t+1
+Thefactorγ defineshowstrongfuturerewardisdiscounted. Forlowγ’sthediscountingisstrong
+andtheoptimalbehavioristomaximizerewardsthatcanbereachedonashorttimescale.Whereas,
+forhighγ’sthediscountingisweak,resultinginthemaximizationofrewardsonlongertimescales.
+Asaresult,eachQ-functiondefinesadifferentpolicyπ andtheIGElearnsasetofpoliciesviaits
+γi
+modules: Π = (π ,...,π ). ThevaluesofeachmodulearelearnedbyQ-learning. Because
+IGE γ1 γM
+Q-learningisoff-policythevaluesofallmodulescanbeupdatedbythesameobservations.
+Additionally to the values, each module learns the expected total return R (s) and number of
+γ
+steps to reach a terminal state T (s) for its policy. The expectations are used to select the ap-
+γ
+propriate policy at the beginning of an episode (Eq. 2). Both expectations can be incremen-
+tally formulated similar to the Q-function and also learned in a similar manner. After an ob-
+servation (s ,a ,r ,s ), the expectations of all modules which have action a as greedy action
+t t t t+1 t
+(∀γ ∈Γ: a =argmax Q (s ,a))areupdatedby:
+t a γ t
+R (s )←R (s )+α(r +R (s )−R (s )) , (4)
+γ t γ t t γ t+1 γ t
+T (s )←T (s )+α(1+T (s )−T (s )) , (5)
+γ t γ t γ t+1 γ t
+whereαisthelearningrateparameteralsousedforupdatesofQ-values.
+The IGE has the restriction that it does not guarantee to learn the Pareto optimal set of policies in
+regardtotheexpectedtotalrewardRandnumberofstepsT. TheMDPinFig.1showssuchacase.
+3.2 THEN-STEPENSEMBLE(NSE)
+We propose a second algorithm (Alg. 2), the n-Step Ensemble (NSE), to overcome the restriction
+of the IGE. It is able to learn the set of Pareto optimal policies. Similar to the IGE, the NSE also
+consistsofseveralmodules. Eachmoduleisresponsibletooptimizetheexpectedtotalrewardfor
+n number of steps into the future with N = (1,...,M). Each module learns a value function
+representingtheoptimaltotalrewardthatcanbereachedinnsteps:
+foreachn∈N : Q (s ,a )=E[r +r +...+r ] . (6)
+n t t t+1 t+2 t+n
+(a)ExampleMDP (b)Choices (c)γ-Curve
+-2 -2 -2 -2 -2 -2 -2 -2 -2 -2
+-2 -2 -2 -2 -1 -1 -2 -2
+-2 -2 -2 -1 -2 -1 -2 -2 -2 -2
+-2 -2 -2 -1 -1 -1 -2 -2 -2 -2
+-2 -2 -2 -2 -2 -2 -2 -2 -2
+-1 -1 -1 -1 -1 -2 -2 -2
+-2 -2 -1 -2 -2 -1 -2 -2 -2 -2
+-2 -2 -1 -2 -2 -1 -1 -1 -2 -2
+-2 -2 -1 -2 -2 -2 -1 -1
+-2 -2 -2 -2 -2 -2 -2 -2 -2
+Figure1: (a)2Dgrid-worldwith7terminalstates(g ,...,g )andonestartstates . Theagenthas
+1 7 0
+4actions(movenorth,east,south,west)andmoveswithPr=0.1inarandomdirection.Transitions
+resultinnegativerewarduntilaterminalstateisreached. (b)Iftheagentstartsins ithasseveral
+0
+choices each represented as the expected reward R and number steps T of the optimal policies to
+reacheachterminalstate. Allchoicesexceptgoingtog arepartoftheParetooptimalchoiceset.
+3
+(c)DiscountedvaluesV (s ,g)foreachchoice(brokenlines). Thesolidlinerepresentsthevalues
+γ 0
+theIGElearns(max V (s ,g)). TheIGEdoesnotlearnpoliciestogotog andg .
+g γ 0 3 4
+3
+AcceptedtotheICLR2020workshop: BeyondtabularasainRL(BeTR-RL)
+(cid:26)
+R |T ≤5
+f =R f = f = R
+1 7 −10 |T >5 8 T
+Figure2: Resultsfortheoutcomeoftheobjectivefunctionf (R,T)perepisodeshowthattheNSE
+k
+andIGEadaptimmediatelytonewobjectivesaftertheinitiallearningphase. 3ofthe9phasesare
+shownwhereeachphasehasadifferentobjectivefunction(Fig.4intheappendixlistsallresults).
+Theplotsshowthemeanandstandarddeviationover100runsperalgorithm.
+Oneextraconditionisthataterminalstateshouldbereachedwithinnsteps. Ifthisisnotpossible,
+then the policy is learned which reaches a terminal state with a minimal number of steps. Similar
+tothestandardQ-functionthevaluescanbeincrementallydefinedbythesumoftheimmediateex-
+pectedrewardr andtheQ-valuefortheoptimalactiona∗ ofthenextstates . Indifference,
+t+1 n−1 t+1
+theQ-valueforthenextstateisfromthemoduleresponsibletooptimizethetotalrewardforn−1
+steps(Harada,1997):
+Q (s ,a ) = E[r ]
+Q 1 (s t ,a t ) = E(cid:2) r t+1 +Q (s ,a∗ (s )) (cid:3) . (7)
+n t t t+1 n−1 t+1 n−1 t+1
+ThelearningoftheQ-valuesQ ,expectedrewardR ,andnumberofstepsT foreachmoduleis
+n n n
+donebyQ-learningsimilartotheIGE.AfteratransitionisobservedallmodulesN = (1,...,M)
+areupdatedinparallel.
+4 EXPERIMENTAL EVALUATION
+The IGE and NSE were compared to classical Q-learning in a stochastic grid-world environment
+(Fig. 1). It consists of 7 terminal states. For each terminal state exists an optimal path from the
+start state for which the agent receives a punishment of −1 per step (otherwise −2). Reaching a
+terminalstateresultsinapositiverewardwheremoredistantgoalsresultinahigherreward. Agents
+hadtoadaptto9differentobjectivesJ = (f ,...,f )(seeFig.4fortheirformulation). Foreach
+1 9
+objective 6000 episodes were performed to evaluate how long the agents need to adapt before the
+taskswitchedtothenextobjective.
+TheclassicalQ-learningalgorithmlearnedforeachobjectiveanindependentQ-function. Itsreward
+functionwasdefinedbytheoutcomeoftheactiveobjectivefunctionf aftertheagentreachedater-
+k
+minalstate.ThisformulationdoesnotfulfilltheMarkovassumptionbecausetherewardforreaching
+aterminalstatedependsonthewholetrajectory. Asaresult,theMDPispartiallyobservableforthe
+agent. Toreducethisproblemthecurrenttimesteptwasusedasanextrastatedimensionforthe
+classicalQ-learningagent,improvingitsperformance.
+TheresultsshowthattheIGEandNSEoutperformedclassicalQ-learningintermsoftheiradapta-
+tiontonewobjectives(Fig.2and4). Theywereabletoadaptimmediatleytoanewobjectiveafter
+theylearnedtheirsetofpoliciesduringtheinitialphase. Q-learninghadtolearnthetaskforeach
+objectivefromscratchneedingapproximately3000episodesperobjective.
+5 CONCLUSION
+WeintroducedTimeAdaptiveMDPs.TheyconfrontRLagentswiththeproblemofquicklyadapting
+to changing objectives in terms of time restrictions. Two algorithms are proposed (IGE and NSE)
+4
+AcceptedtotheICLR2020workshop: BeyondtabularasainRL(BeTR-RL)
+which learn a behavioral library of policies that are optimal on different time scales. The agents
+canswitchimmediatelybetweenthesepoliciestoadapttonewandunseenobjectivesallowingzero-
+shotadaptation. TheNSEhastheadvantageovertheIGEtolearnthePareto-optimalsetofpolicies
+in terms of expected reward and time. Nonetheless, the NSE is dependend on discrete time steps
+whereastheIGEcanbeusedforcontinuoustimeMDPs(Doya,2000). Althoughweusedforboth
+algorithmstabularQ-learningtolearnthevaluesoftheirmodules,thegeneralschemeofthemethods
+isindependentofthischoice.Thealgorithmscanalsobecombinedwithactor-criticorpolicysearch
+algorithmsanddifferentfunctionapproximatorssuchasdeepnetworks. Thisallowsthemethodsto
+tacklevariousproblemscenarioswhichweplantoshowinfutureresearch.
+ACKNOWLEDGMENTS
+IwanttothankKenjiDoyaandEijiUchibefortheirhelpfulsupervisionofthisproject. Moreover,I
+wanttothankPierre-YvesOudeyerandClementMoulin-Frierfortheirhelpfulcomments.
+REFERENCES
+Kenji Doya. Reinforcement learning in continuous time and space. Neural Computation, 12(1):
+219–245,2000. ISSN0899-7667.
+DaishiHarada. Reinforcementlearningintime. InAAAI/IAAI,pp.577–582,1997.
+AlessandroLazaric. Transferinreinforcementlearning: Aframeworkandasurvey. InReinforce-
+mentLearning,pp.143–173.Springer,2012.
+Joseph Modayil, Adam White, and Richard S Sutton. Multi-timescale nexting in a reinforcement
+learningrobot. AdaptiveBehavior,22(2):146–160,2014.
+IanOsbandandBenjaminVanRoy. Onoptimisticversusrandomizedexplorationinreinforcement
+learning. arXivpreprintarXiv:1706.04241,2017.
+ChrisReinke,EijiUchibe,andKenjiDoya. Averagerewardoptimizationwithmultiplediscounting
+reinforcementlearners. InInternationalConferenceonNeuralInformationProcessing,pp.789–
+800.Springer,2017.
+HerbertRobbinsandSuttonMonro. Astochasticapproximationmethod. Theannalsofmathemati-
+calstatistics,pp.400–407,1951.
+DavidSilver,ThomasHubert,JulianSchrittwieser,IoannisAntonoglou,MatthewLai,ArthurGuez,
+MarcLanctot,LaurentSifre,DharshanKumaran,ThoreGraepel,etal.Masteringchessandshogi
+byself-playwithageneralreinforcementlearningalgorithm. arXivpreprintarXiv:1712.01815,
+2017a.
+DavidSilver,JulianSchrittwieser,KarenSimonyan,IoannisAntonoglou,AjaHuang,ArthurGuez,
+Thomas Hubert, Lucas Baker, Matthew Lai, Adrian Bolton, et al. Mastering the game of go
+withouthumanknowledge. Nature,550(7676):354–359,2017b.
+RichardSSuttonandAndrewGBarto. Reinforcementlearning: Anintroduction. CambridgeUniv
+Press,1998.
+Saori C Tanaka, Nicolas Schweighofer, Shuji Asahi, Kazuhiro Shishida, Yasumasa Okamoto,
+ShigetoYamawaki, andKenjiDoya. Serotonindifferentiallyregulatesshort-andlong-termpre-
+dictionofrewardsintheventralanddorsalstriatum. PLoSOne,2(12):e1333,2007.
+MatthewETaylorandPeterStone. Transferlearningforreinforcementlearningdomains:Asurvey.
+JournalofMachineLearningResearch,10(Jul):1633–1685,2009.
+JohnNTsitsiklis. Asynchronousstochasticapproximationandq-learning. MachineLearning, 16
+(3):185–202,1994.
+Christopher JCH Watkins. Learning from delayed rewards. PhD thesis, University of Cambridge
+England,1989.
+ChristopherJCHWatkinsandPeterDayan. Q-learning. Machinelearning,8(3-4):279–292,1992.
+5
+AcceptedtotheICLR2020workshop: BeyondtabularasainRL(BeTR-RL)
+A ALGORITHMIC DETAILS
+A.1 THEINDEPENDENTγ-ENSEMBLE(IGE)
+The IGE (Alg. 1) learns a set of policies Π = (π ,...,π ) via independent modules called
+IGE γ1 γM
+γ-modules. EachmoduleiscomprisedofaQ-function(Eq.3)withadistinctdiscountfactorγ ∈
+i
+(0,1). The number of modules M and their discount parameters Γ = (γ ,...,γ ) are meta-
+1 M
+parametersofthealgorithm. TheQ-valuesofeachmodulearelearnedbyQ-learning, i.e.afteran
+observationof(s ,a ,r ,s )thevaluesofallmodulesinΓareupdatedby:
+t t t t+1
+Q (s ,a )←Q (s ,a )+α(r +maxQ (s ,a)−Q (s ,a )), (8)
+γ t t γ t t t+1 γ t+1 γ t t
+a
+where α ∈ (0,1) is the learning rate. Because of Q-learning’s off-policy nature, the values of all
+modulescanbeupdatedbythesameobservations.
+Moreover,eachmodulelearnsforitspolicyπ theexpectedtotalreward:
+i
+(cid:104) (cid:105)
+R (s ) = E (cid:80)T−tr
+i t πi,st k=1 t+k
+= E [r ]+...+E [r ]
+= E πi,st [r t+1 ]+E [R πi, ( s s t T )] ,
+πi,st t+1 πi,st i t+1
+andtheexpectednumberofstepsuntilaterminalstateisreached:
+T (s ) = E [T]
+i t πi,st(cid:104)
+(cid:105)
+= E
+(cid:80)T
+1
+πi,st k=t
+= 1+Pr(t+2|π )+···+Pr(T|π )
+i i
+= 1+E [T(s )] .
+πi,st t+1
+Algorithm1:Independentγ-Ensemble(IGE)
+Input:
+Discountfactors: Γ=(γ ,...,γ )withγ ∈(0,1)
+1 M i
+Learningrate: α∈[0,1]
+Explorationrate: (cid:15)∈[0,1]
+initializeQ (s,a),R (s),andT (s)tozero
+γ γ γ
+repeat(foreachepisode)
+initializestates,andobjectivef
+k
+// select as active module γ˜ a module that maximizes f
+k
+Γ˜ ←argmax f (R (s),T (s))
+γ k γ γ
+γ˜ ←argmin T (s)
+γ∈Γ˜ γ
+repeat(foreachstepinepisode)
+// choose action (cid:15)-Greedy
+(cid:26)
+argmax Q (s,a) |with Pr=1−(cid:15)
+a← a γ˜
+randomaction |with Pr=(cid:15)
+r,s(cid:48) ←takeactiona,observeoutcome
+forallγ ∈Γdo
+δ =r+γmax Q (s(cid:48),a(cid:48))−Q (s,a)
+Q a(cid:48) γ γ
+Q (s,a)←Q (s,a)+αδ
+γ γ Q
+// update R and T only if the greedy action was used
+ifa=argmax Q (s,a¯)then
+a¯ γ
+R (s)←R (s)+α(r+R (s(cid:48))−R (s))
+γ γ γ γ
+T (s)←T (s)+α(1+T (s(cid:48))−T (s))
+γ γ γ γ
+end
+end
+s←s(cid:48)
+untilsisterminal-state
+untiltermination
+6
+AcceptedtotheICLR2020workshop: BeyondtabularasainRL(BeTR-RL)
+BotharelearnedviaaRobbins-Monroapproachforstochasticapproximation(Robbins&Monro,
+1951)definedinEq.4and5.
+ThepolicythattheIGEfollowsisdefinedbyoneofitsmodulesγ˜. Itisselectedatthebeginningof
+anepisodewiththegoaltomaximizetheobjectivefunctionaccordingtoEq.1. Themodulespolicy
+is then used for the action selection during the whole episode. An (cid:15)-Greedy approach is used for
+exploration.
+TheIGEhastworestrictions. First,itdoesnotguaranteetolearntheParetooptimalsetofpolicies.
+Second,itcannothandleepisodicenvironmentswheretheagentisabletocollectpositiverewards
+bycirculartrajectoriesthatdonoendinaterminalstate.
+ThefirstrestrictionoftheIGEisthatitisnotguaranteedtolearntheParetooptimalsetregarding
+theexpectedrewardandtime. TheMDPusedfortheexperimentsshowssuchacase(Fig.1,a). The
+optimaltrajectorytogoalg ispartoftheParetooptimalset(Fig.1,b),butitisnotpartoftheIGE
+4
+policy set (Fig. 1, c). As a result, the IGE cannot find the optimal policy for objective f that has
+7
+g asoptimalsolution. Nonetheless,optimalitycanbeguaranteedforasubsetofgoalformulations.
+4
+TheIGEconvergestotheoptimalpolicyforobjectivesthatmaximizetheexponentiallydiscounted
+(cid:104) (cid:105)
+rewardsumE (cid:80)T−1γtr .Dependingonthediscountfactorγ,theQ-valuesofthecorresponding
+t=0 t
+γ module will converge to the optimal value function (Watkins & Dayan, 1992; Tsitsiklis, 1994).
+(cid:104) (cid:105)
+ThisincludesalsothecaseofmaximizingtheexpectedtotalrewardsumE (cid:80)T−1r ,becausethis
+t=0 t
+is the same objective as for γ = 1. Most interestingly, it is possible to prove the convergence of
+the IGE upon the optimal policy for the average reward R in MDPs which are deterministic and
+T
+where non-negative reward is only given if a terminal state is reached (Reinke et al., 2017). For
+other objectives, the IGE can be viewed as a heuristic that does not guarantee optimality, but that
+producesoftengoodresultswiththeabilitytoimmediatelyadapttoanewobjective.
+AsecondrestrictionoftheIGEexistsinenvironmentswherecyclictrajectoriesmaximizethedis-
+counted reward sum and which do not end in a terminal state. Fig. 3 illustrates such a MDP. The
+a)Circular,positiverewardMDP
+b)Q-Valuesandexpectedrewardsandnumberofstepsforeachstateandaction
+s s s
+Q a b c
+n a a a a a
+L a b c R
+Q 0 0 2 0 1
+1
+Q 0 0 2 1 1
+2
+Q 0 0 3 1 1
+3
+Q 0 0 5 1 1
+4
+s s s s s s
+R a b c T a b c
+n a a a a a n a a a a a
+L a b c R L a b c R
+R 0 0 3 1 1 T 1 2 3 2 1
+1 1
+R 0 0 3 1 1 T 1 2 3 2 1
+2 2
+R 0 0 3 1 1 T 1 2 3 2 1
+3 3
+R 0 0 5 1 1 T 1 2 4 2 1
+4 4
+Figure3: MDPexampleforwhichtheIGEisnotabletolearnpoliciesthatreachtheterminalstates
+(g , g ). Theagentstartsinstates . Itcaneithergoleft(a ), right(a ), orstay(a ). Goingleft
+L R b a c b
+resultsinafinalrewardof0,whereasgoingrightresultsin1. Bothwaysneed2stepstoreachtheir
+terminalstate. Forthenumberofstepsn = 1andn = 2theactiontostay(a )hasthemaximum
+B
+Q-value. TheNSEusesinformationfromT andR toidentifyactiona asthegreedyaction.
+n n b
+7
+AcceptedtotheICLR2020workshop: BeyondtabularasainRL(BeTR-RL)
+agentstartsinstates ,andcanstayinthisstateviaactiona receivingarewardof2foreverystep,
+b b
+oritcango2stepslefttoendinterminalstateg andreceivenoreward,oritcango2stepsright
+L
+to finish in terminal state g receiving a reward of 1. For this MDP the optimal policy for each
+R
+γ ∈ (0,1] is to chose action a and stay in state s . Therefore, the IGE can not learn a policy to
+b b
+reachaterminalstate.
+A.2 THEN-STEPENSEMBLE(NSE)
+We propose the n-Step Ensemble (NSE) (Algorithm 2) to overcome the restrictions of the IGE. It
+isabletolearnthesetofParetooptimalpolicies,andtolearnpoliciesthatreachterminalstatesin
+circularenvironmentssuchastheMDPinFig.3.
+Similar to the IGE, the NSE consists of several modules. Each module is responsible to optimize
+theexpectedtotalrewardfornnumberofstepsintothefuture(Eq.6and7)withN =(1,...,M).
+TohandlecircularenvironmentssuchasinFig.3anextraconditionisadded. Theagentshouldalso
+reachaterminalstatewithinnsteps. Ifthisisnotpossible,thenthepolicyislearnedwhichreaches
+a terminal state with a minimal number of steps. This is accomplished by defining the optimal
+action a∗ not simply as the action maximizing the Q-value of a state. Instead, it is defined using
+informationaboutthetotalrewardR ,andthenumberofstepsT untilaterminalstateisreached:
+n n
+R (s ,a ) = E[r +R (s ,a∗(s ))] ,
+R 1 (s t ,a t ) = E(cid:2) r t+1 +R 1 t+ (s 1 1 ,a∗ t+1 (s )) (cid:3) ,
+n t t t+1 n−1 t+1 n−1 t+1
+T (s ,a ) = E[1+T (s ,a∗(s ))] ,
+T 1 (s t ,a t ) = E(cid:2) 1+T 1 t+ (s 1 1 ,a∗ t+1 (s )) (cid:3) .
+n t t n−1 t+1 n−1 t+1
+Thestate-valuesofR andT aredefinedbyR (s)=R (s,a∗(s)),andT (s)=T (s,a∗(s)).
+n n n n n n n n
+BasedonQ ,R ,andT theoptimalactiona∗(s)isdefinedby:
+n n n n
+a∗(s) = argmax R (s,a) ,with
+n a∈AT(s) n
+n
+AT(s) = argmin T (s,a) ,with
+n a∈AQ n(s) n
+AQ(s) = argmax Q (s,a) ,with (9)
+n
+(cid:26)
+a∈An(s) n
+{a∈A:T (s,a)≤n} |ifnotempty
+A (s) = n
+n argmin T (s,a) |otherwise,
+a∈A n
+whereA (s),AQ(s),andAT(s)aresetsofactions. Thisdefinitionofthegreedyactionallowsthe
+n n n
+NSE to handle cyclic positive reward environments. Moreover, it allows the selection of the best
+actioninsituationswheremoreorlessnumberofstepsarenecessarytoendanepisodethandefined
+bythenumberofstepsnofamodule.
+TodetectthegreedyactioninEq.9theactionsareatfirstlimitedtothesetA (s). Itiscomprised
+n
+of all actions resulting in trajectories that need the same or a smaller number of steps n than the
+currentmoduleshouldoptimizefor. Ifnoneoftheactionsleadstosuchatrajectory,thentheactions
+that minimize the number of steps are considered. This restriction guarantees that the NSE learns
+policiesthatendinaterminalstateincyclicenvironments. Forexample,formodulen = 1inthe
+MDPofFig.3,thegreedyactionaccordingtotheQ-valueQ (s )istoreturntos . Therefore,the
+1 b b
+agentwouldnotlearnapolicyendinginaterminalstateifthegreedyactionisselectedaccording
+totheQ-values. ByrestrictingthepossibleoptimalactionstothesetofA (s),onlyactionsa and
+n a
+a areallowed,becausetheyminimizethenumberofsteps. Asaresult,theNSElearnspoliciesthat
+b
+endinterminalstatesformodulesn=1andn=2.
+ThenextrestrictionAQ(s)isaccordingtotheQ-values. AllactionsfromthesetA (s)thatmaxi-
+n n
+mizetheQ-valueareconsideredasoptimalaction. Thisrestrictionselectsthetrajectoriesresulting
+inthehighestrewardwithinnsteps.
+Although,theactionsAQ(s)maximizetherewardwithinnstepstherecanbesituationswherethe
+n
+resultingtrajectoryrequiresmorestepsorlesssteps.Inthesesituations,theQ-valuedoesnotinform
+aboutthetotalrewardandneededtime. Forexample,formodulen=1theQ-valuesforgoingleft
+(a ) and right (a ) are both zero because the Q-values of this module only look one step into the
+a c
+future. Nonetheless,thefinaltrajectoryforgoingleftresultin2stepsandarewardof0,whereasfor
+goingrightin2stepsandarewardof1. Inthissituationitwouldbemoredesirabletogorightto
+8
+AcceptedtotheICLR2020workshop: BeyondtabularasainRL(BeTR-RL)
+Algorithm2:n-StepEnsemble(NSE)
+Input:
+Numberofmodules: M ∈N
+Learningrate: α∈[0,1]
+Explorationrate: (cid:15)∈[0,1]
+initializeQ (s,a),R (s,a),andT (s,a)tozero
+n n n
+repeat(foreachepisode)
+initializestates,andobjectivef
+k
+// select as active module n˜ a module that maximizes f
+k
+N˜ ←argmax f (cid:0) R (s),T (s) (cid:1)
+n k n n
+n˜ ←argmin T (s)
+n∈N˜ n
+repeat(foreachsteptinepisode)
+// choose action (cid:15)-Greedy
+(cid:26) a∗(s)(Eq. 9) |with Pr=1−(cid:15)
+a← n
+randomaction |with Pr=(cid:15)
+r,s(cid:48) ←takeactiona,observeoutcome
+foralln∈(1,...,M)do
+Q (s,a)←Q (s,a)+α(r+Q (s(cid:48),a∗ (s(cid:48)))−Q (s,a))
+n n n−1 n−1 n
+R (s,a)←R (s,a)+α(r+R (s(cid:48),a∗ (s(cid:48)))−R (s,a))
+n n n−1 n−1 n
+T (s,a)←T (s,a)+α(r+T (s(cid:48),a∗ (s(cid:48)))−T (s,a))
+n n n−1 n−1 n
+end
+s←s(cid:48)
+// use appropriate module for the next step
+n˜ ←max(1,n˜−1)
+untilsisterminal-state
+untiltermination
+collectsomereward. Therefore,ifseveralactionsmaximizetheQ-values,thenfromthoseactions
+theonesresultingintheminimalnumberofstepsT toaterminalstateareconsideredasdefinedby
+n
+setAT(s). Amongthose, thefinaloptimalactiona∗(s)isonethathasthemaximumtotalreward
+n n
+R . Ifseveralactionsfulfillthis,thenoneofthemisrandomlychosen.
+n
+ThefinalpolicyoftheNSEπ isgivenbyselectingatthebeginningofanepisodethemodulethat
+n˜
+optimizesthecurrentactiveobjectivef accordingtoEq.2. Theoptimalactiona∗ ofthismoduleis
+k n˜
+usedinthefirststepoftheepisode.Becauseeachmoduleisresponsibletomaximizethetotalreward
+foracertainnumberofstepsforthenexttimesteptheoptimalactionofthemoduleresponsiblefor
+onestepless(n˜−1)isused. Thisprocedureisrepeateduntilthefirstmodulen=1isreached. The
+policydependsthereforeonthecurrenttimesteptduringanepisode:
+π (s )=a∗(s ) ,withn=max(1,n˜−t).
+n˜ t n t
+Duringthelearning,theagentdoesnotalwayschosethegreedyaction. Insteadan(cid:15)-greedyaction
+selectionisusedtoallowexploration.
+ThelearningoftheQ-valuesQ ,expectedrewardR ,andnumberofstepsT foreachmoduleis
+n n n
+doneinasimilarwaytoQ-learning. Afteratransitionisobservedallmodulesn =(1,...,M)are
+updatedinparallelaccordingtoaRobbins-Monroeupdate.
+A.3 TIME-DEPENDENTQ-LEARNING
+TheIGEandNSEwerecomparedtoaclassicalQ-learningapproachthatlearnedforeachobjective
+anindependentQ-function(Alg.3). Itsrewardfunctionφwasdefinedbytheoutcomeoftheactive
+objectivefunctionf aftertheagentreachedaterminalstateSG. Foreveryothertransitionareward
+k
+ofzerowasgiven:
+(cid:26)
+0 |s ∈/ SG
+φ (s )= t
+t t f (R,T) |s ∈SG,
+k t
+9
+AcceptedtotheICLR2020workshop: BeyondtabularasainRL(BeTR-RL)
+Algorithm3:Time-dependentQ-learningforgeneralOA-MDPs
+Input:
+Learningrate: α∈[0,1]
+Discountfactor: γ ∈[0,1]
+initializeQ(k,t,s,a)tozero
+repeat(foreachepisode)
+initializestates,andgoalf
+k
+// start with an empty reward history
+h←∅
+repeat(foreachsteptinepisode)
+a←chooseanactionforsderivedfromQ(k,t,s,a)(e.g. (cid:15)-greedy)
+// take action and save reward in history
+r,s(cid:48),isTerminal←takeactiona,observeoutcome
+h ←r
+t
+// if a terminal state is reached, use the outcome for the
+// objective f as basis for the Q-function
+k
+ifisTerminal=truethen
+ξ ←f (h)orf (
+(cid:80)t−1h
+,t)
+k k i=0 i
+else
+ξ ←0
+end
+Q(k,t,s,a)←Q(k,t,s,a)+α(ξ+γmax Q(k,t+1,s(cid:48),a(cid:48))−Q(k,t,s,a))
+a(cid:48)
+s←s(cid:48)
+untilsisterminal-state
+untiltermination
+where R is the collected total reward according to the reward function of the MDP and T is the
+numberofstepsofthecurrentepisode.
+AproblemwiththisformulationoftherewardisthatitdoesnotfulfilltheMarkovassumption,i.e.
+thattheoutcomeofanactiondependsonlyonthecurrentstate. Instead,therewardφforreaching
+a terminal state depends on the whole trajectory, taking into account the total reward sum R and
+thenumberofstepsT. Asaresult,theMDPispartiallyobservablefortheagentbecausethestate,
+i.e.theagent’sposition,doesnotinformaboutthecollectedreturnorhowmanystepswereneeded.
+Therefore, Q-learningisnotguaranteedtoconvergetotheoptimalpolicy. Toreducethisproblem
+the current time step t was used as an extra state dimension for the Q-learning agent, improving
+its performance. Although the time step information improves the performance of the Q-learning
+agent, it does not fully resolve the partial observable nature of the problem for the agent because
+thecollectedrewardsumRisstillmissing. Addingthisinformationalsointothestateinformation
+wouldcreateahugestatespaceforwhichlearningisimpractical.
+B EXPERIMENTS
+B.1 EXPERIMENTALPROCEDURE
+The IGE, NSE and the time-dependent Q-learning agent were evaluated in the stochastic MDP
+illustratedinFig.1. TheagentmovedwithPr = 0.1inarandomdirectioninsteadoftheintended
+one. Agentshadtoadaptto9differentobjectivesJ = (f ,...,f )whicharelistedinFig.4. The
+1 9
+first objective f is to receive the maximum reward in an episode. The second f also maximizes
+1 2
+reward,butapunishmentof−1foreachstepisgivenafter3steps.f givesexponentiallyincreasing
+3
+punishmentformorethan3steps. Thegoaloff istofindtheshortestpathtotheclosestterminal
+4
+state. For f the shortest path to a terminal state that gives at least a reward of 6.5 is optimal.
+5
+Reaching a terminal state with less reward will result in a strong punishment. For f the goal is
+6
+tofindthehighestrewardwithamaximumof7steps. Forf theagenthasonlyamaximumof5
+7
+steps. Inf thegoalistomaximizeaveragereward. Thefinalobjectivef maximizestheaverage
+8 9
+10
+AcceptedtotheICLR2020workshop: BeyondtabularasainRL(BeTR-RL)
+reward, but theagent hasto reachat leasta rewardof 6.5. The locationof theterminal statesand
+theirrewardswerechosensothattheyrepresentdifferentsolutionsfortheobjectivefunctions.
+Foreachalgorithm,100runswereperformedtomeasuretheiraveragelearningperformance. Each
+run consisted of 54,000 episodes that were divided in 9 phases. In each phase, the agents had to
+adapt to a different objective function. The objectives did not change during the 6000 episodes
+of a phase to evaluate how long an agent needs to adapt to each objective. The performance was
+measuredbytheoutcomefortheobjectivefunctionf (h)thattheagentreceivedforeachepisode
+k
+duringthelearningprocess.
+B.2 LEARNINGPARAMETERS
+Learningparametersofallalgorithmsweremanuallyoptimizedtoyieldahighasymptoticperfor-
+mancewhilehavingahighlearningrate. Thelearningrateparameterαofallalgorithmswassetto
+α = 1inthebeginningoflearningtoallowafasterconvergenceofthevalues. Overthecourseof
+learning it was reduced to α = 0.1. The IGE and NSE kept α = 1 for 500 episodes and reduced
+itlinearlytoα = 0.1untilepisode1000. Thelearningratestayedatα = 0.1fortherestofPhase
+1andforallfollowingphases. TheQ-learningapproachneededalongerlearningtimetoreachits
+asymptotic performance in each phase. Moreover, it needed to learn a new policy for each phase.
+Itslearningwaskepttoα =1for750episodesandlinearlyreducedtoα =0.1untilepisode3000
+foreachphase.
+Allalgorithmsusedthe(cid:15)-greedyactionselection. Similartothelearningrate,theexplorationrate
+(cid:15) was high at the start of learning and then reduced. The IGE’s and NSE’s exploration rate was
+(cid:15)=0.9forthefirst500episodesofPhase1andthenreducedto(cid:15)=0untilepisode1000. Itstayed
+at(cid:15)=0fortherestofPhase1andallsuccessivephases. Q-learningusedalearningrateof(cid:15)=0.9
+forthefirst750episodes. Afterward, itwaslinearlyreducedto(cid:15) = 0untilepisode3000foreach
+phase.
+TheIGEusedasetof45γ-modules. Thediscountfactorswerechosentohaveastrongerconcen-
+tration for higher factors. This allows to learn different policies for longer trajectories. First, 14
+modules were chosen according to γ = i . Then 2 modules with equal distance to each
+i=1:14 i+1
+wereaddedbetweeneachpairofthe14modulesandbetweenthelastγ and1. TheNSEused20
+14
+modules. ThediscountfactorofQ-learningwassettoγ =0.99.
+C EXPERIMENTAL RESULTS
+TheresultsshowthattheIGEandNSEperformedbettercomparedtoQ-learningintermsofadapta-
+tiontonewobjectives,asymptoticperformanceandlearningspeed(Fig.4).Aftertheinitiallearning
+phasewithobjectivef theIGEandNSEwereabletoadaptimmediatelytonewobjectiveswhereas
+1
+Q-learningneededtolearnnewpoliciesforthosephases.
+Moreover,theIGEandNSEoutperformedQ-learningintheirasymptoticperformancein5ofthe9
+objectives(f ,f ,f ,f ,f ).Allalgorithmshadasimilarfinalperformancefor3objectives(f ,f ,
+1 2 3 4 9 5 6
+f ).Q-learningcouldslightlyoutperformIGEforobjectivef ,butnottheNSE.ComparingtheIGE
+8 7
+andtheNSE,theNSEhadaslightlybetterfinalperformanceforf andastrongerperformancefor
+7
+f .ThelowperformanceofQ-learningforobjectivef wastheresultofthenegativeoutcomevalues
+9 4
+thatthisobjectivegives. Q-valueswereinitializedto0. Becausealloutcomesforthisobjectiveare
+negative,theagentisdoinganoptimisticexploration(Osband&VanRoy,2017). Itexploresevery
+possible state action pair for every possible time step, because it has to learn that their initial Q-
+valuesof0arenotoptimal. Asaresult,Q-learningwouldneedmoreepisodestolearnagoodpolicy
+forthisobjective.
+As for the learning rate, the IGE and NSE outperformed Q-learning which is visible in the first
+phase. Q-learningneededatleast3000episodestoreachitsfinalasymptoticperformanceforeach
+phase. TheIGEandNSEneededlessthan1000episodestoreachtheirasymptoticperformancein
+the first phase. Q-learning needed longer due to the extra time step information in its state space.
+Thus,moreexplorationwasnecessarytolearntheoptimalpolicies.
+11
+AcceptedtotheICLR2020workshop: BeyondtabularasainRL(BeTR-RL)
+(cid:26) (cid:26)
+R |T ≤3 R |T ≤3
+f =R f = f =
+1 2 R−(T −3) |T >3 3 R−1.3(T−3) |T >3
+(cid:26) (cid:26)
+−10 |R≤6.5 R |T ≤7
+f =−T f = f =
+4 5 −T |R>6.5 6 −10 |T >7
+(cid:26) (cid:26)
+R |T ≤5 R |R≥6.5
+f = f = R f = T
+7 −10 |T >5 8 T 9 −1 |R<6.5
+Figure4: TheIGEandNSEimmediatelyadaptedtonewobjectivefunctionscomparedtothetime-
+dependentQ-learningapproachinthestochastictaskofFig.1. Performancewasmeasuredbythe
+outcomeoftheobjectivefunctionf (R,T)perepisode,whereR =
+(cid:80)T−1r
+istherewardsumof
+k t=0 t
+theagent’strajectoryandT isitslength.Eachofthe9phaseshasadifferentobjectivefunction.The
+plotsshowthemeanandstandarddeviationover100runsperalgorithm. Theminimalrewardper
+episodewaslimitedto−10tomaketheplotsmorereadable, becausesomegoalformulationscan
+resultinalargenegativerewardduringexplorations.
+12

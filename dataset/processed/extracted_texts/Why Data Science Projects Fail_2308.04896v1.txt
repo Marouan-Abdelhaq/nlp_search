@@ -1,0 +1,506 @@
+Why Data Science Projects Fail
+UnderstandingofDataScienceProjectfailureandreasoning
+Balaram Panda
+Software Engineering
+University of Auckland
+Auckland, New Zealand
+bpan575@aucklanduni.ac.nz
+Abstract—DataScienceisamodernDataIntelligencepractice, of CRISP-DM. CRISP-DM developed during 90’s, and since
+which is the core of many businesses and helps businesses build then,componentsofDataSciencehaveevolvedalotinregards
+smart strategies around to deal with businesses challenges more
+to the way data is collected, volume, velocity, and variety
+efficiently.DataSciencepracticealsohelpsinautomatingbusiness
+of the information being analyzed(big data [24]), processing
+processes using the algorithm, and it has several other benefits,
+which also deliver in a non-profitable framework. In regards methodology, algorithms, and outcome delivery. Hence it is
+to data science, three key components primarily influence the crucial to understand in detail the current day’s Data Science
+effective outcome of a data science project. Those are challenges, deep dive into the reasoning of failures, and find
+1) Availability of Data out the best practice. Data Science is an evolving field, and
+2) Algorithm
+lots have been changed since last decade in regards to various
+3) Processing power / infrastructure
+keys areas, such as data collection, big data processing on
+In today’s technology world, there is no limitation on data as
+cloud and/or parallel or distributed processing framework,
+well as processing power, and we have a much more efficient
+algorithm to produce the desired output. In spite of the success evolutionofnewalgorithm,datavisualization,deploymentand
+of Data Science projects, many Data Science projects still fail productionizingDataSciencesolutionsasadigitalproductetc.
+and are unable to produce the desired outcome. In this paper, Thereareseveralchallengesinthosekeyareas;asanexample,
+we have explored the bottleneck of Data Science projects and
+because of big data, the Data Science project collects lots
+provided some recommendations to make data science projects
+of irrelevant and uncleaned data. Sometimes the intermediate
+moresuccessful.StandardDataScienceprojectdevelopmentlife-
+cycle CRISP-DM [1] is old in this agile development [31] world, data source doesn’t have the correct business logic, which is
+and but most Data Science practices still follow CRISP-DM. mapped to the business objective of the data science project.
+In general, Data Scientist analyses scenarios where a predictive “big data brings lots of “big errors” in data quality and data
+modelormachinelearningmodelmightfail.Butthisstudyisto
+usage,whichcannotbeusedasasubstituteforsoundresearch
+analyze when and why the Data Science project fails despite
+design and solid theories.” [4] Data quality is one of the com-
+an excellent model. Data Science is a diverse field. It needs
+technical as well as business knowledge to deliver a project. mon challenges in the Data Science Project. Another major
+Hence,tounderstandwhytheDataScienceprojectfails,weneed challenge is domain understanding, and many times domain
+to understand challenges from the business side and technical understandingisabottleneckforDataScienceprojectsuccess.
+side.
+Also, in many cases, data science issues are seen differently
+1) Technical perspective
+and vary from one domain to another, stakeholder view and
+2) Business leader perspective or stakeholder perspective
+data scientist view. As mentioned by Dr.Om Deshmukh [9] ”
+Also,ithasbeenobservedthatthesuccessoftheDatascience
+DataScienceprojectsuccessalsodependsonwhatstakeholder
+projectdependsonbusinessdomain.Examplemarketpropensity
+model, a strategic market campaign method, is more successful knows about the expected outcome of the data science project
+inanyretailusecasethanafraudanalyticmodelinthebanking and how effectively stakeholder expectations being managed
+fraud domain. So domain agnostic framework was implemented thougheffectivthroughunication.”DataScienceprojectsstrug-
+inthisresearchtomakethisresearchindependentofthebusiness
+gles with these types of challenges and more other challenges
+domain.
+Index Terms—Software Engineering, Data Science, Machine in industry settings, but not enough research has been done
+Learning, CRISP-DM in this space to highlight those problems and their possible
+solutions. For better quality research in this domain, years of
+I. INTRODUCTION
+experienceintheDataSciencefieldandrole/designationlevel
+Data Science is comparable to applied research. Often in diversityindatascienceprojectssuchaskeystakeholdersand
+research, there are lots of repetitive processes to be followed data scientists have been included.
+until it generates the desired outcome. Similarly, data science Wepreparedalistofquestionsandinterviewedexperienced
+processes are often repetitive until they meet the business Data Scientists, Senior Leader who actively manage data
+objectives. Those business objectives are set during the re- science and data analytic team, and stakeholders part of data
+peatedBusinessUnderstandingandDataUnderstandingphase science projects, in a motivation to understand the perception
+3202
+guA
+8
+]GL.sc[
+1v69840.8032:viXra
+on data science project failure. Then did the thematic analysis TABLEI
+to analyze and draw conclusions from data. Then came up LISTOFINTERVIEWCANDIDATES
+with the most popular theme by thoroughly analyzing the
+YearOf GroupAor Business Working
+ID
+discussion. Experience GroupB Domain Geography
+In this research, we have discovered and highlighted the ITand
+C1 5+ GroupA USA
+Consulting
+key challenging areas where Data Science practice and Data
+Bankingand
+scientists should focus. Also, some suggestions on tackling C2 10+ GroupB NZ
+Finance
+those challenges. Also, we came up with a state of art Software
+C3 10+ GroupA India
+framework to tackle those challenges in efficient ways. Product
+C4 1+ GroupA Research NZ
+Software
+II. RESEARCHMETHODOLOGY C5 5+ GroupB Canada
+Product
+A. Research methodology C6 10+ GroupB ITServiceand India
+Consulting
+In this research Interview based semi-structured Qualitative Bankingand
+C7 10+ GroupB NZ
+Finance
+research methodology [8] have been used.
+Software
+C8 5+ GroupA USA
+Product
+B. Interview Design
+C9 10+ GroupB Consulting NZ
+In this research the objective is also to capture the diversity
+in regards to the people involved in a data science project
+Group A: Data Scientist with some years of experience
+such as Data Scientist and business owner and/or data science
+working in Data Science project
+capabilityleaderand/orstakeholder.Henceforbetteroutcome,
+Group B: Business owner / leader / stakeholder
+two types of interview questions have prepared
+Group A: Data Scientist with some years of experience E. Research Questions
+working in Data Science project Group A Questions
+Group B: Business owner / leader / stakeholder
+1) What are the key reasons for a Data Science project
+The interviews had done via zoom software. During the in- success as per your experience
+terview,answersandkeypointswerecaptured.Also,interview 2) WhatarekeyreasonsforDataScienceprojectfailureas
+voice recording has been stored in google drive for reference. per your experience
+3) What steps Data Science should follow to match user
+C. Candidate selection for interview and Sample Diversity
+expectations? Can you refer to any specific project and
+Interview candidates contacted via reference and explain it in detail?
+Linkedin(professional networking website). Manually 4) How stakeholder can contribute towards Data Science
+reviewed their background and put them into the Group project success, and how important is it?
+A or Group B Category based on their experience. Some 5) How value measured in the Data Science project and
+candidates were also selected through reference. While who are involved and what are the challenges? Any
+selecting a reference candidate, Snowball technique [5] had example based on a specific project?
+been used to select the reference candidate. Snowball helped 6) Do you think infrastructure is a challenge for any data
+to capture unbiased interviews candidate samples. During the science project?
+selection process, candidates domain experience deiversity 7) How important Data Quality is for Data Science
+such as Banking and finance, Retail, Software Product, IT projects?
+Services,Telecommunicationetc.hadbeenconsidered.Inthis 8) What are the hindrances to maintaining data quality?
+research the objective also is to add domain diversity so that 9) What are the solutions to overcome those hindrances?
+Data Science problems can be viewed from a normalized and 10) What testing approaches do you take to test the model
+generic approach. Also to capture more diversity candidate based on business user expectations?
+selected from various geography such as India, USA, Canada 11) Some detailed discussion on failure mentioned in open
+in addition to New Zeland. ended. Like how to solve model explainability? Is there
+any approach you followed, or can you suggest from
+D. Preparation of research Questions
+your experience how to maintain model explainability
+In first iteration a list of questions has been prepared from and without compromising the model accuracy?
+prior knowledge and after going through literature review 12) Does the level of competencies affect project outcome
+papers [10] [11] [12] Then questions are discussed with the and how to solve that?
+researchsupervisor.Basedonthediscussionfewquestionsare 13) How often do Data Science projects productionize and
+added, and a few are modified. A final list of questions has the pitfalls you experienced during productionization ?
+been prepared and shared with the supervisor in the second 14) Many Data Science projects help automate the existing
+iteration. Then after 2nd interview, 2 more questions were process;whatarethechallengesyoufaceduringknowl-
+added to make the interview more target-oriented. edge elicitation from business users in those cases?
+15) How challenging is change management in Data Sci- interview. Also, note has been taken during the interview.
+ence? The code generation to theme generation is described in the
+16) TherearelimitationsofDatausabilityduetogovernance following Theme Generation section and the write-up step
+restriction? How often do you see this as a limitation, mentioned in the result section.
+and how do you solve these?
+H. Theme Generation
+InGroupA,questionsfrom1to6areopenendedquestions
+and 6 to 16 are focused questions. There are various orientations in thematic analytic men-
+Group B Questions tioned in [26], [27]. In this research, we have used a com-
+bination of the Inductive and Deductive approaches. We have
+1) What are the essential things Data Scientists must do to
+prior knowledge from experience and literature review; based
+make a Data Science project successful?
+on that, questions have been prepared on the most common
+2) What is your view on Stakeholder’s contribution to a
+issues that have been known so far. After the interview, get
+Data Science project?
+to know more new issues that the Data Science project is
+3) What are the critical gaps between a successful
+experiencing and solutions around how to tackle that. After
+and unsuccessful Data Science Project from stake-
+the interview, we had iterate over the recordings, list down
+holder/business owner’s perspective?
+all the key issues that experts mentioned in the interview,
+4) What improvement do you want to make towards the
+and mapped that to the questions. Then cluster those issues
+traditional Data Science approach to make it more
+together to identify the common themes in those issues. In
+valuable for business?
+addition to the theme, we also got solutions and workaround
+5) How important change management is for a Data Sci-
+to tackle those issues.
+enceProject?Anysuggestionstomakechangemanage-
+ment successful?
+III. RESULTS
+6) Data Science projects have lots of intangible benefits;
+how do you create value metrics for Data Science
+TABLEII
+projects? How often are you able to achieve that?
+RESULTEDTHEMES
+7) Do you follow any ROI metrics for Data Science
+projects? (question 6 extension) Questions Keyconcerns
+for
+8) HowdoyoudefineaDataScienceprojectdifferentfrom Themes wherethemes
+DataSciecne
+werefound
+a Business Intelligence project? (Optional question) ProjectSuccess
+EffectiveStakeholder
+AQ4,AQ10,BQ1,BQ2 Yes
+F. Interview Process and Data Collection Managment
+ClarityinBusiness
+Interviewer contacted via Linked-in and via emails. Once AQ1,BQ6,AQ2 Yes
+problemunderstanding
+they confirmed their participation, the consent document was DataqualityIssues AQ7,AQ2,AQ9 Yes
+shared, and formal consent approval was taken before the Modeldeployment AQ3,AQ6,AQ13,BQ3 Yes
+andproductionzaiton
+interview. Interviews are done via Zoom and in-person meet-
+Departmentlevel
+ings. During the interview, answers and critical points has intigrationwhile BQ3,BQ5 Yes
+beencaptured.Also,interviewvoicerecordinghasbeenstored productionizingthemodel
+ChangeManagment AQ15,BQ5 No
+in google drive for reference. Only the question-answer part
+Datagovernanceroadblocker AQ17 No
+of the interview has been recorded. In an average interview,
+only the question-answer part lasted for 30 minutes. For the
+introduction, including research motivation, we spent around A. Effective Stakeholder Management:
+8 to 10 minutes in each interview.
+Stakeholders are the people representing a department or
+G. Data Understanding and Analysis owning a business product or a group of people who benefit
+from a project’s success. In Data Science, Stakeholder can
+Thematic analysis [6] has been used to analysis the data.
+be business process owner or product owner or end-user who
+Thematicanalyticisapopularmethodforqualitativeresearch.
+is going to use the Data science outcome or product. Many
+As suggested by Braun and Clark [30] there are 6 steps of
+participants mentioned how crucial it is to communicate and
+thematic analyses as follows
+manage Stakeholder effectively. C1 also mentioned that data
+Step 1: Become familiar with the data scientists need to communicate well across different project
+Step 2: Generate initial codes stakeholders likeproject managers, businessstakeholders, and
+Step 3: Search for themes dataengineers.”Stakeholdersshouldshareequalresponsibility
+Step 4: Review themes as data scientist to make the project successful” - C1. But
+Step 5: Define themes often, stakeholders may not be available all the time as they
+Step 6: Write-up have other priorities. Also its often found the there is a gap
+As the questions were designed before the interviews and whatStakeholderthinksaboutDataSciencecansolvevswhat
+interview, we familiarised ourselves with the data during the data science can actually solve for business.
+C1 mentioned that from her experience, she found that model should be integrated into a real-time environment, that
+data science projects are more likely to successful where data mightbecometricky.Thatrequiteasoftwareengineeringskill,
+scientist and stake holder work together towards a common also the key thing is to how a model file can be integrated
+business goal. C2 mentioned that Stakeholder should take in the existing programming environment. These things need
+equal responsibilities as data scientist to make the Data Sci- to be plan ahead before the project starts during the business
+ence project successful. understandingandplanningphase.Basedonthecomplexityof
+[13] Data science teams often struggle to use their model implementationprojectkick-off.Ifitsisfeasibletoimplement,
+into business processes. Also stakeholders often can’t artic- then the production implementation plan need to be discussed
+ulate the problems they are aiming to solve. [13] there is a andagreedwiththestakeholderatthebeginningoftheproject.
+significant gap between stakeholder and data science teams
+E. Department level Collaboration:
+that needs to be recognized and addressed. [13] suggest data
+science need to bridge the gap between an organizational Several group B candidates highlighted that cross depart-
+structure and leadership commitment to develop better com- ment collaboration is one of the major challenges while
+munication, processes, and gain trust among all stakeholders. delivering the Data Science outcome. Many times model
+outperform and implementation done but due to lack in
+B. Business Problem Understanding:
+department level integration project may not be useful for the
+All the participants mentioned that Business problem un- organization.Exampleamarketpropensitymodelcanproduce
+derstanding is the most critical step in a data science project. most accurate target customer, but that need to integrated in
+Business problem understanding with effective stakeholder themarketingchannel.Eventhoughitsintegrated,theforntline
+communicationimprovesthesuccesscriteriaofadatascience channel might de-prioritize the request due to some other
+project. During the business problem understanding process, priority they are having. These situation are out of control
+thedatascienceteamgetsanoverviewofthebusinessprocess of a Data Science and Stakeholder.
+and tries to articulate the problem that the business is trying
+F. Change Management:
+to solve. It helps the data science team get more clarity
+around the business objective, business process, and some Most of the data science project are either used for strategy
+understanding of data. Then Data Science team prepares the or time saving or cost saving using automation to reduce
+plan to check for data availability. This also helps define the manual effort. Sometimes this creates resistance from the
+target variable or dependent variable in the case of a super- people affected. Several candidates from group B mentioned
+vised modeling approach. In this process Data Science team that Change Management is one of the challenge in any data
+understands the business problem well; more accurately and science implementation. But this is not the key challenge as
+define the business objective and target/dependent/outcome therearestrategytotackleit.Alsofewparticipantsmentioned
+variable for the predictive model or another type of modeling thatthesolutionforthechangemanagementsometimesoutof
+task. More accurately, the outcome variable is defined, more control of Data Science team. As suggested by C2 ”Change
+chances of success of the data science project. management specialized area and need specialized people to
+handle such things.”
+C. Data Quality issues:
+”Change management is not a key challenge” -C3. May
+Data quality issue another common issue which came out be because he is working in google where automation using
+as a theme. Most participants from group a mentioned about algorithm is always promoted.
+Data Quality issue. Also they mentioned most teams don’t To handle change management, ”DS team need to engage
+want to spend much time on fixing data quality issues and with the team going to affect very early and try to gain
+focusingmoreondeliverable,whichcanbemeasured.Because confidencefromtheteamaffectedbyillustratinganexplaining
+the time spend is not mapped to any tangible benefit at this how this is going to improve their work” - C1.
+stage. So the idea is to create something which can be used
+G. Data Governance:
+for multiple projects. Example the DW(Data Warehousing)
+and Cube concept got more attention when BI (Business Data governance processes, roles, policies and standard are
+Intelligence)generatevaluefororganisationandBI/DWteam getting more stronger after GDPR(General Data Protection
+started creating something which can be reused for many Regulation) [21] law. ”Around 30% of data science projects
+different projects. unable to go to production due to Data Governance rules”
+C3. Same issues due to data governance also mentioned by
+D. Model Deployment and Production:
+various other participants from group A and Group B. Data
+Several participants from group A and group B, described governanceisamusthavestandardforanyorganizationusing
+thatmanyDataScienceprojectisnotdeployableorfaileddue data as a asset. But to avoid data science project late failure,
+to complexity in productionzing the model or the outcome. data governance team engagement need to be discussed at the
+Example an antivirus software company built a predictive early stage of the project. So that Data governance team can
+model build with 99.1% accuracy on test data. No doubt that advise on alternate solution to get the data, or they can advise
+is a that is one of the best model, but if the expectation is nottooptforthisprojectduetothedatausedinDataScience
+project are not meeting the governance standard. In addition Another key challenge most data scientists mention is that
+to that organisation need to adopt PII (personal identifiable most projects struggle to articulate the business problem well
+information) masking approaches to mask the data. enough.Businessproblemunderstandingisnoteasy;itusually
+happens with stakeholders, business subject matter experts,
+IV. DISCUSSIONANDRECOMMENDATIONS
+andthedatascienceteam.Thisisn’teasybecauseitrequiresa
+There are the top 7 themes generated [Table II] in this substantial amount of prior business knowledge to understand
+research. More emphasis was given to Effective Stakeholder the business objective clearly. Another challenge sometimes it
+management, Most of the interview participants mentioned is hard to define a uniform business process or rule even in
+the challenges during stakeholder management, and few men- the same department. For example, in a credit risk modeling
+tioned that stakeholder management is not that challenging. scenario, the objective is to identify the risky customer based
+Also, business leaders who sometimes act as stakeholders on historical default customer data. But defining a default
+(in our interview panel) also agreed that there is a gap in customersometimesvariesfromonebusinessSMEtoanother
+understandingthedatascienceprocessfromastakeholderlens. businessSME.SomeSMEscandefineacustomerasadefault
+Usually, Data science projects have more than one stake- customer if someone has not made the payment 60 days after
+holder. In this multi-stakeholder environment, it’s always the due date. In some cases, SME may consider 90 days or
+good to have a strategy around stakeholder management. The sometimes 1st-time defaulter is not true defaulter as 1st time
+stakeholder can have different types of posture [15] based on can be due to negligence or due to some mistake. So it’s
+the RDAP(reactive, defensive, accommodative, or proactive) critical to understand the business problem definition clearly
+strategy(tableFig2).ThesamecanbeappliedtoDataScience and once you get some level of understanding, validate that
+projects. As C2 mentioned, stakeholders should share equal understanding in a meeting with business SME. Sometimes
+responsibility. Hence for a successful data science project, stakeholder comes from a mindset predictive model or ma-
+the strategy should be Accommodative or Proactive where chine learning a solution to any type of business problem.
+stakeholder postures are Accept responsibility and Anticipate In some cases, it is true, but the definition of the business
+responsibility,respectively,asdescribedinfig1.Buttodothat ruleshouldbeclearenoughtomakeanyDataScienceproject
+as suggested by few candidated, every Data Science project successful.[13]stakeholdersaresometimesnotsurewhatthey
+should have top management buying to make the DS project want. This usually happens in business strategy projects. In
+successful. thisbusinessunderstandingprocess,Datascientistsshouldalso
+take the opportunity to help refine the stakeholder objective
+in several meetings. But often, business understanding is not
+given priority because of the following reason.
+1) Stakeholder and Data scientist are both very excited to
+start working on the project
+2) Data scientists cannot ask the right questions initially
+due to a lack of domain knowledge. So to solve this
+issue, business SME and Data Scientists should spend a
+good amount of time articulating the business problem
+clearly.
+AnotherchallengeinDataSciencewefoundfromthisresearch
+is that the data quality. Data quality has always been an issue.
+Spending a good amount of time on fixing Data Quality is
+always difficult because effort/time to value mapping in data
+qualityframeworkisalwaysmissing.Hencefixingdataquality
+is never get prioritized. To understand data quality, we need
+to understand what data quality means. Data quality has three
+dimensions as mentioned in [20].
+Fig.1. StakeholderManagementstrategy[15]
+1) Accuracy : Are the data free of error ?
+2) Consistency in Timeliness : Are the data up-to-date ?
+Sometimes these postures of stakeholders due to the nature
+3) Completeness : Are necessary data present ?
+of the organization of the nature of data science application.
+Sometimes the posture varies at the department level, even Reasons: Data Quality issues arise due to three main rea-
+in the same organization. Example in a Banking and finance sons.
+business posture of the same stakeholder may vary from a 1) Standardized Data collection process across organiza-
+Credit Risk project to a pure customer marketing project. tion margin someone’s in saying about group Simpson
+Hencestakeholdercommunicationandmanagementshouldbe someone’s in a number of energy
+strategic, and one strategy can’t be generalized for all data 2) Error due to human or software
+science projects. 3) Error in business logic to process the data
+Solution we proposed to fix data quality : the early phase of the project. By combining all, we are
+1) Better data collection standard from application level proposing a new Data Science methodology called HYBRID
+data generation CRISP DS(Hybrid Cross Industry Standard Process for Data
+2) Centralized data store : An organization needs to spend Science),whichwilltakecareofalltheabovehindrancesand
+time building a feature store with the help of a robust make Data Science project less prone to failure.
+data pipeline. The objective of the feature store is to Following figure-II represents HYBRID-CRISP-DS.
+create a dataset which can be of high quality and useful
+for various DS projects. Ideally the team should list
+down all the possible DS projects and start mapping
+the possible features/ data which need to be created.
+Anotherkeyissueidentifiedfromthisresearchisthelackof
+department-levelcollaboration,leadingtolow-valueoutcomes.
+Because the department which should use the product doesn’t
+use the model as they might have other priorities to attend.
+The solution is to list down all the departments going to be
+affectedbythisoutcomeanddepartmentwhoaregoingtouse
+the outcome and which department is going to be involved in
+hostingthissolution.Thisneedtobediscussedkeepingstake-
+holder in loop. After this department level engagement Data
+Science team need to share the deployment plan mention how
+the outcome can be deployed or reusable. Other issues such
+as change management and data governance came out of the
+theme are not the key bottleneck for the data science project
+success.Howeveroneparticipantmentionedthat”around30%
+of the time they loose the project due to data governance
+and privacy limitation” - C3. The earlier Data Science assess
+the data privacy and governance issues, that is better for the
+project. So that Data Science can have the opportunity to
+Fig.2. HYBRID-CRISP-DS
+negotiate or can find other source which can be approved by
+governance.
+In this HYBRID-CRISP-DS methodology stakeholder and
+We discussed the problems and the solution in the discus-
+businessSMEalwaysbeintheloopduringthevariousphases
+sionsection.Inthissection,wehavesummarizedthesolutions
+of the Data Science project. As mentioned in the figure-II,
+based on interviews, my knowledge, and my experience in
+emphasishasbeengivenonvariableselectionafterconsulting
+Data Science. Based on this research work, we would recom-
+a business SME(subject matter expert), which is an iterative
+mend there are three key areas where improvement needed
+process. Soon after, that needs to be validated through DGP
+1) Stakeholder Management (DataGovernanceandPrivacy)incollaborationwithDG(Data
+2) Data Quality Governance) team. Based on the outcome from DGP, proceed
+3) Durable and deployable outcome to the next step, DDP(deployment and delivery plan), or
+A potential data science project might fail due to the above negotiate on variable selection for those variables rejected
+reasons what we discussed so far. The Data Science team by DG. Based on the complexity of requirements in DDP
+needs to have good stakeholder management skills to set the SE(software engineer) or Data engineer, dependencies will
+expectation of the stakeholder at an early stage based on the be created. Once the deployment plan is ready, that needs to
+business problem understanding. Also, a data scientist should be validated by stakeholders. Then, the project flows through
+have the ability to highlight the potential risk ahead of time DCQ(Datacollectionandquality)tofindtherightdatasource
+thatmightoccurduetodataprivacyand/ordatasecurityand/or andfixthequalityissueswhereneeded.AfterDCQ,nextisto
+datagovernancerestrictions.Also,Datascientistsshouldhave prepare the data, will follow through with model building and
+visibilityoftheriskoffailureduetofactorssuchasdataqual- validation. Then the emphasis is given to outcome validation
+ityissuesand/ordeploymentlimitationsduetothecomplexity by the business user. The accuracy of a predictive model or
+of the software platform and/or IT infrastructure. To create any unsupervised model may not make sense to the business.
+a fail-proof data quality management for the Data Science Businesses should always test the model with live data or any
+project, the Data Science team needs to spend dedicated time validation data on which businesses can rely upon. Once the
+checkingthedataqualityandplantoengagethedataengineer business is satisfied with the outcome, then the project moves
+to improve the data quality standard. Also, to validate the to deployment. Once the project is deployed, a proper drift
+requirement with stakeholder Data Scientist need to build a monitoring technique is implemented to monitor the drift in
+deployment plan ahead and share it with the stakeholder in an automated fashion.
+V. FUTUREWORK [6] @articlebraun2012thematic, title=Thematic analysis., author=Braun,
+VirginiaandClarke,Victoria,year=2012,publisher=AmericanPsycho-
+Althoughseveralindustryexpertsandresearcherssuggested logicalAssociation
+alternate approaches to CRISP-DM such as TDSP(team data [7] M.Young,TheTechnicalWriter’sHandbook.MillValley,CA:Univer-
+sityScience,1989.
+science process) by Microsoft [25] SEMMA(Sampling, Ex-
+[8] @articledicicco2006qualitative, title=The qualitative research inter-
+ploring, Modifying, Modeling, and Assessing) by SAS [28], view, author=DiCicco-Bloom, Barbara and Crabtree, Benjamin F,
+eachcomeswiththelimitation.HYBRID-CRISP-DSisanew journal=Medical education, volume=40, number=4, pages=314–321,
+year=2006,publisher=WileyOnlineLibrary
+approach that came out of this research. In the future, this
+[9] https://www.analyticsvidhya.com/blog/2019/08/data-science-leader-
+approach needs to be applied and can be observed where guide-managing-stakeholders/
+issues might occur while applying HYBRID-CRISP-DS in [10] Longbing Cao. 2017. Data Science: A Comprehensive Overview.
+ACM Comput. Surv. 50, 3, Article 43 (October 2017), 42 pages.
+real-world data science projects. In this process, the Data
+DOI:https://doi-org.ezproxy.auckland.ac.nz/10.1145/3076253
+Science project outcome never looked from the Data Science [11] Jordan, M. I., and T. M. Mitchell. “Machine Learning: Trends, Per-
+project as a software product lens. So the testing ends in step spectives, and Prospects.” Science, vol. 349, no. 6245, American
+Association for the Advancement of Science, 2015, pp. 255–60,
+8 of this proposed methodology after the business validates
+http://www.jstor.org/stable/24748571
+the modeling outcome. So the HYBRID-CRISP-DS approach [12] @inproceedingsvogelsang2019requirements, title=Requirements engi-
+can be researched and analyzed further to the Data Science neering for machine learning: Perspectives from data scientists, au-
+thor=Vogelsang,AndreasandBorg,Markus,booktitle=2019IEEE27th
+as a product scenario, where the methodology can be slightly
+InternationalRequirementsEngineeringConferenceWorkshops(REW),
+different with respect to business requirement, deployment, pages=245–251,year=2019,organization=IEEE
+and software product testing. In addition to that, the proposed [13] https://sloanreview.mit.edu/article/to-succeed-with-data-science-first-
+build-the-bridge/
+HYBRID-CRISP-DS is a series of processes. Hence this
+[14] https://sloanreview.mit.edu/article/why-so-many-data-science-projects-
+researchcanbefurtherextendedtounderstandhowHYBRID- fail-to-deliver/
+CRISP-DSprocesscanbeparalleledtomaketheDataScience [15] Geunchan Lim, Hyunchul Ahn, Heeseok Lee, Formulating strategies
+for stakeholder management: a case-based reasoning approach, Expert
+process more efficient.
+Systems with Applications, Volume 28, Issue 4, 2005, Pages 831-840,
+Data Science experts participated in this interview process, utanISSN0957-4174,https://doi.org/10.1016/j.eswa.2004.12.038.
+not emphasizing model explainability. However, model ex- [16] Malone, K. (2020). When Translation Problems Arise Between Data
+Scientists and Business Stakeholders, Revisit Your Metrics. Harvard
+plainability can be a big roadblock in other domains such
+DataScienceReview,2(1).https://doi.org/10.1162/99608f92.c2fc310d
+as healthcare, critical safety environment. Even though this [17] C. Cichy and S. Rass, ”An Overview of Data Quality Frameworks,”
+studyhasbeenconductedbyinterviewingexpertsfromvarious in IEEE Access, vol. 7, pp. 24634-24648, 2019, doi: 10.1109/AC-
+CESS.2019.2899751.
+domainsandgeography,thisstudycanbefurtherextendedby
+[18] https://hbr.org/2019/07/building-the-ai-powered-organization
+including more professionals from a data science background. [19] https://journals.sagepub.com/doi/full/10.1177/1096348017753521
+[20] Benjamin T. Hazen, Christopher A. Boone, Jeremy D. Ezell, L.
+ACKNOWLEDGMENT Allison Jones-Farmer, Data quality for data science, predictive ana-
+lytics, and big data in supply chain management: An introduction
+Special thanks to my supervisor Dr Kelly Blincoe (Senior to the problem and suggestions for research and applications, Inter-
+national Journal of Production Economics,Volume 154, 2014, Pages
+LecturerinSoftwareEngineering,UniversityofAuckland)for
+72-80, ISSN 0925-5273, https://doi.org/10.1016/j.ijpe.2014.04.018.
+her expert advise, guidance and excellent support during this (https://www.sciencedirect.com/science/article/pii/S0925527314001339)
+research. We acknowledged all the candidates ((Pragyansmita [21] https://en.wikipedia.org/wiki/General Data Protection Regulation
+[22] https://en.wikipedia.org/wiki/Cross-industry standard process for data mining
+Nayak (C1), Confidential (C2), Mani Kanteswara Rao Gar-
+[23] ftp://public.dhe.ibm.com/software/analytics/spss/documentation/modeler/18.0/en/ModelerCRISPDM.pdf
+lapati (C3), Peter Devine (C4), Tural Gulmammadov (C5), [24] S. Sagiroglu and D. Sinanc, ”Big data: A review,” 2013 International
+Suresh Bommu (C6), Confidential (C7), Siddhant Gawsane Conference on Collaboration Technologies and Systems (CTS), 2013,
+pp.42-47,doi:10.1109/CTS.2013.6567202.
+(C8),Confidential(C9))fortheirparticipationinthisresearch
+[25] https://docs.microsoft.com/en-us/azure/architecture/data-science-
+interview. process/overview
+[26] https://www.psych.auckland.ac.nz/en/about/thematic-analysis.html
+REFERENCES [27] Braun, V., & Clarke, V. (2006). Using thematic analysis in
+psychology. Qualitative Research in Psychology, 3(2), 77-101.
+[1] R Wirth, J Hipp, “CRISP-DM: Towards a standard process model for https://doi.org/10.1191/1478088706qp063oa
+data mining” Proceedings of the 4th international conference on the [28] http://documentation.sas.com/doc/en/emref/14.3/n061bzurmej4j3n1jnj8bbjjm1a2.htm
+practicalapplicationsofknowledgediscoveryanddatamining,2000. [29] http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.58.9085&rep=rep1&type=pdf
+[2] https://venturebeat.com/2019/07/19/why-do-87-of-data-science-projects- [30] @articlebraun2006using, title=Using thematic analysis in psychology,
+never-make-it-into-production/ author=Braun, Virginia and Clarke, Victoria, journal=Qualitative re-
+[3] https://blogs.gartner.com/andrew white/2019/01/03/our-top-data-and- searchinpsychology,volume=3,number=2,pages=77–101,year=2006,
+analytics-predicts-for-2019/ publisher=Taylor&Francis
+[4] JianzhengLiu,JieLi,WeifengLi,JianshengWu,Rethinkingbigdata: [31] https://agilemanifesto.org/
+A review on the data quality and usage issues, ISPRS Journal of
+Photogrammetry and Remote Sensing, Volume 115, 2016, Pages 134-
+142, ISSN 0924-2716, https://doi.org/10.1016/j.isprsjprs.2015.11.006.
+(https://www.sciencedirect.com/science/article/pii/S0924271615002567)
+[5] @article10.1214/aoms/1177705148, Leo A. Goodman, Snowball Sam-
+pling, volume = 32, journal = The Annals of Mathematical Statis-
+tics, number = 1, publisher = Institute of Mathematical Statis-
+tics, pages = 148 – 170, year = 1961, 10.1214/aoms/1177705148
+https://doi.org/10.1214/aoms/1177705148

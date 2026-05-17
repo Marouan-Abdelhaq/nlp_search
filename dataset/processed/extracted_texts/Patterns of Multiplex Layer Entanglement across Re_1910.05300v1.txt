@@ -1,0 +1,583 @@
+Patterns of Multiplex Layer Entanglement across Real
+and Synthetic Networks
+Blazˇ Sˇkrlj1andBenjaminRenoust2
+1 JozˇefStefanInstitute,Jamova38,Ljubljana,
+JozˇefStefanInternationalPostgraduateSchool,Jamova38,Ljubljana
+blaz.skrlj@ijs.si,
+2 OsakaUniversity,InstituteforDatabilityScience
+renoust@ids.osaka-u.ac.jp
+Abstract. Realworldcomplexnetworksoftenexhibitmultiplexstructure,con-
+nectingentitiesfromdifferentaspectsofphysicalsystemssuchassocial,trans-
+portation and biological networks. Little is known about general properties of
+suchnetworksacrossdisciplines.Inthiswork,wefirstinvestigatehowconsistent
+are connectivity patterns across 35 real world multiplex networks. We demon-
+stratethatentanglementhomogeneityandintensity,twomeasuresoflayercon-
+sistency, indicate apparent differences between social and biological networks.
+We also investigate trade, co-authorship and transport networks. We show that
+realnetworkscanbeseparatedinthejointspaceofhomogeneityandintensity,
+demonstratingtheusefulnessofthetwomeasuresforcategorizationofrealmul-
+tiplexnetworks.Finally,wedesignamultiplexnetworkgenerator,wheresimilar
+patterns(asobservedinrealnetworks),areemergingovertheanalysisof11,905
+syntheticmultiplexnetworkswithvarioustopologicalproperties.
+Keywords: Multiplexnetworks,edgeentanglement,networktopology,network
+generator
+1 Introduction
+Real-worldnetworkscommonlyconsistofdifferenttypesofentities,allconnectedinto
+a single system. The abstraction of multiplex networks offers a structure, capable of
+capturing the key parts of such systems, such as connectivity patterns. Multiplex net-
+worksemerge,andwerestudiedinbiology,socialsciences,finance,logisticsandmore.
+They are both theoretically interesting, as well as practically useful [1]. Recently, the
+notionsofmultiplexcommunitydetectionandcentralitieshavebeenalivelyresearch
+area,indicatingmanyinsightscanbeobtainedbystudyingsuchrichstructuresdirectly,
+without simplification [13,27,6] (e.g., aggregation into a single node type). Multiplex
+networksoffertheopportunitytosimultaneouslyexploremultipleaspectsofthesame
+system[16],andareassuchindispensableforthestudyofe.g.,biologicalorsocialnet-
+works,whereentitiescanbenaturallyobservedwithrespecttodifferentaspects(e.g.,an
+useronTwitter,FacebookandSnapchatisthesamephysicalperson,yetcanbestudied
+withrespecttoindividualsocialnetworkswhereitispresent).
+9102
+tcO
+11
+]IS.sc[
+1v00350.0191:viXra
+2 SˇkrljandRenoust
+Theideas,thatinfluencedthisworkthemostarediscussednext.Sincethestructure
+ofamultilayercorrespondstoitslayersandaspects[15],theanalysisoftheorganiza-
+tion of layers is key to understanding the properties of a multiplex network [24]. The
+analysisoftheoverlappingedgesbetweenlayers,namelyedgeentanglement[25]stud-
+ieshowthedifferentlayersofamultiplexnetworkintertwinetoformacoherentwhole.
+Eventhoughtheideasrelatedtodescriptionofmultiplexnetworksarebeingactively
+developed[31,22],webelievelittleeffortisfocusedonevaluationofsuchmeasuresat
+largerscales,acrossmultipledisciplinesandcontexts.Thisworkwasalsoinspiredby
+multilayer flow analysis [10], where distinct structures, describing parts of networks
+emerged.Thecontributionsofthisworkaremultiple,andaredescribednext:
+– Wepresentanefficientimplementationofmultiplexhomogeneityandintensity,the
+twomeasuresusedinthiswork[25]
+– Bothmeasures,alongwithnormalizedhomogeneity,arecomputedforthefirsttime
+on35real-worldmultiplexnetworks.
+– Wedemonstrateadistinctrelationshipbetweenhomogeneityandintensity,showing
+thetwomeasurescanseparatebetweendifferenttypesofmultiplexnetworks.
+– We present a multiplex network generator that produced networks with various
+degrees of intensity and homogeneity. We generated 11,905 synthetic networks,
+wherepatterns,similartotheonesintherealnetworksemerged.
+2 Multiplexnetworks
+AmultiplexnetworkcanbedefinedasasequenceM={G} ={(V,E)} where
+l l∈L l l l∈L
+E ⊆N ×V is a set of edges in one network l ∈L of the sequence [15]. Multiplex
+l l l
+networks are commonly understood as layers comprised of interactions, where each
+layercorrespondstoaspecificaspectofthesystem,andnodesrepresentthesameentity
+acrossalllayers.WerepresentamultiplexnetworkasastructureM=(V ,E ),where
+M M
+V isthesetofnodesandE thesetofalledges(inalllayers).
+M M
+Forexample,abiologicalsystemcanbestudiedattheprotein,RNAorgenelevel[29],
+andsimilarly,socialnetworkscanbestudiedbytakingintoaccountaperson’spresence
+onmultipleplatforms[21].Forcomputationalpurposes,suchnetworksarecommonly
+represented in the form of supra-adjacency matrices, where block-diagonal structure,
+connecting the same node across individual layers emerges [9]. Algorithms can oper-
+ateonsuchmatricesdirectlyandthusexploitsuchadditionalinformationrepresenting
+multiple aspects. Such approaches are useful when node-level information is consid-
+ered.
+Algorithmsforanalysisofmultiplexnetworkscanalsooperateonsparse,adjacency
+structure of the multiplex network directly, yet need to take into account that a given
+nodeispresentinmultiplelayers.Suchrepresentationissuitableforthiswork,aswe
+are focused primarily on how edges co-occur across layers. Hence, this work focuses
+primarily on the relations between the layers of a given multiplex network. We next
+discussthetwomeasuresweconsiderthroughoutthiswork.
+Entanglementinmultiplexnetworks 3
+Fig.1: A toy example of layer entanglement computation: a) separated layers consid-
+ered in a multilayer network; b) constructing the layer interaction network from the
+example;c)measuringentanglementfromtheexample.
+3 Multiplexentanglementandintensity
+Webrieflydiscusstheentanglementmeasuresdefinitionsfrompreviouswork[25].
+3.1 Layerinteractionnetwork
+RecallourmultiplexnetworkM=(V ,E )={G} .Suchanetworkreallydistin-
+M M l l∈L
+guishesitselffromclassicalgraphsthroughtheuseofdifferentlayerstoconnectnodes.
+Theselayersmayhavedifferentpatternsandmayoverlaptogether.Theremayevenex-
+istlatentdependenciesamongtheselayers.Toinvestigatethismatter,eachlayercould
+beabstractedtoonesinglenodeandformanewgraph,theLayerInteractionNetwork
+(LIN)[25].VisualizingtheLINisakeycomponentformultiplexnetworkvisualization
+suchasinDetangler[24].
+In the LIN, LIN =(L,F), each node corresponds to a layer l,l(cid:48),l(cid:48)(cid:48),...∈L of the
+multilayernetworkM,andeachedge f ∈F captureswhentwolayersoverlapthrough
+edges.Moreformally,thereexistanedge f =(l,l(cid:48))wheneverthereexistsatleasttwo
+nodesu,v∈V suchthatthereexistsatleastoneedgeconnectingthesetwonodeson
+M
+eachlayere =(u,v)∈l ande(cid:48) =(u,v)∈l(cid:48).TheLINcanbeinterpretedasanedge-
+M M
+layerco-occurrencegraph,andtheweightofanedge f =(l,l(cid:48)),denotedasn l,l(cid:48) equals
+the numberof timeslayers l,l(cid:48) co-occur. Byextension, n is thenumber ofedges on
+l,l
+layerl.ThisprocessisillustratedinFigure1.
+3.2 Layerentanglement
+Theanalysisofedgeentanglementisinspiredbytheanalysisofrelationcontentinso-
+cial networks [3]. The idea is to study the redundancy between relation content, each
+4 SˇkrljandRenoust
+Fig.2:TwoverydifferentcasesofmaximumhomogeneityH=1,themultiplexnetwork
+and the LIN are shown, with matrices and entanglement measures. a) all layers are
+saturatingalledges,sowehavemaximumintensityI=1;b)layersarewellbalanced,
+butwemayhavealotmoreinteractionspossible.
+forminginourformalismadifferentlayer.Theedgeentanglementmeasuresthe“influ-
+ence”ofalayerinitsneighborhood.
+Thismeasureisrecursivelydefined:theentanglementγ ofalayerlisdefinedupon
+l
+theentanglementofthelayersitisentangledwith.Similarlytotheeigencentrality[32],
+thistranslatesintotherecursiveequation:
+n
+γ.λ = ∑ ll(cid:48) γ(cid:48).
+l n l
+l(cid:48)∈T l
+The entanglement of alayer γ can beretrieved froma vector γ whichcorresponds to
+l
+the right eigenvector (associated to the maximum eigenvalue λ) of the layer overlap
+frequencymatrixwithcorrespondingoverlap,definedas:
+n
+C=(c ll(cid:48) ), where c ll(cid:48) =
+n
+ll(cid:48)
+.
+ll
+thismetricwasinitiallydiscussedin[25]),andisconstructedusingtheweightsinthe
+LIN (seeFigs.1and2).
+3.3 Entanglementintensityandhomogeneity
+Thelayerentanglementγ measurestheshareoflayerl overlappingwithotherlayers,
+l
+so that nodes of M are connected. The more a group of layers interacts together, the
+morethenodestheyconnectwillbecohesiveinviewoftheselayers,hencethemore
+γ ∀l ∈L values will be similar (their share of entanglement will be similar). This is
+l
+capturedbytheentanglementhomogeneity[25]whichisthendefinedasthefollowing
+Entanglementinmultiplexnetworks 5
+Algorithm1:Multiplexnetworkgenerator.
+Parameters :Numberofnodesv,numberoflayersk,dropoutd
+Result:AmultiplexnetworkM
+1 M←emptyMultiplexObject;
+2 forfornodein[1...v]do
+3 numberOfLayers←randomNumber(k); (cid:46) Layer presence is random.
+4 layerNodes←assignNodeToLayers(node,numberOfLayers);
+5 update(M,layerNodes); (cid:46) Update global network.
+6 end
+7 forlayerl i withcorrespondingnodesetV li do
+8 nodeClique←generatorofnodepairsfromV li ;
+9 finalLayer←sampleWithProbability(nodeClique,1−d); (cid:46) Sample via d.
+10 update(M,finalLayer); (cid:46) Update global network.
+11 end
+12 returnM;
+cosinesimilarity:
+<1 ,γ >
+L
+H= ∈[0,1].
+(cid:107)1 (cid:107)(cid:107)γ(cid:107)
+L
+Optimal homogenity is not necessarily reached only when all nodes are connected
+through all layers, but also when all nodes are connected in a very balanced manner
+between all layers (see Figure 2). Homogeneity thus permits various symmetries in a
+givenLIN.
+When a maximum overlap is reached through all layers in the network, the fre-
+quencies in the matrixC (of size |L|×|L|) are saturated withC =1. This gives us
+i,j
+a theoretical limit to measure the amount of layer overlap through the entanglement
+intensity[25],definedas:
+I=λ/|L|.
+4 Amultiplexnetworkgenerator
+In this section, we describe an algorithm for generation of multiplex networks based
+onthefollowingobservations.LetM=(V ,E )representamultiplexnetworkwithL
+M M
+layers.Eachnodeisassociatedtoarandomnumberoflayers{l ,l ,...,l}⊆L.Now
+1 2 i
+for each layer l ∈L there is a set of nodes V ⊆V which form a potential set of
+i li M
+edges of size |E |= 1|V |(|V |−1). We introduce the probability p of an edge to be
+li 2 li li
+createdbetweenanypairofnodeonalayersowemayavoidcliquestoformoneach
+layer. For algorithmic reasons, this probability is implemented as an edge dropout d
+suchas p=1−d,andrandomlypruneedgesfromapotentialclique.Thus,thehigher
+the d, the sparser the network. Intuitively, the more similar a given random multiplex
+istoacliqueovereachlayer,thehigheritsintensity.Thepurposeofthisgeneratoris
+to offer a simple testbed for further exploration, as well as additional evidence of the
+relationbetweenhomogeneityandintensityonmanyrandom,syntheticnetworks.The
+Algorithm1representstheproposedprocedure.
+6 SˇkrljandRenoust
+Thegeneratorfirstrandomlyassignsthesamenodeindextorandomlymanylayers
+(lines 1-6). Once assigned, the layers are processed by applying the dropout on
+(cid:0)|Vli |(cid:1)
+2
+possibleedgesinlayerl.Theglobalmultiplexisupdatedduringthisprocess(lines7-
+i
+12).Notethatinline8,thewholecliqueisvirtuallygenerated.Thisstepisnotneces-
+sary,ascommonlyonlyasmallnumberofedgesneedtobesampledfromallpossible
+edge combinations. The implementation thus uses a generator with lazy evaluation,
+avoiding potential combinatorial explosion with a large number of nodes (very large
+networks).
+4.1 Sometheoreticalpropertiesofthegenerator
+Inthissectionweshowtwopropertiesoftheproposedgenerator.Wedenotev=|V |
+M
+theparametersettingthenumberofnodesofthenetwork,k=|L|theparametersetting
+thenumberofedgelayersinthenetwork,andd theedgedropout.
+Proposition1 (Numberofedges).Letφ∈N+representthenumberofpossibleedges.
+Thenφ ≤k·
+(cid:0)v(cid:1)
+.
+2
+Proof. Note that in multiplex layers, each layer can have at most v nodes. Assuming
+they form a clique, each layer is thus comprised of
+(cid:0)v(cid:1)
+nodes. As there are k layers,
+therecanbeatmostk·
+(cid:0)v(cid:1)
+edges—acliqueofvnode
+2
+sineachlayer.Aseachlayeris
+2
+during generation subject to dropout, which is neglected, when set to 0 (no edges are
+erased),werefertothisboundasφ ≤k·
+(cid:0)v(cid:1)
+. (cid:116)(cid:117)
+2
+Corollary1 (Timecomplexity).Inlowerlimit,d →0,thusafullcliqueneedstobe
+constructed,assumingeachnodeisprojectedacrossalllayers.Thecomplexityw.r.t.the
+numberoflayersandedgesis:O(k· (cid:0)v(cid:1) )=O(|E |).
+2 M
+Notethateventhough,theoretically,theproposedgeneratorgeneratesacliqueand
+thensamplesfromit,current,lazyimplementationonlygeneratestheedgesneededto
+satisfy a given d percentage. In practice, only when d ≈0, the generator needs larger
+portions of space (and time). As such, fully connected networks do not represent real
+systems,wewereabletogeneratenetworkswithtensofthousandsofnodesusingthis
+approach.
+5 Empiricalevaluation
+In this section we discuss the empirical evaluation of the two considered measures
+acrossaseriesofrealworldnetworks.
+AllconsiderednetworksaresummarizedinTable13.Allconsiderednetworksare
+static. We computed the metrics for all connected components. The entanglement al-
+gorithmwasintegratedintothePy3plexlibrary[26]4.Foreachnetwork,wecomputed
+homogeneityandintensity.Forthegenerationofsyntheticnetworks,weusedthefol-
+lowinghyperparameterranges:
+3Thenetworksarehostedathttps://comunelab.fbk.eu/data.php
+4https://github.com/SkBlaz/Py3plex/blob/master/examples/example entanglement.py.
+The generator is accessible at https://github.com/SkBlaz/Py3plex/blob/master/py3plex/core/
+random generators.py
+Entanglementinmultiplexnetworks 7
+Table 1: Real multiplex networks and their properties. The ID in the second column
+correspondstoFigure3(c).
+Dataset ID Type Nodes Edges NumberoflayersMeandegree CC
+arXiv-Netscience[10] 6 Coauthorship 26796 59026 13 4.41 3660
+PierreAuger[10] 22 Coauthorship 965 7153 16 14.82 131
+Arabidopsis[28] 39 Genetic 8765 18655 7 4.26 387
+Bos[28] 3 Genetic 369 322 4 1.75 82
+Candida[28] 23,24,25 Genetic 418 398 7 1.90 50
+Celegans[28] 32 Genetic 4557 8182 6 3.59 193
+DanioRerio[28] 26,27 Genetic 180 188 5 2.09 45
+Drosophila[28] 31 Genetic 11970 43367 7 7.25 346
+Gallus[28] 16 Genetic 367 389 6 2.12 54
+HepatitusCVirus[28] 33 Genetic 129 137 3 2.12 4
+HomoSapiens[28] 30 Genetic 36194 170899 7 9.44 785
+HumanHerpes4[28] 29 Genetic 261 259 4 1.98 21
+HumanHIV1[28] 5 Genetic 1195 1355 5 2.27 13
+Oryctolagus[28] 7 Genetic 151 144 3 1.91 21
+Plasmodium[28] 9 Genetic 1206 2522 3 4.18 27
+Rattus[28] 40 Genetic 3263 4268 6 2.62 296
+SacchCere[28] 2 Genetic 27994 282755 7 20.20 432
+SacchPomb[28] 1 Genetic 10178 63677 7 12.51 286
+Xenopus[28] 37,38 Genetic 582 620 5 2.13 109
+YeastLandscape[8] 34 Genetic 17770 8473997 4 953.74 4
+CElegans[5] 20 Neuronal 791 5863 3 14.82 6
+Cannes2013[22] 8 Social 659951 991854 3 3.01 48375
+CKM-Physicians-Innovation[7] 19 Social 674 1551 3 4.60 12
+CS-Aarhus[19] 36 Social 224 620 5 5.54 13
+Kapferer-Tailor-Shop[14] 35 Social 150 1018 4 13.57 5
+Krackhardt-High-Tech[17] 13 Social 63 312 3 9.90 3
+Lazega-Law-Firm[18] 18 Social 211 2571 3 24.37 3
+MLKing2013[22] 14 Social 392542 396671 3 2.02 36041
+MoscowAthletics2013[22] 17 Social 133619 210250 3 3.15 6323
+ObamaInIsrael2013[22] 21 Social 34574534061960 3 2.35 651141
+Padgett-Florence-Families[23] 28 Social 26 35 2 2.69 2
+Vickers-Chan-7thGraders[30] 0 Social 87 740 3 17.01 3
+FAO[11] 15 Trade 41713 318346 364 15.26 571
+EUAir[4] 4 Transport 2034 3588 37 3.53 41
+London[12] 11,12 Transport 399 441 3 2.21 3
+– v∈{10,25,50,100,250,500,1000,2500}
+– k∈{3,4,5,6,7,8,9,10}
+– d∈{0.001,0.9,0.01}
+6 Results
+Inthissectionwepresenttheresultsofempiricalevaluation.Forreadabilitypurposes,
+we visualize individual results as distributions of a given score across network types.
+WefirstshowentanglementmetricsonrealnetworksinFigure3.Wenextpresentthe
+resultsonthegeneratednetworksinFigure4.
+Two main observations are apparent when studying the results on real networks.
+First, the difference between social and genetic (biological) multiplex networks be-
+comesobviouswhenbothentanglementintensity,aswellashomogeneityareconsid-
+ered. We further visualize the two most apparent distributions, i.e., the intensity and
+homogeneityofsocialvs.geneticnetworksinFigure5.
+The properties of synthetic networks were plotted with respect to the dropout pa-
+rameter.Thereadercanobserveapparentlineartrendbetweenthedropout(sparseness)
+andentanglementintensity(Figure4(b)).Thistrendindicatessparsernetworksareless
+8 SˇkrljandRenoust
+1.0
+0.9
+0.8
+0.7
+0.6
+0.5
+0.4
+Social Genetic TransportCoauthorship Trade Neuronal
+Network type
+ytienegomoH
+0.7
+0.6
+0.5
+0.4
+0.3
+0.2
+0.1
+0.0
+Social Genetic TransportCoauthorship Trade Neuronal
+Network type
+(a)Realnetworks:homogeneityH
+ytisnetnI
+(b)Realnetworks:intensityI
+0.8
+0.6
+0.4
+0.2
+0.0
+−0.2
+0.0 0.2 0.4 0.6 0.8 1.0
+Homogeneity
+ytisnetnI
+Discipline
+Social
+Genetic
+Transport
+Coauthorship
+0
+Trade
+Neuronal
+28
+9 18
+35
+13
+19
+23 11 3236 25
+33 2 1 1 5
+291 7 4 17 8
+16 35 37 24
+31 32 1 9040 3 3 0 4 6 222 27 12
+4 231680
+(c)Realnetworks:H×I
+Fig.3:Resultsonrealnetworks.Labelsin(c)maptoTable1(ID).Graydotsrepresent
+syntheticsamples.
+“intensely” coupled. As intensity directly measures this property, this result outlines
+oneofthedesiredpropertiesoftheproposednetworkgenerator.
+The reader can also observe high density of networks in the space of high homo-
+geneity and average or low intensity (Figure 4 (d)). This property directly reflects the
+Entanglementinmultiplexnetworks 9
+0.9
+0.8
+0.7
+0.6
+0.5
+0.2 0.4 0.6 0.8 1.0
+Edge dropout
+ytienegomoH
+0.6
+0.5
+0.4
+0.3
+0.2
+0.1
+0.0
+0.2 0.4 0.6 0.8 1.0
+Edge dropout
+(a)Syntheticnetworks:homogeneityH
+ytisnetnI
+(b)Syntheticnetworks:intensityI
+0.6
+0.5
+0.4
+0.3
+0.2
+0.1
+0.0
+0.5 0.6 0.7 0.8 0.9
+Homogeneity
+ytisnetnI
+Dropout
+(0.0991, 0.325] 0.6
+(0.55, 0.775]
+(0.325, 0.55]
+(0.775, 1.0]
+0.5
+0.4
+0.3
+0.2
+0.1
+0.0
+0.5 0.6 0.7 0.8 0.9
+Homogeneity
+(c)Dependenceondropout:H×I
+ytisnetnI
+#Layers
+(2, 4]
+(4, 6]
+(6, 8]
+(8, 10]
+(d)Dependenceonnumberoflayers:H×I
+Fig.4: Results on 11,905 synthetic networks. The homogeneity (a) and intensity (b)
+dependenceondropoutandnumberoflayersparameterresultsinheavy-taileddistribu-
+tionsofthetwomeasures(c,d).
+samplingprocedure,asthemajorityoftheconsiderednetworksconsistofedges,which
+co-occurinmajorityoflayers.AsimilarobservationcanbeobservedinFigure4(a,c),
+where denser regions of the homogeneity/intensity space emerge when higher homo-
+geneity is considered. Note that we also visualized the dependence of the synthetic
+network’spropertiesonthedropout,aswellasthenumberoflayers—bothparameters
+determineagivenmultiplex’sstructure.
+10 SˇkrljandRenoust
+6
+5
+4
+3
+2
+1
+0
+0.2 0.4 0.6 0.8 1.0 1.2 1.4
+Homogeneity
+ytisneD
+Social 5
+Genetic
+4
+3
+2
+1
+0
+0.0 0.2 0.4 0.6 0.8 1.0
+Intensity
+(a)Real-homogeneity
+ytisneD
+Social
+Genetic
+(b)Real-intensity
+Fig.5:Distributionsofhomogeneityandintensitywhengeneticnetworksarecompared
+tosocialones.
+7 Discussionandconclusion
+Inthispaperwedemonstratedthattwomeasuresforassessingtherelationbetweenlay-
+ersinagivenmultiplexnetworkofferinterestinginsightswhencomputedacrossawide
+arrayofreal-worldnetworks.Toourunderstanding,theobservedrelationshipbetween
+theintensityandhomogeneityoflayerentanglementwasnotyetreported.Weshowed
+that real networks cluster based on their type (e.g. biological vs. social). Apart from
+experiments on real networks we also generated a large set of synthetic ones, where
+theanalysisoutlinedthefollowingproperties:Intensityisdirectlycorrelatedwithedge
+dropoutparameter—thesparserthenetwork,thelowertheintensity.Thisresultindi-
+catestheproposedgeneratorindeedemitsnetworkswhichadheretothisproperty.Next,
+weobservethatlargepartsofthegeneratednetworksaresubjecttohighhomogeneity
+withvariousdegreesofentanglementintensity.
+Thedetailedinspectionofthesyntheticnetworkswithrespecttotheparametersd
+and the number of layers (k) reveals that the generative process is more sensitive to
+dropout(layeredpatternsofintensityemerge),thantothenumberoflayers(uniformly
+distributed w.r.t. homogeneity). This property indicates the model’s properties could
+alsobeinvestigatedtheoretically,whichweleaveforfurtherwork.
+Inaddition,wemayobserve(fromFigure3)thatoursetofgeneticnetworkstend
+to match networks with higher dropout, as opposed to social networks which tend to
+findtheirwayinlowerdropoutarea.Thisshouldbefurtherinvestigated,butthismay
+berelatedtohomophily[20,2].Homophilyistheimpliedsimilarityoftwoentitiesina
+social network, and the property of entities to agglomerate when being similar. If the
+reasonof‘beingsimilar’couldbemodeledasalayerofinteraction,theresultofagroup
+ofentitiesin‘beingsimilar’wouldleadtotheformationofacliqueinthislayer,hence
+locatingsocialnetworksinlowdropoutareas.
+Entanglementinmultiplexnetworks 11
+Theproposedworkoffersatleasttwoprospectsofmultiplexnetworkstudywhich
+are in our belief worth exploring further. The difference between the genetic and so-
+cial networks is possibly subject to very distinct topologies which emerge in individ-
+uallayers.Thisclaimcanbeempiricallyevaluatedviameasurementofe.g.,graphlets,
+communitiesorotherstructures.Next,geneticnetworksarelesshomogeneous.Further
+work includes exploration of this fact, as it can be merely a property of the networks
+considered,empiricalmethodologyusedtoobtainthenetworksorsomeothereffect.
+We believe that theoretical properties of the proposed network generator can also
+befurtherstudies,offeringpotentialinsightsintohowmultiplexnetworksbehaveand
+whetherthehuman-madeaspectsareindeedrepresentativeofagivensystem’sstate.
+8 Acknowledgements
+The work of the first author was funded by the Slovenian Research Agency through
+a young researcher grant. The work of other authors was supported by the Slove-
+nianResearchAgency(ARRS)coreresearchprogrammeKnowledgeTechnologies(P2-
+0103)andARRSfundedresearchprojectSemanticDataMiningforLinkedOpenData
+(financed under the ERC Complementary Scheme, N2-0078). We also acknowledge
+Dagstuhlseminar-19061[16]wheremanyideasimplementedinthispaperemerged.
+References
+1. Battiston,F.,Nicosia,V.,Latora,V.:Structuralmeasuresformultiplexnetworks.Physical
+ReviewE89(3),032804(2014)
+2. Borgatti,S.P.,Mehra,A.,Brass,D.J.,Labianca,G.:Networkanalysisinthesocialsciences.
+science323(5916),892–895(2009)
+3. Burt,R.S.,Schøtt,T.:Relationcontentsinmultiplenetworks.SocialScienceResearch14(4),
+287–308(1985)
+4. Cardillo, A., Go´mez-Gardenes, J., Zanin, M., Romance, M., Papo, D., Del Pozo, F., Boc-
+caletti, S.: Emergence of network features from multiplexity. Scientific reports 3, 1344
+(2013)
+5. Chen,B.L.,Hall,D.H.,Chklovskii,D.B.:Wiringoptimizationcanrelateneuronalstructure
+andfunction.ProceedingsoftheNationalAcademyofSciences103(12),4723–4728(2006)
+6. Chen,X.,Wang,R.,Tang,M.,Cai,S.,Stanley,H.E.,Braunstein,L.A.:Suppressingepidemic
+spreadinginmultiplexnetworkswithsocial-support.NewJournalofPhysics20(1),013007
+(2018)
+7. Coleman, J., Katz, E., Menzel, H.: The diffusion of an innovation among physicians. So-
+ciometry20(4),253–270(1957)
+8. Costanzo,M.,Baryshnikova,A.,Bellay,J.,Kim,Y.,Spear,E.D.,Sevier,C.S.,Ding,H.,Koh,
+J.L.,Toufighi,K.,Mostafavi,S.,etal.:Thegeneticlandscapeofacell.science327(5964),
+425–431(2010)
+9. Cozzo,E.,Kivela¨,M.,DeDomenico,M.,Sole´-Ribalta,A.,Arenas,A.,Go´mez,S.,Porter,
+M.A., Moreno, Y.: Structure of triadic relations in multiplex networks. New Journal of
+Physics17(7),073029(2015)
+10. De Domenico, M., Lancichinetti, A., Arenas, A., Rosvall, M.: Identifying modular flows
+onmultilayernetworksrevealshighlyoverlappingorganizationininterconnectedsystems.
+PhysicalReviewX5(1),011027(2015)
+12 SˇkrljandRenoust
+11. DeDomenico,M.,Nicosia,V.,Arenas,A.,Latora,V.:Structuralreducibilityofmultilayer
+networks.Naturecommunications6,6864(2015)
+12. DeDomenico,M.,Sole´-Ribalta,A.,Go´mez,S.,Arenas,A.:Navigabilityofinterconnected
+networksunderrandomfailures.ProceedingsoftheNationalAcademyofSciences111(23),
+8351–8356(2014)
+13. Gomez, S., Diaz-Guilera, A., Gomez-Gardenes, J., Perez-Vicente, C.J., Moreno, Y., Are-
+nas,A.:Diffusiondynamicsonmultiplexnetworks.Physicalreviewletters110(2),028701
+(2013)
+14. Kapferer, B.: Strategy and transaction in an African factory: African workers and Indian
+managementinaZambiantown.ManchesterUniversityPress(1972)
+15. Kivela¨,M.,Arenas,A.,Barthelemy,M.,Gleeson,J.P.,Moreno,Y.,Porter,M.A.:Multilayer
+networks.Journalofcomplexnetworks2(3),203–271(2014)
+16. Kivela¨,M.,McGee,F.,Melanc¸on,G.,HenryRiche,N.,vonLandesberger,T.:Visualana-
+lyticsofmultilayernetworksacrossdisciplines(dagstuhlseminar19061).SchlossDagstuhl-
+Leibniz-ZentrumfuerInformatik(2019)
+17. Krackhardt,D.:Cognitivesocialstructures.Socialnetworks9(2),109–134(1987)
+18. Lazega,E.,etal.:Thecollegialphenomenon:Thesocialmechanismsofcooperationamong
+peersinacorporatelawpartnership.OxfordUniversityPressonDemand(2001)
+19. Magnani,M.,Micenkova,B.,Rossi,L.:Combinatorialanalysisofmultiplenetworks.arXiv
+preprintarXiv:1303.4986(2013)
+20. McPherson,M.,Smith-Lovin,L.,Cook,J.M.:Birdsofafeather:Homophilyinsocialnet-
+works.Annualreviewofsociology27(1),415–444(2001)
+21. Mittal, R., Bhatia, M.: Analysis of multiplex social networks using nature-inspired algo-
+rithms.In:Nature-InspiredAlgorithmsforBigDataFrameworks,pp.290–318.IGIGlobal
+(2019)
+22. Omodei, E., De Domenico, M.D., Arenas, A.: Characterizing interactions in online social
+networksduringexceptionalevents.FrontiersinPhysics3, 59(2015)
+23. Padgett,J.F.,Ansell,C.K.:Robustactionandtheriseofthemedici,1400-1434.American
+journalofsociology98(6),1259–1319(1993)
+24. Renoust,B.,Melancon,G.,Munzner,T.:Detangler:Visualanalyticsformultiplexnetworks.
+In:ComputerGraphicsForum.vol.34-3,pp.321–330.WileyOnlineLibrary(2015)
+25. Renoust,B.,Melanc¸on,G.,Viaud,M.L.:Entanglementinmultiplexnetworks:understanding
+groupcohesioninhomophilynetworks.In:SocialNetworkAnalysis,pp.89–117.Springer
+(2014)
+26. Sˇkrlj,B.,Kralj,J.,Lavracˇ,N.:Py3plex:alibraryforscalablemultilayernetworkanalysisand
+visualization.In:InternationalConferenceonComplexNetworksandtheirApplications.pp.
+757–768.Springer(2018)
+27. Sˇkrlj,B.,Kralj,J.,Lavracˇ,N.:Cbssd:Community-basedsemanticsubgroupdiscovery.Jour-
+nalofIntelligentInformationSystemspp.1–40(2019)
+28. Stark,C.,Breitkreutz,B.J.,Reguly,T.,Boucher,L.,Breitkreutz,A.,Tyers,M.:Biogrid:a
+generalrepositoryforinteractiondatasets.Nucleicacidsresearch34(suppl 1),D535–D539
+(2006)
+29. Valdeolivas,A.,Tichit,L.,Navarro,C.,Perrin,S.,Odelin,G.,Levy,N.,Cau,P.,Remy,E.,
+Baudot,A.:Randomwalkwithrestartonmultiplexandheterogeneousbiologicalnetworks.
+Bioinformatics35(3),497–505(2018)
+30. Vickers, M., Chan, S.: Representing classroom social structure. Victoria Institute of Sec-
+ondaryEducation,Melbourne(1981)
+31. Wang,W.,Cai,M.,Zheng,M.:Socialcontagionsoncorrelatedmultiplexnetworks.Physica
+A:StatisticalMechanicsanditsApplications499,121–128(2018)
+32. Wasserman,S.,Faust,K.:SocialNetworkAnalysis,MethodsandApplications.Structural
+AnalysisintheSocialSciences,CambridgeUniversityPress(1994)

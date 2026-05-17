@@ -1,0 +1,1932 @@
+Module d’informatique
+Programmation et algorithmique
+Avant propos
+Informatique
+L’informatique (cid:18)a l’ENSMM
+Premi(cid:18)ere ann(cid:19)ee (semestre bleu)
+Programmation et algorithmique (C)
+Deuxi(cid:18)eme ann(cid:19)ee (semestre vert, parcours EAO)
+Programmation Orient(cid:19)ee Objet (Java)
+Troisi(cid:18)eme ann(cid:19)ee (modules transverses)
+Syst(cid:18)emes d’informations et application Web (SQL, HTML, PHP)
+M(cid:19)ethodes d’Optimisation et de D(cid:19)ecision
+G.LaurentjENSMMjF(cid:19)evrier2013 3/72
+Informatique
+Organisation du module
+E(cid:19)valuation :
+1/3 examen partiel
+1/3 examen (cid:12)nal
+1/3 mini-projet
+G.LaurentjENSMMjF(cid:19)evrier2013 4/72
+Informatique
+(cid:19)
+Equipe p(cid:19)edagogique
+Enseignants-chercheurs au d(cid:19)epartement AS2M de l’institut FEMTO-ST
+Guillaume Laurent
+Jean-Marc Nicod
+Nadine Piat
+Emmanuel Piat
+Emmanuel Ramasso
+Christophe Varnier
+G.LaurentjENSMMjF(cid:19)evrier2013 5/72
+Petits messages...
+vs
+Source:http://lapinobservateur.over-blog.com/
+Informatique
+Plan du cours
+Partie 1 : Introduction (cid:18)a l’algorithmique
+Partie 2 : Introduction (cid:18)a la programmation structur(cid:19)ee
+G.LaurentjENSMMjF(cid:19)evrier2013 7/72
+Partie 1 : Introduction (cid:18)a l’algorithmique
+1 D(cid:19)e(cid:12)nition et historique
+2 Notion de variable
+3 Instructions et structures de contr^ole
+4 Conclusion
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+1 D(cid:19)e(cid:12)nition et historique
+1 D(cid:19)e(cid:12)nition et historique
+2 Notion de variable
+3 Instructions et structures de contr^ole
+4 Conclusion
+G.LaurentjENSMMjF(cid:19)evrier2013 9/72
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Qu’est-ce qu’un algorithme?
+G.LaurentjENSMMjF(cid:19)evrier2013 10/72
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Qu’est-ce qu’un algorithme?
+G.LaurentjENSMMjF(cid:19)evrier2013 10/72
+-1900 -300
+Euclide
+E(cid:19)poquebabylonienne
+Algorithmepermettantdetrouveruneunit(cid:19)e
+Descriptionsd’algorithmespourdescalculs
+demesurecommune(cid:18)adeuxlongueurs,c-(cid:18)a-d
+concernantlecommerceetlesimp^ots lePGCD(livreVIIdesE(cid:19)l(cid:19)ementsd’Euclide)
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+L’antiquit(cid:19)e
+G.LaurentjENSMMjF(cid:19)evrier2013 11/72
+-300
+Euclide
+Algorithmepermettantdetrouveruneunit(cid:19)e
+demesurecommune(cid:18)adeuxlongueurs,c-(cid:18)a-d
+lePGCD(livreVIIdesE(cid:19)l(cid:19)ementsd’Euclide)
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+L’antiquit(cid:19)e
+-1900
+E(cid:19)poquebabylonienne
+Descriptionsd’algorithmespourdescalculs
+concernantlecommerceetlesimp^ots
+G.LaurentjENSMMjF(cid:19)evrier2013 11/72
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+L’antiquit(cid:19)e
+-1900 -300
+Euclide
+E(cid:19)poquebabylonienne
+Algorithmepermettantdetrouveruneunit(cid:19)e
+Descriptionsd’algorithmespourdescalculs
+demesurecommune(cid:18)adeuxlongueurs,c-(cid:18)a-d
+concernantlecommerceetlesimp^ots lePGCD(livreVIIdesE(cid:19)l(cid:19)ementsd’Euclide)
+G.LaurentjENSMMjF(cid:19)evrier2013 11/72
+783 - 850 1080 - 1160
+MuhammadAlKhawarizmi AdelarddeBath
+Math(cid:19)ematicienperse,auteurd’unouvragequi Math(cid:19)ematicienbritannique,introduitleterme
+d(cid:19)ecritdesm(cid:19)ethodessyst(cid:19)ematiquesdecalculs latindealgorismus.Cemotdonnera
+alg(cid:19)ebriques algorithmeenfran(cid:24)caisen1554
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Naissance du concept d’algorithme
+G.LaurentjENSMMjF(cid:19)evrier2013 12/72
+1080 - 1160
+AdelarddeBath
+Math(cid:19)ematicienbritannique,introduitleterme
+latindealgorismus.Cemotdonnera
+algorithmeenfran(cid:24)caisen1554
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Naissance du concept d’algorithme
+783 - 850
+MuhammadAlKhawarizmi
+Math(cid:19)ematicienperse,auteurd’unouvragequi
+d(cid:19)ecritdesm(cid:19)ethodessyst(cid:19)ematiquesdecalculs
+alg(cid:19)ebriques
+G.LaurentjENSMMjF(cid:19)evrier2013 12/72
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Naissance du concept d’algorithme
+783 - 850 1080 - 1160
+MuhammadAlKhawarizmi AdelarddeBath
+Math(cid:19)ematicienperse,auteurd’unouvragequi Math(cid:19)ematicienbritannique,introduitleterme
+d(cid:19)ecritdesm(cid:19)ethodessyst(cid:19)ematiquesdecalculs latindealgorismus.Cemotdonnera
+alg(cid:19)ebriques algorithmeenfran(cid:24)caisen1554
+G.LaurentjENSMMjF(cid:19)evrier2013 12/72
+1815 - 1852 1912 - 1954
+AlanTuring
+AdaLovelace
+Math(cid:19)ematicienbritannique,formaliseles
+Math(cid:19)ematiciennebritannique,proposeune conceptsd’algorithmeetdecalculabilit(cid:19)eau
+m(cid:19)ethodetr(cid:18)esd(cid:19)etaill(cid:19)eepourcalculerles traversl’inventiond’unemachinevirtuelle:la
+nombresdeBernoulliconsid(cid:19)er(cid:19)eecommele machinedeTuring.Toutprobl(cid:18)emedecalcul
+premierprogrammeinformatiquepourla bas(cid:19)esuruneproc(cid:19)edurealgorithmiquepeut
+machine(cid:18)adi(cid:11)(cid:19)erencedeCharlesBabbage ^etrer(cid:19)esoluparunemachinedeTuring(th(cid:18)ese
+Church-Turing)
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Formalisation du concept d’algorithmique
+G.LaurentjENSMMjF(cid:19)evrier2013 13/72
+1912 - 1954
+AlanTuring
+Math(cid:19)ematicienbritannique,formaliseles
+conceptsd’algorithmeetdecalculabilit(cid:19)eau
+traversl’inventiond’unemachinevirtuelle:la
+machinedeTuring.Toutprobl(cid:18)emedecalcul
+bas(cid:19)esuruneproc(cid:19)edurealgorithmiquepeut
+^etrer(cid:19)esoluparunemachinedeTuring(th(cid:18)ese
+Church-Turing)
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Formalisation du concept d’algorithmique
+1815 - 1852
+AdaLovelace
+Math(cid:19)ematiciennebritannique,proposeune
+m(cid:19)ethodetr(cid:18)esd(cid:19)etaill(cid:19)eepourcalculerles
+nombresdeBernoulliconsid(cid:19)er(cid:19)eecommele
+premierprogrammeinformatiquepourla
+machine(cid:18)adi(cid:11)(cid:19)erencedeCharlesBabbage
+G.LaurentjENSMMjF(cid:19)evrier2013 13/72
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Formalisation du concept d’algorithmique
+1815 - 1852 1912 - 1954
+AlanTuring
+AdaLovelace
+Math(cid:19)ematicienbritannique,formaliseles
+Math(cid:19)ematiciennebritannique,proposeune conceptsd’algorithmeetdecalculabilit(cid:19)eau
+m(cid:19)ethodetr(cid:18)esd(cid:19)etaill(cid:19)eepourcalculerles traversl’inventiond’unemachinevirtuelle:la
+nombresdeBernoulliconsid(cid:19)er(cid:19)eecommele machinedeTuring.Toutprobl(cid:18)emedecalcul
+premierprogrammeinformatiquepourla bas(cid:19)esuruneproc(cid:19)edurealgorithmiquepeut
+machine(cid:18)adi(cid:11)(cid:19)erencedeCharlesBabbage ^etrer(cid:19)esoluparunemachinedeTuring(th(cid:18)ese
+Church-Turing)
+G.LaurentjENSMMjF(cid:19)evrier2013 13/72
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Formalisation du concept d’algorithmique
+D(cid:19)e(cid:12)nition (Algorithme)
+Un algorithme est la formalisation logique, claire et compl(cid:18)ete d’une suite
+d’actions qui permettent de passer des donn(cid:19)ees d’un probl(cid:18)eme au r(cid:19)esultat. Cette
+formalisation n(cid:19)ecessite l’utilisation d’un langage simple, non ambigu et
+ind(cid:19)ependant de tout mat(cid:19)eriel et de tout logiciel.
+G.LaurentjENSMMjF(cid:19)evrier2013 14/72
+1943 ENIAC 1954 IBM 704
+IBM 704
+Programmes (cid:19)ecrits avec les instructions de base de la machine (en binaire)
+Programmes di(cid:14)ciles (cid:18)a comprendre et (cid:18)a modi(cid:12)er
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Premiers langages machines
+G.LaurentjENSMMjF(cid:19)evrier2013 15/72
+1954 IBM 704
+IBM 704
+Programmes (cid:19)ecrits avec les instructions de base de la machine (en binaire)
+Programmes di(cid:14)ciles (cid:18)a comprendre et (cid:18)a modi(cid:12)er
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Premiers langages machines
+1943 ENIAC
+ENIAC
+Premier ordinateur (cid:19)electronique ((cid:18)a tubes) construit pour ^etre complet au
+sens de Turing.
+G.LaurentjENSMMjF(cid:19)evrier2013 15/72
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Premiers langages machines
+1943 ENIAC 1954 IBM 704
+IBM 704
+Programmes (cid:19)ecrits avec les instructions de base de la machine (en binaire)
+Programmes di(cid:14)ciles (cid:18)a comprendre et (cid:18)a modi(cid:12)er
+G.LaurentjENSMMjF(cid:19)evrier2013 15/72
+1951 1954 1959 1963
+A-0 FORTRAN COBOL BASIC
+GraceMurrayHopper
+JohnBackus
+InformaticienchezIBM,publieen1954un
+articletitr(cid:19)eSpeci(cid:12)cationsfortheIBM
+MathematicalFORmulaTRANslatingSystem
+Kemeny&Kurtz
+Informaticienneam(cid:19)ericaine,conceptricedu
+Con(cid:24)coiventleBASICauDartmouthCollege
+premiercompilateur(A-0System)etdu
+langageCOBOL.
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Premiers langages symboliques
+G.LaurentjENSMMjF(cid:19)evrier2013 16/72
+1954 1963
+FORTRAN BASIC
+JohnBackus
+InformaticienchezIBM,publieen1954un
+articletitr(cid:19)eSpeci(cid:12)cationsfortheIBM
+MathematicalFORmulaTRANslatingSystem
+Kemeny&Kurtz
+Con(cid:24)coiventleBASICauDartmouthCollege
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Premiers langages symboliques
+1951 1959
+A-0 COBOL
+GraceMurrayHopper
+Informaticienneam(cid:19)ericaine,conceptricedu
+premiercompilateur(A-0System)etdu
+langageCOBOL.
+G.LaurentjENSMMjF(cid:19)evrier2013 16/72
+1963
+BASIC
+Kemeny&Kurtz
+Con(cid:24)coiventleBASICauDartmouthCollege
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Premiers langages symboliques
+1951 1954 1959
+A-0 FORTRAN COBOL
+GraceMurrayHopper
+JohnBackus
+InformaticienchezIBM,publieen1954un
+articletitr(cid:19)eSpeci(cid:12)cationsfortheIBM
+MathematicalFORmulaTRANslatingSystem
+Informaticienneam(cid:19)ericaine,conceptricedu
+premiercompilateur(A-0System)etdu
+langageCOBOL.
+G.LaurentjENSMMjF(cid:19)evrier2013 16/72
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Premiers langages symboliques
+1951 1954 1959 1963
+A-0 FORTRAN COBOL BASIC
+GraceMurrayHopper
+JohnBackus
+InformaticienchezIBM,publieen1954un
+articletitr(cid:19)eSpeci(cid:12)cationsfortheIBM
+MathematicalFORmulaTRANslatingSystem
+Kemeny&Kurtz
+Informaticienneam(cid:19)ericaine,conceptricedu
+Con(cid:24)coiventleBASICauDartmouthCollege
+premiercompilateur(A-0System)etdu
+langageCOBOL.
+G.LaurentjENSMMjF(cid:19)evrier2013 16/72
+Organigramme(IBM1969,normeISO5807en1985)
+Programmes di(cid:14)ciles (cid:18)a v(cid:19)eri(cid:12)er et (cid:18)a r(cid:19)eutiliser
+Programmation spaghetti
+(cid:28) (cid:29)
+Organigrammes limit(cid:19)es (cid:18)a des algorithmes tr(cid:18)es simples
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Premiers langages symboliques
+BASIC
+10 if A = B goto 70
+20 if A < B goto 50
+30 A = A (cid:0) B
+40 goto 10
+50 B = B (cid:0) A
+60 goto 10
+70 end
+G.LaurentjENSMMjF(cid:19)evrier2013 17/72
+Programmes di(cid:14)ciles (cid:18)a v(cid:19)eri(cid:12)er et (cid:18)a r(cid:19)eutiliser
+Programmation spaghetti
+(cid:28) (cid:29)
+Organigrammes limit(cid:19)es (cid:18)a des algorithmes tr(cid:18)es simples
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Premiers langages symboliques
+Organigramme(IBM1969,normeISO5807en1985)
+BASIC
+10 if A = B goto 70
+20 if A < B goto 50
+30 A = A (cid:0) B
+40 goto 10
+50 B = B (cid:0) A
+60 goto 10
+70 end
+G.LaurentjENSMMjF(cid:19)evrier2013 17/72
+Programmation spaghetti
+(cid:28) (cid:29)
+Organigrammes limit(cid:19)es (cid:18)a des algorithmes tr(cid:18)es simples
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Premiers langages symboliques
+Organigramme(IBM1969,normeISO5807en1985)
+BASIC
+10 if A = B goto 70
+20 if A < B goto 50
+30 A = A (cid:0) B
+40 goto 10
+50 B = B (cid:0) A
+60 goto 10
+70 end
+Programmes di(cid:14)ciles (cid:18)a v(cid:19)eri(cid:12)er et (cid:18)a r(cid:19)eutiliser
+G.LaurentjENSMMjF(cid:19)evrier2013 17/72
+Organigrammes limit(cid:19)es (cid:18)a des algorithmes tr(cid:18)es simples
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Premiers langages symboliques
+Organigramme(IBM1969,normeISO5807en1985)
+BASIC
+10 if A = B goto 70
+20 if A < B goto 50
+30 A = A (cid:0) B
+40 goto 10
+50 B = B (cid:0) A
+60 goto 10
+70 end
+Programmes di(cid:14)ciles (cid:18)a v(cid:19)eri(cid:12)er et (cid:18)a r(cid:19)eutiliser
+Programmation spaghetti
+(cid:28) (cid:29)
+G.LaurentjENSMMjF(cid:19)evrier2013 17/72
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Premiers langages symboliques
+Organigramme(IBM1969,normeISO5807en1985)
+BASIC
+10 if A = B goto 70
+20 if A < B goto 50
+30 A = A (cid:0) B
+40 goto 10
+50 B = B (cid:0) A
+60 goto 10
+70 end
+Programmes di(cid:14)ciles (cid:18)a v(cid:19)eri(cid:12)er et (cid:18)a r(cid:19)eutiliser
+Programmation spaghetti
+(cid:28) (cid:29)
+Organigrammes limit(cid:19)es (cid:18)a des algorithmes tr(cid:18)es simples
+G.LaurentjENSMMjF(cid:19)evrier2013 17/72
+Ann(cid:19)ees 70 : crise du logiciel
+Nombreuses publications sur le g(cid:19)enie logiciel
+1966 : Bo(cid:127)hm et Jiacopini, Go To Statement Considered Harmful
+1975 :Dijkstra,Guarded commands, nondeterminacy and formal derivationof
+programs
+1970 : Warnier, Principes de la Logique de Construction de Programmes
+1986 : Brooks, No Silver Bullet : Essence and Accidents of Software
+Engineering
+Introduction de nouveaux concepts
+Structures de contr^oles
+Structures de donn(cid:19)ees
+Sous-programmes
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Langages structur(cid:19)es de haut niveau
+G.LaurentjENSMMjF(cid:19)evrier2013 18/72
+Nombreuses publications sur le g(cid:19)enie logiciel
+1966 : Bo(cid:127)hm et Jiacopini, Go To Statement Considered Harmful
+1975 :Dijkstra,Guarded commands, nondeterminacy and formal derivationof
+programs
+1970 : Warnier, Principes de la Logique de Construction de Programmes
+1986 : Brooks, No Silver Bullet : Essence and Accidents of Software
+Engineering
+Introduction de nouveaux concepts
+Structures de contr^oles
+Structures de donn(cid:19)ees
+Sous-programmes
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Langages structur(cid:19)es de haut niveau
+Ann(cid:19)ees 70 : crise du logiciel
+G.LaurentjENSMMjF(cid:19)evrier2013 18/72
+Introduction de nouveaux concepts
+Structures de contr^oles
+Structures de donn(cid:19)ees
+Sous-programmes
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Langages structur(cid:19)es de haut niveau
+Ann(cid:19)ees 70 : crise du logiciel
+Nombreuses publications sur le g(cid:19)enie logiciel
+1966 : Bo(cid:127)hm et Jiacopini, Go To Statement Considered Harmful
+1975 :Dijkstra,Guarded commands, nondeterminacy and formal derivationof
+programs
+1970 : Warnier, Principes de la Logique de Construction de Programmes
+1986 : Brooks, No Silver Bullet : Essence and Accidents of Software
+Engineering
+G.LaurentjENSMMjF(cid:19)evrier2013 18/72
+Introduction de nouveaux concepts
+Structures de contr^oles
+Structures de donn(cid:19)ees
+Sous-programmes
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Langages structur(cid:19)es de haut niveau
+Ann(cid:19)ees 70 : crise du logiciel
+Nombreuses publications sur le g(cid:19)enie logiciel
+1966 : Bo(cid:127)hm et Jiacopini, Go To Statement Considered Harmful
+1975 :Dijkstra,Guarded commands, nondeterminacy and formal derivationof
+programs
+1970 : Warnier, Principes de la Logique de Construction de Programmes
+1986 : Brooks, No Silver Bullet : Essence and Accidents of Software
+Engineering
+G.LaurentjENSMMjF(cid:19)evrier2013 18/72
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Langages structur(cid:19)es de haut niveau
+Ann(cid:19)ees 70 : crise du logiciel
+Nombreuses publications sur le g(cid:19)enie logiciel
+1966 : Bo(cid:127)hm et Jiacopini, Go To Statement Considered Harmful
+1975 :Dijkstra,Guarded commands, nondeterminacy and formal derivationof
+programs
+1970 : Warnier, Principes de la Logique de Construction de Programmes
+1986 : Brooks, No Silver Bullet : Essence and Accidents of Software
+Engineering
+Introduction de nouveaux concepts
+Structures de contr^oles
+Structures de donn(cid:19)ees
+Sous-programmes
+G.LaurentjENSMMjF(cid:19)evrier2013 18/72
+Des centaines de langages
+Langages d(cid:19)eclaratifs
+Programmation fonctionnelle
+Programmation logique
+Langages imp(cid:19)eratifs
+Programmation proc(cid:19)edurale
+Programmation orient(cid:19)ee objet
+D(cid:19)e(cid:12)nition d’un pseudo-langage
+universel
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Situation actuelle
+G.LaurentjENSMMjF(cid:19)evrier2013 19/72
+Langages d(cid:19)eclaratifs
+Programmation fonctionnelle
+Programmation logique
+Langages imp(cid:19)eratifs
+Programmation proc(cid:19)edurale
+Programmation orient(cid:19)ee objet
+D(cid:19)e(cid:12)nition d’un pseudo-langage
+universel
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Situation actuelle
+Des centaines de langages
+G.LaurentjENSMMjF(cid:19)evrier2013 19/72
+Langages imp(cid:19)eratifs
+Programmation proc(cid:19)edurale
+Programmation orient(cid:19)ee objet
+D(cid:19)e(cid:12)nition d’un pseudo-langage
+universel
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Situation actuelle
+Des centaines de langages
+Langages d(cid:19)eclaratifs
+Programmation fonctionnelle
+Programmation logique
+G.LaurentjENSMMjF(cid:19)evrier2013 19/72
+D(cid:19)e(cid:12)nition d’un pseudo-langage
+universel
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Situation actuelle
+Des centaines de langages
+Langages d(cid:19)eclaratifs
+Programmation fonctionnelle
+Programmation logique
+Langages imp(cid:19)eratifs
+Programmation proc(cid:19)edurale
+Programmation orient(cid:19)ee objet
+G.LaurentjENSMMjF(cid:19)evrier2013 19/72
+InformatiquejD(cid:19)e(cid:12)nitionethistorique
+Situation actuelle
+Des centaines de langages
+Langages d(cid:19)eclaratifs
+Programmation fonctionnelle
+Programmation logique
+Langages imp(cid:19)eratifs
+Programmation proc(cid:19)edurale
+Programmation orient(cid:19)ee objet
+D(cid:19)e(cid:12)nition d’un pseudo-langage
+universel
+G.LaurentjENSMMjF(cid:19)evrier2013 19/72
+InformatiquejNotiondevariable
+2 Notion de variable
+1 D(cid:19)e(cid:12)nition et historique
+2 Notion de variable
+3 Instructions et structures de contr^ole
+4 Conclusion
+G.LaurentjENSMMjF(cid:19)evrier2013 20/72
+D(cid:19)e(cid:12)nition (Variable)
+Une variable est une cellule m(cid:19)emoire dont le contenu est consultable et
+modi(cid:12)able. Une variable est d(cid:19)esign(cid:19)ee par un identi(cid:12)cateur.
+Unevariable doit^etre d(cid:19)eclar(cid:19)eeen d(cid:19)ebutde programmeou desous-programme
+Une variable a toujours une valeur
+Une variable doit toujours ^etre initialis(cid:19)ee avant d’^etre consult(cid:19)ee
+InformatiquejNotiondevariable
+Qu’est-ce qu’une variable?
+G.LaurentjENSMMjF(cid:19)evrier2013 21/72
+Unevariable doit^etre d(cid:19)eclar(cid:19)eeen d(cid:19)ebutde programmeou desous-programme
+Une variable a toujours une valeur
+Une variable doit toujours ^etre initialis(cid:19)ee avant d’^etre consult(cid:19)ee
+InformatiquejNotiondevariable
+Qu’est-ce qu’une variable?
+D(cid:19)e(cid:12)nition (Variable)
+Une variable est une cellule m(cid:19)emoire dont le contenu est consultable et
+modi(cid:12)able. Une variable est d(cid:19)esign(cid:19)ee par un identi(cid:12)cateur.
+G.LaurentjENSMMjF(cid:19)evrier2013 21/72
+Une variable a toujours une valeur
+Une variable doit toujours ^etre initialis(cid:19)ee avant d’^etre consult(cid:19)ee
+InformatiquejNotiondevariable
+Qu’est-ce qu’une variable?
+D(cid:19)e(cid:12)nition (Variable)
+Une variable est une cellule m(cid:19)emoire dont le contenu est consultable et
+modi(cid:12)able. Une variable est d(cid:19)esign(cid:19)ee par un identi(cid:12)cateur.
+Unevariable doit^etre d(cid:19)eclar(cid:19)eeen d(cid:19)ebutde programmeou desous-programme
+G.LaurentjENSMMjF(cid:19)evrier2013 21/72
+Une variable doit toujours ^etre initialis(cid:19)ee avant d’^etre consult(cid:19)ee
+InformatiquejNotiondevariable
+Qu’est-ce qu’une variable?
+D(cid:19)e(cid:12)nition (Variable)
+Une variable est une cellule m(cid:19)emoire dont le contenu est consultable et
+modi(cid:12)able. Une variable est d(cid:19)esign(cid:19)ee par un identi(cid:12)cateur.
+Unevariable doit^etre d(cid:19)eclar(cid:19)eeen d(cid:19)ebutde programmeou desous-programme
+Une variable a toujours une valeur
+G.LaurentjENSMMjF(cid:19)evrier2013 21/72
+InformatiquejNotiondevariable
+Qu’est-ce qu’une variable?
+D(cid:19)e(cid:12)nition (Variable)
+Une variable est une cellule m(cid:19)emoire dont le contenu est consultable et
+modi(cid:12)able. Une variable est d(cid:19)esign(cid:19)ee par un identi(cid:12)cateur.
+Unevariable doit^etre d(cid:19)eclar(cid:19)eeen d(cid:19)ebutde programmeou desous-programme
+Une variable a toujours une valeur
+Une variable doit toujours ^etre initialis(cid:19)ee avant d’^etre consult(cid:19)ee
+G.LaurentjENSMMjF(cid:19)evrier2013 21/72
+D(cid:19)e(cid:12)nition (Identi(cid:12)cateur)
+Un identi(cid:12)cateur est le nom associ(cid:19)e (cid:18)a une variable, (cid:18)a un type, ou (cid:18)a un
+sous-programme. Un identi(cid:12)cateur est une suite de caract(cid:18)eres commenc(cid:24)ant par
+une lettre et ne contenant pas d’espace.
+A , x , b5 , couleur bord sont des identi(cid:12)cateurs valides
+3A , couleur fond ne le sont pas
+Xi est un identi(cid:12)cateur, mais i n’est pas un indice
+InformatiquejNotiondevariable
+Qu’est-ce qu’un identi(cid:12)cateur?
+G.LaurentjENSMMjF(cid:19)evrier2013 22/72
+A , x , b5 , couleur bord sont des identi(cid:12)cateurs valides
+3A , couleur fond ne le sont pas
+Xi est un identi(cid:12)cateur, mais i n’est pas un indice
+InformatiquejNotiondevariable
+Qu’est-ce qu’un identi(cid:12)cateur?
+D(cid:19)e(cid:12)nition (Identi(cid:12)cateur)
+Un identi(cid:12)cateur est le nom associ(cid:19)e (cid:18)a une variable, (cid:18)a un type, ou (cid:18)a un
+sous-programme. Un identi(cid:12)cateur est une suite de caract(cid:18)eres commenc(cid:24)ant par
+une lettre et ne contenant pas d’espace.
+G.LaurentjENSMMjF(cid:19)evrier2013 22/72
+3A , couleur fond ne le sont pas
+Xi est un identi(cid:12)cateur, mais i n’est pas un indice
+InformatiquejNotiondevariable
+Qu’est-ce qu’un identi(cid:12)cateur?
+D(cid:19)e(cid:12)nition (Identi(cid:12)cateur)
+Un identi(cid:12)cateur est le nom associ(cid:19)e (cid:18)a une variable, (cid:18)a un type, ou (cid:18)a un
+sous-programme. Un identi(cid:12)cateur est une suite de caract(cid:18)eres commenc(cid:24)ant par
+une lettre et ne contenant pas d’espace.
+A , x , b5 , couleur bord sont des identi(cid:12)cateurs valides
+G.LaurentjENSMMjF(cid:19)evrier2013 22/72
+Xi est un identi(cid:12)cateur, mais i n’est pas un indice
+InformatiquejNotiondevariable
+Qu’est-ce qu’un identi(cid:12)cateur?
+D(cid:19)e(cid:12)nition (Identi(cid:12)cateur)
+Un identi(cid:12)cateur est le nom associ(cid:19)e (cid:18)a une variable, (cid:18)a un type, ou (cid:18)a un
+sous-programme. Un identi(cid:12)cateur est une suite de caract(cid:18)eres commenc(cid:24)ant par
+une lettre et ne contenant pas d’espace.
+A , x , b5 , couleur bord sont des identi(cid:12)cateurs valides
+3A , couleur fond ne le sont pas
+G.LaurentjENSMMjF(cid:19)evrier2013 22/72
+InformatiquejNotiondevariable
+Qu’est-ce qu’un identi(cid:12)cateur?
+D(cid:19)e(cid:12)nition (Identi(cid:12)cateur)
+Un identi(cid:12)cateur est le nom associ(cid:19)e (cid:18)a une variable, (cid:18)a un type, ou (cid:18)a un
+sous-programme. Un identi(cid:12)cateur est une suite de caract(cid:18)eres commenc(cid:24)ant par
+une lettre et ne contenant pas d’espace.
+A , x , b5 , couleur bord sont des identi(cid:12)cateurs valides
+3A , couleur fond ne le sont pas
+Xi est un identi(cid:12)cateur, mais i n’est pas un indice
+G.LaurentjENSMMjF(cid:19)evrier2013 22/72
+Les d(cid:19)eclarations sont regroup(cid:19)ees en d(cid:19)ebut de programme ou de
+sous-programme
+Le type peut ^etre soit un type pr(cid:19)ed(cid:19)e(cid:12)ni (entier, r(cid:19)eel, bool(cid:19)een, caract(cid:18)ere,
+cha^(cid:16)ne) soit un type d(cid:19)e(cid:12)ni par l’utilisateur
+InformatiquejNotiondevariable
+Comment d(cid:19)eclarer une variable?
+Pseudo-langage
+Type de la variable identi(cid:12)cateur de la variable
+G.LaurentjENSMMjF(cid:19)evrier2013 23/72
+Le type peut ^etre soit un type pr(cid:19)ed(cid:19)e(cid:12)ni (entier, r(cid:19)eel, bool(cid:19)een, caract(cid:18)ere,
+cha^(cid:16)ne) soit un type d(cid:19)e(cid:12)ni par l’utilisateur
+InformatiquejNotiondevariable
+Comment d(cid:19)eclarer une variable?
+Pseudo-langage
+Type de la variable identi(cid:12)cateur de la variable
+Les d(cid:19)eclarations sont regroup(cid:19)ees en d(cid:19)ebut de programme ou de
+sous-programme
+G.LaurentjENSMMjF(cid:19)evrier2013 23/72
+InformatiquejNotiondevariable
+Comment d(cid:19)eclarer une variable?
+Pseudo-langage
+Type de la variable identi(cid:12)cateur de la variable
+Les d(cid:19)eclarations sont regroup(cid:19)ees en d(cid:19)ebut de programme ou de
+sous-programme
+Le type peut ^etre soit un type pr(cid:19)ed(cid:19)e(cid:12)ni (entier, r(cid:19)eel, bool(cid:19)een, caract(cid:18)ere,
+cha^(cid:16)ne) soit un type d(cid:19)e(cid:12)ni par l’utilisateur
+G.LaurentjENSMMjF(cid:19)evrier2013 23/72
+M(cid:19)emoirem(cid:19)ecanique
+M(cid:19)emoirebiologique
+M(cid:19)emoire(cid:19)electronique
+InformatiquejNotiondevariable
+Ou(cid:18) sont stock(cid:19)ees les variables?
+G.LaurentjENSMMjF(cid:19)evrier2013 24/72
+M(cid:19)emoirem(cid:19)ecanique
+M(cid:19)emoire(cid:19)electronique
+InformatiquejNotiondevariable
+Ou(cid:18) sont stock(cid:19)ees les variables?
+M(cid:19)emoirebiologique
+G.LaurentjENSMMjF(cid:19)evrier2013 24/72
+M(cid:19)emoire(cid:19)electronique
+InformatiquejNotiondevariable
+Ou(cid:18) sont stock(cid:19)ees les variables?
+M(cid:19)emoirem(cid:19)ecanique
+M(cid:19)emoirebiologique
+G.LaurentjENSMMjF(cid:19)evrier2013 24/72
+InformatiquejNotiondevariable
+Ou(cid:18) sont stock(cid:19)ees les variables?
+M(cid:19)emoirem(cid:19)ecanique
+M(cid:19)emoirebiologique
+M(cid:19)emoire(cid:19)electronique
+G.LaurentjENSMMjF(cid:19)evrier2013 24/72
+Repr(cid:19)esentationexterne
+Repr(cid:19)esentationinterne
+C’estlavariabletellequeimagin(cid:19)ee/vue
+Codagedelavariabledanslamachine
+parl’utilisateur
+Unevariabled’untypedonn(cid:19)en’aura
+Unevariablepeutavoirplusieurs
+qu’uneseulerepr(cid:19)esentationinterne
+repr(cid:19)esentationsexternes
+InformatiquejNotiondevariable
+Repr(cid:19)esentation interne et externe
+Il y a 10 types de personne dans le monde, ceux qui comprennent le binaire et les
+autres!
+G.LaurentjENSMMjF(cid:19)evrier2013 25/72
+Repr(cid:19)esentationinterne
+Codagedelavariabledanslamachine
+Unevariabled’untypedonn(cid:19)en’aura
+qu’uneseulerepr(cid:19)esentationinterne
+InformatiquejNotiondevariable
+Repr(cid:19)esentation interne et externe
+Il y a 10 types de personne dans le monde, ceux qui comprennent le binaire et les
+autres!
+Repr(cid:19)esentationexterne
+C’estlavariabletellequeimagin(cid:19)ee/vue
+parl’utilisateur
+Unevariablepeutavoirplusieurs
+repr(cid:19)esentationsexternes
+G.LaurentjENSMMjF(cid:19)evrier2013 25/72
+InformatiquejNotiondevariable
+Repr(cid:19)esentation interne et externe
+Il y a 10 types de personne dans le monde, ceux qui comprennent le binaire et les
+autres!
+Repr(cid:19)esentationexterne
+Repr(cid:19)esentationinterne
+C’estlavariabletellequeimagin(cid:19)ee/vue
+Codagedelavariabledanslamachine
+parl’utilisateur
+Unevariabled’untypedonn(cid:19)en’aura
+Unevariablepeutavoirplusieurs
+qu’uneseulerepr(cid:19)esentationinterne
+repr(cid:19)esentationsexternes
+G.LaurentjENSMMjF(cid:19)evrier2013 25/72
+InformatiquejInstructionsetstructuresdecontro^le
+3 Instructions et structures de contr^ole
+1 D(cid:19)e(cid:12)nition et historique
+2 Notion de variable
+3 Instructions et structures de contr^ole
+4 Conclusion
+G.LaurentjENSMMjF(cid:19)evrier2013 26/72
+A(cid:11)ecte une valeur (cid:18)a une variable
+Change le contenu d’une zone de m(cid:19)emoire
+D(cid:19)eroulement :
+1 E(cid:19)valuation de l’expression
+2 Mise en m(cid:19)emoire du r(cid:19)esultat dans la variable
+InformatiquejInstructionsetstructuresdecontro^le
+L’a(cid:11)ectation
+Pseudo-langage
+identi(cid:12)cateur de la variable expression
+G.LaurentjENSMMjF(cid:19)evrier2013 27/72
+Change le contenu d’une zone de m(cid:19)emoire
+D(cid:19)eroulement :
+1 E(cid:19)valuation de l’expression
+2 Mise en m(cid:19)emoire du r(cid:19)esultat dans la variable
+InformatiquejInstructionsetstructuresdecontro^le
+L’a(cid:11)ectation
+Pseudo-langage
+identi(cid:12)cateur de la variable expression
+A(cid:11)ecte une valeur (cid:18)a une variable
+G.LaurentjENSMMjF(cid:19)evrier2013 27/72
+D(cid:19)eroulement :
+1 E(cid:19)valuation de l’expression
+2 Mise en m(cid:19)emoire du r(cid:19)esultat dans la variable
+InformatiquejInstructionsetstructuresdecontro^le
+L’a(cid:11)ectation
+Pseudo-langage
+identi(cid:12)cateur de la variable expression
+A(cid:11)ecte une valeur (cid:18)a une variable
+Change le contenu d’une zone de m(cid:19)emoire
+G.LaurentjENSMMjF(cid:19)evrier2013 27/72
+InformatiquejInstructionsetstructuresdecontro^le
+L’a(cid:11)ectation
+Pseudo-langage
+identi(cid:12)cateur de la variable expression
+A(cid:11)ecte une valeur (cid:18)a une variable
+Change le contenu d’une zone de m(cid:19)emoire
+D(cid:19)eroulement :
+1 E(cid:19)valuation de l’expression
+2 Mise en m(cid:19)emoire du r(cid:19)esultat dans la variable
+G.LaurentjENSMMjF(cid:19)evrier2013 27/72
+InformatiquejInstructionsetstructuresdecontro^le
+Structures de contro^les
+Il existe trois types de structures de contr^ole
+La s(cid:19)equence
+Le choix
+L’it(cid:19)eration (boucle)
+G.LaurentjENSMMjF(cid:19)evrier2013 28/72
+Une instruction par ligne!
+InformatiquejInstructionsetstructuresdecontro^le
+Structure (cid:19)el(cid:19)ementaire : la s(cid:19)equence
+S(cid:19)equence
+Les instructions d’un programme s’ex(cid:19)ecutent dans l’ordre de leur (cid:19)ecriture (de
+gauche (cid:18)a droite et de bas en haut).
+G.LaurentjENSMMjF(cid:19)evrier2013 29/72
+InformatiquejInstructionsetstructuresdecontro^le
+Structure (cid:19)el(cid:19)ementaire : la s(cid:19)equence
+S(cid:19)equence
+Les instructions d’un programme s’ex(cid:19)ecutent dans l’ordre de leur (cid:19)ecriture (de
+gauche (cid:18)a droite et de bas en haut).
+Une instruction par ligne!
+G.LaurentjENSMMjF(cid:19)evrier2013 29/72
+Condition doit ^etre une expression bool(cid:19)eenne
+Silavaleurdelaconditionestvraialorslas(cid:19)equence1estex(cid:19)ecut(cid:19)ee,lorsqu’elle
+se termine l’ex(cid:19)ecution reprend (cid:18)a la premi(cid:18)ere instructions qui suit (cid:12)nsi
+Si la valeur de la condition est faux alors la s(cid:19)equence 2 est ex(cid:19)ecut(cid:19)ee,
+lorsqu’elle se termine l’ex(cid:19)ecution reprend (cid:18)a la premi(cid:18)ere instructions qui suit
+(cid:12)nsi
+InformatiquejInstructionsetstructuresdecontro^le
+Structure de choix si-alors-sinon
+Pseudo-langage
+Pseudo-langage
+si ( condition ) alors
+s(cid:19)equence 1 si ( condition ) alors
+sinon s(cid:19)equence 1
+s(cid:19)equence 2 (cid:12)nsi
+(cid:12)nsi
+G.LaurentjENSMMjF(cid:19)evrier2013 30/72
+Silavaleurdelaconditionestvraialorslas(cid:19)equence1estex(cid:19)ecut(cid:19)ee,lorsqu’elle
+se termine l’ex(cid:19)ecution reprend (cid:18)a la premi(cid:18)ere instructions qui suit (cid:12)nsi
+Si la valeur de la condition est faux alors la s(cid:19)equence 2 est ex(cid:19)ecut(cid:19)ee,
+lorsqu’elle se termine l’ex(cid:19)ecution reprend (cid:18)a la premi(cid:18)ere instructions qui suit
+(cid:12)nsi
+InformatiquejInstructionsetstructuresdecontro^le
+Structure de choix si-alors-sinon
+Pseudo-langage
+Pseudo-langage
+si ( condition ) alors
+s(cid:19)equence 1 si ( condition ) alors
+sinon s(cid:19)equence 1
+s(cid:19)equence 2 (cid:12)nsi
+(cid:12)nsi
+Condition doit ^etre une expression bool(cid:19)eenne
+G.LaurentjENSMMjF(cid:19)evrier2013 30/72
+Si la valeur de la condition est faux alors la s(cid:19)equence 2 est ex(cid:19)ecut(cid:19)ee,
+lorsqu’elle se termine l’ex(cid:19)ecution reprend (cid:18)a la premi(cid:18)ere instructions qui suit
+(cid:12)nsi
+InformatiquejInstructionsetstructuresdecontro^le
+Structure de choix si-alors-sinon
+Pseudo-langage
+Pseudo-langage
+si ( condition ) alors
+s(cid:19)equence 1 si ( condition ) alors
+sinon s(cid:19)equence 1
+s(cid:19)equence 2 (cid:12)nsi
+(cid:12)nsi
+Condition doit ^etre une expression bool(cid:19)eenne
+Silavaleurdelaconditionestvraialorslas(cid:19)equence1estex(cid:19)ecut(cid:19)ee,lorsqu’elle
+se termine l’ex(cid:19)ecution reprend (cid:18)a la premi(cid:18)ere instructions qui suit (cid:12)nsi
+G.LaurentjENSMMjF(cid:19)evrier2013 30/72
+InformatiquejInstructionsetstructuresdecontro^le
+Structure de choix si-alors-sinon
+Pseudo-langage
+Pseudo-langage
+si ( condition ) alors
+s(cid:19)equence 1 si ( condition ) alors
+sinon s(cid:19)equence 1
+s(cid:19)equence 2 (cid:12)nsi
+(cid:12)nsi
+Condition doit ^etre une expression bool(cid:19)eenne
+Silavaleurdelaconditionestvraialorslas(cid:19)equence1estex(cid:19)ecut(cid:19)ee,lorsqu’elle
+se termine l’ex(cid:19)ecution reprend (cid:18)a la premi(cid:18)ere instructions qui suit (cid:12)nsi
+Si la valeur de la condition est faux alors la s(cid:19)equence 2 est ex(cid:19)ecut(cid:19)ee,
+lorsqu’elle se termine l’ex(cid:19)ecution reprend (cid:18)a la premi(cid:18)ere instructions qui suit
+(cid:12)nsi
+G.LaurentjENSMMjF(cid:19)evrier2013 30/72
+Toute structure tant que doit ^etre pr(cid:19)ec(cid:19)ed(cid:19)ee de
+l’initialisation des variables intervenant dans l’expression
+bool(cid:19)eenne de la condition
+La s(cid:19)equence doit modi(cid:12)er au moins l’une des variables
+intervenant dans la condition. Il est indispensable que la
+condition prenne la valeur faux (cid:18)a un moment donn(cid:19)e, a(cid:12)n
+de sortir de la boucle it(cid:19)eratif.
+R(cid:18)egles de base
+La condition doit ^etre une expression bool(cid:19)eenne
+R(cid:19)ep(cid:18)ete la s(cid:19)equence tant que la valeur de la condition est vrai
+La condition n’est test(cid:19)ee qu’au d(cid:19)ebut de chaque boucle
+InformatiquejInstructionsetstructuresdecontro^le
+Structure d’it(cid:19)eration Tant que
+Pseudo-langage
+tant que ( condition ) faire
+s(cid:19)equence
+(cid:12)ntantque
+G.LaurentjENSMMjF(cid:19)evrier2013 31/72
+Toute structure tant que doit ^etre pr(cid:19)ec(cid:19)ed(cid:19)ee de
+l’initialisation des variables intervenant dans l’expression
+bool(cid:19)eenne de la condition
+La s(cid:19)equence doit modi(cid:12)er au moins l’une des variables
+intervenant dans la condition. Il est indispensable que la
+condition prenne la valeur faux (cid:18)a un moment donn(cid:19)e, a(cid:12)n
+de sortir de la boucle it(cid:19)eratif.
+R(cid:18)egles de base
+R(cid:19)ep(cid:18)ete la s(cid:19)equence tant que la valeur de la condition est vrai
+La condition n’est test(cid:19)ee qu’au d(cid:19)ebut de chaque boucle
+InformatiquejInstructionsetstructuresdecontro^le
+Structure d’it(cid:19)eration Tant que
+Pseudo-langage
+tant que ( condition ) faire
+s(cid:19)equence
+(cid:12)ntantque
+La condition doit ^etre une expression bool(cid:19)eenne
+G.LaurentjENSMMjF(cid:19)evrier2013 31/72
+Toute structure tant que doit ^etre pr(cid:19)ec(cid:19)ed(cid:19)ee de
+l’initialisation des variables intervenant dans l’expression
+bool(cid:19)eenne de la condition
+La s(cid:19)equence doit modi(cid:12)er au moins l’une des variables
+intervenant dans la condition. Il est indispensable que la
+condition prenne la valeur faux (cid:18)a un moment donn(cid:19)e, a(cid:12)n
+de sortir de la boucle it(cid:19)eratif.
+R(cid:18)egles de base
+La condition n’est test(cid:19)ee qu’au d(cid:19)ebut de chaque boucle
+InformatiquejInstructionsetstructuresdecontro^le
+Structure d’it(cid:19)eration Tant que
+Pseudo-langage
+tant que ( condition ) faire
+s(cid:19)equence
+(cid:12)ntantque
+La condition doit ^etre une expression bool(cid:19)eenne
+R(cid:19)ep(cid:18)ete la s(cid:19)equence tant que la valeur de la condition est vrai
+G.LaurentjENSMMjF(cid:19)evrier2013 31/72
+Toute structure tant que doit ^etre pr(cid:19)ec(cid:19)ed(cid:19)ee de
+l’initialisation des variables intervenant dans l’expression
+bool(cid:19)eenne de la condition
+La s(cid:19)equence doit modi(cid:12)er au moins l’une des variables
+intervenant dans la condition. Il est indispensable que la
+condition prenne la valeur faux (cid:18)a un moment donn(cid:19)e, a(cid:12)n
+de sortir de la boucle it(cid:19)eratif.
+R(cid:18)egles de base
+InformatiquejInstructionsetstructuresdecontro^le
+Structure d’it(cid:19)eration Tant que
+Pseudo-langage
+tant que ( condition ) faire
+s(cid:19)equence
+(cid:12)ntantque
+La condition doit ^etre une expression bool(cid:19)eenne
+R(cid:19)ep(cid:18)ete la s(cid:19)equence tant que la valeur de la condition est vrai
+La condition n’est test(cid:19)ee qu’au d(cid:19)ebut de chaque boucle
+G.LaurentjENSMMjF(cid:19)evrier2013 31/72
+Toute structure tant que doit ^etre pr(cid:19)ec(cid:19)ed(cid:19)ee de
+l’initialisation des variables intervenant dans l’expression
+bool(cid:19)eenne de la condition
+La s(cid:19)equence doit modi(cid:12)er au moins l’une des variables
+intervenant dans la condition. Il est indispensable que la
+condition prenne la valeur faux (cid:18)a un moment donn(cid:19)e, a(cid:12)n
+de sortir de la boucle it(cid:19)eratif.
+R(cid:18)egles de base
+InformatiquejInstructionsetstructuresdecontro^le
+Structure d’it(cid:19)eration Tant que
+Pseudo-langage
+tant que ( condition ) faire
+s(cid:19)equence
+(cid:12)ntantque
+La condition doit ^etre une expression bool(cid:19)eenne
+R(cid:19)ep(cid:18)ete la s(cid:19)equence tant que la valeur de la condition est vrai
+La condition n’est test(cid:19)ee qu’au d(cid:19)ebut de chaque boucle
+G.LaurentjENSMMjF(cid:19)evrier2013 31/72
+Toute structure tant que doit ^etre pr(cid:19)ec(cid:19)ed(cid:19)ee de
+l’initialisation des variables intervenant dans l’expression
+bool(cid:19)eenne de la condition
+La s(cid:19)equence doit modi(cid:12)er au moins l’une des variables
+intervenant dans la condition. Il est indispensable que la
+condition prenne la valeur faux (cid:18)a un moment donn(cid:19)e, a(cid:12)n
+de sortir de la boucle it(cid:19)eratif.
+InformatiquejInstructionsetstructuresdecontro^le
+Structure d’it(cid:19)eration Tant que
+Pseudo-langage
+tant que ( condition ) faire
+R(cid:18)egles de base
+s(cid:19)equence
+(cid:12)ntantque
+La condition doit ^etre une expression bool(cid:19)eenne
+R(cid:19)ep(cid:18)ete la s(cid:19)equence tant que la valeur de la condition est vrai
+La condition n’est test(cid:19)ee qu’au d(cid:19)ebut de chaque boucle
+G.LaurentjENSMMjF(cid:19)evrier2013 31/72
+La s(cid:19)equence doit modi(cid:12)er au moins l’une des variables
+intervenant dans la condition. Il est indispensable que la
+condition prenne la valeur faux (cid:18)a un moment donn(cid:19)e, a(cid:12)n
+de sortir de la boucle it(cid:19)eratif.
+InformatiquejInstructionsetstructuresdecontro^le
+Structure d’it(cid:19)eration Tant que
+Pseudo-langage
+tant que ( condition ) faire
+R(cid:18)egles de base
+s(cid:19)equence
+(cid:12)ntantqueToute structure tant que doit ^etre pr(cid:19)ec(cid:19)ed(cid:19)ee de
+l’initialisation des variables intervenant dans l’expression
+bool(cid:19)eenne de la condition
+La condition doit ^etre une expression bool(cid:19)eenne
+R(cid:19)ep(cid:18)ete la s(cid:19)equence tant que la valeur de la condition est vrai
+La condition n’est test(cid:19)ee qu’au d(cid:19)ebut de chaque boucle
+G.LaurentjENSMMjF(cid:19)evrier2013 31/72
+InformatiquejInstructionsetstructuresdecontro^le
+Structure d’it(cid:19)eration Tant que
+Pseudo-langage
+tant que ( condition ) faire
+R(cid:18)egles de base
+s(cid:19)equence
+(cid:12)ntantqueToute structure tant que doit ^etre pr(cid:19)ec(cid:19)ed(cid:19)ee de
+l’initialisation des variables intervenant dans l’expression
+bool(cid:19)eenne de la condition
+La s(cid:19)equence doit modi(cid:12)er au moins l’une des variables
+intervenant dans la condition. Il est indispensable que la
+La condition doit ^etre une expression bool(cid:19)eenne
+condition prenne la valeur faux (cid:18)a un moment donn(cid:19)e, a(cid:12)n
+de sortir de la boucle it(cid:19)eratif.
+R(cid:19)ep(cid:18)ete la s(cid:19)equence tant que la valeur de la condition est vrai
+La condition n’est test(cid:19)ee qu’au d(cid:19)ebut de chaque boucle
+G.LaurentjENSMMjF(cid:19)evrier2013 31/72
+La s(cid:19)equence est ex(cid:19)ecut(cid:19)ee au moins une fois
+R(cid:19)ep(cid:18)ete la s(cid:19)equence tant que la valeur de la condition est vrai
+La condition n’est test(cid:19)ee qu’(cid:18)a la (cid:12)n de chaque boucle
+InformatiquejInstructionsetstructuresdecontro^le
+Structure d’it(cid:19)eration R(cid:19)ep(cid:19)eter
+Pseudo-langage
+r(cid:19)ep(cid:19)eter
+s(cid:19)equence
+tant que ( condition )
+G.LaurentjENSMMjF(cid:19)evrier2013 32/72
+R(cid:19)ep(cid:18)ete la s(cid:19)equence tant que la valeur de la condition est vrai
+La condition n’est test(cid:19)ee qu’(cid:18)a la (cid:12)n de chaque boucle
+InformatiquejInstructionsetstructuresdecontro^le
+Structure d’it(cid:19)eration R(cid:19)ep(cid:19)eter
+Pseudo-langage
+r(cid:19)ep(cid:19)eter
+s(cid:19)equence
+tant que ( condition )
+La s(cid:19)equence est ex(cid:19)ecut(cid:19)ee au moins une fois
+G.LaurentjENSMMjF(cid:19)evrier2013 32/72
+La condition n’est test(cid:19)ee qu’(cid:18)a la (cid:12)n de chaque boucle
+InformatiquejInstructionsetstructuresdecontro^le
+Structure d’it(cid:19)eration R(cid:19)ep(cid:19)eter
+Pseudo-langage
+r(cid:19)ep(cid:19)eter
+s(cid:19)equence
+tant que ( condition )
+La s(cid:19)equence est ex(cid:19)ecut(cid:19)ee au moins une fois
+R(cid:19)ep(cid:18)ete la s(cid:19)equence tant que la valeur de la condition est vrai
+G.LaurentjENSMMjF(cid:19)evrier2013 32/72
+InformatiquejInstructionsetstructuresdecontro^le
+Structure d’it(cid:19)eration R(cid:19)ep(cid:19)eter
+Pseudo-langage
+r(cid:19)ep(cid:19)eter
+s(cid:19)equence
+tant que ( condition )
+La s(cid:19)equence est ex(cid:19)ecut(cid:19)ee au moins une fois
+R(cid:19)ep(cid:18)ete la s(cid:19)equence tant que la valeur de la condition est vrai
+La condition n’est test(cid:19)ee qu’(cid:18)a la (cid:12)n de chaque boucle
+G.LaurentjENSMMjF(cid:19)evrier2013 32/72
+La modi(cid:12)cation de la variable de contr^ole est totalement
+interdite dans la boucle
+A(cid:18) la (cid:12)n de la boucle, la variable de contr^ole a une valeur
+ind(cid:19)etermin(cid:19)ee
+Les bornes ne doivent pas (cid:19)evoluer au cours des it(cid:19)erations
+Attention !
+La s(cid:19)equence est ex(cid:19)ecut(cid:19)ee pour les valeurs de var successivement (cid:19)egale (cid:18)a min,
+min+incr, min+2*incr, ... , max
+incr peut ^etre n(cid:19)egatif, il faut adapter les bornes en cons(cid:19)equences
+Le nombre d’it(cid:19)erations est connu (cid:18)a l’avance
+Le pas d’incr(cid:19)ementation de la boucle peut ^etre omis, il sera alors par d(cid:19)efaut
+de 1
+InformatiquejInstructionsetstructuresdecontro^le
+Structure d’it(cid:19)eration Pour
+Pseudo-langage
+pour var allant de min (cid:18)a max (par pas de incr) faire
+s(cid:19)equence
+(cid:12)npour
+G.LaurentjENSMMjF(cid:19)evrier2013 33/72
+La modi(cid:12)cation de la variable de contr^ole est totalement
+interdite dans la boucle
+A(cid:18) la (cid:12)n de la boucle, la variable de contr^ole a une valeur
+ind(cid:19)etermin(cid:19)ee
+Les bornes ne doivent pas (cid:19)evoluer au cours des it(cid:19)erations
+Attention !
+incr peut ^etre n(cid:19)egatif, il faut adapter les bornes en cons(cid:19)equences
+Le nombre d’it(cid:19)erations est connu (cid:18)a l’avance
+Le pas d’incr(cid:19)ementation de la boucle peut ^etre omis, il sera alors par d(cid:19)efaut
+de 1
+InformatiquejInstructionsetstructuresdecontro^le
+Structure d’it(cid:19)eration Pour
+Pseudo-langage
+pour var allant de min (cid:18)a max (par pas de incr) faire
+s(cid:19)equence
+(cid:12)npour
+La s(cid:19)equence est ex(cid:19)ecut(cid:19)ee pour les valeurs de var successivement (cid:19)egale (cid:18)a min,
+min+incr, min+2*incr, ... , max
+G.LaurentjENSMMjF(cid:19)evrier2013 33/72
+La modi(cid:12)cation de la variable de contr^ole est totalement
+interdite dans la boucle
+A(cid:18) la (cid:12)n de la boucle, la variable de contr^ole a une valeur
+ind(cid:19)etermin(cid:19)ee
+Les bornes ne doivent pas (cid:19)evoluer au cours des it(cid:19)erations
+Attention !
+Le nombre d’it(cid:19)erations est connu (cid:18)a l’avance
+Le pas d’incr(cid:19)ementation de la boucle peut ^etre omis, il sera alors par d(cid:19)efaut
+de 1
+InformatiquejInstructionsetstructuresdecontro^le
+Structure d’it(cid:19)eration Pour
+Pseudo-langage
+pour var allant de min (cid:18)a max (par pas de incr) faire
+s(cid:19)equence
+(cid:12)npour
+La s(cid:19)equence est ex(cid:19)ecut(cid:19)ee pour les valeurs de var successivement (cid:19)egale (cid:18)a min,
+min+incr, min+2*incr, ... , max
+incr peut ^etre n(cid:19)egatif, il faut adapter les bornes en cons(cid:19)equences
+G.LaurentjENSMMjF(cid:19)evrier2013 33/72
+La modi(cid:12)cation de la variable de contr^ole est totalement
+interdite dans la boucle
+A(cid:18) la (cid:12)n de la boucle, la variable de contr^ole a une valeur
+ind(cid:19)etermin(cid:19)ee
+Les bornes ne doivent pas (cid:19)evoluer au cours des it(cid:19)erations
+Attention !
+Le pas d’incr(cid:19)ementation de la boucle peut ^etre omis, il sera alors par d(cid:19)efaut
+de 1
+InformatiquejInstructionsetstructuresdecontro^le
+Structure d’it(cid:19)eration Pour
+Pseudo-langage
+pour var allant de min (cid:18)a max (par pas de incr) faire
+s(cid:19)equence
+(cid:12)npour
+La s(cid:19)equence est ex(cid:19)ecut(cid:19)ee pour les valeurs de var successivement (cid:19)egale (cid:18)a min,
+min+incr, min+2*incr, ... , max
+incr peut ^etre n(cid:19)egatif, il faut adapter les bornes en cons(cid:19)equences
+Le nombre d’it(cid:19)erations est connu (cid:18)a l’avance
+G.LaurentjENSMMjF(cid:19)evrier2013 33/72
+La modi(cid:12)cation de la variable de contr^ole est totalement
+interdite dans la boucle
+A(cid:18) la (cid:12)n de la boucle, la variable de contr^ole a une valeur
+ind(cid:19)etermin(cid:19)ee
+Les bornes ne doivent pas (cid:19)evoluer au cours des it(cid:19)erations
+Attention !
+InformatiquejInstructionsetstructuresdecontro^le
+Structure d’it(cid:19)eration Pour
+Pseudo-langage
+pour var allant de min (cid:18)a max (par pas de incr) faire
+s(cid:19)equence
+(cid:12)npour
+La s(cid:19)equence est ex(cid:19)ecut(cid:19)ee pour les valeurs de var successivement (cid:19)egale (cid:18)a min,
+min+incr, min+2*incr, ... , max
+incr peut ^etre n(cid:19)egatif, il faut adapter les bornes en cons(cid:19)equences
+Le nombre d’it(cid:19)erations est connu (cid:18)a l’avance
+Le pas d’incr(cid:19)ementation de la boucle peut ^etre omis, il sera alors par d(cid:19)efaut
+de 1
+G.LaurentjENSMMjF(cid:19)evrier2013 33/72
+La modi(cid:12)cation de la variable de contr^ole est totalement
+interdite dans la boucle
+A(cid:18) la (cid:12)n de la boucle, la variable de contr^ole a une valeur
+ind(cid:19)etermin(cid:19)ee
+Les bornes ne doivent pas (cid:19)evoluer au cours des it(cid:19)erations
+InformatiquejInstructionsetstructuresdecontro^le
+Structure d’it(cid:19)eration Pour
+Pseudo-langage
+pour var allant de min (cid:18)a max (par pas de incr) faire
+s(cid:19)equence
+(cid:12)npoAurttention !
+La s(cid:19)equence est ex(cid:19)ecut(cid:19)ee pour les valeurs de var successivement (cid:19)egale (cid:18)a min,
+min+incr, min+2*incr, ... , max
+incr peut ^etre n(cid:19)egatif, il faut adapter les bornes en cons(cid:19)equences
+Le nombre d’it(cid:19)erations est connu (cid:18)a l’avance
+Le pas d’incr(cid:19)ementation de la boucle peut ^etre omis, il sera alors par d(cid:19)efaut
+de 1
+G.LaurentjENSMMjF(cid:19)evrier2013 33/72
+A(cid:18) la (cid:12)n de la boucle, la variable de contr^ole a une valeur
+ind(cid:19)etermin(cid:19)ee
+Les bornes ne doivent pas (cid:19)evoluer au cours des it(cid:19)erations
+InformatiquejInstructionsetstructuresdecontro^le
+Structure d’it(cid:19)eration Pour
+Pseudo-langage
+pour var allant de min (cid:18)a max (par pas de incr) faire
+s(cid:19)equence
+(cid:12)npoAurttention !
+La modi(cid:12)cation de la variable de contr^ole est totalement
+interdite dans la boucle
+La s(cid:19)equence est ex(cid:19)ecut(cid:19)ee pour les valeurs de var successivement (cid:19)egale (cid:18)a min,
+min+incr, min+2*incr, ... , max
+incr peut ^etre n(cid:19)egatif, il faut adapter les bornes en cons(cid:19)equences
+Le nombre d’it(cid:19)erations est connu (cid:18)a l’avance
+Le pas d’incr(cid:19)ementation de la boucle peut ^etre omis, il sera alors par d(cid:19)efaut
+de 1
+G.LaurentjENSMMjF(cid:19)evrier2013 33/72
+Les bornes ne doivent pas (cid:19)evoluer au cours des it(cid:19)erations
+InformatiquejInstructionsetstructuresdecontro^le
+Structure d’it(cid:19)eration Pour
+Pseudo-langage
+pour var allant de min (cid:18)a max (par pas de incr) faire
+s(cid:19)equence
+(cid:12)npoAurttention !
+La modi(cid:12)cation de la variable de contr^ole est totalement
+interdite dans la boucle
+La s(cid:19)equenA(cid:18) celaes(cid:12)tnedx(cid:19)eecluat(cid:19)ebeoupcoluer, llaesvvaarilaebulresddeecvoanrtsru^ocleceassuivneemveanletu(cid:19)ergale (cid:18)a min,
+min+incr,inmd(cid:19)einte+rm2*iinn(cid:19)ecer, ... , max
+incr peut ^etre n(cid:19)egatif, il faut adapter les bornes en cons(cid:19)equences
+Le nombre d’it(cid:19)erations est connu (cid:18)a l’avance
+Le pas d’incr(cid:19)ementation de la boucle peut ^etre omis, il sera alors par d(cid:19)efaut
+de 1
+G.LaurentjENSMMjF(cid:19)evrier2013 33/72
+InformatiquejInstructionsetstructuresdecontro^le
+Structure d’it(cid:19)eration Pour
+Pseudo-langage
+pour var allant de min (cid:18)a max (par pas de incr) faire
+s(cid:19)equence
+(cid:12)npoAurttention !
+La modi(cid:12)cation de la variable de contr^ole est totalement
+interdite dans la boucle
+La s(cid:19)equenA(cid:18) celaes(cid:12)tnedx(cid:19)eecluat(cid:19)ebeoupcoluer, llaesvvaarilaebulresddeecvoanrtsru^ocleceassuivneemveanletu(cid:19)ergale (cid:18)a min,
+min+incr,inmd(cid:19)einte+rm2*iinn(cid:19)ecer, ... , max
+Les bornes ne doivent pas (cid:19)evoluer au cours des it(cid:19)erations
+incr peut ^etre n(cid:19)egatif, il faut adapter les bornes en cons(cid:19)equences
+Le nombre d’it(cid:19)erations est connu (cid:18)a l’avance
+Le pas d’incr(cid:19)ementation de la boucle peut ^etre omis, il sera alors par d(cid:19)efaut
+de 1
+G.LaurentjENSMMjF(cid:19)evrier2013 33/72
+InformatiquejConclusion
+4 Conclusion
+1 D(cid:19)e(cid:12)nition et historique
+2 Notion de variable
+3 Instructions et structures de contr^ole
+4 Conclusion
+G.LaurentjENSMMjF(cid:19)evrier2013 34/72
+Tout algorithme s(cid:19)equentiel peut
+s’(cid:19)ecrire comme une combinaison de
+ces trois structures (langage
+complet au sens de Turing)
+Un probl(cid:18)eme peut ^etre r(cid:19)esolu par
+plusieurs algorithmes
+Complexit(cid:19)e des algorithmes
+Probl(cid:18)eme de l’arr^et (Turing) : il
+n’est pas possible de savoir avec une
+machine de Turing si une autre
+machine de Turing s’arr^etera
+Explosiond’Ariane5aucoursdesonvolinauguralle4
+juin1996enraisond’unbuginformatique
+InformatiquejConclusion
+Conclusion : coder proprement!
+G.LaurentjENSMMjF(cid:19)evrier2013 35/72
+Un probl(cid:18)eme peut ^etre r(cid:19)esolu par
+plusieurs algorithmes
+Complexit(cid:19)e des algorithmes
+Probl(cid:18)eme de l’arr^et (Turing) : il
+n’est pas possible de savoir avec une
+machine de Turing si une autre
+machine de Turing s’arr^etera
+Explosiond’Ariane5aucoursdesonvolinauguralle4
+juin1996enraisond’unbuginformatique
+InformatiquejConclusion
+Conclusion : coder proprement!
+Tout algorithme s(cid:19)equentiel peut
+s’(cid:19)ecrire comme une combinaison de
+ces trois structures (langage
+complet au sens de Turing)
+G.LaurentjENSMMjF(cid:19)evrier2013 35/72
+Complexit(cid:19)e des algorithmes
+Probl(cid:18)eme de l’arr^et (Turing) : il
+n’est pas possible de savoir avec une
+machine de Turing si une autre
+machine de Turing s’arr^etera
+Explosiond’Ariane5aucoursdesonvolinauguralle4
+juin1996enraisond’unbuginformatique
+InformatiquejConclusion
+Conclusion : coder proprement!
+Tout algorithme s(cid:19)equentiel peut
+s’(cid:19)ecrire comme une combinaison de
+ces trois structures (langage
+complet au sens de Turing)
+Un probl(cid:18)eme peut ^etre r(cid:19)esolu par
+plusieurs algorithmes
+G.LaurentjENSMMjF(cid:19)evrier2013 35/72
+Probl(cid:18)eme de l’arr^et (Turing) : il
+n’est pas possible de savoir avec une
+machine de Turing si une autre
+machine de Turing s’arr^etera
+Explosiond’Ariane5aucoursdesonvolinauguralle4
+juin1996enraisond’unbuginformatique
+InformatiquejConclusion
+Conclusion : coder proprement!
+Tout algorithme s(cid:19)equentiel peut
+s’(cid:19)ecrire comme une combinaison de
+ces trois structures (langage
+complet au sens de Turing)
+Un probl(cid:18)eme peut ^etre r(cid:19)esolu par
+plusieurs algorithmes
+Complexit(cid:19)e des algorithmes
+G.LaurentjENSMMjF(cid:19)evrier2013 35/72
+Explosiond’Ariane5aucoursdesonvolinauguralle4
+juin1996enraisond’unbuginformatique
+InformatiquejConclusion
+Conclusion : coder proprement!
+Tout algorithme s(cid:19)equentiel peut
+s’(cid:19)ecrire comme une combinaison de
+ces trois structures (langage
+complet au sens de Turing)
+Un probl(cid:18)eme peut ^etre r(cid:19)esolu par
+plusieurs algorithmes
+Complexit(cid:19)e des algorithmes
+Probl(cid:18)eme de l’arr^et (Turing) : il
+n’est pas possible de savoir avec une
+machine de Turing si une autre
+machine de Turing s’arr^etera
+G.LaurentjENSMMjF(cid:19)evrier2013 35/72
+InformatiquejConclusion
+Conclusion : coder proprement!
+Tout algorithme s(cid:19)equentiel peut
+s’(cid:19)ecrire comme une combinaison de
+ces trois structures (langage
+complet au sens de Turing)
+Un probl(cid:18)eme peut ^etre r(cid:19)esolu par
+plusieurs algorithmes
+Complexit(cid:19)e des algorithmes
+Probl(cid:18)eme de l’arr^et (Turing) : il
+n’est pas possible de savoir avec une
+machine de Turing si une autre
+machine de Turing s’arr^etera
+Explosiond’Ariane5aucoursdesonvolinauguralle4
+juin1996enraisond’unbuginformatique
+G.LaurentjENSMMjF(cid:19)evrier2013 35/72
+Partie 2 : Introduction (cid:18)a la programmation structur(cid:19)ee
+5 Introduction
+6 Types scalaires
+7 Types structur(cid:19)es
+8 Sous-programmes
+9 Quelques mots sur le g(cid:19)enie logiciel
+InformatiquejIntroduction
+5 Introduction
+5 Introduction
+6 Types scalaires
+7 Types structur(cid:19)es
+8 Sous-programmes
+9 Quelques mots sur le g(cid:19)enie logiciel
+G.LaurentjENSMMjF(cid:19)evrier2013 37/72
+InformatiquejIntroduction
+Avant propos
+Le succ(cid:18)es est rare!
+Source:StandishGroup2009chaosreport
+G.LaurentjENSMMjF(cid:19)evrier2013 38/72
+InformatiquejIntroduction
+Avant propos
+Le succ(cid:18)es est rare!
+Source:StandishGroup2009chaosreport
+G.LaurentjENSMMjF(cid:19)evrier2013 38/72
+Fuite en avant de la complexit(cid:19)e
+Cou^t du changement
+Le cou^t d’un changement de fonctionnalit(cid:19)e dans un logiciel est 10 fois plus
+(cid:19)elev(cid:19)e s’il a lieu en phase de d(cid:19)eveloppement que s’il est connu au d(cid:19)epart, 100
+fois plus(cid:19)elev(cid:19)e s’il a lieu en phase de production
+Idem pour les corrections d’erreurs
+L’importance de la maintenance est souvent sous-estim(cid:19)ee
+Faiblesse des tests
+M(cid:19)ethodes de d(cid:19)eveloppement inadapt(cid:19)ees
+InformatiquejIntroduction
+D(cid:19)e(cid:12)s du g(cid:19)enie logiciel
+G.LaurentjENSMMjF(cid:19)evrier2013 39/72
+Cou^t du changement
+Le cou^t d’un changement de fonctionnalit(cid:19)e dans un logiciel est 10 fois plus
+(cid:19)elev(cid:19)e s’il a lieu en phase de d(cid:19)eveloppement que s’il est connu au d(cid:19)epart, 100
+fois plus(cid:19)elev(cid:19)e s’il a lieu en phase de production
+Idem pour les corrections d’erreurs
+L’importance de la maintenance est souvent sous-estim(cid:19)ee
+Faiblesse des tests
+M(cid:19)ethodes de d(cid:19)eveloppement inadapt(cid:19)ees
+InformatiquejIntroduction
+D(cid:19)e(cid:12)s du g(cid:19)enie logiciel
+Fuite en avant de la complexit(cid:19)e
+G.LaurentjENSMMjF(cid:19)evrier2013 39/72
+L’importance de la maintenance est souvent sous-estim(cid:19)ee
+Faiblesse des tests
+M(cid:19)ethodes de d(cid:19)eveloppement inadapt(cid:19)ees
+InformatiquejIntroduction
+D(cid:19)e(cid:12)s du g(cid:19)enie logiciel
+Fuite en avant de la complexit(cid:19)e
+Cou^t du changement
+Le cou^t d’un changement de fonctionnalit(cid:19)e dans un logiciel est 10 fois plus
+(cid:19)elev(cid:19)e s’il a lieu en phase de d(cid:19)eveloppement que s’il est connu au d(cid:19)epart, 100
+fois plus(cid:19)elev(cid:19)e s’il a lieu en phase de production
+Idem pour les corrections d’erreurs
+G.LaurentjENSMMjF(cid:19)evrier2013 39/72
+Faiblesse des tests
+M(cid:19)ethodes de d(cid:19)eveloppement inadapt(cid:19)ees
+InformatiquejIntroduction
+D(cid:19)e(cid:12)s du g(cid:19)enie logiciel
+Fuite en avant de la complexit(cid:19)e
+Cou^t du changement
+Le cou^t d’un changement de fonctionnalit(cid:19)e dans un logiciel est 10 fois plus
+(cid:19)elev(cid:19)e s’il a lieu en phase de d(cid:19)eveloppement que s’il est connu au d(cid:19)epart, 100
+fois plus(cid:19)elev(cid:19)e s’il a lieu en phase de production
+Idem pour les corrections d’erreurs
+L’importance de la maintenance est souvent sous-estim(cid:19)ee
+G.LaurentjENSMMjF(cid:19)evrier2013 39/72
+M(cid:19)ethodes de d(cid:19)eveloppement inadapt(cid:19)ees
+InformatiquejIntroduction
+D(cid:19)e(cid:12)s du g(cid:19)enie logiciel
+Fuite en avant de la complexit(cid:19)e
+Cou^t du changement
+Le cou^t d’un changement de fonctionnalit(cid:19)e dans un logiciel est 10 fois plus
+(cid:19)elev(cid:19)e s’il a lieu en phase de d(cid:19)eveloppement que s’il est connu au d(cid:19)epart, 100
+fois plus(cid:19)elev(cid:19)e s’il a lieu en phase de production
+Idem pour les corrections d’erreurs
+L’importance de la maintenance est souvent sous-estim(cid:19)ee
+Faiblesse des tests
+G.LaurentjENSMMjF(cid:19)evrier2013 39/72
+InformatiquejIntroduction
+D(cid:19)e(cid:12)s du g(cid:19)enie logiciel
+Fuite en avant de la complexit(cid:19)e
+Cou^t du changement
+Le cou^t d’un changement de fonctionnalit(cid:19)e dans un logiciel est 10 fois plus
+(cid:19)elev(cid:19)e s’il a lieu en phase de d(cid:19)eveloppement que s’il est connu au d(cid:19)epart, 100
+fois plus(cid:19)elev(cid:19)e s’il a lieu en phase de production
+Idem pour les corrections d’erreurs
+L’importance de la maintenance est souvent sous-estim(cid:19)ee
+Faiblesse des tests
+M(cid:19)ethodes de d(cid:19)eveloppement inadapt(cid:19)ees
+G.LaurentjENSMMjF(cid:19)evrier2013 39/72
+Comme dans toute activit(cid:19)e de
+conception, on s’int(cid:19)eresse au
+Quoi avant d’expliciter le
+(cid:28) (cid:29)
+Comment
+(cid:28) (cid:29)
+Faire le cahier des charges avant!
+Ne pas confondre!
+Conception d’un logiciel
+(programmation en g(cid:19)en(cid:19)eral)
+E(cid:19)criture du programme (codage)
+InformatiquejIntroduction
+Qu’est-ce que la programmation?
+Avant de d(cid:19)ecrire l’ensemble des
+algorithmes, il convient de
+s’int(cid:19)eresser aux donn(cid:19)ees et aux
+r(cid:19)esultats
+G.LaurentjENSMMjF(cid:19)evrier2013 40/72
+Faire le cahier des charges avant!
+Ne pas confondre!
+Conception d’un logiciel
+(programmation en g(cid:19)en(cid:19)eral)
+E(cid:19)criture du programme (codage)
+InformatiquejIntroduction
+Qu’est-ce que la programmation?
+Avant de d(cid:19)ecrire l’ensemble des
+algorithmes, il convient de
+s’int(cid:19)eresser aux donn(cid:19)ees et aux
+r(cid:19)esultats
+Comme dans toute activit(cid:19)e de
+conception, on s’int(cid:19)eresse au
+Quoi avant d’expliciter le
+(cid:28) (cid:29)
+Comment
+(cid:28) (cid:29)
+G.LaurentjENSMMjF(cid:19)evrier2013 40/72
+Ne pas confondre!
+Conception d’un logiciel
+(programmation en g(cid:19)en(cid:19)eral)
+E(cid:19)criture du programme (codage)
+InformatiquejIntroduction
+Qu’est-ce que la programmation?
+Avant de d(cid:19)ecrire l’ensemble des
+algorithmes, il convient de
+s’int(cid:19)eresser aux donn(cid:19)ees et aux
+r(cid:19)esultats
+Comme dans toute activit(cid:19)e de
+conception, on s’int(cid:19)eresse au
+Quoi avant d’expliciter le
+(cid:28) (cid:29)
+Comment
+(cid:28) (cid:29)
+Faire le cahier des charges avant!
+G.LaurentjENSMMjF(cid:19)evrier2013 40/72
+InformatiquejIntroduction
+Qu’est-ce que la programmation?
+Avant de d(cid:19)ecrire l’ensemble des
+algorithmes, il convient de
+s’int(cid:19)eresser aux donn(cid:19)ees et aux
+r(cid:19)esultats
+Comme dans toute activit(cid:19)e de
+conception, on s’int(cid:19)eresse au
+Quoi avant d’expliciter le
+(cid:28) (cid:29)
+Comment
+(cid:28) (cid:29)
+Faire le cahier des charges avant!
+Ne pas confondre!
+Conception d’un logiciel
+(programmation en g(cid:19)en(cid:19)eral)
+E(cid:19)criture du programme (codage)
+G.LaurentjENSMMjF(cid:19)evrier2013 40/72
+InformatiquejTypesscalaires
+6 Types scalaires
+5 Introduction
+6 Types scalaires
+7 Types structur(cid:19)es
+8 Sous-programmes
+9 Quelques mots sur le g(cid:19)enie logiciel
+G.LaurentjENSMMjF(cid:19)evrier2013 41/72
+InformatiquejTypesscalaires
+Notion de type
+Chaque variable manipul(cid:19)ee a un type unique et connu
+Un type est la repr(cid:19)esentation d’un ensemble (cid:12)ni d’information de m^eme
+nature
+Un ensemble de fonctionnalit(cid:19)es (op(cid:19)erations, fonctions) est associ(cid:19)e (cid:18)a un type
+Typage fort (pas de m(cid:19)elange entre types)
+G.LaurentjENSMMjF(cid:19)evrier2013 42/72
+InformatiquejTypesscalaires
+Types scalaires
+Types scalaires pr(cid:19)ed(cid:19)e(cid:12)nis
+Entiers
+R(cid:19)eels
+Caract(cid:18)eres
+Bool(cid:19)eens
+Adresses m(cid:19)emoires (pointeurs)
+Types scalaires non pr(cid:19)ed(cid:19)e(cid:12)nis
+D(cid:19)e(cid:12)nitions des propres types scalaires du programmeur.
+Types(cid:19)enum(cid:19)er(cid:19)es ((cid:19)enum(cid:19)eration de toutes les valeurs possibles du type)
+G.LaurentjENSMMjF(cid:19)evrier2013 43/72
+InformatiquejTypesscalaires
+Type entiers
+Entiers non sign(cid:19)es : f 0, 1, ... , max g
+Entiers sign(cid:19)es : f (cid:0)max+1, (cid:0)max+2, ..., -1, 0, 1, ... , max g
+max d(cid:19)epend de la repr(cid:19)esentation interne :
+Entiers sign(cid:19)es sur 2 octets : max = 215 = 32 768
+Entiers sign(cid:19)es sur 4 octets : max = 231 = 2 147 483 648
+Op(cid:19)erateurs de calcul : + , - , * , / (division enti(cid:18)ere) , % (modulo)
+Op(cid:19)erateurs relationnels : < , (cid:20) , > , (cid:21) , = , 6=
+G.LaurentjENSMMjF(cid:19)evrier2013 44/72
+Jamais de calculs exacts en informatique !
+InformatiquejTypesscalaires
+Type r(cid:19)eel
+Nombre (cid:18)a virgule (cid:13)ottante de la forme s:m:2e
+s est le signe (s2f(cid:0)1;1g)
+m est la mantisse (entier non sign(cid:19)e)
+e est l’exposant (entier sign(cid:19)e)
+Nombre r(cid:19)eel sur 4 octets :
+On ne peut repr(cid:19)esenter exactement que 4 294 967 296 r(cid:19)eels!!
+Norme IEEE 754 : exposant compris entre (cid:0)127 et 127, mantisse avec 7
+chi(cid:11)res signi(cid:12)catifs
+Op(cid:19)erateurs de calcul : + , - , * , /
+Op(cid:19)erateurs relationnels : < , (cid:20) , > , (cid:21)
+Fonctions : sqrt, abs, cos, sin, exp, etc.
+G.LaurentjENSMMjF(cid:19)evrier2013 45/72
+InformatiquejTypesscalaires
+Type r(cid:19)eel
+Nombre (cid:18)a virgule (cid:13)ottante de la forme s:m:2e
+s est le signe (s2f(cid:0)1;1g)
+m est la mantisse (entier non sign(cid:19)e)
+e est l’exposant (entier sign(cid:19)e)
+Jamais de calculs exacts en informatique !
+Nombre r(cid:19)eel sur 4 octets :
+On ne peut repr(cid:19)esenter exactement que 4 294 967 296 r(cid:19)eels!!
+Norme IEEE 754 : exposant compris entre (cid:0)127 et 127, mantisse avec 7
+chi(cid:11)res signi(cid:12)catifs
+Op(cid:19)erateurs de calcul : + , - , * , /
+Op(cid:19)erateurs relationnels : < , (cid:20) , > , (cid:21)
+Fonctions : sqrt, abs, cos, sin, exp, etc.
+G.LaurentjENSMMjF(cid:19)evrier2013 45/72
+InformatiquejTypesscalaires
+Type bool(cid:19)eens
+Repr(cid:19)esentation externe : Vrai / Faux
+Repr(cid:19)esentation interne : 1 / 0
+Op(cid:19)erateurs : et, ou, non
+G.LaurentjENSMMjF(cid:19)evrier2013 46/72
+InformatiquejTypesscalaires
+Type caract(cid:18)ere
+Repr(cid:19)esentation externe :
+a b ... A B ... 0 1 ... 9 < (cid:3) + ! ( [ ...
+Repr(cid:19)esentation interne : code ASCII (cid:19)etendu (entier entre 0 et 255)
+Relation d’ordre :
+’0’ < ’1’ < ... < ’a’ < ’b’ < ... < ’z’ < ’A’ < ... < ’Z’
+Utilisation des guillemets simples pour (cid:19)eviter la confusion avec un
+identi(cid:12)cateur
+G.LaurentjENSMMjF(cid:19)evrier2013 47/72
+InformatiquejTypesstructur(cid:19)es
+7 Types structur(cid:19)es
+5 Introduction
+6 Types scalaires
+7 Types structur(cid:19)es
+8 Sous-programmes
+9 Quelques mots sur le g(cid:19)enie logiciel
+G.LaurentjENSMMjF(cid:19)evrier2013 48/72
+InformatiquejTypesstructur(cid:19)es
+Types structur(cid:19)es
+Types scalaires = types de base d’un langage
+Mais comment repr(cid:19)esenter?
+Un vecteur
+Un polyno^me
+Une adresse
+...
+Besoin de mod(cid:19)elisation et de structuration de l’information
+Deux structures principales
+Le tableau
+L’enregistrement
+G.LaurentjENSMMjF(cid:19)evrier2013 49/72
+InformatiquejTypesstructur(cid:19)es
+Structure tableau
+Pseudo-langage
+Nom du type nom du tableau[dimension]
+Un tableau permet de regrouper des donn(cid:19)ees de m^eme type
+La dimension d’un tableau est (cid:12)xe
+Acc(cid:18)es (cid:18)a l’(cid:19)el(cid:19)ement i avec la notation A[i] et 1 (cid:20) i (cid:20) dimension
+G.LaurentjENSMMjF(cid:19)evrier2013 50/72
+InformatiquejTypesstructur(cid:19)es
+Type cha^(cid:16)ne de caract(cid:18)ere
+Souvent d(cid:19)e(cid:12)nie par un tableau de caract(cid:18)eres
+N’est pas pr(cid:19)ed(cid:19)e(cid:12)nie en C, il faut donc d(cid:19)e(cid:12)nir un nouveau type
+Pseudo-langage
+Type cha^(cid:16)ne = tableau [20] de caract(cid:18)eres ;
+G.LaurentjENSMMjF(cid:19)evrier2013 51/72
+InformatiquejTypesstructur(cid:19)es
+Structure enregistrement
+Pseudo-langage
+Type Nom du type = enregistrement
+type1 champ1
+type2 champ2
+...
+typeN champN
+Un enregistrement permet de regrouper de donn(cid:19)ees de di(cid:11)(cid:19)erents types
+Chaque champ est nomm(cid:19)e et typ(cid:19)e
+Acc(cid:18)es aux donn(cid:19)ees avec la notation point(cid:19)ee A.champ1, A.champ2, etc.
+G.LaurentjENSMMjF(cid:19)evrier2013 52/72
+InformatiquejSous-programmes
+8 Sous-programmes
+5 Introduction
+6 Types scalaires
+7 Types structur(cid:19)es
+8 Sous-programmes
+9 Quelques mots sur le g(cid:19)enie logiciel
+G.LaurentjENSMMjF(cid:19)evrier2013 53/72
+InformatiquejSous-programmes
+Qu’est-ce qu’un sous-programme?
+Objectif
+Regrouper, nommer, param(cid:19)etrer une s(cid:19)equence d’instructions
+Pourquoi?
+Simpli(cid:12)er l’(cid:19)ecriture d’un long programme
+Faciliter la mise au point
+Isoler des fonctionnalit(cid:19)es
+Enrichir le langage et permettre la r(cid:19)eutilisation de fonctionnalit(cid:19)es
+G.LaurentjENSMMjF(cid:19)evrier2013 54/72
+Implantation d’un sous-programme (le Comment)
+Rappel de l’ent^ete
+les d(cid:19)eclarations locales (variables n(cid:19)ecessaires (cid:18)a l’ex(cid:19)ecution du
+sous-programme)
+S(cid:19)equence d’instructions correspondant au traitement d(cid:19)esir(cid:19)e
+InformatiquejSous-programmes
+D(cid:19)e(cid:12)nition d’un sous-programme
+Sp(cid:19)eci(cid:12)cation d’un sous-programme (le Quoi)
+Ent^ete du sous-programme
+Nom du sous-programme
+Listes des param(cid:18)etres (type et nom)
+Sp(cid:19)eci(cid:12)cations et conditions d’utilisation (commentaires)
+G.LaurentjENSMMjF(cid:19)evrier2013 55/72
+InformatiquejSous-programmes
+D(cid:19)e(cid:12)nition d’un sous-programme
+Sp(cid:19)eci(cid:12)cation d’un sous-programme (le Quoi)
+Ent^ete du sous-programme
+Nom du sous-programme
+Listes des param(cid:18)etres (type et nom)
+Sp(cid:19)eci(cid:12)cations et conditions d’utilisation (commentaires)
+Implantation d’un sous-programme (le Comment)
+Rappel de l’ent^ete
+les d(cid:19)eclarations locales (variables n(cid:19)ecessaires (cid:18)a l’ex(cid:19)ecution du
+sous-programme)
+S(cid:19)equence d’instructions correspondant au traitement d(cid:19)esir(cid:19)e
+G.LaurentjENSMMjF(cid:19)evrier2013 55/72
+InformatiquejSous-programmes
+D(cid:19)e(cid:12)nition d’une fonction
+Fonction
+calculent et retournent un et un seul r(cid:19)esultat
+ne modi(cid:12)ent pas de variables existantes (cid:18)a l’ext(cid:19)erieur
+s’utilisent dans des expressions
+Entier X, Y, R, Z Polyno^me A, B, C, D
+Entier n;
+X abs( (cid:0)510 ) ...
+/(cid:3) initialisation des polyno^mes (cid:3)/
+Y pgcd( X, 30 ) /(cid:3) A et B (cid:3)/
+...
+T 25 n degr(cid:19)e(A)
+R 15 C somme( A , B )
+Z 5+pgcd( T , R ) D somme( A , somme(B,C) )
+G.LaurentjENSMMjF(cid:19)evrier2013 56/72
+InformatiquejSous-programmes
+D(cid:19)e(cid:12)nition d’une fonction
+Sp(cid:19)eci(cid:12)cation d’une fonction
+fonction type nom de la fonction ( liste des param(cid:18)etres )
+/(cid:3) commentaire indiquant clairement ce que fait la fonction (cid:3)/
+/(cid:3) (cid:19)eventuellement les conditions d’ utilisation de la fonction (cid:3)/
+G.LaurentjENSMMjF(cid:19)evrier2013 57/72
+InformatiquejSous-programmes
+D(cid:19)e(cid:12)nition d’une fonction
+Implantation d’une fonction
+fonction type r(cid:19)esultat nom de fonction ( liste des param(cid:18)etres )
+d(cid:19)ebut
+/(cid:3) d(cid:19)eclarations locales au sous(cid:0)programme (cid:3)/
+type r(cid:19)esultat res ;
+/(cid:3) s(cid:19)equence d’ instructions calculant le r(cid:19)esultat res (cid:3)/
+...
+retourner res ;
+(cid:12)n
+G.LaurentjENSMMjF(cid:19)evrier2013 58/72
+InformatiquejSous-programmes
+D(cid:19)e(cid:12)nition d’une proc(cid:19)edure
+Proc(cid:19)edure
+peuvent calculer et donner plusieurs r(cid:19)esultats
+peuvent modi(cid:12)er des objets d(cid:19)ej(cid:18)a existant en m(cid:19)emoire centrale sans copie
+s’utilisent comme des instructions (rien (cid:18)a gauche)
+Entier R, S
+R 5 Polyno^me A
+S (cid:0)17 Complexe Z,W;
+...
+si (S<R) alors si (degr(cid:19)e(P) = 2) alors
+(cid:19)echangerValeur(R,S ) calculerRacines(A,Z,W)
+(cid:12)nsi (cid:12)nsi
+a(cid:14)cherEcran(R)
+G.LaurentjENSMMjF(cid:19)evrier2013 59/72
+InformatiquejSous-programmes
+D(cid:19)e(cid:12)nition d’une proc(cid:19)edure
+Sp(cid:19)eci(cid:12)cation d’une proc(cid:19)edure
+proc(cid:19)edure nom de procedure ( liste des param(cid:18)etres incluant leur nature )
+/(cid:3) nature des param(cid:18)etres (E , S ou E/S) (cid:3)/
+/(cid:3) commentaire indiquant clairement ce que fait la procedure (cid:3)/
+/(cid:3) (cid:19)eventuellement les conditions d’ utilisation de la procedure (cid:3)/
+G.LaurentjENSMMjF(cid:19)evrier2013 60/72
+InformatiquejSous-programmes
+D(cid:19)e(cid:12)nition d’une proc(cid:19)edure
+Implantation d’une proc(cid:19)edure
+proc(cid:19)edure nom de procedure ( liste des param(cid:18)etres incluant leur nature )
+d(cid:19)ebut
+/(cid:3) d(cid:19)eclarations locales au sous(cid:0)programme (cid:3)/
+/(cid:3) s(cid:19)equence d’ instructions r(cid:19)ealisant la sp(cid:19)eci(cid:12)cation (cid:3)/
+...
+(cid:12)n
+G.LaurentjENSMMjF(cid:19)evrier2013 61/72
+InformatiquejSous-programmes
+Passage des param(cid:18)etres
+Passage par valeur Programme appelant
+Proc(cid:19)edure incrA ( entier i (E) ) entier N
+/(cid:3) i est pass(cid:19)e par valeur (cid:3)/ N 10
+d(cid:19)ebut a(cid:14)cherEcran(N)
+i i + 1 ; incrA(N)
+(cid:12)n a(cid:14)cherEcran(N)
+incrB(N)
+a(cid:14)cherEcran(N)
+Passage par adresse
+Proc(cid:19)edure incrB ( entier i (E/S) ) R(cid:19)esultat (cid:18)a l’(cid:19)ecran
+/(cid:3) i est pass(cid:19)e par adresse (cid:3)/
+d(cid:19)ebut 10
+i i + 1 ; 10
+(cid:12)n 11
+G.LaurentjENSMMjF(cid:19)evrier2013 62/72
+Une chose(cid:18)a la fois
+Maximum 3 param(cid:18)etres
+Un sous-programme = 10 lignes
+Une structure d’it(cid:19)eration par sous-programme
+Tester un(cid:18)a un chaque sous-programme
+1 seul param(cid:18)etre de sortie et n entr(cid:19)ees ) fonction
+Au moins 1 param(cid:18)etre d’entr(cid:19)ee/sortie ) proc(cid:19)edure
+0 ou plus d’un param(cid:18)etre de sortie ) proc(cid:19)edure
+Quelques conseils :
+InformatiquejSous-programmes
+Quelques remarques sur les sous-programmes
+Nature du sous-programme
+G.LaurentjENSMMjF(cid:19)evrier2013 63/72
+Une chose(cid:18)a la fois
+Maximum 3 param(cid:18)etres
+Un sous-programme = 10 lignes
+Une structure d’it(cid:19)eration par sous-programme
+Tester un(cid:18)a un chaque sous-programme
+Au moins 1 param(cid:18)etre d’entr(cid:19)ee/sortie ) proc(cid:19)edure
+0 ou plus d’un param(cid:18)etre de sortie ) proc(cid:19)edure
+Quelques conseils :
+InformatiquejSous-programmes
+Quelques remarques sur les sous-programmes
+Nature du sous-programme
+1 seul param(cid:18)etre de sortie et n entr(cid:19)ees ) fonction
+G.LaurentjENSMMjF(cid:19)evrier2013 63/72
+Une chose(cid:18)a la fois
+Maximum 3 param(cid:18)etres
+Un sous-programme = 10 lignes
+Une structure d’it(cid:19)eration par sous-programme
+Tester un(cid:18)a un chaque sous-programme
+0 ou plus d’un param(cid:18)etre de sortie ) proc(cid:19)edure
+Quelques conseils :
+InformatiquejSous-programmes
+Quelques remarques sur les sous-programmes
+Nature du sous-programme
+1 seul param(cid:18)etre de sortie et n entr(cid:19)ees ) fonction
+Au moins 1 param(cid:18)etre d’entr(cid:19)ee/sortie ) proc(cid:19)edure
+G.LaurentjENSMMjF(cid:19)evrier2013 63/72
+Une chose(cid:18)a la fois
+Maximum 3 param(cid:18)etres
+Un sous-programme = 10 lignes
+Une structure d’it(cid:19)eration par sous-programme
+Tester un(cid:18)a un chaque sous-programme
+Quelques conseils :
+InformatiquejSous-programmes
+Quelques remarques sur les sous-programmes
+Nature du sous-programme
+1 seul param(cid:18)etre de sortie et n entr(cid:19)ees ) fonction
+Au moins 1 param(cid:18)etre d’entr(cid:19)ee/sortie ) proc(cid:19)edure
+0 ou plus d’un param(cid:18)etre de sortie ) proc(cid:19)edure
+G.LaurentjENSMMjF(cid:19)evrier2013 63/72
+Une chose(cid:18)a la fois
+Maximum 3 param(cid:18)etres
+Un sous-programme = 10 lignes
+Une structure d’it(cid:19)eration par sous-programme
+Tester un(cid:18)a un chaque sous-programme
+InformatiquejSous-programmes
+Quelques remarques sur les sous-programmes
+Nature du sous-programme
+1 seul param(cid:18)etre de sortie et n entr(cid:19)ees ) fonction
+Au moins 1 param(cid:18)etre d’entr(cid:19)ee/sortie ) proc(cid:19)edure
+0 ou plus d’un param(cid:18)etre de sortie ) proc(cid:19)edure
+Quelques conseils :
+G.LaurentjENSMMjF(cid:19)evrier2013 63/72
+Maximum 3 param(cid:18)etres
+Un sous-programme = 10 lignes
+Une structure d’it(cid:19)eration par sous-programme
+Tester un(cid:18)a un chaque sous-programme
+InformatiquejSous-programmes
+Quelques remarques sur les sous-programmes
+Nature du sous-programme
+1 seul param(cid:18)etre de sortie et n entr(cid:19)ees ) fonction
+Au moins 1 param(cid:18)etre d’entr(cid:19)ee/sortie ) proc(cid:19)edure
+0 ou plus d’un param(cid:18)etre de sortie ) proc(cid:19)edure
+Quelques conseils :
+Une chose(cid:18)a la fois
+G.LaurentjENSMMjF(cid:19)evrier2013 63/72
+Un sous-programme = 10 lignes
+Une structure d’it(cid:19)eration par sous-programme
+Tester un(cid:18)a un chaque sous-programme
+InformatiquejSous-programmes
+Quelques remarques sur les sous-programmes
+Nature du sous-programme
+1 seul param(cid:18)etre de sortie et n entr(cid:19)ees ) fonction
+Au moins 1 param(cid:18)etre d’entr(cid:19)ee/sortie ) proc(cid:19)edure
+0 ou plus d’un param(cid:18)etre de sortie ) proc(cid:19)edure
+Quelques conseils :
+Une chose(cid:18)a la fois
+Maximum 3 param(cid:18)etres
+G.LaurentjENSMMjF(cid:19)evrier2013 63/72
+Une structure d’it(cid:19)eration par sous-programme
+Tester un(cid:18)a un chaque sous-programme
+InformatiquejSous-programmes
+Quelques remarques sur les sous-programmes
+Nature du sous-programme
+1 seul param(cid:18)etre de sortie et n entr(cid:19)ees ) fonction
+Au moins 1 param(cid:18)etre d’entr(cid:19)ee/sortie ) proc(cid:19)edure
+0 ou plus d’un param(cid:18)etre de sortie ) proc(cid:19)edure
+Quelques conseils :
+Une chose(cid:18)a la fois
+Maximum 3 param(cid:18)etres
+Un sous-programme = 10 lignes
+G.LaurentjENSMMjF(cid:19)evrier2013 63/72
+Tester un(cid:18)a un chaque sous-programme
+InformatiquejSous-programmes
+Quelques remarques sur les sous-programmes
+Nature du sous-programme
+1 seul param(cid:18)etre de sortie et n entr(cid:19)ees ) fonction
+Au moins 1 param(cid:18)etre d’entr(cid:19)ee/sortie ) proc(cid:19)edure
+0 ou plus d’un param(cid:18)etre de sortie ) proc(cid:19)edure
+Quelques conseils :
+Une chose(cid:18)a la fois
+Maximum 3 param(cid:18)etres
+Un sous-programme = 10 lignes
+Une structure d’it(cid:19)eration par sous-programme
+G.LaurentjENSMMjF(cid:19)evrier2013 63/72
+InformatiquejSous-programmes
+Quelques remarques sur les sous-programmes
+Nature du sous-programme
+1 seul param(cid:18)etre de sortie et n entr(cid:19)ees ) fonction
+Au moins 1 param(cid:18)etre d’entr(cid:19)ee/sortie ) proc(cid:19)edure
+0 ou plus d’un param(cid:18)etre de sortie ) proc(cid:19)edure
+Quelques conseils :
+Une chose(cid:18)a la fois
+Maximum 3 param(cid:18)etres
+Un sous-programme = 10 lignes
+Une structure d’it(cid:19)eration par sous-programme
+Tester un(cid:18)a un chaque sous-programme
+G.LaurentjENSMMjF(cid:19)evrier2013 63/72
+InformatiquejQuelquesmotssurleg(cid:19)enielogiciel
+9 Quelques mots sur le g(cid:19)enie logiciel
+5 Introduction
+6 Types scalaires
+7 Types structur(cid:19)es
+8 Sous-programmes
+9 Quelques mots sur le g(cid:19)enie logiciel
+G.LaurentjENSMMjF(cid:19)evrier2013 64/72
+InformatiquejQuelquesmotssurleg(cid:19)enielogiciel
+G(cid:19)enie logiciel
+G(cid:19)enie logiciel
+Le g(cid:19)enie logiciel est l’ensemble des activit(cid:19)es de conception et de mise en oeuvre
+des produits et des proc(cid:19)edures tendant (cid:18)a rationaliser la production du logiciel et
+son suivi.
+G.LaurentjENSMMjF(cid:19)evrier2013 65/72
+Analyse et conception : quel est le probl(cid:18)eme (cid:18)a r(cid:19)esoudre?
+Donn(cid:19)ees de d(cid:19)epart et r(cid:19)esultats attendus
+Mod(cid:18)ele de donn(cid:19)ees : d(cid:19)e(cid:12)nition d’une repr(cid:19)esentation des donn(cid:19)ees
+M(cid:19)ethode de r(cid:19)esolution (algorithmes) : description des(cid:19)etapes successives pour
+arriver aux r(cid:19)esultats
+A(cid:14)nage progressif
+Codage
+Traduction de l’algorithme dans un langage de programmation : code source
+Langage de haut niveau : Pascal, C, C++, java, etc.
+Langage de bas niveau : Assembleur.
+R(cid:19)esultats du codage est un (cid:12)chier texte
+InformatiquejQuelquesmotssurleg(cid:19)enielogiciel
+Cycle de vie d’un logiciel
+G.LaurentjENSMMjF(cid:19)evrier2013 66/72
+Codage
+Traduction de l’algorithme dans un langage de programmation : code source
+Langage de haut niveau : Pascal, C, C++, java, etc.
+Langage de bas niveau : Assembleur.
+R(cid:19)esultats du codage est un (cid:12)chier texte
+InformatiquejQuelquesmotssurleg(cid:19)enielogiciel
+Cycle de vie d’un logiciel
+Analyse et conception : quel est le probl(cid:18)eme (cid:18)a r(cid:19)esoudre?
+Donn(cid:19)ees de d(cid:19)epart et r(cid:19)esultats attendus
+Mod(cid:18)ele de donn(cid:19)ees : d(cid:19)e(cid:12)nition d’une repr(cid:19)esentation des donn(cid:19)ees
+M(cid:19)ethode de r(cid:19)esolution (algorithmes) : description des(cid:19)etapes successives pour
+arriver aux r(cid:19)esultats
+A(cid:14)nage progressif
+G.LaurentjENSMMjF(cid:19)evrier2013 66/72
+InformatiquejQuelquesmotssurleg(cid:19)enielogiciel
+Cycle de vie d’un logiciel
+Analyse et conception : quel est le probl(cid:18)eme (cid:18)a r(cid:19)esoudre?
+Donn(cid:19)ees de d(cid:19)epart et r(cid:19)esultats attendus
+Mod(cid:18)ele de donn(cid:19)ees : d(cid:19)e(cid:12)nition d’une repr(cid:19)esentation des donn(cid:19)ees
+M(cid:19)ethode de r(cid:19)esolution (algorithmes) : description des(cid:19)etapes successives pour
+arriver aux r(cid:19)esultats
+A(cid:14)nage progressif
+Codage
+Traduction de l’algorithme dans un langage de programmation : code source
+Langage de haut niveau : Pascal, C, C++, java, etc.
+Langage de bas niveau : Assembleur.
+R(cid:19)esultats du codage est un (cid:12)chier texte
+G.LaurentjENSMMjF(cid:19)evrier2013 66/72
+Mise au point
+Compilation : traduction du langage de programmation vers un langage
+compr(cid:19)ehensible par la machine
+Jeu de tests : ex(cid:19)ecution du programme ou sous-programme avec des donn(cid:19)ees
+typiques et repr(cid:19)esentative d’une utilisation future
+Corrections des erreurs
+R(cid:19)eit(cid:19)erations de ces trois(cid:19)etapes autant de fois que n(cid:19)ecessaire
+Maintenance
+Corrections d’erreur non d(cid:19)etect(cid:19)ee lors de la mise au point
+Mise(cid:18)a jour pour r(cid:19)epondre(cid:18)a de nouveaux besoins
+InformatiquejQuelquesmotssurleg(cid:19)enielogiciel
+Cycle de vie d’un logiciel
+G.LaurentjENSMMjF(cid:19)evrier2013 67/72
+Maintenance
+Corrections d’erreur non d(cid:19)etect(cid:19)ee lors de la mise au point
+Mise(cid:18)a jour pour r(cid:19)epondre(cid:18)a de nouveaux besoins
+InformatiquejQuelquesmotssurleg(cid:19)enielogiciel
+Cycle de vie d’un logiciel
+Mise au point
+Compilation : traduction du langage de programmation vers un langage
+compr(cid:19)ehensible par la machine
+Jeu de tests : ex(cid:19)ecution du programme ou sous-programme avec des donn(cid:19)ees
+typiques et repr(cid:19)esentative d’une utilisation future
+Corrections des erreurs
+R(cid:19)eit(cid:19)erations de ces trois(cid:19)etapes autant de fois que n(cid:19)ecessaire
+G.LaurentjENSMMjF(cid:19)evrier2013 67/72
+InformatiquejQuelquesmotssurleg(cid:19)enielogiciel
+Cycle de vie d’un logiciel
+Mise au point
+Compilation : traduction du langage de programmation vers un langage
+compr(cid:19)ehensible par la machine
+Jeu de tests : ex(cid:19)ecution du programme ou sous-programme avec des donn(cid:19)ees
+typiques et repr(cid:19)esentative d’une utilisation future
+Corrections des erreurs
+R(cid:19)eit(cid:19)erations de ces trois(cid:19)etapes autant de fois que n(cid:19)ecessaire
+Maintenance
+Corrections d’erreur non d(cid:19)etect(cid:19)ee lors de la mise au point
+Mise(cid:18)a jour pour r(cid:19)epondre(cid:18)a de nouveaux besoins
+G.LaurentjENSMMjF(cid:19)evrier2013 67/72
+InformatiquejQuelquesmotssurleg(cid:19)enielogiciel
+Cycle de vie d’un logiciel
+Les dangers du d(cid:19)eveloppement en cascade
+Con(cid:24)cupar
+Propos(cid:19)eparle Sp(cid:19)eci(cid:12)(cid:19)eparle
+l’(cid:19)equipede
+commercial chefdeprojet
+conception
+R(cid:19)ealis(cid:19)eparles Cequevoulait
+Install(cid:19)esurlesite
+programmeur l’utilisateur
+Source:Univ.ofLondonComputerCenterNewslettern(cid:23)53march1973
+G.LaurentjENSMMjF(cid:19)evrier2013 68/72
+InformatiquejQuelquesmotssurleg(cid:19)enielogiciel
+Cycle en V
+G.LaurentjENSMMjF(cid:19)evrier2013 69/72
+InformatiquejQuelquesmotssurleg(cid:19)enielogiciel
+Cycle en V simpli(cid:12)(cid:19)e
+G.LaurentjENSMMjF(cid:19)evrier2013 70/72
+InformatiquejQuelquesmotssurleg(cid:19)enielogiciel
+D(cid:19)eveloppement it(cid:19)eratif
+G.LaurentjENSMMjF(cid:19)evrier2013 71/72
+InformatiquejQuelquesmotssurleg(cid:19)enielogiciel
+Conclusion
+Vive les m(cid:19)ethodes agiles!
+Source:StandishGroup2010chaosreport
+G.LaurentjENSMMjF(cid:19)evrier2013 72/72

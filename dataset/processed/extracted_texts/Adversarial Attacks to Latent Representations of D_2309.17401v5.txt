@@ -1,0 +1,1152 @@
+Adversarial Attacks to Latent Representations of
+Distributed Neural Networks in Split Computing
+Milin Zhanga, Mohammad Abdia,
+Jonathan Ashdownb, Francesco Restucciaa
+aInstitute for the Wireless Internet of Things at Northeastern University, United States
+bAir Force Research Laboratory, United States
+Abstract
+Distributed deep neural networks (DNNs) have been shown to reduce the
+computational burden of mobile devices and decrease the end-to-end infer-
+encelatencyinedgecomputingscenarios. WhiledistributedDNNshavebeen
+studied, the resilience of distributed DNNs to adversarial action remains an
+open problem. In this paper, we fill the existing research gap by rigorously
+analyzing the robustness of distributed DNNs against adversarial action. We
+cast this problem in the context of information theory and rigorously proved
+that (i) the compressed latent dimension improves the robustness but also
+affect task-oriented performance; and (ii) the deeper splitting point enhances
+therobustnessbutalsoincreasesthecomputationalburden. Thesetwotrade-
+offs provide a novel perspective to design robust distributed DNN. To test
+our theoretical findings, we perform extensive experimental analysis by con-
+sidering 6 different DNN architectures, 6 different approaches for distributed
+DNN and 10 different adversarial attacks using the ImageNet-1K dataset.
+Keywords: Distributed DNN, Adversarial Robustness, Split Computing
+1. Introduction
+Deep neural networks (DNNs) have achieved significant success in var-
+ious domains such as computer vision [1], natural language processing [2],
+Email addresses: zhang.mil@northeastern.edu (Milin Zhang),
+abdi.mo@northeastern.edu (Mohammad Abdi), jonathan.ashdown@us.af.mil (
+Jonathan Ashdown), f.restuccia@northeastern.edu (Francesco Restuccia)
+Approved for Public Release: Distribution Unlimited: AFRL-2025-2602.
+ThisarticlehasbeenacceptedforpublicationinComputerNetworks. Thisistheauthor’s
+accepted manuscript version. Copyright may transfer without notice.
+5202
+tcO
+1
+]GL.sc[
+5v10471.9032:viXra
+and wireless communication [3], among many others. However, state-of-
+the-art DNNs are challenging to deploy on resource-limited mobile devices.
+While mobile-specific DNNs have been proposed [4], they usually come with
+a significant loss in accuracy. On the other hand, completely offloading the
+computation to edge or cloud computers is impractical in mobile scenarios
+due to the excessive communication overhead corresponding to the trans-
+fer of the DNN input from the mobile device to the edge/cloud [5]. A new
+paradigm called distributed computing – also referred to as split computing
+in prior art [6] – divides the computation of DNNs across multiple devices –
+according to the available processing power and networking bandwidth. The
+key advantage is that optimal load distribution can be achieved while meet-
+ing maximum end-to-end latency constraints and also preserving the DNN
+accuracy [7].
+Without loss of generality, we assume that a DNN model is divided into
+a mobile DNN and a local DNN, respectively executed by the mobile device
+and an edge/cloud computer. Usually, the DNN architecture is modified
+by introducing a compression layer (“bottleneck”) at the end of the mobile
+DNN [8, 9], which is trained to learn a latent representation that reduces the
+amount of data being sent to the edge/cloud. The compressed representation
+is then used by the local DNN to produce the final prediction output (e.g.,
+classification).
+Although prior work has proven the advantages of distributing the DNN
+computation, it isalso evidentthat this approachopensthe door to adversar-
+ial attacks to intermediate (latent) representations. The distributed nature
+of the computation exposes the latent representation to adversarial action.
+Indeed, due to the need for communicating the latent representation across
+devices over a wireless network, an adversary can easily eavesdrop the latent
+representation and craft an adversarial sample to compromise the local DNN
+as shown in Figure 1.
+Despite its significance and timeliness, assessing the robustness of dis-
+tributed DNNs remains an unexplored problem. We remark that achieving a
+fundamentalunderstandingoftheseattacksandevaluatingtheireffectiveness
+in state-of-the-art DNNs is paramount to design robust distributed DNNs.
+To this end, we theoretically analyze the robustness of distributed DNNs us-
+ing Information Bottleneck (IB) theory [10]. Our first key theoretical finding
+is that the latent robustness is highly depended on the depth of splitting
+point. With similar levels of information distortion, latent representations in
+deeper layers exhibit constantly better robustness compare to those in early
+2
+DNN Output
+Adversary
+Attack
+Vector
+Latent
+DNN
+Representation
+Input Mobile DNN Local DNN
+Figure 1: Overview of Adversarial Attacks to Distributed DNNs.
+layers. Our second key finding is that the trade-off between DNN perfor-
+mance and robustness is intrinsically related to the dimension of the latent
+space. While a smaller latent space may increase robustness by reducing the
+model variance, it will also introduce bias in the model thus affecting the
+generalization capability of the DNN model.
+We extensively evaluate our theoretical findings by considering 10 adver-
+sarial algorithms, i.e., 4 white-box attacks [11, 12, 13, 14] and 6 black-box
+attacks [15, 16, 17, 18, 19, 20]. We apply these attacks to 6 different ar-
+chitectures [21, 22] designed with 6 distributed DNN approaches [23, 24, 9,
+7, 25, 26]. The experimental results validate our theoretical findings on the
+examined DNNs and attack algorithms.
+Summary of Novel Contributions
+• We theoretically investigate the robustness of distributed DNNs against
+adversarial action. We leverage notions of IB theory and rigorously prove
+that the robustness of distributed DNNs is affected by the splitting point and
+latent dimension. While existing work often optimize the splitting point and
+feature dimension to minimize end-to-end latency of distributed computing
+[7, 27], for the first time we reveal that they are also key factors of robustness
+which need to be considered in designs;
+• We perform extensive experiments with the ImageNet-1K [28] dataset,
+by considering 6 different DNN architectures, 6 different distributed DNN
+approaches under 10 different attacks to support our theoretical findings.
+The results show that the theoretical analysis applies to the experimental
+settingsunderconsideration. Weshareourcodeforreproducibilityathttps:
+3
+//github.com/Restuccia-Group/AdvLatent, and we hope this work may
+openthedoortoanewfielddedicatedtostudyingtheresilienceofdistributed
+DNNs.
+This paper is organized as follows. Section 3 define the threat model
+under consideration. Next, Section 4 presents our theoretical analysis based
+on IB. Section 5 discusses our experimental setup while Section 6 presents
+our experimental results. Finally, Section 7 summarizes the related work and
+Section 9 draws conclusions and discusses possible directions for future work.
+2. Overview of Distributed DNN
+Distributed Neural Networks. Deploying AI applications in mobile de-
+vices is challenging as there is no enough computation resources to execute
+large DNNs. Lightweight DNNs [4, 29] have significant performance loss
+while offloading tasks to the edge device may incur in excessive latency [30].
+Therefore, split computing, as an intermediate option, is proposed to acceler-
+ate large DNNs to resource-constrained devices [31]. The key idea is to split
+a large DNN into two parts – a relative small head model deployed on the
+resource-limited device and a large tail model deployed on the edge device
+which has excessive computation power.
+“Partitioning optimization" and “bottleneck optimization" represent two
+major research directions in split computing. Partitioning optimization fo-
+cuses on selecting the optimal splitting depth within DNNs to achieve min-
+imal inference latency under given computation and bandwidth constraints
+[31, 23]. Splitting at early layers reduces computational overhead on the mo-
+bile device but increases communication burden, as latent representations in
+the initial layers of deep neural networks typically have larger dimensions.
+On the other hand, “bottleneck optimization" aims to minimize the size of la-
+tent representations by introducing a “bottleneck" layer before the split point
+to compress these representations [7, 32]. This approach involves a critical
+trade-off: smaller bottlenecks may cause information loss during compres-
+sion, degrading end-to-end performance, while larger latent dimensions incur
+unnecessary communication overhead. For a comprehensive review, readers
+are referred to [33].
+While the depth and dimension of the partitioning layer are key design
+factors in split computing, existing research has overlooked how these pa-
+rameters affect the adversarial robustness of split computing systems. In
+4
+Figure 2: Threat model under consideration. (Left) The adversary plays a man-in-the-
+middle attack where the communication between mobile and local devices are altered
+without detection; (Right) Difference between adversarial attack in input space and ad-
+versarial attack in latent space.
+this work, we investigate the relationship between adversarial robustness in
+the latent space and both the dimension and depth of partitioning layers.
+Security and Privacy in Distributed DNNs. Despite its effectiveness,
+this new cooperative paradigm of distributed DNNs introduces significant
+security and privacy concerns that require investigation. We roughly catego-
+rize the security and privacy issues in distributed DNNs based on the target
+device. On mobile devices, a critical issue is data privacy. Literature has
+demonstrated that adversaries can extract private input information of the
+mobile device from the intermediate outputs [34]. In addition, research has
+shown that poisoning input data can compromise data compression mecha-
+nisms at the mobile side, creating excessive transmission overhead [35]. Con-
+versely, we focus on a new security issue that targets the tail model deployed
+on the edge device.
+3. Threat Model
+Overview of the Adversarial Scenario. Figure 2 shows the threat model
+under consideration. We consider a man-in-the-middle attack to distributed
+DNNs where the mobile device and local server are connected through an
+insecure network. In this scenario, attackers can intercept transmissions and
+modify communications between mobile and edge endpoints without detec-
+tion. More specifically, the attacker can add unperceptive perturbations to
+latent representations to mislead the local DNN at the edge, compromising
+5
+the task-oriented performance of the distributed computing system. This at-
+tack differs fundamentally from traditional adversarial attacks in input space
+as latent representations often contains richer semantic information (e.g. ob-
+jectsandshapes)andlesstask-irrelevantinformation(e.g.,backgroundnoise)
+[36], resulting in distinctive robustness characteristics compared to raw input
+data.
+Analogtoconventionaladversarialattacksintheinputspace, weconsider
+l bounded attacks in our threat model. Remark that while l constraints are
+p p
+first proposed to model the human invisibility in vision tasks [21], it has been
+widelyappliedindiversetasksthatoperatewithouthumaninvolvement,such
+as cybersecurity [37] and wireless communication [38]. This is because the
+l distortion represents a worst-case scenario for resilience. Thus, we believe
+p
+l bounded attacks is an essential starting point to assess the robustness of
+p
+distributed DNNs.
+Adversarial Attacks in Input Space. Let f : Rd (cid:55)→ Ck denote a DNN
+where R and C are respectively the input and output space, and d and k
+are the corresponding dimension of these two spaces. The DNN will assign
+highest score to the correct class y = argmax f(x) for each input x. The
+k
+adversarial goal is to introduce a perturbation δ ∈ Rd to the original sample
+d
+so that
+argmaxf(x+δ ) ̸= y, (1)
+d
+k=1,...,K
+where ||δ || ≤ σ and σ is the distance constraint under different l norm.
+d p p
+Additionally, for visual applications, δ should satisfy the condition x+δ ∈
+d d
+[0,1]d as there is an explicit upper and lower bound for red, green and blue
+(RGB) value in digital images.
+Adversarial Attacks in Latent Space. Let g : Rd (cid:55)→ Ht and f : Ht (cid:55)→ Ck
+denote the mobile DNN and local DNN, where H and t are the latent space
+and its associated dimension, respectively. For each input x, the mobile DNN
+will generate a corresponding latent representation g(x) ∈ Ht and the local
+DNN will generate output y = argmax f(g(x)) by taking the latent repre-
+k
+sentation as input. Adversarial action in latent space adds a perturbation
+δ ∈ Ht such that
+t
+argmaxf(g(x)+δ ) ̸= y, (2)
+t
+k=1,...,K
+where||δ || ≤ σ isthedistanceconstraintunderl norm. Weremarkthatthe
+t p p
+latent representations are model-dependent and there is no explicit bound for
+6
+X T1 T3
+T2
+^
+Y
+Y
+Data Hidden Layers Inference
+Figure 3: Modeling DNN with IB. Each representation T only depends on the previous
+i
+outputT ,andtheoptimalT∗canbeinterpretedastheIBwhichoptimizesEquation(3)
+i−1 i
+at layer i.
+theirvalueother thantheir computer-level representation(e.g., float, integer,
+double).
+4. Theoretical Analysis
+4.1. Analysis through Information Bottleneck
+TheInformationBottleneck(IB)isamodel-agnosticinformation-theoretical
+framework introduced by [10] to extract the relevant information about a
+random variable (r.v.) Y from another r.v. X by finding a representation
+T which compresses the information of X while captures only the sufficient
+information about Y. As shown in Figure 3, we model a DNN with a Markov
+ˆ ˆ
+chain Y (cid:55)→ X (cid:55)→ T (cid:55)→ ··· (cid:55)→ T (cid:55)→ Y, where X, Y, Y and T are respectively
+1 k i
+the input, its label, the inference output and the output of the i-th hidden
+layer. The IB optimizes the following:
+min I(X;T )−β ·I(Y;T ),1 ≤ i ≤ k (3)
+i i
+P(Ti|X)
+where I(X;T ) is the mutual information between X and T while I(Y;T ) is
+i i i
+the mutual information between Y and T . Each layer can be thus described
+i
+7
+by its own unique information plane (I(X;T ),I(Y;T )) which represents its
+i i
+compressionandgeneralizationcapability. NoticethatoptimizingEquation3
+is equivalent to minimizing I(X;T ) – i.e., learning to compress – whereas
+i
+maximizing I(Y;T ) – i.e., learning to generalize. To simplify notation, and
+i
+without loss of generality, henceforth we will consider a single generic hidden
+layer T.
+Lemma 1 (Latent Robustness). For a given DNN, the mutual information
+I(Y;T) quantifies the robustness at the layer T.
+Proof. The end-to-end robustness of the DNN model can be modeled with
+ˆ
+I(Y;Y), which measures the mutual information between the label Y and
+ˆ
+the DNN inference Y [39]. We apply the Data Processing Inequality (DPI)
+to describe the information loss during processing [40]:
+ˆ
+I(Y;X) ≥ I(Y;T) ≥ I(Y;Y) (4)
+Inshort,thegeneralizationmetricI(Y;T)ofhiddenlayerT alsodescribes
+ˆ
+the upper bound of I(Y;Y), which is intrinsically a measure of robustness
+at layer T.
+By assuming that adversarial perturbations are not observable (i.e., ad-
+versarial perturbation doesn’t change the ground-truth of mutual informa-
+tion), it follows there is a prior yet unknown optimal solution I∗(Y;T) for a
+specific DNN architecture that satisfies the IB where adversarial perturba-
+tions cannot decrease the performance – in other words, I∗(Y;T) is resilient
+to adversarial attacks. The key issue is that although each DNN has a hy-
+pothesis set defined by its parameters, the optimum parameter set exhibiting
+thelargestI∗(Y;T)isunknown. Tothisend, eachtrainedDNNusingafinite
+dataset (X,Y) has its own estimation I(Y;T) and adversarial perturbations
+can decrease the estimated mutual information by introducing distribution
+shift in dataset.
+Theorem 1 (Compression-Robustness Trade-Off). The adversarial robust-
+ness I(Y;T ) is jointly determined by its ideal generalization capability
+adv √
+I∗(Y;T) and dimensionality O(|T ||Y|/ n):
+|T ||Y|
+I(Y;T ) = I∗(Y;T)−O( √ ), (5)
+adv
+n
+where n denotes the number of data and |T |, |Y| are the cardinality of T and
+Y, respectively.
+8
+Proof. [41] have proven that the estimated mutual information I(Y;T) using
+a dataset (X,Y) with finite samples has the following error bound:
+|T ||Y|
+||I∗(Y;T)−I(Y;T)|| ≤ O( √ ). (6)
+n
+As the adversarial examples aim to decrease the performance, the ad-
+versarial robustness I(Y;T ) approaches the lower bound in Equation (6).
+adv
+Thus, Equation (5) holds.
+Theorem 1 is the information version of the complexity-generalization
+trade-off in Probably Approximately Correct (PAC) learning. A larger latent
+space |T | (i.e., a more complex hypothesis set in PAC learning) will have
+larger variance resulting in decreased performance with inputs coming from
+adistributiondifferentthanX. Conversely,withasmallerlatentspace(i.e.,a
+smaller hypothesis set), the DNN has more bias, which leads to less accuracy
+(i.e., a smaller I∗(Y;T)).
+Since the IB is model-agnostic and generalized, we point out that our the-
+oretical framework alo provides value to explain the robustness in the general
+adversarial setting. For example, [42] derived a similar theoretical finding
+that robustness of DNNs decreased with growing data dimension. However,
+they solely concentrate on dimensionality while our analysis delves into the
+trade-off. [43] and [44] empirically explored the trade-off between robustness
+and performance, a concept close to Theorem 1. However, we offer a rigorous
+theoretical explanation of this trade-off, revealing that dimensionality serves
+as the determining factor.
+In distributed DNNs, bottlenecks are often introduced to compress the
+latent dimension in order to reduce the communication overhead. Theorem 1
+reveals that the feature compression technique can also affect the resilience of
+distributed DNN. Bottlenecks enhance the adversarial robustness by reduc-
+√
+ing the variance O(|T ||Y|/ n) but also introduce vulnerability by uninten-
+tionally adding bias to decrease I∗(Y;T). Therefore, we believe Theorem 1
+provides a novel perspective to achieve robust distributed DNN.
+Lemma 2 (Information Distortion). In a Markov chain Y (cid:55)→ X (cid:55)→ T, the
+conditional mutual information I(Y;X|T) quantifies the distortion incurred
+during the transmission of information from X to T.
+Proof. Following[39],weuseKullback-Leibler(KL)divergenceD [P(Y|X)||P(Y|T)]
+KL
+9
+to characterize the distortion in IB framework. The expectation of D is
+KL
+(cid:88) (cid:88) P(Y|X)
+E{D } = P(X,T) P(Y|X)log . (7)
+KL
+P(Y|T)
+X,T Y
+By applying the conditional independence of Markov chain, Equation (7)
+can be refined to
+(cid:88) P(Y|X)
+E{D } = P(X,T)P(Y|X,T)log
+KL
+P(Y|T)
+(cid:88) P(Y|X)P(X|T)
+= P(X,T,Y)log
+P(Y|T)P(X|T) (8)
+(cid:88) P(X,Y|T)
+= P(X,T,Y)log
+P(Y|T)P(X|T)
+= I(X;Y|T).
+Theorem 2 (Input vs Latent Robustness). With same level of distortion
+introduced by input X and latent T , it has
+adv adv
+I(Y;T′) ≤ I(Y;T ), (9)
+adv
+where T′ denotes the latent corresponding to X .
+adv
+Proof. Due to the chain rule of mutual information,
+I(X;Y|T) = I(X,T;Y)−I(Y;T). (10)
+For a Markov chain Y (cid:55)→ X (cid:55)→ T, the joint distribution P(X,Y,T) has
+following property
+P(X,Y,T) = P(T|X,Y)P(Y|X)P(X)
+(11)
+= P(T|X)P(Y|X)P(X).
+Therefore, I(X,T;Y) can be simplified as
+(cid:26) (cid:27)
+P(X,T,Y)
+I(X,T;Y) = E log
+P(X,T)P(Y)
+(cid:26) (cid:27)
+P(T|X)P(Y|X)P(X)
+= E log (12)
+P(T|X)P(X)P(Y)
+(cid:26) (cid:27)
+P(Y|X)
+= E log = I(X;Y).
+P(Y)
+10
+From Equation (10) and Equation (12), it follows that
+I(X;Y|T) = I(X;Y)−I(Y;T). (13)
+Let Y (cid:55)→ X (cid:55)→ T′ be the Markov chain of adversarial attacks in input
+adv
+space, the distortion introduced by X is
+adv
+I(X ;Y|T′) = I(X ;Y)−I(Y;T′), (14)
+adv adv
+where X represents adversarial samples and T′ is the corresponding latent
+adv
+representation.
+Similarly, for a Markov chain Y (cid:55)→ X (cid:55)→ T , we have
+adv
+I(X;Y|T ) = I(X;Y)−I(Y;T ), (15)
+adv adv
+where T and I(X;Y|T ) represents the latent perturbation and corre-
+adv adv
+sponding information distortion.
+Assume X and T have same level of distortion,
+adv adv
+I(X ;Y)−I(Y;T′) = I(X;Y)−I(Y;T ). (16)
+adv adv
+Since X is a mapping of X, there is a Markov chain Y (cid:55)→ X (cid:55)→ X .
+adv adv
+By DPI, it follows that
+I(X;Y) ≥ I(X ;Y). (17)
+adv
+Therefore, Equation (9) holds.
+Theorem 2 formally describes that with same level of information dis-
+tortion, attacking the latent space is less effective than attacking the input
+space. An important corollary can be derived from Theorem 2 by gener-
+alizing the input space to any latent space that is before T in the Markov
+chain.
+Corollary 1 (Depth-Robustness Trade-Off). Assume same level of distor-
+tion is introduced to two latent space T and T where i denotes the depth
+i−1 i
+of DNN layers, it has
+I(Y;T′) ≤ I(Y;Ti ), (18)
+i adv
+where T′ denotes the latent at layer i after introducing perturbation to T
+i i−1
+while Ti denotes the latent at layer i directly perturbed by distortion.
+adv
+11
+The proof is the same as Theorem 2 by replacing the Markov chain Y (cid:55)→
+X (cid:55)→ T to Y (cid:55)→ T (cid:55)→ T . Corollary 1 describes that the latent space in
+i−1 i
+early layers will be more vulnerable than the the deeper latent space. This
+is because a small information loss gets amplified during propagation. We
+remark that this theoretical finding is in line with [45], which states that the
+difference between adversarial and benign samples is less significant in early
+layers compared to deeper ones, thus enabling the early exits.
+Corollary 1 is critical to distributed DNNs as finding the optimal split-
+ting point (depth of latent space) of DNN is one of the fundamental research
+questions to optimize the computation and communication overhead of dis-
+tributed computing [7, 27]. However, we theoretically demonstrate that the
+splitting point is also a key factor of robustness which needs to be considered
+in design.
+4.2. Connect Theory to Experiments
+One of the open challenges in IB is to properly estimate the mutual infor-
+mation between high dimensional data. Existing literature usually involves
+simple DNN architecture and small datasets [44, 46]. To this end, our large-
+scale empirical study in Section 6 is based on end-to-end performance rather
+than IB. In order to connect the theoretical framework to experiments, we
+perform an experiment on MNIST with a simple DNN that consists of 3
+layers of convolutional neural networks (CNNs) followed by a linear layer.
+Each CNN layer is followed by a batch normalization and a ReLU activa-
+tion. Maxpooling layers are applied after the first and second CNN layer to
+downsample the features and a global average pooling layer is applied before
+the linear layer. The simple DNN achieved near perfect accuracy (99.42%)
+on MNIST.
+We consider the feature map output by the 2nd CNN layer as the target
+latent space and l constrained Projected Gradient Descent (PGD) [14] with
+∞
+a perturbation strength ϵ is applied to both input and latent space. To have
+a comprehensive evaluation, multiple commonly used mutual information
+estimators are applied [47, 48, 49, 51, 50]. Among them, MINE [47], NWJ
+[48], and CPC [49] are lower bounded estimators while DoE [51] and CLUB
+[50] are upper bounded estimators.
+ˆ
+Table1demonstratestheresultsofestimatedmutualinformationI(Y;T)
+and corresponding classification accuracy as a function of noise level ϵ. Note
+that the estimated mutual information varies significantly across different
+estimators, as they are built on different lower or upper bounds. While these
+12
+Table 1: Estimated mutual information Iˆ(Y;T) and classification accuracy caused by
+input and latent perturbations as a Function of ϵ on MNIST.
+MINE[47] NWJ[48] CPC[49] CLUB[50] DoE[51] Accuracy
+Input Latent Input Latent Input Latent Input Latent Input Latent Input Latent
+ϵ=0.01 2.01 2.08 1.28 1.31 2.25 2.26 9.88 9.88 27.44 27.88 98.68% 98.89%
+ϵ=0.02 2.01 2.06 1.25 1.28 2.23 2.24 9.82 9.83 26.47 27.37 97.09% 97.89%
+ϵ=0.03 1.93 1.95 1.17 1.26 2.19 2.22 9.74 9.77 25.28 26.88 94.27% 96.24%
+ϵ=0.04 1.83 1.98 1.10 1.22 2.16 2.20 9.64 9.69 23.82 26.26 88.79% 93.40%
+ϵ=0.05 1.78 1.88 1.01 1.16 2.11 2.16 9.51 9.59 22.03 25.61 78.64% 88.63%
+ϵ=0.06 1.71 1.85 0.89 1.12 2.04 2.12 9.36 9.46 19.88 24.86 56.39% 79.96%
+ϵ=0.07 1.62 1.80 0.79 1.12 1.94 2.07 9.19 9.32 17.13 24.06 31.59% 67.98%
+ϵ=0.08 1.48 1.79 0.67 1.03 1.83 2.00 9.01 9.16 13.77 23.12 13.54% 52.26%
+ϵ=0.09 1.35 1.65 0.56 1.00 1.69 1.91 8.81 8.98 9.83 22.22 4.34% 34.75%
+ϵ=0.10 1.19 1.62 0.45 0.97 1.51 1.81 8.61 8.77 5.08 21.17 1.22% 20.58%
+estimations cannot give us exact value of mutual information, all of them
+show a same trend. To this end, we consider these estimations to be valid.
+As shown in Table 1, with an increasing perturbation budget ϵ, all estimated
+ˆ
+I(Y;T) as well as the accuracy of CNN decrease. This indicates that the
+I(Y;T) is an appropriate tool to quantify the DNN robustness as proposed
+in Lemma 1. Moreover, the mutual information as well as the classification
+accuracy associated with latent perturbations shows a higher value compared
+to those of input perturbations, which supports Theorem 2. This experiment
+bridgesthetheoreticalanalysistolargescaleexperimentsintherestofpaper.
+5. Experimental Setup
+5.1. Attacks Under Consideration
+Adversarial attacks can be categorized as gradient-based, score-based and
+decision-basedapproaches. Gradient-basedattackscrafttheadversarialsam-
+ples by maximizing classification loss with gradient updates. On the other
+hand, score-basedattacksleveragetheoutputscoreofDNNasfeedbacktoit-
+eratively search the perturbation in the black-box setting and decision-based
+attacks can only access the hard label which has the highest score in the
+output. To have a thorough assessment, we implemented 10 popular attacks
+to DNNs. These include 4 gradient-based white-box attacks [11, 12, 13, 14],
+as well as 3 score-based black-box attacks [15, 16, 17] and 3 decision-based
+black-box attacks [18, 19, 20].
+White-box Attacks: We consider 4 gradient-based attacks only in the
+white-box setting because latent representations are different for each model,
+13
+Table 2: List of feature compression approaches considered in this paper
+Category Approach Description
+SB naive supervised compression trained with cross entropy [32, 24]
+Dimension
+DB bottleneck trained with naive knowledge distillation [8]
+Reduction
+BF multi-stage training with distillation and cross entropy [7]
+Datasize JC reduce precision in frequency domain using JPEG approach [52]
+Reduction QT uniformly compress every element using naive bit quantization [25]
+bottleneck trained with distillation and information-based loss
+Advanced ES
+and data compressed with quantization and entropy coding [26]
+resulting in numerous surrogate DNNs training in black-box scenarios that
+maybeinfeasibleinpractice. WechooseFastGradientSignMethod(FGSM)
+[11], BasicIterativeMethod(BIM)[12], MomentumIterativeMethod(MIM)
+[13] with l norm constraints. PGD [14] is implemented for both l and l
+∞ 2 ∞
+spaces as a baseline for other black-box attacks.
+Black-box Attacks: We consider 3 score-based attacks Natural Evolution-
+arySearch(NES)[15],N-Attack[16]andSquareAttack[17]inl spaceand3
+∞
+decision-based attacks Evolutionary Attack (EVO) [18], Sign-OPT (S-OPT)
+[19] and Triangle Attack [20] in l space.
+2
+Dataset and Metrics: We evaluate adversarial robustness using 1000 sam-
+ples from the validation set of ImageNet-1K [28], limiting the samples to
+those which are correctly classified. We define the perturbation budget ϵ as
+the mean square error (MSE) under the l norm constraint (i.e., ϵ×d = σ2
+2
+and ϵ × t = σ2 in input and latent space respectively where d, t and σ are
+the dimension of input, dimension of latent, and the distance constraint de-
+fined in Section 3.) and the maximum element-wise distance under l norm
+∞
+constraint (i.e., ϵ = σ), we define the attack success rate (ASR) as
+N (cid:26) (cid:27)
+1 (cid:88)
+ASR(ϵ) = I argmaxf(x ,δ ) ̸= y , (19)
+i i i
+N
+k=1,...,K
+i=1
+where I{·} is the indicator function and f(x ,δ ) is the DNN output when
+i i
+fed with the i-th sample.
+5.2. DNNs Under Consideration
+DNN Architectures. First, we consider 3 DNNs: VGG16 from [21] as
+well as ResNet50 and ResNet152 from [22]. Both VGG and ResNet have
+14
+5 feature extraction blocks which consist of several identical convolutional
+layers to extract features in different depths. During experiments, we con-
+sider the output of the third block as the target latent space without further
+specification. (We investigate the latent robustness as a function of depth in
+Section 6.4.)
+Next, to investigate theeffectintroducedby thefeaturecompressionlayer
+(i.e., the “bottleneck”) proposed for distributed DNNs, we introduce the same
+bottleneck design as [27] to VGG16, ResNet50 and ResNet152 and denote
+the new architectures as VGG16-fc, ResNet50-fc and ResNet152-fc.
+Compression Approaches.IndistributedDNNs, compressioncanbecate-
+gorized as dimension reduction and data size reduction. Dimension reduction
+applies the bottleneck layer to compress the cardinality of the latent space
+while data size reduction leverages lossless (e.g. entropy coding) or lossy
+(e.g. quantization, JPEG) coding to minimize the bit rate of latent repre-
+sentations. Note that dimension reduction is a standalone approach that can
+applied on top of the data size reduction and vise versa.
+We consider 3 different bottleneck training strategies for dimension re-
+duction: Supervised Bottleneck (SB) [32, 24], Distillated Bottleneck (DB)
+[8] and BottleFit (BF) [7]. We also choose 2 data size reduction strategies
+JPEG Compression (JC) [52], Quantization (QT) [25] as well as 1 advanced
+approach Entropic Student (ES) that both compress the dimension and data
+size [26]. We summarize these approaches in Table 2.
+6. Experimental Results
+6.1. Performance w.r.t DNN Architecture
+We first assess the latent robustness against different attack algorithms.
+Figure 4 shows the ASR obtained on ResNet152-fc with perturbation budget
+ϵ = 0.01. Remarkably, we notice that the ASR is higher for attacks in
+the input space than attacks in the latent space for each attack algorithm
+considered. In the case of Triangle Attack, the latent ASR is 88% less than
+the input ASR. On average, the ASR in input is 57.49% higher than the ASR
+obtained by attacks in the latent space. Moreover, Square Attack, EVO, and
+Triangle Attack have lowest ASR on latent representations. This is because
+these attacks search perturbations in a lower dimensional space, and hence
+it is more challenging for the adversary to find the effective distortions in
+compressed latent space. Figure 4 support the finding of Theorem 2, which
+15
+100
+75
+50
+25
+FGSM BIM MIM PGD∞
+)%(
+etaR
+sseccuS
+Input Input Input
+Latent Latent Latent
+NES N-Attack Square PGD EVOS-OPTTriangle
+2
+Figure 4: 10 different attacks to ResNet152-fc with perturbation budget ϵ=0.01.
+states that under the same distortion constraint, the latent space constantly
+demonstrates better robustness than the input space.
+As depicted in Figure 4, although various attacks achieved different ASR,
+they also demonstrated a similar trend in performance loss. For this reason,
+in the following experiments we only show results of selected attacks for
+briefness. To investigate the effect of different DNN architectures, we choose
+PGD as the white-box baseline, N-Attack as the score-based attack, and
+Triangle Attack as the representative of decision-based attack. Figure 5
+shows the ASR of PGD, N-Attack and Triangle Attack on different DNNs
+with ϵ = 0.003. For each DNN, the ASR is higher in input-space attacks. In
+VGG16-bf, which shows the best robustness, the average ASR in the latent
+space is 87.8% lower than input attacks. On average, latent representations
+are 58.33% more robust. Therefore, the experiments in Figures 4 and 5
+demonstrate that Theorem 2 is valid across various adversarial attacks and
+DNN architectures.
+6.2. Performance w.r.t Compression Approach
+Toevaluatetherobustnessofdifferentcompressionapproaches, wechoose
+Square Attack and Triangle Attack which are more recent approaches for
+score-based and decision-based attacks respectively. We do not consider
+gradient-based attacks as compression approaches such as DB, QT, ES can
+lead to gradient masking. Hence, their robustness cannot be correctly eval-
+uated by naive gradient-based attacks [53]. We choose a larger perturbation
+budget (ϵ = 0.05) than the experiments depicted in Figure 4 to further eval-
+uate whether the compressed feature space is robust to attacks relying on
+low-dimensional sub-space searching. We note that data compression can be
+applied in addition to bottlenecks. However, for ablation study purposes, we
+choose ResNet50 without bottlenecks for JC and QT and ResNet50-fc for
+16
+100
+75
+50
+25
+PGD∞N-AttackPGD 2 Triangle
+)%(
+etaR
+sseccuS
+100
+75
+50
+25
+RN50-Input RN152-Input VGG16-Input
+RN50-Latent RN152-Latent VGG16-Latent
+PGD∞N-AttackPGD 2 Triangle PGD∞N-AttackPGD 2 Triangle
+)%(
+etaR
+sseccuS
+RN50fc-Input RN152fc-Input VGG16fc-Input
+RN50fc-Latent RN152fc-Latent VGG16fc-Latent
+Figure 5: Whitebox baseline (PGD) and blackbox attacks under l and l in input and
+∞ 2
+latent space with perturbation budget ϵ=0.003 applied to 6 different DNNs.
+others.
+Figure 6 shows the ASR of Square Attack in l space and Triangle At-
+∞
+tack in l space with perturbation budget ϵ = 0.05. Except the JC and
+2
+QT, the adversarial robustness shows the same trend regardless of the exam-
+ined approaches. The average ASRs in input space are 79.07% and 87.22%
+higher than the average ASRs in latent space for Square Attack and Trian-
+gle Attack respectively. For DNNs with bottlenecks, despite the increase in
+perturbation, the ASR of Square Attack and Triangle Attack performed in
+latent representations do not increase distinctively comparing to Figure 4.
+However, since JC and QT do not have separate feature compression lay-
+ers, the ASR of Square Attack and Triangle Attack in input space are only
+55.8%, 0.25% higher than the attacks in latent space, showing a significant
+downgrade comparing to the other 4 approaches. These results confirm that
+the compressed feature space is indeed robust to attacks that search in lower
+dimensions.
+6.3. Performance w.r.t Dimension
+In the previous experiment, we have shown that the robustness of the la-
+tent representation is mostly characterized by the bottleneck layer properties
+rather than the data size compression approach. Thus, we further evaluate
+the robustness for different sizes of latent space using N-Attack, MIM under
+17
+100
+75
+50
+25
+Square Triangle
+)%(
+etaR
+sseccuS
+100
+75
+50
+25
+SB-Input JC-Input QT-Input
+SB-Latent JC-Latent QT-Latent
+Square Triangle Square Triangle
+)%(
+etaR
+sseccuS
+DB-Input BF-Input ES-Input
+DB-Latent BF-Latent ES-Latent
+Figure 6: Square and Triangle attack success rate associated with 6 feature compression
+approaches with perturbation budget ϵ=0.05.
+l constraint and S-OPT, PGD under l constraint with multiple pertur-
+∞ 2
+bation budgets (ϵ = 0.003; ϵ = 0.01; ϵ = 0.03). The cardinality of the
+latent space is controlled by the number of channels at the bottleneck layer.
+We first set the channel number as 12 for ResNet152-fc that can achieve
+77.47% validation accuracy, which is almost similar to the performance of
+the original ResNet152 (78.31%). Then, we reduce the channel size to 3,
+which decreases the dimension of latent representations but also reduces the
+end-to-end performance to 70.01%. We do not repeat the results for Square
+Attack and Triangle Attack since they fail to achieve satisfactory ASR in
+the previous experiments due to their smaller search subspace, as shown in
+Figures 4 and 6.
+Figure 7 shows results obtained by considering the l and l attacks with
+∞ 2
+multiple perturbation budgets (ϵ = 0.003; ϵ = 0.01; ϵ = 0.03) in the la-
+tent space of original ResNet-152, 12-channel ResNet152-fc and 3-channel
+ResNet152-fc. From ResNet152 to 12-channel ResNet152-fc, the ASR re-
+duces as the dimensionality of latent representations decreases. However,
+after reducing the channel size to 3, the ASR does not decrease any further.
+Conversely, distributed DNNs with a smaller channel size become more vul-
+nerable to perturbations. (One exception is MIM with ϵ = 0.03, where the
+ASR of the 12-channel model is 79.5% and the ASR of the 3-channel model
+is 75.0%. However, due to the difference of devices and random seeds, the
+18
+100
+75
+50
+25
+MIM N-AttackPGD S-OPT
+2
+)%(
+etaR
+sseccuS
+Org 3ch Org 3ch Org 3ch
+12ch 12ch 12ch
+MIM N-AttackPGD S-OPT MIM N-AttackPGD S-OPT
+2 2
+Figure 7: l and l attack success rate for different latent cardinalities of ResNet152-fc
+∞ 2
+with different perturbation budgets: (left) ϵ=0.003; (center) ϵ=0.01; (right) ϵ=0.03.
+ASR can vary 2-3%. Thus we do not consider the decrease of the MIM suc-
+cess rate in 3-channel ResNet152-fc which is less than 5%.) This is because
+when reducing channels from 12 to 3 channels, the accuracy also decreases
+to 7.46%, which in turn lessens the end-to-end generalization capability (i.e.,
+I∗(Y;T)). This experiment supports our analysis in Theorem 1 that the ro-
+bustness in latent representations of distributed DNN is jointly determined
+by the end-to-end performance and feature dimensions.
+6.4. Performance w.r.t Depth
+To validate Corollary 1, we evaluate the robustness of latent representa-
+tions at different depths using two architectures: VGG16 as a shallow model
+and ResNet152 as a deeper model. Both architectures contain five feature
+extraction blocks, each comprising multiple convolutional layers that extract
+features at different depths. We select three splitting points for our analysis:
+the outputs of the first, third, and fifth blocks (denoted as Feature 0, Feature
+2, and Feature 4, respectively). For a comprehensive evaluation, we employ
+PGD as a white-box attack and Square Attack as a black-box attack, testing
+multiple perturbation budgets ϵ.
+Table3demonstratesthatlatentrepresentationsconsistentlyexhibitgreater
+robustness than input-level perturbations, regardless of splitting depth or
+perturbation strength—corroborating our findings in Section 6.1. Notably,
+the ASR decreases monotonically with feature depth for both VGG16 and
+ResNet152, indicating that deeper splitting points yield more robust dis-
+tributed DNNs.
+To quantify the computational trade-off associated with this robustness
+gain, we deployed the distributed DNNs on a realistic edge computing setup:
+a Jetson Orin Nano serves as the mobile device executing the head model,
+19
+Table 3: ASR as a function of depth
+Input Feature 0 Feature 2 Feature 4
+PGD Square PGD Square PGD Square PGD Square
+ϵ=0.003 98.8% 48.2% 50.3% 3.4% 22.3% 3.4% 6.5% 0.6%
+ϵ=0.006 99.3% 79.1% 81.6% 9.3% 50.1% 8.6% 12.4% 1.4%
+VGG16 ϵ=0.009 99.8% 91.2% 93.7% 13.4% 71.5% 12.5% 19.4% 2.5%
+ϵ=0.012 99.7% 95.4% 96.9% 17.3% 87.2% 16.0% 27.5% 3.7%
+ϵ=0.015 99.9% 98.8% 98.5% 22.1% 93.5% 20.0% 35.2% 4.5%
+ϵ=0.003 88.1% 36.4% 65.5% 14.7% 43.1% 3.7% 1.6% 0.0%
+ϵ=0.006 96.9% 63.3% 90.5% 31.0% 76.7% 8.4% 3.4% 0.2%
+ResNet152 ϵ=0.009 98.4% 81.9% 96.9% 45.7% 92.9% 13.4% 4.9% 0.3%
+ϵ=0.012 99.0% 90.0% 99.0% 56.7% 97.4% 17.7% 6.0% 0.6%
+ϵ=0.015 99.4% 94.7% 99.1% 68.8% 98.5% 21.9% 7.3% 0.7%
+while a NVIDIA A100 acts as the edge server executing the tail model. Ta-
+ble 4 presents the latency profiling results for batch processing of 32 inputs.
+Each row corresponds to a specific architecture and splitting configuration,
+with the “Head" and “Tail" columns reporting execution times on the mobile
+device and edge server, respectively.
+The results reveal a clear trend: deeper splitting points increase the head
+execution latency, reflecting the increased computational burden on the mo-
+bile device. This empirical evidence demonstrates a fundamental trade-off in
+distributedDNNdesign. Splittingatlaterlayersenhancesrobustnessagainst
+latent-space adversarial perturbations but incurs higher computational costs
+onresource-constrainedmobiledevices. Conversely, early-layersplittingmin-
+imizes the mobile computational load but leaves the system more vulnerable
+to adversarial attacks. These findings empirically validate the theoretical
+framework presented in Corollary 1, highlighting the need for application-
+specific optimization when designing distributed inference systems.
+6.5. Evaluation on Other Tasks
+In this experiment, we provide a comprehensive assessment of our theo-
+retical findings across different tasks. We consider two datasets: RAVDESS
+[54] which is commonly used in speech emotion recognition, and RadioML
+[55] for automatic modulation classification. For both tasks we use the same
+20
+Table 4: Latency profiling of DNNs as a function of depth
+Head (ms) Tail (ms) Comm. (ms) Overall (ms)
+Feature 0 174.03 ± 17.11 13.42 ± 0.14 2211.61 ± 21.87 2399.06 ± 27.77
+VGG16 Feature 2 386.77 ± 16.16 5.32 ± 0.06 63.50 ± 1.80 455.59 ± 16.26
+Feature 4 525.59 ± 17.90 0.84 ± 0.01 1.92 ± 0.09 528.35 ± 17.90
+Feature 0 24.22 ± 2.88 23.33 ± 0.09 67.66 ± 2.14 115.21 ± 3.59
+ResNet152 Feature 2 217.57 ± 4.80 15.80 ± 0.07 458.26 ± 5.53 691.63 ± 7.32
+Feature 4 611.26 ± 4.85 0.03 ± 0.00 0.12 ± 0.03 611.41 ± 4.85
+neural network architecture which is summarized in Table 5. For each conv
+layer, it follows by a batch normalization and ReLU activation.
+For RAVDESS, we use the complete dataset and
+split it into training and testing sets with an 8:2
+Table 5: Summary of the
+ratio. We employ an SGD optimizer with a learning
+DNN Classifier
+rate of 0.01, weight decay of 5e-4, and momentum
+Conv 1×3, 64
+of 0.9. The model is trained for 200 epochs with a
+Conv 1×3, 64
+batch size of 32. Additionally, since RAVDESS is a
+Maxpool 1×2
+small dataset, we apply label smoothing to prevent
+Conv 1×3, 128
+overfitting.
+Conv 1×3, 128
+For RadioML, we use only data with SNR rang-
+Maxpool 1×2
+ing from 10 dB to 20 dB, as signals at low SNR
+Conv 1×3, 256
+are challenging for classifiers to identify. We split
+Conv 1×3, 256
+the dataset into training and testing sets using the
+Avgpool
+same configuration as RAVDESS. We employ the
+Linear 256×n
+Adam optimizer with a learning rate of 0.001 and
+train for 50 epochs with a batch size of 1024. We
+do not apply label smoothing since RadioML is a large dataset.
+After training, we split the model at the 4th conv layer and apply FGSM
+with ϵ = 0.01 to both input and latent space. Table 6 summarizes the clas-
+sification accuracy on clean and adversarial data. The accuracy on latent
+adversarial samples consistently outperforms the performance on input ad-
+versarial samples across all datasets. This supports our theoretical analysis
+in Section 4.
+21
+Table 6: Input vs Latent Attack for Different Datasets
+Dataset Clean Atk (input) Atk (latent)
+RAVDESS [54] 82.25% 45.73% 65.87%
+RadioML [55] 92.51% 58.34% 60.68%
+7. Related Work
+Adversarial Attacks. Adversarial attacks can be categorized as gradient-
+based,score-based,anddecision-based. Ingradient-based scenarios,attackers
+can obtain the input gradient through backpropagation and craft adversarial
+samples with gradient steps. FGSM [11] crafts adversarial samples in the l
+∞
+space based on the one-step input gradient sign. BIM [12] increases the effec-
+tiveness of FGSM by iteratively updating adversarial samples over multiple
+gradient steps. MIM [13] introduces momentum to iterative attacks which
+improves the transferability of adversarial samples. PGD [14] generalizes it-
+erative attacks to l space with a random start. Score-based adversaries can
+p
+only access the scores for every class given by the DNN. NES [15] applies evo-
+lutionary algorithm to estimate gradient within limit queries. N-Attack [16]
+designs a learnable Gaussian distribution to generate effective perturbations.
+Square Attack [17] adds a localized square-shaped perturbation at a random
+position to the input in each iteration. Decision-based attacks assume the
+adversary is only aware of the label having the highest score in the DNN out-
+put. EVO [18] minimizes perturbations with heuristic search. S-OPT [19]
+accelerates the convergence with estimated gradient sign, while Triangle At-
+tack[20]minimizesperturbationsinalowfrequencyspacewiththegeometric
+property in the decision boundary.
+Empirical and Theoretical Study of DNN Robustness. [56] propose
+a set of criteria to study adversarial robustness with empirical results, and
+[57, 58] evaluate the robustness of different defense approaches. However,
+in the absence of a theoretical framework, different studies may arrive at
+conflicting conclusions. For example, [43] argue that there is a trade-off
+between generalization and robustness while [59] state that generalization
+does not affect the robustness. On the other hand, PAC learning has been
+used to theoretically analyze the adversarial robustness of DNNs [60, 61].
+However, these approaches are evaluated on simple DNNs, while we evaluate
+our findings on state-of-the-art DNNs.
+22
+Information Bottleneck. [39] first propose to use IB [10] to analyze DNNs
+and [36, 46] analyze the generalization and compression capability of DNNs
+with experiments. However, due to the challenge of mutual information
+estimation [62], such studies only perform experiments on relatively small
+neural networks. Recent work applying IB for robust learning [63, 64] has
+shownsignificantenhancementsinexperimentalresults. However, itdoesnot
+involve a rigorous theoretical analysis for robustness of DNNs. In contrast,
+we provide a theoretical framework to analyze the robustness of distributed
+DNNs in split computing as well as provide a comprehensive experimental
+assessment in large scale.
+8. Limitation and Future Endeavor
+Mutual Information Estimation. WeemployIBasourtheoreticalframe-
+work. However, there has been extensive debate regarding whether IB con-
+stitutes an appropriate tool for explaining and interpreting the properties
+of DNNs [36, 46], as accurately quantifying mutual information in high-
+dimensional random variables presents significant challenges. In this work,
+we present a small-scale mutual information estimation experiment in Sec-
+tion 4.2 and evaluate the large scale experiment in Section 6 using end-to-end
+performance metrics rather than mutual information. Thus, this work can
+be more rigorous with advanced mutual information experiments in larger
+scale.
+Generalization of Theoretical Findings. Our experiments focus exclu-
+sively on classification tasks. Investigating the framework’s applicability to
+other non-classification tasks would be valuable for future work. Further-
+more, our experiments are performed on conventionally trained neural net-
+works while evaluation on adversarially trained models [14] or dynamically
+robust models [65] remains unexplored.
+Joint Optimization of Efficiency and Robustness. Note that the pri-
+marygoalofthispaperistoestablishafundamentalunderstandingofrobust-
+ness in the latent space of split computing. An important future direction
+is to develop an optimization framework that jointly optimizes task perfor-
+mance, end-to-end latency, and adversarial robustness in the latent space.
+9. Concluding Remarks
+This paper has investigated adversarial attacks to latent representations
+of DNNs. First, we have theoretically analyzed the robustness of latent
+23
+representations based on the information bottleneck theory. To prove our
+theoretical findings, we have performed an extensive set of experiments with
+6 different DNN architectures, 6 different distributed DNN approaches and
+considering 10 different attacks in literature. Our investigation concludes
+that latent representations in deeper layers are more robust than those in
+early layers assuming the same level of information distortion. Moreover, the
+adversarial robustness in latent space is jointly determined by the feature
+size and the end-to-end model generalization capability. We hope that this
+work will inspire future work on the topic of adversarial machine learning on
+distributed DNNs.
+Acknowledgment
+ThisworkhasbeensupportedinpartbytheNationalScienceFoundation
+under grants CNS-2312875 and OAC-2530896; by the Air Force Office of
+Scientific Research under grant FA9550-23-1-0261; by the Office of Naval
+Research under grant N00014-23-1-2221.
+References
+[1] A. Kirillov, E. Mintun, N. Ravi, H. Mao, C. Rolland, L. Gustafson,
+T. Xiao, S. Whitehead, A. C. Berg, W.-Y. Lo, et al., Segment anything,
+arXiv preprint arXiv:2304.02643 (2023).
+[2] R. OpenAI, Gpt-4 technical report, arXiv (2023) 2303–08774.
+[3] L. Baldesi, F. Restuccia, T. Melodia, ChARM: NextG Spectrum Shar-
+ingThroughData-DrivenReal-TimeO-RANDynamicControl, in: Pro-
+ceedings of IEEE International Conference on Computer Communica-
+tions (INFOCOM), IEEE, 2022, pp. 240–249.
+[4] M. Sandler, A. Howard, M. Zhu, A. Zhmoginov, L.-C. Chen, Mo-
+bileNetV2: Inverted Residuals and Linear Bottlenecks, in: Proceedings
+of the IEEE Conference on Computer Vision and Pattern Recognition,
+2018, pp. 4510–4520.
+[5] X. Wang, Y. Han, C. Wang, Q. Zhao, X. Chen, M. Chen, In-Edge AI:
+Intelligentizing Mobile Edge Computing, Caching and Communication
+by Federated Learning, IEEE Network 33 (2019) 156–165.
+24
+[6] Y. Matsubara, M. Levorato, F. Restuccia, Split computing and early
+exiting for deep learning applications: Survey and research challenges,
+ACM Comput. Surv. 55 (2022). URL: https://doi.org/10.1145/
+3527155. doi:10.1145/3527155.
+[7] Y. Matsubara, D. Callegaro, S. Singh, M. Levorato, F. Restuccia, Bot-
+tleFit: Learning Compressed Representations in Deep Neural Networks
+for Effective and Efficient Split Computing, in: Proceedings of IEEE In-
+ternational Symposium on a World of Wireless, Mobile and Multimedia
+Networks (WoWMoM), 2022.
+[8] Y. Matsubara, S. Baidya, D. Callegaro, M. Levorato, S. Singh, Distilled
+Split Deep Neural Networks for Edge-Assisted Real-Time Systems, in:
+Proceedings of the Workshop on Hot Topics in Video Analytics and
+Intelligent Edges, 2019, pp. 21–26.
+[9] Y.Matsubara,D.Callegaro,S.Baidya,M.Levorato,S.Singh, Headnet-
+work distillation: Splitting distilled deep neural networks for resource-
+constrained edge computing systems, IEEE Access 8 (2020) 212177–
+212193.
+[10] N.Tishby,F.C.Pereira,W.Bialek, Theinformationbottleneckmethod,
+arXiv preprint physics/0004057 (2000).
+[11] I. J. Goodfellow, J. Shlens, C. Szegedy, Explaining and harnessing ad-
+versarial examples, arXiv preprint arXiv:1412.6572 (2014).
+[12] A. Kurakin, I. J. Goodfellow, S. Bengio, Adversarial examples in the
+physical world, in: Artificial intelligence safety and security, Chapman
+and Hall/CRC, 2018, pp. 99–112.
+[13] Y. Dong, F. Liao, T. Pang, H. Su, J. Zhu, X. Hu, J. Li, Boosting
+Adversarial Attacks with Momentum, in: Proceedings of IEEE CVPR,
+2018, pp. 9185–9193.
+[14] A. Madry, A. Makelov, L. Schmidt, D. Tsipras, A. Vladu, Towards
+deep learning models resistant to adversarial attacks, arXiv preprint
+arXiv:1706.06083 (2017).
+25
+[15] A. Ilyas, L. Engstrom, A. Athalye, J. Lin, Black-box adversarial attacks
+with limited queries and information, in: International conference on
+machine learning, PMLR, 2018, pp. 2137–2146.
+[16] Y. Li, L. Li, L. Wang, T. Zhang, B. Gong, Nattack: Learning the dis-
+tributions of adversarial examples for an improved black-box attack on
+deep neural networks, in: International Conference on Machine Learn-
+ing, PMLR, 2019, pp. 3866–3876.
+[17] M. Andriushchenko, F. Croce, N. Flammarion, M. Hein, Square attack:
+a query-efficient black-box adversarial attack via random search, in:
+European conference on computer vision, Springer, 2020, pp. 484–501.
+[18] Y. Dong, H. Su, B. Wu, Z. Li, W. Liu, T. Zhang, J. Zhu, Efficient
+decision-based black-box adversarial attacks on face recognition, in:
+ProceedingsoftheIEEE/CVFConferenceonComputerVisionandPat-
+tern Recognition, 2019, pp. 7714–7722.
+[19] M. Cheng, S. Singh, P. Chen, P.-Y. Chen, S. Liu, C.-J. Hsieh, Sign-
+opt: A query-efficient hard-label adversarial attack, arXiv preprint
+arXiv:1909.10773 (2019).
+[20] X. Wang, Z. Zhang, K. Tong, D. Gong, K. He, Z. Li, W. Liu, Triangle
+attack: Aquery-efficientdecision-basedadversarialattack, in: European
+Conference on Computer Vision, Springer, 2022, pp. 156–174.
+[21] K. Simonyan, A. Zisserman, Very deep convolutional networks for large-
+scale image recognition, arXiv preprint arXiv:1409.1556 (2014).
+[22] K. He, X. Zhang, S. Ren, J. Sun, Deep Residual Learning for Image
+Recognition, in: Proceedings of the IEEE Conference on Computer
+Vision and Pattern Recognition (CVPR), 2016, pp. 770–778.
+[23] A. E. Eshratifar, M. S. Abrishami, M. Pedram, Jointdnn: An efficient
+training and inference engine for intelligent mobile cloud computing ser-
+vices, IEEE Transactions on Mobile Computing 20 (2019) 565–576.
+[24] J. Shao, J. Zhang, BottleNet++: An End-to-end Approach for Feature
+Compression in Device-Edge Co-Inference Systems, in: Proceedings of
+IEEE International Conference on Communications Workshops (ICC
+Workshops), IEEE, 2020, pp. 1–6.
+26
+[25] S. Singh, S. Abu-El-Haija, N. Johnston, J. Ballé, A. Shrivastava,
+G.Toderici, End-to-endlearningofcompressiblefeatures, in: 2020IEEE
+International Conference on Image Processing (ICIP), IEEE, 2020, pp.
+3349–3353.
+[26] Y.Matsubara, R.Yang, M.Levorato, S.Mandt, Supervisedcompression
+for resource-constrained edge computing systems, in: Proceedings of
+the IEEE/CVF Winter Conference on Applications of Computer Vision,
+2022, pp. 2685–2695.
+[27] Y. Matsubara, R. Yang, M. Levorato, S. Mandt, Sc2: Supervised com-
+pression for split computing, arXiv preprint arXiv:2203.08875 (2022).
+[28] J. Deng, W. Dong, R. Socher, L.-J. Li, K. Li, L. Fei-Fei, Imagenet: A
+large-scale hierarchical image database, in: 2009 IEEE conference on
+computer vision and pattern recognition, Ieee, 2009, pp. 248–255.
+[29] M. Tan, B. Chen, R. Pang, V. Vasudevan, M. Sandler, A. Howard, Q. V.
+Le, MnasNet: Platform-Aware Neural Architecture Search for Mobile,
+in: Proceedings of the IEEE Conf. on Computer Vision and Pattern
+Recognition, 2019, pp. 2820–2828.
+[30] S. Yao, J. Li, D. Liu, T. Wang, S. Liu, H. Shao, T. Abdelzaher, Deep
+compressiveoffloading: Speedingupneuralnetworkinferencebytrading
+edge computation for network latency, in: Proceedings of the 18th
+Conference on Embedded Networked Sensor Systems, 2020, pp. 476–
+488.
+[31] Y.Kang,J.Hauswald,C.Gao,A.Rovinski,T.Mudge,J.Mars,L.Tang,
+Neurosurgeon: CollaborativeIntelligenceBetweentheCloudandMobile
+Edge, ACMSIGARCHComputerArchitectureNews45(2017)615–629.
+[32] A. E. Eshratifar, A. Esmaili, M. Pedram, BottleNet: A Deep Learning
+Architecture for Intelligent Mobile Cloud Computing Services, in: Pro-
+ceedings of IEEE/ACM International Symposium on Low Power Elec-
+tronics and Design (ISLPED), IEEE, 2019, pp. 1–6.
+[33] M. Zhang, M. Abdi, V. R. Dasari, F. Restuccia, Semantic edge com-
+puting and semantic communications in 6g networks: A unifying survey
+and research challenges, Computer Networks (2025) 111531.
+27
+[34] Z. He, T. Zhang, R. B. Lee, Model inversion attacks against collabo-
+rative inference, in: Proceedings of the 35th annual computer security
+applications conference, 2019, pp. 148–162.
+[35] M. Zhang, M. Abdi, S. Rifat, F. Restuccia, Resilience of entropy model
+in distributed neural networks, in: European Conference on Computer
+Vision, Springer, 2024, pp. 423–440.
+[36] R. Shwartz-Ziv, N. Tishby, Opening the black box of deep neural net-
+works via information, arXiv preprint arXiv:1703.00810 (2017).
+[37] I. Rosenberg, A. Shabtai, Y. Elovici, L. Rokach, Adversarial machine
+learning attacks and defense methods in the cyber security domain,
+ACM Computing Surveys (CSUR) 54 (2021) 1–36.
+[38] D. Adesina, C.-C. Hsieh, Y. E. Sagduyu, L. Qian, Adversarial machine
+learning in wireless communications using rf data: A review, IEEE
+Communications Surveys & Tutorials (2022).
+[39] N. Tishby, N. Zaslavsky, Deep learning and the information bottleneck
+principle, in: 2015 ieee information theory workshop (itw), IEEE, 2015,
+pp. 1–5.
+[40] T.M.Cover, ElementsofInformationTheory, JohnWiley&Sons, 1999.
+[41] O. Shamir, S. Sabato, N. Tishby, Learning and generalization with the
+information bottleneck, Theoretical Computer Science 411 (2010) 2696–
+2711.
+[42] C.-J. Simon-Gabriel, Y. Ollivier, L. Bottou, B. Schölkopf, D. Lopez-
+Paz, First-order adversarial vulnerability of neural networks and input
+dimension, in: International conference on machine learning, PMLR,
+2019, pp. 5809–5817.
+[43] D. Su, H. Zhang, H. Chen, J. Yi, P.-Y. Chen, Y. Gao, Is robustness the
+cost of accuracy?–a comprehensive study on the robustness of 18 deep
+image classification models, in: Proceedings of the European conference
+on computer vision (ECCV), 2018, pp. 631–648.
+[44] D.Tsipras, S.Santurkar, L.Engstrom, A.Turner, A.Madry, Robustness
+may be at odds with accuracy, arXiv preprint arXiv:1805.12152 (2018).
+28
+[45] S. Hong, Y. Kaya, I.-V. Modoranu, T. Dumitraş, A panda? no, it’s
+a sloth: Slowdown attacks on adaptive multi-exit neural network infer-
+ence, arXiv preprint arXiv:2010.02432 (2020).
+[46] A. M. Saxe, Y. Bansal, J. Dapello, M. Advani, A. Kolchinsky, B. D.
+Tracey, D. D. Cox, On the information bottleneck theory of deep learn-
+ing, Journal of Statistical Mechanics: Theory and Experiment 2019
+(2019) 124020.
+[47] M. I. Belghazi, A. Baratin, S. Rajeshwar, S. Ozair, Y. Bengio,
+A. Courville, D. Hjelm, Mutual information neural estimation, in: In-
+ternational conference on machine learning, PMLR, 2018, pp. 531–540.
+[48] X. Nguyen, M. J. Wainwright, M. I. Jordan, Estimating divergence
+functionals and the likelihood ratio by convex risk minimization, IEEE
+Transactions on Information Theory 56 (2010) 5847–5861.
+[49] A. v. d. Oord, Y. Li, O. Vinyals, Representation learning with con-
+trastive predictive coding, arXiv preprint arXiv:1807.03748 (2018).
+[50] P. Cheng, W. Hao, S. Dai, J. Liu, Z. Gan, L. Carin, Club: A con-
+trastive log-ratio upper bound of mutual information, in: International
+conference on machine learning, PMLR, 2020, pp. 1779–1788.
+[51] D. McAllester, K. Stratos, Formal limitations on the measurement of
+mutual information, in: International Conference on Artificial Intelli-
+gence and Statistics, PMLR, 2020, pp. 875–884.
+[52] S. R. Alvar, I. V. Bajić, Pareto-optimal bit allocation for collaborative
+intelligence, IEEE Transactions on Image Processing 30 (2021) 3348–
+3361.
+[53] A. Athalye, N. Carlini, D. Wagner, Obfuscated gradients give a false
+sense of security: Circumventing defenses to adversarial examples, in:
+International conference on machine learning, PMLR, 2018, pp. 274–
+283.
+[54] S. R. Livingstone, F. A. Russo, The ryerson audio-visual database of
+emotional speech and song (ravdess): A dynamic, multimodal set of
+facial and vocal expressions in north american english, PloS one 13
+(2018) e0196391.
+29
+[55] T. J. O’Shea, T. Roy, T. C. Clancy, Over-the-air deep learning based
+radio signal classification, IEEE Journal of Selected Topics in Signal
+Processing 12 (2018) 168–179.
+[56] N. Carlini, A. Athalye, N. Papernot, W. Brendel, J. Rauber, D. Tsipras,
+I. Goodfellow, A. Madry, A. Kurakin, On evaluating adversarial robust-
+ness, arXiv preprint arXiv:1902.06705 (2019).
+[57] Y. Dong, Q.-A. Fu, X. Yang, T. Pang, H. Su, Z. Xiao, J. Zhu, Bench-
+marking adversarial robustness on image classification, in: proceedings
+of the IEEE/CVF conference on computer vision and pattern recogni-
+tion, 2020, pp. 321–331.
+[58] F. Croce, M. Andriushchenko, V. Sehwag, E. Debenedetti, N. Flammar-
+ion, M.Chiang, P.Mittal, M.Hein, Robustbench: astandardizedadver-
+sarial robustness benchmark, arXiv preprint arXiv:2010.09670 (2020).
+[59] D. Stutz, M. Hein, B. Schiele, Disentangling adversarial robustness
+and generalization, in: Proceedings of the IEEE/CVF Conference on
+Computer Vision and Pattern Recognition, 2019, pp. 6976–6987.
+[60] O. Montasser, S. Hanneke, N. Srebro, Vc classes are adversarially ro-
+bustly learnable, but only improperly, in: Conference on Learning The-
+ory, PMLR, 2019, pp. 2512–2530.
+[61] R. Bhattacharjee, M. Hopkins, A. Kumar, H. Yu, K. Chaudhuri, Robust
+empirical risk minimization with tolerance, in: International Conference
+on Algorithmic Learning Theory, PMLR, 2023, pp. 182–203.
+[62] B. Poole, S. Ozair, A. Van Den Oord, A. Alemi, G. Tucker, On vari-
+ational bounds of mutual information, in: International Conference on
+Machine Learning, PMLR, 2019, pp. 5171–5180.
+[63] A. A. Alemi, I. Fischer, J. V. Dillon, K. Murphy, Deep variational
+information bottleneck, arXiv preprint arXiv:1612.00410 (2016).
+[64] J. Kim, B.-K. Lee, Y. M. Ro, Distilling robust and non-robust features
+in adversarial examples by information bottleneck, Advances in Neural
+Information Processing Systems 34 (2021) 17148–17159.
+30
+[65] M. Zhang, M. De Lucia, A. Swami, J. Ashdown, K. Turck, F. Restuc-
+cia, Hyperadv: Dynamic defense against adversarial radio frequency
+machine learning systems, in: MILCOM 2024-2024 IEEE Military Com-
+munications Conference (MILCOM), IEEE, 2024, pp. 821–826.
+31

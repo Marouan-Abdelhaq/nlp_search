@@ -1,0 +1,648 @@
+MERL: Multi-Head Reinforcement Learning
+YannisFlet-BerliacandPhilippePreux
+SequeLInria,UniversityofLille
+CRIStAL,CNRS
+Abstract
+Acommonchallengeinreinforcementlearningishowtoconverttheagent’sinter-
+actionswithanenvironmentintofastandrobustlearning.Forinstance,earlierwork
+makesuseofdomainknowledgetoimproveexistingreinforcementlearningalgo-
+rithmsincomplextasks. Whilepromising,previouslyacquiredknowledgeisoften
+costlyandchallengingtoscaleup. Instead,wedecidetoconsiderproblemknowl-
+edgewithsignalsfromquantitiesrelevanttosolveanytask,e.g.,self-performance
+assessment and accurate expectations. Vex is such a quantity. It is the fraction
+ofvarianceexplainedbythevaluefunctionV andmeasuresthediscrepancybe-
+tweenV andthereturns. TakingadvantageofVex,weproposeMERL,ageneral
+frameworkforstructuringreinforcementlearningbyinjectingproblemknowledge
+into policy gradient updates. As a result, the agent is not only optimized for a
+rewardbutlearnsusingproblem-focusedquantitiesprovidedbyMERL,applicable
+out-of-the-boxtoanytask. Inthispaper: (a)WeintroduceanddefineMERL,the
+multi-headreinforcementlearningframeworkweusethroughoutthiswork. (b)
+We conduct experiments across a variety of standard benchmark environments,
+including9continuouscontroltasks,whereresultsshowimprovedperformance.
+(c)WedemonstratethatMERLalsoimprovestransferlearningonasetofchalleng-
+ingpixel-basedtasks. (d)WeponderhowMERLtacklestheproblemofreward
+sparsityandbetterconditionsthefeaturespaceofreinforcementlearningagents.
+1 Introduction
+Theproblemoflearninghowtoactoptimallyinanunknowndynamicenvironmenthasbeenasource
+of many research efforts for decades (Nguyen & Widrow, 1990; Werbos, 1989; Schmidhuber &
+Huber,1991)andisstillattheforefrontofrecentworkindeepReinforcementLearning(RL)(Burda
+etal.,2019;Ha&Schmidhuber,2018;Silveretal.,2016;Espeholtetal.,2018).Nevertheless,current
+algorithmstendtobefragileandopaque(Iyeretal.,2018): theyrequirealargeamountoftraining
+datacollectedfromanagentinteractingwithasimulatedenvironmentwheretherewardsignalis
+oftencriticallysparse. Collectingsignalsthatwillmaketheagentmoreefficientis,therefore,atthe
+coreofthealgorithmsdesigners’concerns.
+Previous work in RL uses prior knowledge (Lin, 1992; Clouse & Utgoff, 1992; Ribeiro, 1998;
+Morenoetal.,2004)toreducesampleinefficiency. Whilepromisingandunquestionablynecessary,
+the integration of such priors into current methods is likely costly to implement, it may cause
+undesired constraints and can hinder scaling up. Therefore, we propose a framework to directly
+integratenon-limitingconstraintsincurrentRLalgorithmswhilebeingapplicabletoanytask. In
+additiontoanincreasedefficiency,theagentshouldlearnfromallinteractions,notjusttherewards.
+Indeed,iftheprobabilityofreceivingarewardbychanceisarbitrarilylow,thenthetimerequired
+to learn from it will be arbitrarily long (Whitehead, 1991). This barrier to learning will prevent
+agents from significantly reducing learning time. One way to overcome this barrier is to learn
+33rdConferenceonNeuralInformationProcessingSystems(NeurIPS2019),Vancouver,Canada.
+0202
+raM
+13
+]GL.sc[
+6v93911.9091:viXra
+complementaryandtask-agnosticsignalsofself-performanceassessmentandaccurateexpectations
+fromdifferentsources(Schmidhuber,1991;Oudeyer&Kaplan,2007),whateverthetasktomaster.
+Fromtheaboveconsiderationsandbuildingon
+existing auxiliary task methods, we design a Environment
+frameworkthatintegratesproblemknowledge
+quantitiesintothelearningprocess. Inaddition
+toprovidingamethodtechnicallyapplicableto
+anypolicygradientmethodorenvironment,the Quan=ty 1 Quan=ty 2 Quan=ty n
+States
+centralideaofMERListoincorporateamea- Ac(ons
+Rewards
+sureofthediscrepancybetweentheestimated
+statevalueandtheobservedreturnsasanaux- MERL Agent
+iliarytask. Thisdiscrepancyisformalizedwith V(θ) π(θ)
+thenotionofthefractionofvarianceexplained
+Head 1 Head 2 Head n
+Vex(Kvålseth,1985). Oneintuitionthereader
+can have is that MERL transforms a reward- kc Pno ron ows b tlr lee adm ingt e pa n S r e a h t m a w r e o e t r d e k rs kcnP oor n ows b tlr lee adm ingt e
+focusedtaskintoataskregularizedwithdense
+Input
+problemknowledgesignals.
+Fig.1providesapreliminaryunderstandingof
+V(θ) π(θ)
+MERL assets: an enriched actor-critic archi-
+tecture with a lightly modified learning algo-
+Head 1 Head 2 Head n
+rithmplacestheagentamidsttask-agnosticaux-
+iliary quantities directly sampled from the en-
+Shared
+vironment. Inthesequelofthispaper,weuse Problem Problem
+knowledge parameters knowledge
+two problem knowledge quantities to demon- constraint network constraint
+stratetheperformanceofMERL:Vex, acom-
+pellingmeasureofself-performance,andfuture Input
+states prediction, commonly used in auxiliary Figure1: High-leveloverviewoftheMulti-hEad
+taskmethods. Thereaderisfurtherencouraged ReinforcementLearning(MERL)framework.
+to introduce many other relevant signals. We
+demonstratethatwhilebeingabletopredictthe
+quantitiesfromthedifferentMERLheadscorrectly,theagentoutperformstheon-policybaseline
+that does not use the MERL framework on various continuous control tasks. We also show that,
+interestingly,ourframeworkallowstobettertransferthelearning,fromonetasktoanother,onseveral
+Atari2600games.
+2 Preliminaries
+We consider a Markov Decision Process (MDP) with states s ∈ S, actions a ∈ A, transition
+distributions ∼P(s ,a )andrewardfunctionr(s,a). Letπ ={π(a|s),s∈S,a∈A}denotea
+t+1 t t
+stochasticpolicyandlettheobjectivefunctionbethetraditionalexpecteddiscountedreward:
+(cid:34) ∞ (cid:35)
+(cid:88)
+J(π)(cid:44) E γtr(s ,a ) , (1)
+t t
+τ∼π
+t=0
+where γ ∈ [0,1) is a discount factor (Puterman, 1994) and τ = (s ,a ,s ,...) is a trajectory
+0 0 1
+sampledfromtheenvironment. Policygradientmethodsaimatmodellingandoptimizingthepolicy
+directly(Williams,1992). Thepolicyπ isgenerallyimplementedwithafunctionparameterized
+byθ. Inthesequel,wewilluseθ todenotetheparametersaswellasthepolicy. IndeepRL,the
+policyisrepresentedinaneuralnetworkcalledthepolicynetworkandisassumedtobecontinuously
+differentiablewithrespecttoitsparametersθ.
+2.1 FractionofVarianceExplained: Vex
+Thefractionofvariancethatthevaluefunctionexplainsaboutthereturnscorrespondstotheproportion
+ofthevarianceinthedependentvariableV thatispredictablefromtheindependentvariables . We
+t
+2
+defineVexasthefractionofvarianceexplainedforatrajectoryτ:
+τ
+(cid:16) (cid:17)2
+(cid:80) Rˆ −V(s )
+t∈τ t t
+Vex (cid:44)1− , (2)
+τ (cid:16) (cid:17)2
+(cid:80) Rˆ −R
+t∈τ t
+whereRˆ andV(s )arerespectivelythereturnandtheexpectedreturnfromstates ∈ τ,andR
+t t t
+is the mean of all returns in trajectory τ. In statistics, this quantity is also known as the coeffi-
+cientofdeterminationR2 anditshouldbenotedthatthiscriterionmaybenegativefornon-linear
+models(Kvålseth,1985),indicatingaseverelackoffitofthecorrespondingfunction:
+• Vex =1: V perfectlyexplainsthereturns-V andthereturnsarecorrelated;
+τ
+• Vex =0correspondstoasimpleaverageprediction-V andthereturnsarenotcorrelated;
+τ
+• Vex <0: V providesaworsefittotheoutcomesthanthemeanofthereturns.
+τ
+OnecanhavetheintuitionthatVexcloseto1impliesthatthetrajectoryτ providesvaluablesignals
+τ
+because they correspond to transitions sampled from an exercised behavior. On the other hand,
+Vex close to 0 indicates that the value function is not correlated with the returns, therefore, the
+τ
+corresponding samples are not expected to provide as valuable information as before. Finally,
+Vex < 0 corresponds to a high mean-squared error for the value function, which means for the
+τ
+relatedtrajectorythattheagentstillhastolearntoperformbetter. InFlet-Berliac&Preux(2019),
+policygradientmethodsareimprovedbyusingVexasacriteriontodropouttransitionsbeforeeach
+policyupdate. WewillshowthatVexisalsoarelevantindicatorforassessingself-performancein
+thecontextofMERLagents.
+2.2 PolicyGradientMethod: PPOwithClippedSurrogateObjective
+Inthispaper,weconsideron-policylearningprimarilyforitsunbiasednessandstabilitycomparedto
+off-policymethods(Nachumetal.,2017). On-policyisalsoempiricallyknownasbeinglesssample
+efficientthanoff-policylearninghencethisissueemergedasaninterestingresearchtopic. However,
+ourmethodcanbeappliedtooff-policymethodsaswell,andweleavethisinvestigationopenfor
+futurework.
+PPO(Schulmanetal.,2017)isamongthemostcommonlyusedandstate-of-the-arton-policypolicy
+gradientmethods.Indeed,PPOhasbeentestedonasetofbenchmarktasksandhasproventoproduce
+impressiveresultsinmanycasesdespitearelativelysimpleimplementation. Forinstance,insteadof
+imposingahardconstraintlikeTRPO(Schulmanetal.,2015),PPOformalizestheconstraintasa
+penaltyintheobjectivefunction. InPPO,ateachiteration,thenewpolicyθ isobtainedfromthe
+new
+oldpolicyθ :
+old
+θ ←argmax E (cid:2) LPPO(s ,a ,θ ,θ) (cid:3) . (3)
+new t t old
+θ st,at∼πθold
+WeusetheclippedversionofPPOwhoseobjectivefunctionis:
+(cid:18) (cid:19)
+π (a |s )
+LPPO(s
+t
+,a
+t
+,θ
+old
+,θ)=min
+π
+θ
+(a
+t
+|
+t
+s )
+Aπθold(s
+t
+,a
+t
+), g((cid:15),Aπθold(s
+t
+,a
+t
+)) , (4)
+θold t t
+where
+(cid:26)
+(1+(cid:15))A,A≥0
+g((cid:15),A)= (5)
+(1−(cid:15))A,A<0.
+Aistheadvantagefunction,A(s,a)(cid:44)Q(s,a)−V(s). TheexpectedadvantagefunctionAπθold is
+estimatedbyanoldpolicyandthenre-calibratedusingtheprobabilityratiobetweenthenewand
+theoldpolicy. InEq.4,thisratioisconstrainedtostaywithinasmallintervalaround1,makingthe
+trainingupdatesmorestable.
+2.3 RelatedWork
+Auxiliary tasks have been adopted to facilitate representation learning for decades (Suddarth &
+Kergosien,1990;Klyubinetal.,2005),alongwithintrinsicmotivation(Schmidhuber,2010;Pathak
+3
+et al., 2017) and artificial curiosity (Schmidhuber, 1991; Oudeyer & Kaplan, 2007). The use of
+auxiliarytaskstoallowtheagentstomaximizeotherpseudo-rewardfunctionssimultaneouslyhas
+beenstudiedinanumberofpreviouswork(Shelhameretal.,2016;Dosovitskiy&Koltun,2016;
+Burdaetal.,2018;Duetal.,2018;Riedmilleretal.,2018;Kartaletal.,2019),includingincorporating
+unsupervisedcontroltasksandrewardpredictionsintheUNREALframework(Jaderbergetal.,2016),
+applyingauxiliarytaskstonavigationproblems(Mirowskietal.,2016),orforutilizingrepresentation
+learning (Lesort et al., 2018) in the context of model-based RL. Lastly, in imitation learning of
+sequencesprovidedbyexperts,Lietal.(2016)introducesasupervisedlossforfittingarecurrent
+modelonthehiddenrepresentationstopredictthenextobservedstate.
+Ourmethodincorporatestwokeycontributions: amulti-headlayerwithauxiliarytasksignalsboth
+environment-agnostic and technically applicable to any policy gradient method, and the use of
+Vex asanauxiliarytasktomeasurethediscrepancybetweenthevaluefunctionandthereturnsin
+τ
+order to allow for better self-performance assessment and eventually more efficient learning. In
+addition,MERLdiffersfrompreviousapproachesinthatitsframeworksimultaneouslyaddresses
+theadvantagesmentionedhereafter: (a)neithertheintroductionofnewneuralnetworks(e.g.,for
+memory)northeintroductionofareplaybufferoranoff-policysettingisneeded,(b)allrelevant
+quantities are compatible with any task and is not limited to pixel-based environments, (c) no
+additionaliterationsarerequired,andnomodificationtotherewardfunctionofthepolicygradient
+algorithmsitisappliedtoisnecessitated. TheabovereasonsmakeMERLgenerallyapplicableand
+technicallysuitableout-of-the-boxtomostpolicygradientalgorithmswithanegligiblecomputational
+costoverhead.
+Fromadifferentperspective,Garcıa&Fernández(2015)givesadetailedoverviewofpreviouswork
+thathaschangedtheoptimalitycriterionasasafetyfactor. Butmostmethodsuseahardconstraint
+ratherthanapenalty;onereasonisthatitisdifficulttochooseasinglecoefficientforthispenalty
+thatworkswellfordifferentproblems. WearesuccessfullyaddressingthisproblemwithMERL.
+InLiptonetal.(2016),catastrophicactionsareavoidedbytraininganintrinsicfearmodeltopredict
+whether a disaster will occur and using it to shape rewards. Compared to both methods, MERL
+ismorescalableandlightweightwhileitsuccessfullyincorporatesquantitiesofself-performance
+assessments(e.g.,varianceexplainedofthevaluefunction)andaccurateexpectations(e.g.,nextstate
+prediction)leadingtoanimprovedperformance.
+3 Multi-HeadFrameworkforReinforcementLearningusingVex
+Our multi-head architecture and its associated learning algorithm are directly applicable to most
+state-of-the-art policy gradient methods. Let h be the index of each MERL head: MERLh. We
+proposetwoofthequantitiespredictedbytheseheadsandshowhowtoincorporatethemintoPPO.
+3.1 PolicyandValueFunctionRepresentation
+IndeepRL,thepolicyisgenerallyrepresentedinaneuralnetworkcalledthepolicynetwork,with
+parameters θ, and the value function is parameterized by the value network, with parameters φ.
+EachMERLheadMERLh takesasinputthelastembeddinglayerfromthevaluenetworkandis
+constitutedofonlyonelayeroffully-connectedneurons,withparametersφh. Theoutputsizeofeach
+headcorrespondstothesizeofthepredictedMERLquantity. Below,weelaborateontwo.
+3.2 VexEstimation
+In order to have an estimate of the fraction of variance explained, we write MERLVE as the
+correspondingMERLheadwithparametersφVE. Itsobjectivefunctionisdefinedby:
+LMERLVE (τ,φ,φVE)=(cid:107)MERLVE(τ)−Vex(cid:107)2. (6)
+τ 2
+3.3 FutureStatesEstimation
+Auxiliarytaskmethodsbasedonnextstatepredictionare,tothebestofourknowledge,themost
+commonlyusedintheRLliterature. WeincludesuchauxiliarytaskintoMERL,inordertoassimilate
+ourcontributiontothepreviousworkandtoprovideaenrichedevaluationoftheproposedframework.
+4
+Ateachtimestep,oneoftheagent’sMERLheadspredictsafuturestates(cid:48)froms. Whileatypical
+MERLquantitycanbefitbyregressiononmean-squarederror,weobservedthatpredictionsoffuture
+statesarebetterfittedwithacosine-distanceerror. WedenoteMERLFSthecorrespondinghead,with
+parametersφFS,andS theobservationspacesize(sizeofvectors). Wedefineitsobjectivefunction
+as:
+(cid:80)S MERLFS(s)·s(cid:48)
+LMERLFS (s,φ,φFS)=1− i=1 i i . (7)
+(cid:113) (cid:113)
+(cid:80)S (MERLFS(s))2 (cid:80)S (s(cid:48))2
+i=1 i i=1 i
+3.4 Problem-ConstrainedPolicyUpdate
+OnceasetofMERLheadsMERLh andtheirassociatedobjectivefunctionsLMERLh havebeen
+defined,wemodifythegradientupdatestepofthepolicygradientalgorithms. Theobjectivefunction
+incorporatesallLMERLh. Ofcourse,eachMERLobjectiveisassociatedwithitscoefficientc . It
+h
+isworthytonotethatweusedtheexactsameMERLcoefficientsforallourexperiments, which
+demonstrate the framework’s ease of applicability. Algorithm 1 illustrates how the learning is
+achieved. InEq.9,onlythe(boxed)MERLobjectivesparameterizedbyφareaddedtothevalue
+updateandmodifythelearningalgorithm.
+Algorithm1PPO+MERLupdate.
+Initialisepolicyparametersθ
+0
+InitialisevaluefunctionandMERLhfunctionsparametersφ
+0
+fork=0,1,2,...do
+CollectsetoftrajectoriesD ={τ }withhorizonT byrunningpolicyπ intheenvironment
+k i θk
+ComputeMERLhestimatesattimesteptfromsamplingtheenvironment
+ComputeadvantageestimatesA attimesteptbasedonthecurrentvaluefunctionV
+t φk
+ComputefuturerewardsRˆ fromtimestept
+t
+GradientUpdate
+T (cid:18) (cid:19)
+θ
+k+1
+= argmax (cid:88) (cid:88) min
+π
+π θ (
+(
+a
+a
+t |
+|
+s
+s
+t )
+)
+Aπθk (s
+t
+,a
+t
+),g((cid:15),Aπθk (s
+t
+,a
+t
+)) (8)
+θ
+τ∈Dkt=0
+θk t t
+T H
+φ = argmin (cid:88) (cid:88)(cid:16) V (s )−Rˆ (cid:17)2 + (cid:88) c LMERLh (9)
+k+1 φk t t h
+φ
+τ∈Dkt=0 h=0
+4 MERLappliedtoContinuousControlTasksandtheAtaridomain
+4.1 Methodology
+WeevaluateMERLinmultiplehigh-dimensionalenvironments,rangingfromMuJoCo(Todorov
+etal.,2012)totheAtari2600games(Bellemareetal.,2013). TheexperimentsinMuJoCoallowus
+toevaluatetheperformanceofMERLonalargenumberofdifferentcontinuouscontrolproblems. It
+isworthytonotethattheuniversalcharacteristicsoftheauxiliaryquantitieswedesignensurethat
+MERLisdirectlyapplicabletoanytask. Otherpopularauxiliarytaskmethods(Jaderbergetal.,2016;
+Mirowskietal.,2016;Burdaetal.,2018)arenotout-of-the-boxapplicabletocontinuouscontrol
+taskslikeMuJoCo. Thus,wenaturallycomparetheperformanceofourmethodwithPPO(Schulman
+etal.,2017)whereMERLheadsarenotused. Later,wealsoexperimentwithMERLontheAtari
+2600gamestostudythetransferlearningabilitiesofourmethodonasetofdiversetasks.
+Implementation. ForthecontinuouscontrolMuJoCotasks,theagentshavelearnedusingseparated
+policy and value networks. In this case, we build upon the value network to incorporate our
+framework’sheads. Onthecontrary,whenplayingAtari2600gamesfrompixels,theagentswere
+5
+givenaCNNnetwork(Krizhevskyetal.,2012)sharedbetweenthepolicyandthevaluefunction.
+Inthatcase,MERLh arenaturallyattachedtothelastembeddinglayerofthesharednetwork. In
+bothconfigurations,theoutputsofMERLhheadsarethesamesizeasthequantitytheypredict: for
+instance,MERLVEisascalarwhereasMERLFSisastate.
+Hyper-parametersSetting. Weusedthesamehyper-parametersasinthemaintextofthecorre-
+spondingpaper. Wemadethischoicewithinaclearandobjectiveprotocolofdemonstratingthe
+benefits of using MERL. Hence, its reported performance is not necessarily the best that can be
+obtained,butitstillexceedsthebaseline. UsingMERLaddsasmanyhyper-parametersasthereare
+headsinthemulti-headlayeranditisworthnotingthatMERLhyper-parametersarethesameforall
+tasks. Wereportallhyper-parametersinTables1and2.
+Table1: Hyper-parametersusedinPPO+MERL
+Hyper-parameter Value
+Horizon(T) 2048(MuJoCo),128(Atari)
+Adamstepsize 3·10−4(MuJoCo),2.5·10−4(Atari)
+Nb. epochs 10(MuJoCo),3(Atari)
+Minibatchsize 64(MuJoCo),32(Atari)
+Numberofactors 1(MuJoCo),4(Atari)
+Discount(γ) 0.99
+GAEparameter(λ) 0.95
+Clippingparameter((cid:15)) 0.2(MuJoCo),0.1(Atari)
+Valuefunctioncoef 0.5
+Table2: MERLhyper-parameters
+Hyper-parameter Value
+MERLVEcoefc 0.5
+VE
+MERLFScoefc 0.01
+FS
+PerformanceMeasures. Weexaminetheperformanceacrossalargenumberoftrials(withdifferent
+seedsforeachtask). Standarddeviationofreturns,andaveragereturnaregenerallyconsideredtobe
+themoststablemeasuresusedtocomparetheperformanceofthealgorithmsbeingstudied(Islam
+etal.,2017). Thereby,intherestofthiswork,weusethosemetricstoestablishtheperformanceof
+ourframeworkquantitatively.
+4.2 Single-TaskLearning: ContinuousControl
+WeapplyMERLtoPPOinseveralcontinuouscontroltasks,whereusingauxiliarytaskshasnot
+beenexploredindetailintheliterature. Specifically,weuse9MuJoCoenvironments. Duetospace
+constraints, only 3 graphs from varied tasks are shown in Fig. 2. The complete set of 9 tasks is
+reportedinTable3.
+Table3: Averagetotalrewardofthelast100episodesover7runsonthe9MuJoCoenvironments.
+Boldfacemean±stdindicatestatisticallybetterperformance.
+Task PPO Ours
+Ant 1728±64 2157±212
+HalfCheetah 1557±21 2117±370
+Hopper 2263±125 2105±200
+Humanoid 577±10 603±8
+InvertedDoublePendulum 5965±108 6604±130
+InvertedPendulum 474±14 497±12
+Reacher −7.84±0.7 −7.78±0.8
+Swimmer 93.2±8.7 124.6±5.6
+Walker2d 2309±332 2347±353
+6
+TheresultsdemonstratethatusingMERLleadstobetterperformanceonavarietyofcontinuous
+controltasks. Moreover,learningseemstobefasterforsometasks,suggestingthatMERLtakes
+advantageofitsheadstolearnrelevantquantitiesfromthebeginningoflearning,whenthereward
+signalsmaybesparse. Interestingly,bylookingattheperformanceacrossall9tasks,weobserved
+betterresultsbypredictingonlythenextstateandnotthesubsequentones.
+Ant HalfCheetah Swimmer
+2500 PPPPOO+MERL 2500 PPPPOO+MERL PPPPOO+MERL
+120
+2000 2000
+1500 1500 100
+1000 1000 80
+500 500 60
+0 40
+0
+500 20
+0 200000 400000 600000 800000 1000000 0 200000 400000 600000 800000 1000000 0 200000 400000 600000 800000 1000000
+Figure2: Experimentson3MuJoCoenvironments(106timesteps,7seeds)withPPO+MERL.Red
+isthebaseline,blueiswithourmethod. Thelineistheaverageperformance,whiletheshadedarea
+representsitsstandarddeviation.
+4.3 TransferLearning: AtariDomain
+Becauseoftrainingtimeconstraints,weconsideratransferlearningsettingwhere,afterthefirst106
+trainingsteps,theagentswitchestoanewtaskforanother106steps. Theagentisnotawareofthe
+taskswitch.Atari2600hasbeenachallengingtestbedformanyyearsduetoitshigh-dimensional
+videoinput(210x160)andthediscrepancyoftasksbetweengames. Toinvestigatetheadvantages
+ofMERLintransferlearning,wechooseasetof6Atarigameswithanactionspaceof9,whichis
+theaveragesizeoftheactionspaceintheAtaridomain. Thisexperimentalchoiceisbeneficialinthat
+the6gamesprovideadiverserangeofgame-playwhilestickingtothesamesizeofactionspace.
+Enduro MsPacman BeamRider MsPacman CrazyClimber MsPacman
+800 EEP nnP ddO uurroo++PPPPOO+MERL
+8
+9
+0
+0
+0
+0 BBP eeP aaO mmRRiiddeerr++PPPPOO+MERL
+8
+9
+0
+0
+0
+0 CCPP rraaO zzyyCClliimmbbeerr++PPPPOO+MERL
+700
+700 700
+600 600 600
+500 500 500
+400 400 400
+300 300
+0 200000 400000 600000 800000 1000000 0 200000 400000 600000 800000 1000000 0 200000 400000 600000 800000 1000000
+VideoPinball MsPacman Asterix MsPacman
+800
+VVP iiP ddO eeooPPiinnbbaallll++PPPPOO+MERL 1200 AAP ssP ttO eerriixx++PPPPOO+MERL
+700 1000
+600 800
+500 600
+400
+400
+300
+0 200000 400000 600000 800000 1000000 0 200000 400000 600000 800000 1000000
+Figure3: Transferlearningtasksfrom5AtarigamestoMs. Pacman(2×106 timesteps,4seeds).
+Performanceonthesecondtask. OrangeisPPOsolelytrainedonMs. Pacman,redandblueare
+respectivelyPPOandourmethodtransferringthelearning. Thelineistheaverageperformance,
+whiletheshadedarearepresentsitsstandarddeviation.
+Fig.3demonstratesthatourmethodcanbetteradapttodifferenttasks. ThiscansuggestthatMERL
+headslearnandhelprepresentinformationthatismoregenerallyrelevantforothertasks,suchas
+self-performanceassessmentoraccurateexpectations. Inadditiontoaddingaregularizationtermto
+theobjectivefunctionwithproblemknowledgesignals,thoseauxiliaryquantitiesmaketheneural
+networkoptimizefortask-agnosticsub-objectives.
+4.4 AblationStudy
+Weconductanablationstudytoevaluatetheseparateandcombinedcontributionsofthetwoheads.
+Fig.4showsthecomparativeresultsinHalfCheetah,Walker2d,andSwimmer. Interestingly,with
+7
+HalfCheetah Walker2d Swimmer
+2
+2
+0
+5
+0
+0
+0
+0 PPPP PPPP OOOO ++
++
+MF
+V
+S
+E
+ERL
+3
+3
+0
+5
+0
+0
+0
+0 PPPP PPPP OOOO ++
++
+MF
+V
+S
+E
+ERL
+120
+PPPP PPPP OOOO ++
++
+MF
+V
+S
+E
+ERL
+1500 2500 100
+1000 2000 80
+1500
+500 60
+1000
+0 500 40
+500 0 20
+0 200000 400000 600000 800000 1000000 0 200000 400000 600000 800000 1000000 0 200000 400000 600000 800000 1000000
+Figure4: AblationexperimentswithonlyoneMERLhead(FSorVE)(106timesteps,4seeds). Blue
+isMERLwiththetwoheads, redwiththeFShead, greenwiththeVEheadandorangewithno
+MERLhead. Thelineistheaverageperformance,theshadedarearepresentsitsstandarddeviation.
+HalfCheetah,usingonlytheMERLVEheaddegradestheperformance,butwhenitiscombinedwith
+theMERLFShead,itoutperformsPPO+FS.Resultsofthecompleteablationanalysisdemonstrate
+thateachheadispotentiallyvaluableforenhancinglearningandthattheircombinationcanproduce
+remarkableresults. Inaddition,itmaybeintuitedthatfindingavarietyofcomplementaryMERL
+headstocoverthescopeoftheprobleminaholisticperspectivecansignificantlyimprovelearning.
+4.5 Discussion
+TheexperimentssuggestthatMERLsuccessfullyoptimizesthepolicyaccordingtocomplementary
+quantitiesseekingforgoodperformanceandsaferealizationoftasks,i.e. itdoesnotonlymaximize
+arewardbutinsteadensuresthecontrolproblemisappropriatelyaddressed. Moreover,weshow
+thatMERLisdirectlyapplicabletopolicygradientmethodswhileaddinganegligiblecomputation
+cost. Indeed,fortheMuJoCoandAtaritasks,thecomputationalcostoverheadisrespectively5%and
+7%withourtraininginfrastructure. Allofthesefactorsresultinagenerallyapplicablealgorithm
+that more robustly solves difficult problems in a variety of environments with continuous action
+spacesorbyusingonlyrawpixelsforobservations. Thankstoaconsistentchoiceofcomplementary
+quantitiesinjectedintheoptimizationprocess,MERLisabletobetteralignanagent’sobjectives
+withhigher-levelinsightsintohowtosolveacontrolproblem. Besides,sincemanycurrentmethods
+involvethatsuccessfullearningdependsontheagent’schancetoreachthegoalbychanceinthefirst
+place,correctlypredictingMERLheadsgivestheagentanopportunitytolearnfromusefulsignals
+whileimprovinginagiventask.
+5 Conclusion
+In this paper, we introduced Vex, a new auxiliary task, to measure the discrepancy between the
+valuefunctionandthereturns,whichsuccessfullyassessestheagent’sperformanceandhelpslearn
+moreefficiently. WealsoproposedMERL,agenerallyapplicabledeepRLframeworkforlearning
+problem-focusedrepresentations,whichwedemonstratedtheeffectivenesswithacombinationof
+twoauxiliarytasks. Weestablishedthatinjectingproblemknowledgesignalsdirectlyinthepolicy
+gradientoptimizationallowsforabetterstaterepresentationthatisgeneralizabletomanytasks. Vex
+provides a more problem-focused state representation to the agent, which is, therefore, not only
+reward-centric. MERLcanbelabeledasbeingahybridmodel-freeandmodel-basedframework,
+formedwithlightweightembeddedmodelsofself-performanceassessmentandaccurateexpectations.
+MERLheadsintroducearegularizationtermtothefunctionapproximationwhileaddressingthe
+problem of reward sparsity through auxiliary task learning. Those features nourish a framework
+technically applicable to any policy gradient algorithm or environment; it does not need to be
+redesignedfordifferentproblemsandcanbeextendedwithotherrelevantproblem-solvingquantities,
+comparabletoVex.
+AlthoughtherelevanceandhigherperformanceofMERLhaveonlybeenshownempirically,wethink
+itwouldbeinterestingtostudythetheoreticalcontributionofthisframeworkfromtheperspectiveof
+animplicitregularizationoftheagent’srepresentationontheenvironment. Wealsobelievethatthe
+identificationofadditionalMERLquantities(e.g.,predictionoftimeuntiltheendofatrajectory)and
+theeffectoftheircombinationisalsoaresearchtopicthatwefindmostrelevantforfuturework.
+8
+References
+MarcGBellemare,YavarNaddaf,JoelVeness,andMichaelBowling. Thearcadelearningenviron-
+ment: Anevaluationplatformforgeneralagents. JournalofArtificialIntelligenceResearch,47:
+253–279,2013.
+Yuri Burda, Harri Edwards, Deepak Pathak, Amos Storkey, Trevor Darrell, and Alexei A Efros.
+Large-scalestudyofcuriosity-drivenlearning. arXivpreprintarXiv:1808.04355,2018.
+YuriBurda,HarrisonEdwards,AmosStorkey,andOlegKlimov. Explorationbyrandomnetwork
+distillation. InInternationalConferenceonLearningRepresentations,2019.
+JefferyAClouseandPaulEUtgoff. Ateachingmethodforreinforcementlearning. InMachine
+Learning,pp.92–101.Elsevier,1992.
+AlexeyDosovitskiyandVladlenKoltun. Learningtoactbypredictingthefuture. InInternational
+ConferenceonLearningRepresentations,2016.
+YunshuDu,WojciechMCzarnecki,SiddhantMJayakumar,RazvanPascanu,andBalajiLakshmi-
+narayanan. Adaptingauxiliarylossesusinggradientsimilarity. arXivpreprintarXiv:1812.02224,
+2018.
+LasseEspeholt,HubertSoyer,RemiMunos,KarenSimonyan,VolodymirMnih,TomWard,Yotam
+Doron,VladFiroiu,TimHarley,IainDunning,etal. Impala: Scalabledistributeddeep-rlwith
+importanceweightedactor-learnerarchitectures.InInternationalConferenceonMachineLearning,
+pp.1406–1415,2018.
+YannisFlet-BerliacandPhilippePreux. Samplesareuseful? notalways: denoisingpolicygradient
+updatesusingvarianceexplained. arXivpreprintarXiv:1904.04025,2019.
+JavierGarcıaandFernandoFernández. Acomprehensivesurveyonsafereinforcementlearning.
+JournalofMachineLearningResearch,16(1):1437–1480,2015.
+DavidHaandJürgenSchmidhuber. Recurrentworldmodelsfacilitatepolicyevolution,2018.
+RiashatIslam,PeterHenderson,MaziarGomrokchi,andDoinaPrecup. Reproducibilityofbench-
+markeddeepreinforcementlearningtasksforcontinuouscontrol.arXivpreprintarXiv:1708.04133,
+2017.
+RahulIyer,YuezhangLi,HuaoLi,MichaelLewis,RSundar,andKatiaPSycara. Transparency
+andexplanationindeepreinforcementlearningneuralnetworks. InProceedingsofAAAI/ACM
+ConferenceonArtificialIntelligence,Ethics,andSociety.AAAI/ACM,2018.
+MaxJaderberg,VolodymyrMnih,WojciechMarianCzarnecki,TomSchaul,JoelZLeibo,David
+Silver,andKorayKavukcuoglu. Reinforcementlearningwithunsupervisedauxiliarytasks. arXiv
+preprintarXiv:1611.05397,2016.
+BilalKartal,PabloHernandez-Leal,andMatthewETaylor. Terminalpredictionasanauxiliarytask
+fordeepreinforcementlearning. InProceedingsoftheAAAIConferenceonArtificialIntelligence
+andInteractiveDigitalEntertainment,volume15,pp.38–44,2019.
+ASKlyubin,DPolani,andCLNehaniv. Empowerment: auniversalagent-centricmeasureofcontrol.
+InProceedingsofthe2005IEEECongressonEvolutionaryComputation1pp.128-,2005.
+AlexKrizhevsky,IlyaSutskever,andGeoffreyEHinton. Imagenetclassificationwithdeepconvolu-
+tionalneuralnetworks. InAdvancesinneuralinformationprocessingsystems,pp.1097–1105,
+2012.
+TaraldOKvålseth. CautionaryNoteaboutR2. TheAmericanStatistician,39(4):279–285,1985.
+TimothéeLesort,NataliaDíaz-Rodríguez,Jean-FranoisGoudou,andDavidFilliat. Staterepresenta-
+tionlearningforcontrol: Anoverview. NeuralNetworks,108:379–392,2018.
+XiujunLi,LihongLi,JianfengGao,XiaodongHe,JianshuChen,LiDeng,andJiHe. Recurrentrein-
+forcementlearning: ahybridapproach. InInternationalConferenceonLearningRepresentations,
+2016.
+9
+Long-JiLin. Self-improvingreactiveagentsbasedonreinforcementlearning,planningandteaching.
+Machinelearning,8(3-4):293–321,1992.
+Zachary C Lipton, Kamyar Azizzadenesheli, Abhishek Kumar, Lihong Li, Jianfeng Gao, and
+LiDeng. Combatingreinforcementlearning’ssisypheancursewithintrinsicfear. arXivpreprint
+arXiv:1611.01211,2016.
+Piotr Mirowski, Razvan Pascanu, Fabio Viola, Hubert Soyer, Andrew J Ballard, Andrea Banino,
+MishaDenil,RossGoroshin,LaurentSifre,KorayKavukcuoglu,etal. Learningtonavigatein
+complexenvironments. arXivpreprintarXiv:1611.03673,2016.
+DavidLMoreno,CarlosVRegueiro,RobertoIglesias,andSenénBarro. Usingpriorknowledgeto
+improvereinforcementlearninginmobilerobotics. InProceedingsTowardsAutonomousRobotics
+Systems,2004.
+OfirNachum,MohammadNorouzi,KelvinXu,andDaleSchuurmans. Bridgingthegapbetween
+valueandpolicybasedreinforcementlearning. InAdvancesinNeuralInformationProcessing
+Systems,pp.2775–2785,2017.
+DerrickNguyenandBernardWidrow. Thetruckbacker-upper: Anexampleofself-learninginneural
+networks. InAdvancedNeuralComputers,pp.11–19,1990.
+Pierre-YvesOudeyerandFredericKaplan. Whatisintrinsicmotivation? atypologyofcomputational
+approaches. FrontiersinNeurorobotics,1:6,2007.
+DeepakPathak,PulkitAgrawal,AlexeiAEfros,andTrevorDarrell. Curiosity-drivenexploration
+byself-supervisedprediction. InProceedingsoftheIEEEConferenceonComputerVisionand
+PatternRecognitionWorkshops,pp.16–17,2017.
+MartinL.Puterman. MarkovDecisionProcesses: DiscreteStochasticDynamicProgramming. John
+Wiley&Sons,Inc.,NewYork,NY,USA,1stedition,1994. ISBN0471619779.
+CarlosHCRibeiro. Embeddingaprioriknowledgeinreinforcementlearning. JournalofIntelligent
+andRoboticSystems,21(1):51–71,1998.
+MartinRiedmiller,RolandHafner,ThomasLampe,MichaelNeunert,JonasDegrave,TomWiele,
+VladMnih, NicolasHeess, andJostTobiasSpringenberg. Learningbyplayingsolvingsparse
+rewardtasksfromscratch. InInternationalConferenceonMachineLearning,pp.4341–4350,
+2018.
+JSchmidhuberandRHuber. Learningtogenerateartificialfoveatrajectoriesfortargetdetection.
+InternationalJournalofNeuralSystems,2(1/2):135–141,1991.
+JürgenSchmidhuber. Curiousmodel-buildingcontrolsystems. InIEEEInternationalJointConfer-
+enceonNeuralNetworks,pp.1458–1463.IEEE,1991.
+JürgenSchmidhuber. Formaltheoryofcreativity,fun,andintrinsicmotivation(1990–2010). IEEE
+TransactionsonAutonomousMentalDevelopment,2(3):230–247,2010.
+JohnSchulman,SergeyLevine,PieterAbbeel,MichaelIJordan,andPhilippMoritz. Trustregion
+policyoptimization. InInternationalConferenceonMachineLearning,pp.1928–1937,2015.
+JohnSchulman,FilipWolski,PrafullaDhariwal,AlecRadford,andOlegKlimov. Proximalpolicy
+optimizationalgorithms. arXivpreprintarXiv:1707.06347,2017.
+EvanShelhamer,ParsaMahmoudieh,MaxArgus,andTrevorDarrell. Lossisitsownreward: Self-
+supervisionforreinforcementlearning. InInternationalConferenceonLearningRepresentations,
+2016.
+DavidSilver,AjaHuang,ChrisJMaddison,ArthurGuez,LaurentSifre,GeorgeVanDenDriessche,
+JulianSchrittwieser,IoannisAntonoglou,VedaPanneershelvam,MarcLanctot,etal. Mastering
+thegameofGowithdeepneuralnetworksandtreesearch. Nature,529:484,2016.
+SSuddarthandYKergosien. Rule-injectionhintsasameansofimprovingnetworkperformanceand
+learningtime. NeuralNetworks,pp.120–129,1990.
+10
+EmanuelTodorov,TomErez,andYuvalTassa. Mujoco: Aphysicsengineformodel-basedcontrol.
+In2012IEEE/RSJInternationalConferenceonIntelligentRobotsandSystems,pp.5026–5033.
+IEEE,2012.
+Paul J Werbos. Neural networks for control and system identification. In IEEE Conference on
+DecisionandControl,,pp.260–265,1989.
+S.D.Whitehead. Complexityandcooperationinq-learning. InEighthInternationalWorkshopon
+MachineLearning,pp.363–367,1991.
+RonaldJ.Williams. Simplestatisticalgradient-followingalgorithmsforconnectionistreinforcement
+learning. Machinelearning,8(3-4):229–256,1992.
+11

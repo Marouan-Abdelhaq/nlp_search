@@ -1,0 +1,793 @@
+Hyperlink communities in higher-order networks
+Quintino Francesco Lotito,1,∗ Federico Musciotto,2 Alberto Montresor,1 and Federico Battiston3
+1Department of Information Engineering and Computer Science,
+University of Trento, via Sommarive 9, 38123 Trento, Italy
+2Dipartimento di Fisica e Chimica Emilio Segr`e, Universit`a di Palermo,
+Viale delle Scienze, Ed. 18, I-90128, Palermo, Italy
+3Department of Network and Data Science,
+Central European University, 1100 Vienna, Austria
+ABSTRACT
+Many networks can be characterised by the presence of communities, which are groups of units
+thatarecloselylinked. Identifyingthesecommunitiescanbecrucialforunderstandingthesystem’s
+overall function. Recently, hypergraphs have emerged as a fundamental tool for modelling systems
+where interactions are not limited to pairs but may involve an arbitrary number of nodes. In this
+study,weadoptadualapproachtocommunitydetectionandextendtheconceptoflinkcommunities
+to hypergraphs. This extension allows us to extract informative clusters of highly related hyper-
+edges. Weanalyzethedendrogramsobtainedbyapplyinghierarchicalclusteringtodistancematrices
+amonghyperedgesacrossavarietyofreal-worlddata,showingthathyperlinkcommunitiesnaturally
+highlight the hierarchical and multiscale structure of higher-order networks. Moreover, hyperlink
+communities enable us to extract overlapping memberships from nodes, overcoming limitations of
+traditional hard clustering methods. Finally, we introduce higher-order network cartography as a
+practical tool for categorizing nodes into different structural roles based on their interaction pat-
+terns and community participation. This approach aids in identifying different types of individuals
+in a variety of real-world social systems. Our work contributes to a better understanding of the
+structural organization of real-world higher-order systems.
+I. INTRODUCTION has been linked to its functional sub-units such
+as protein complexes [4, 5] or different social
+From social and technological systems to the spheresinsocialsystems[6–8]. Manyreal-world
+humanbrain,networkshavebeenusedtostudy systems are characterised by complex commu-
+the structure of a wide range of relational nity structure, for instance, hierarchical [2, 9–
+data [1]. Network representations of real-world 11], i.e., communities can be recursively split
+systems benefit from a variety of methods and into nested sub-units, and overlapping [7, 8],
+algorithms available for their analysis and have i.e., nodes might belong to multiple communi-
+proven particularly useful in uncovering com- ties at the same time. Yet, traditional commu-
+plex patterns of connectivity, both at the lo- nity detection algorithms based on hierarchical
+cal and global scales. To investigate the in- grouping of nodes often fail to capture the rela-
+terplay between the structure and dynamics of tionshipsbetweenoverlappinggroupsthatchar-
+networks, a key analysis is the identification of acterize real-world networks.
+their communities [2]. Communities are usu-
+An alternative approach is that of link com-
+ally defined as groups of related nodes, with
+munities [12, 13], which aims to identify groups
+nodes in the same community sharing many
+ofinteractionsratherthannodes. Indeed,nodes
+more links than nodes in different communi-
+can simultaneously belong to multiple groups
+ties [3]. The community structure of a system
+(for instance, an individual might have a fam-
+ily,acircleoffriends,andateamofcolleagues).
+However, interactions typically occur for a sin-
+∗ quintino.lotito@unitn.it gular purpose, such as two individuals con-
+4202
+beF
+91
+]IS.sc[
+3v58310.3032:viXra
+2
+nected by a shared interest or a family rela- tems.
+tion [13]. By looking at the communities of the While there have been some recent efforts to
+links of a given node and exploiting a dual net- understand the mesoscale organization of real-
+work representation where edges are connected world hypergraphs [53–60], this topic remains
+if they share a common node [12], it is possible relatively unexplored. In particular, link com-
+to reconstruct the overlapping modular struc- munities have been shown to provide new in-
+ture of the interactions of the different nodes. sightsintothemesoscalestructureofreal-world
+While deviating fromthe standard definition of pairwisenetworks,yetthemodularorganization
+communities, which requires them to be groups of interactions in higher-order systems has not
+of nodes instead of edges, link communities are been investigated. Here, we propose a frame-
+able to explain the seemingly opposing struc- work to detect hyperlink communities, which
+turalprinciplesofoverlappingcommunitiesand allowstheidentificationofclustersofcloselyre-
+hierarchy. latedhigher-orderinteractionsofarbitrarysize.
+We illustrate the applicability of our method
+While widely used, traditional graph repre-
+on a variety of real-world higher-order systems,
+sentations are not always able to capture accu-
+unravelling distinct organization principles re-
+rately the patterns of interactions that occur in
+vealed at different topological scales. We char-
+the real world [14]. Indeed, networks can only
+acterize the patterns of connections of system
+properly represent dyadic relationships, where
+units across hyperedges belonging to different
+pairs of nodes are connected by links [15–17].
+clusters, revealing a complex overlapping mod-
+In recent years, however, systems such as cel-
+ularorganizationwhichcanbeconvenientlyde-
+lular networks [18], brain networks [19, 20], so-
+scribed through hypergraph cartography. Our
+cial systems [21], ecosystems [22], human face-
+work contributes to a better understanding of
+to-face interactions [23], and collaboration net-
+the real-world organization of higher-order sys-
+works [24] have all demonstrated that a signif-
+tems.
+icant portion of interactions involves three or
+more nodes at the same time. Mathematical
+frameworkslikehypergraphs[25]arewell-suited
+II. HYPERLINK COMMUNITIES
+to explicitly encode such higher-order systems,
+where hyperedges of various sizes can repre-
+The notion of hyperlink communities ex-
+sent structured relationships among multiple
+tends to hypergraphs the idea of describ-
+units typically known as higher-order interac-
+ing the mesoscale structure of a system by
+tions[15–17]. Higher-ordernetworkapproaches
+grouping (higher-order) interactions instead of
+have been applied to a range of systems and
+nodes. While atypical, this approach can de-
+proven effective to understand their behaviour,
+scribe the hierarchical organization of hyper-
+including the emergence of new collective phe-
+edges (Fig. 1a) and node community overlap
+nomena [26] in diffusive [27, 28], synchroniza-
+(Fig. 1b) as two aspects of the same phe-
+tion [29–33], spreading [34–36] and evolution-
+nomenon. In a way similar to the seminal
+ary [37] processes. To investigate the higher-
+work on link communities [13], we define a
+orderorganizationofreal-worldsystems, differ-
+distance measure between hyperlinks and per-
+ent static [38–41] and growing [42, 43] models
+form hierarchical clustering on top of them to
+havebeenproposed. Moreover, severalnetwork
+obtain hyperlink communities (Fig. 1a). Be-
+measures and concepts have been adapted to
+ing each hyperlink encoded as a set of inter-
+consider the presence of higher-order interac-
+acting nodes, a natural way to compute the
+tions, such as higher-order clustering [44], cen-
+distance between two hyperlinks A and B is
+trality [45, 46], motifs [47, 48], spectral mea-
+to consider their Jaccard distance, defined as
+sures[49],toolsfornetworkbackboning[50,51]
+and reconstruction [52], providing insights into J(A,B) = 1− |A∩B|. More information about
+|A∪B|
+the structure and function of higher-order sys- thechoiceofthisdistancemeasurecanbefound
+3
+a b cal structure of the communities formed dur-
+ing the clustering process. In such a dendro-
+gram, leaves are hyperlinks from the observed
+hypergraphandbranchesarehyperlinkcommu-
+nities. Moreover, the height in the dendrogram
+of each branch provides additional information
+about the strength of the merged communities.
+Foraformaldescriptionoftheprocessofbuild-
+ing the dendrogram, we refer to algorithm 1.
+Thedendrogramcanbecutatdifferentheights,
+FIG. 1. Hyperlink communities and their
+or thresholds, giving as output different mean-
+properties. Hyperlink communities group inter-
+ingful community structures, typically reveal-
+actionstodescribethemesoscalestructureofahy-
+pergraph. This approach is able to explain both ingdistinctmultiscaleorganizationofhyperlink
+thehierarchicalorganizationofhyperedgesandthe communities.
+overlap of communities among nodes. a) We per-
+formhierarchicalclusteringonthehyperlinksofan Data: a hypergraph H=(V,E)
+observedhypergraph,consideringtheirJaccarddis- Result: the dendrogram of hyperlink
+tance. The output of such clustering is a dendro- communities
+gram in which the leaves are the hyperlinks and
+the branches are the hyperlink communities. The D← matrix of pairwise distances of
+dendrogramcanbecutatdifferentthresholds,each hyperlinks;
+threshold potentially giving a meaningful commu- clusters ← each hyperlink is assigned to a
+nity structure as output. b) After the cut, each singleton cluster ; /* The leaves of the
+hyperlinkisuniquelyassignedtoaspecificcommu-
+dendrogram. */
+nity. Nodes are then assigned to the set of com- while number of clusters >1 do
+munities to which the hyperlinks in which they are merge the clusters with the smallest
+activebelong. Asaresult,asinglenodemaybelong distance ; /* The branches of the
+to multiple communities simultaneously. dendrogram. The height in the
+dendrogram of a branch is the
+distance between the two merged
+clusters. */
+in Appendix A1. To optimize the computa-
+end
+tionofdistances,weprecomputeandcachesets Algorithm 1: Hierarchical clustering on
+of hyperedges with at least one common node. hyperlinks
+This strategy allows our distance algorithm to
+execute the more time-consuming steps of set-
+union and set-intersection only when strictly While after a cut each hyperlink is uniquely
+necessary. It is also worth noting that this step assignedtoacommunity,nodesinheritthecom-
+can be easily parallelized or distributed in the munitymembershipsofalltheinteractionsthey
+case of very large hypergraphs. We perform participatein. Nodesmightparticipatesimulta-
+single-linkage hierarchical clustering on top of neously in several communities, although with
+thedistancematrixofthehyperlinks. Theclus- differentstrengths. Therefore,anotherproperty
+teringprocedurefollowsabottom-upapproach: of hyperlink communities is the ability to nat-
+it starts by assigning each hyperlink to its own urally extract overlapping communities of the
+cluster and then merges the clusters of hyper- nodes of a hypergraph (Fig. 1b).
+linkswiththesmallestaveragedistanceuntilall Explicitly treating link communities at a
+the hyperlinks are part of a single cluster. The higher-order level has several advantages with
+outputofhierarchicalclusteringappliedonsuch respect to analyzing lower-order projections of
+hyperlinks is a dendrogram. The dendrogram hypergraphdatasets. Forinstance,ifweslightly
+is a graphical representation of the hierarchi- modify the hypergraph in Fig. 1b by adding
+4
+library for higher-order network analysis.
+A. Multiscale properties of hyperlink
+communities
+As previously mentioned, the output of the
+FIG.2. Drawbacks of lower-order approaches hierarchical clustering algorithm applied to the
+to higher-order data. If a large hyperedge (the distance matrix of the hyperlinks is a dendro-
+red one) is added to a hypergraph, it can signif- graminwhichtheleavesarethehyperlinks,the
+icantly affect its clique-projection, destroying the branches are hyperlink communities, and the
+ability of low-order community detection tools to height of a branch encodes information about
+captureanyhierarchicalarchitectureandintroduc-
+thestrengthofahyperlinkcommunity. Bycut-
+ing a large number of new edges to consider in
+ting the dendrogram at different thresholds, we
+computation. These drawbacks are resolved when
+canobtaindifferentcommunitystructures,each
+higher-order data are handled using a higher-order
+of which may provide valuable insights into the
+approach.
+organization of the hypergraph. This feature is
+useful for performing analyses of a system at
+different scales. For example, in a time-varying
+a new large hyperedge (Fig. 2), its clique-
+system,astudentmightinteractmorewithstu-
+projection is heavily affected, since a large
+dentssittingnearbyduringalecture,withother
+cliqueisintroducedinthesystem. Fromamod-
+students in the same class during a break, and
+elling perspective, adding this large clique de-
+with students from other classes during lunch.
+stroys any hierarchical architecture, while from
+When aggregated over time, such a variety of
+a computational perspective, it adds a huge
+patterns mightlead to acomplex multiscale or-
+number of new edges to consider in the compu-
+ganization of interactions. The shape of the
+tation. Ourhigher-orderapproach,bycontrast,
+hierarchical clustering dendrogram depends on
+does not suffer from such drawbacks.
+the patterns of overlap between hyperlinks. To
+illustrate how hypergraphs can have very dif-
+ferent hierarchies of hyperlinks, depending on
+III. RESULTS the distribution of their overlap distances, in
+Fig. 3 we show two examples of dendrograms
+In order to study real-world hypergraphs, (and their corresponding distance matrix) of
+we gathered a collection of freely available hyperlink communities from real-world hyper-
+datasets of systems with group interactions. graphs: onerepresentingproximitygroupinter-
+The datasets come from a variety of domains, actionsamongbaboonsandtheotherrepresent-
+including face-to-face proximity contacts in a ing drugs and their associated class labels. In
+primary school, in a high school, in a hospital the following, we show that these two examples
+and in a group of baboons [44, 61–64], e-mail areindeedrepresentativeoftwobroaderclasses
+exchange (Enron) [44], biology (NDC classes, of real-world hypergraphs.
+i.e., class labels applied to drugs) [44] and co- To describe and build a profile of the hierar-
+authorshipinthephysicsarea(PACS3: Atomic chy of real-world hypergraphs, we can measure
+and Molecular Physics, Arxiv physics and soci- the number of hyperlink communities at dif-
+ety) [65]. More information about the datasets ferent increasing thresholds. The specific scal-
+used in our experiments can be found in Ap- ing of the number of hyperlink communities
+pendix A2. The code of the experiments is can be interpreted as a fingerprint of the hi-
+freely available [66] and it is implemented as erarchy of group interactions in real-world sys-
+partofhypergraphx[67],anopensourcepython tems. In Fig. 4a, we show such profiles for sev-
+5
+1.0
+0.5
+0.0
+Baboons NDC classes
+FIG. 3. Hierarchical clustering of hyperlinks in real-world hypergraphs. We provide two exam-
+ples of dendrograms (and their corresponding distance matrix) of hyperlink communities from real-world
+hypergraphs: one representing proximity group interactions among baboons, and the other representing
+affiliationsbetweendrugsandclasslabelsappliedtoeachdrug. Hypergraphscanshowverydifferenthier-
+archies of hyperlinks, due to different statistics of their overlap distances. In particular, we identified two
+broader classes of real-world hypergraphs, of which these two examples are representative.
+eral datasets from different domains, highlight- Statistics about the hyperlink communities
+ingtheemergenceofdifferentbehaviours. Data obtained by cutting the dendrogram at differ-
+onsocialproximity,suchascontactswithinhos- ent thresholds can vary significantly. Fig. 4b
+pitalsandschools,revealsdistinctspikesatcer- shows the distributions of the size of hyperlink
+tain thresholds (red lines). These spikes corre- communities at three different significant cuts
+latewithaprevalentrecurrenceofspecificover- for a subset of the selected datasets, with ex-
+lapping patterns among hyperlinks. This be- amples from the two identified classes of real-
+haviour indicates that the dendrograms are hi- world hypergraphs. The community structure
+erarchically organized in a few, important dis- can change significantly across different scales.
+tinct topological levels. Instead, affiliation and Thisdemonstratesthatnotonlydothedendro-
+co-authorship data show a smoother decreas- grams encode information about a hypergraph
+ing curve (blue lines). While such datasets ap- at multiple scales, but it is also valuable to an-
+proach 0 at differing rates, they do not exhibit alyze each level since they can provide distinct
+significantspikes. Thisbehaviourindicatesthat insightsintotheglobalorganizationofasystem.
+smootherhierarchicaltransitionsareassociated
+withthedifferentsystemscales. Ourmultiscale
+analysis highlights the emergence of two fami-
+B. Overlapping communities at multiple
+lies of real-world hypergraphs, distinguished by
+scales
+their scaling profiles. This characterization of
+hypergraphs is in agreement with purely local
+methods, such as motif analysis [47]. Previouslywementionedthatbycuttingata
+certain threshold the dendrogram constructed
+6
+a b
+Patterns linked to spikes Hyperlink community size
+FIG. 4. Multiscale properties of higher-order networks. Hierarchical clustering dendrograms can
+be cut at several thresholds, allowing for the extraction and analysis of hyperlink communities at multiple
+scales. a) The scaling of the number of hyperlink communities can be interpreted as a fingerprint of the
+hierarchicalorganizationofgroupinteractionsinreal-worldsystems. Duetotheover-abundanceofcertain
+patterns of overlap between small group interactions social proximity data (red lines) show clear spikes in
+theircurves. b)Evolutionofthestatisticsofthehyperlinkcommunitiesatdifferentthresholds. Hyperlink
+community structures can change significantly across scales.
+by applying hierarchical clustering on the hy- andscales,toquantifynodecommunityoverlap
+perlinksdistancematrix,notonlydoesthealgo- in real-world hypergraphs.
+rithm uniquely assign a community to each hy-
+In Fig. 5, we analyze the distributions of
+perlink,butalsoassignsmultiple(possiblyover-
+nodecommunitysizes(i.e.,thenumberofnodes
+lapping) communities to nodes. By varying the
+participating in a community) and node com-
+dendrogram-cutting threshold, we can extract
+munity memberships (i.e., the communities a
+overlapping communities across various scales.
+node simultaneously participates in) at differ-
+Having fixed a dendrogram-cutting threshold,
+ent cuts of the dendrogram. We find real-
+foranoden,wecandefinethecommunitymem-
+world hypergraphs to exhibit a wide spectrum
+bership vector v as:
+n
+of node community sizes, generally exponen-
+tially distributed. The distributions of com-
+v ={c(e):e∈E(n)} (1) munity memberships per node at different cuts
+n
+of the dendrogram remain in line across cut
+where E(n) is the set of hyperlinks in which heights and show that nodes tend to consis-
+n participates, and the function c(e) assigns a tently participate in more than one community
+hyperlink to its community. atthesametime. Thissuggeststhatreal-world
+In the following, we study the community hypergraphs present overlapping structures at
+membershipvectorsofthenodesacrossdatasets multiple scales. Moreover, the different shapes
+7
+a
+high school
+103
+102
+101
+100
+100 101 102
+b
+seitinummoc
+fo
+rebmuN
+sedon
+fo
+rebmuN
+hospital phys-soc NDC Classes
+104
+103
+102
+102
+102
+101
+101
+101
+100 100 100
+100 101 102 100 101 102 100 101 102
+Size of node communities
+102
+104
+101 103 102
+101 102
+101
+101
+100 100 100 100
+100 101 102 100 101 102 100 101 102 100 101 102
+Number of different communities a node participates in
+FIG. 5. Statistics of overlapping communities at multiple scales. The distribution of node com-
+munity sizes and node community memberships for several hypergraphs at three different dendrogram
+thresholds reveals the multiscale overlapping structure of real-world hypergraphs at their mesoscale. The
+hypergraphs show a wide range of community sizes, generally exponentially distributed, throughout the
+dendrogram. The distributions of community memberships per node show that nodes tend to participate
+simultaneouslyinmorecommunities. Thisbehaviourisconsistentacrossscales. Proximitydatahasamore
+pervasive overlapping structure than the other datasets.
+ofthedistributionshighlightonceagainthedif- representative cut, and equal to 0 otherwise.
+ferentbehaviourofthetwofamiliesofdatasets, Toidentifynodeswithsimilarconnectivitypat-
+with proximity data having a more pervasive terns,wecomputepairwisesimilaritiesbetween
+overlapping structure. binaryvectorsusingtheJaccardsimilarity. For
+each dataset, we create the role-to-role simi-
+In Fig. 6a, we provide a comparison be-
+larity matrix M in which M is the average
+tween the overlapping communities extracted ij
+similarity between the vectors of the units with
+fromreal-worldhypergraphsandtheassociated
+role i and the units with role j. In the hospital
+metadata. For the hospital dataset, describing
+dataset, we show that the average similarity of
+proximity interactions among people inside a
+thevectorsofnodeswiththesameroleishigher
+hospital, each node is characterized by meta-
+than that of nodes with different roles. This is
+data about their role (e.g., nurse). For the
+particularly true for medics and nurses. How-
+high-school and primary-school datasets, de-
+ever, this is not true for specific roles such as
+scribing proximity interactions among students
+patients, who tend not to overlap much neither
+andteachersinsideaprimaryschoolandahigh
+withotherrolesorwithotherpatients. Inasim-
+school, we have information about the class of
+ilar way, we notice that students from the same
+eachindividual. Foreachnoden,wecomputea
+class in both high school and primary school
+binary community membership vector. In this
+datasets tend to be more similar than students
+vector, for a node n, entry i is equal to 1 if
+from different classes. Moreover, some addi-
+node n participates in the community i at the
+8
+a
+b
+FIG.6. Comparingoverlappingcommunitiesandnodemetadata. Weselectathresholdforcutting
+the dendrogram and extracting overlapping communities, and compare results with metadata from real-
+world hypergraphs (role or class). A binary community membership vector is used to identify whether a
+nodeparticipatesinacertaincommunity. a)Wemeasurethepairwisesimilaritybetweenthebinaryvectors
+(Jaccardsimilarity)andbuildtherole-to-rolesimilaritymatricesbyaggregatingsimilaritiesofnodesbased
+on their role. Nodes with similar roles or classes tend to share similar community memberships. However,
+patients in the hospital dataset have low overlapping memberships even with other patients. Moreover,
+clusteringemergesamongclassesintheprimaryandhigh-schooldatasets,probablybecausetheirproximity
+leads to mixing interactions among different classes. b) We measure the diversity (entropy) of community
+membershipvectorsforeachroleorclassaveragingnodeswiththesamerole. Certainroles,suchasnurses,
+have a more diverse and pervasive overlap, while patients have less diversified interactions. In school
+datasets, some classes have more diverse community memberships, possibly due to physical constraints or
+participation in more activities.
+tional form of clustering emerges, probably due role or class. We measure this property by con-
+tothefactthatclassesthataremorephysically sideringtheentropyofthecommunitymember-
+close have students that interact more, leading shipvectorforeachnode, averagingnodeswith
+to some communities overlapping among those the same role.
+classes. Let v be the community membership vector
+i
+In Fig. 6b, we measure the average diversity for node i, p be the proportion of member-
+ij
+of the community membership vectors for each shipsofnodeitocommunityj (i.e.,thenumber
+9
+of distinct hyperlinks assigned to community j (analogous results are obtained by considering
+containingnodei), andC bethesetofcommu- entropy). Suchascoreofdiversityrangesfrom0
+nitiesnodeiparticipatesin. TheentropyH for (minimum diversity) to 1 (maximum diversity)
+node i is: and has also been used to characterize hetero-
+geneity in different network structures such as
+multiplex networks [69]. In particular, having
+C
+(cid:88) fixedascaleandcomputedoverlappingcommu-
+H(v )=− p log(p ) (2)
+i ij ij nities, the participation coefficient of the mem-
+j bership vector of node i is defined as
+LetN bethenumberofnodeswithroler;to
+r
+average the entropy for nodes of the same role
+r we compute: C  (cid:88) C (cid:32) k[α] (cid:33)2 
+P i = C−1  k i  (4)
+H¯ = 1 (cid:88) H(v ) (3) α=1 i
+r N i
+r
+i∈r
+where C is the number of communities, k is
+i
+Weshowthat,indeed,differentrolescanhave the hyperdegree of node i and k[α] is the num-
+i
+a more diverse set of memberships than oth- ber of interactions of node i that are part of
+ers. For example, nurses share a more diverse community α.
+andpervasiveoverlapthanotherroles,whilepa- In Fig. 7, each node is represented as a point
+tients are more strict and less overlapping. In in the Cartesian plane with coordinates equal
+the school datasets, there are classes that are to its hyperdegree and participation coefficient.
+more favoured than others in having multiple The nodes are classified into different regions
+diverse community memberships, possibly due by subdividing both the x-axis and the y-axis
+to physical constraints or participation in more into the 33rd and 66th percentiles. On the y-
+activities. axis,anodeinthetopthirdisclassifiedashub,
+in the middle third as non-hub and in the bot-
+tom third as peripheral. On the x-axis, a node
+C. Cartography of higher-order networks in the top third is classified as a generalist, in
+the middle third as a non-generalist and in the
+In the previous sections, we have mentioned bottom third as a specialist. This classification
+thatnodescanbecharacterizedintermsoftheir gives a total number of nine structural roles,
+simultaneous participation in different commu- corresponding to different regions in the plane.
+nities. We have also highlighted that the com- Our results highlight that network nodes with
+munity memberships of nodes can range from different structural roles are indeed relevant for
+very heterogeneous (i.e., membership vector understanding real-world systems. Nodes with
+with high entropy) to very homogeneous (i.e., a similar hyperdegree can have a very different
+membership vector with low entropy). Com- participation coefficient, and vice versa. Ad-
+munityparticipationbehaviourofnodescanbe ditionally, structural roles can be linked with
+linked with their hyperdegree to classify nodes metadatainformation. Forexample,inhospital
+into different structural roles. data,weobservethatpeoplewiththesamejobs
+We measure the hyperdegree of each node by or status can have very different behaviours,
+consideringthenumberofinteractionstheypar- e.g., patients tend to be peripherals but can
+ticipate in. Community membership diversity range from specialists to generalists. Finally,
+is here computed by considering the participa- in school data, in the same class, we have mul-
+tion coefficient of the membership vectors, pay- tiple representatives for each structural role. In
+ing homage to the seminal work by Guimera et AppendixA3weprovidemoreexamplesofcar-
+al. onthecartographyofcomplexnetworks[68] tography of real-world hypergraph data.
+10
+snoitcaretni
+fo
+rebmuN
+hospital primary school high school
+200 ADM 250 5B 140 2BIO3
+NUR 5A 2BIO2
+175 MED 4A 120 PSI*
+150 PAT 200 Teachers PC
+3B 100 PC*
+125 4B MP*1
+150 80
+100 2A 2BIO1
+1B 60 MP
+75 100 2B MP*2
+50 1A 40
+3A
+25 50 20
+0 0
+0.0 0.2 0.4 0.6 0.8 1.0 0.0 0.2 0.4 0.6 0.8 1.0 0.0 0.2 0.4 0.6 0.8 1.0
+Participation coefficient
+FIG. 7. Cartography of higher-order networks. We provide a cartography of higher-order networks,
+wherenodesareclassifiedbasedbothontheirnumberofinteractions(hyperdegree)andmixed-membership
+to hypergraph communities (participation coefficient). This classification yields nine structural roles (hub,
+non-hub, or peripheral on the y-axis; generalist, non-generalist, or specialist on the x-axis), where com-
+plementary information is provided by the two variables. We apply our method to three face-to-face
+higher-ordersocialsystems, showinghowitcanbeusedtocapturemetadatainformation. Asanexample,
+hospital patients tend to be peripherals but range from specialists to generalists. By contrast, in school
+data, each class has representatives of each structural role.
+IV. CONCLUSIONS put of such a process on a variety of real-world
+data. Hyperlink communities naturally high-
+light the hierarchical and multiscale structure
+The analysis of network communities is
+of a higher-order network, at the same time re-
+widelyrecognizedasafundamentaltoolforun-
+vealing overlaps among node communities. Fi-
+derstandingtheinterplaybetweenthestructure
+nally, we have introduced the notion of the car-
+and dynamics of complex systems, finding ap-
+tography of higher-order networks, and classi-
+plications in fields such as biology and social
+fied nodes in different structural roles, i.e., a
+network analysis. Network communities are of-
+small number of system-independent roles that
+ten defined as groups of nodes that are more
+depend on the patterns of interactions of the
+denselyconnectedtoeachotherwithinthecom-
+nodes and their scale-specific overlapping com-
+munity than they are to nodes outside of the
+munityparticipation. Weshowedthatwiththis
+community. Recently, the framework of hyper-
+classificationweareabletocaptureinformation
+graphs has established itself as a fundamental
+that the hyperdegree alone cannot provide.
+tool to model systems whose interactions are
+not limited to pairs of nodes but may involve Given the interest in link communities in
+an arbitrary number of them. pairwise networks, we believe that hyperlink
+Using a dual approach to community detec- community detection may serve as a relevant
+tion, in this work we have extended the tra- toolforanalysingavarietyofhigher-orderdata,
+ditional notion of link communities to hyper- helpingunveilstructuralpatternswhichcannot
+graphs, extracting clusters of highly related hy- be explored with traditional community detec-
+peredges. By defining a measure to determine tion approaches. In this direction, interesting
+the distance between two hyperedges and per- venuesforfutureresearchincludetheevaluation
+forming hierarchical clustering on top of the of distance measures for hyperedges alternative
+pairwisedistancematrixofsuchhyperedges,we to the Jaccard distance used here, and the de-
+studied the dendrogram obtained as the out- velopmentofmethodstoscalethecomputation
+11
+of hyperlink distances in very large real-world dense to have a meaningful hierarchical scaling
+hypergraphs. fingerprint using such distance.
+1.0
+ACKNOWLEDGEMENTS
+0.8
+F.B. acknowledges support from the Air
+0.6
+Force Office of Scientific Research under
+award number FA8655-22-1-7025. A.M.
+0.4
+acknowledges support from the European
+UnionthroughHorizonEuropeCLOUDSTARS 0.2
+project (101086248).
+0.0
+0 5 5 5 0
+0.
+0.
+2 0.
+0.
+7 1.
+Appendix A: Supplementary Information
+Cut height
+1. Distance measures for hyperedge
+similarity
+Inthemaintext,weusetheJaccarddistance
+because it allows us to investigate patterns of
+overlapping hyperedges, obtaining an interest-
+ing characterization of two different classes of
+higher-order networks. Moreover, Jaccard dis-
+tance is coherent with hypergraphs line-graph
+definitions[70]andtheuseofgraphsline-graph
+for computing overlapping communities [12]. It
+is also worth noting that our proposed distance
+iseasiertocomputethanadirectgeneralization
+of the distance defined in [13], although both
+are computationally expensive. Interestingly,
+two hyperedges having high/low Jaccard dis-
+tancetendtohavehigh/lowdistanceasdefined
+in [13]. We measured the correlation (Pear-
+son) between the two distances in the following
+datasets, selecting a couple of examples from
+each discovered class: high school (r = 0.96,
+p < 0.01), Enron mail (r = 0.87, p < 0.01),
+NDC classes (r = 0.55, p < 0.01) and PACS3
+(r = 0.70, p < 0.01). Moreover, Fig. A1
+shows that results regarding the separation of
+two classes of higher-order data still hold with
+a generalization of the distance defined in [13].
+Thedatasetaboutinteractionsofbaboonsistoo
+seitinummoc
+fo
+rebmun
+.mroN
+hs
+ps
+hospital
+enron
+PACS3
+phys-soc
+NDC classes
+FIG. A1. Hierarchical scaling fingerprints com-
+puted using a direct generalization of the distance
+definedin[13]. Theseparationoftwoclassesofdata
+also holds using this distance.
+2. Datasets
+Summarystatisticsofthedatasetsusedinour
+experiments is reported in Table A1.
+3. Higher-order cartography for additional
+datasets
+In Fig. A2 we show the cartography for ad-
+ditional systems. Consistently with the dataset
+discussedinthemaintext, theplotsshowlarge
+heterogeneity, with nodes with the same num-
+ber of interactions spanning very different val-
+ues of participation coefficients. These rela-
+tional datasets do not have information about
+node attributes, and hence – differently from
+the social proximity datasets presented in the
+maintexts–donotallowustocomparehigher-
+order roles for same-class nodes and different-
+classnodes. Inthesedatasets,theparticipation
+coefficient distribution is skewed towards 0.
+12
+Dataset N E E E E E Domain
+2 3 4 5
+Phys-soc 26800 15311 3700 4135 2854 1613 Co-auth
+NDC classes 1161 1088 297 121 125 94 Bio
+PACS3 33479 16977 2099 2105 2590 1169 Co-auth
+ENRON 143 1512 809 317 138 63 E-mail
+Primary school 242 12704 7748 4600 347 9 Proximity
+High school 327 7818 5498 2091 222 7 Proximity
+Hospital 75 1825 1108 657 58 2 Proximity
+Baboons 13 231 78 142 11 0 Proximity
+TABLE A1. Details of the real-world networked datasets considered for our experiments. Real-world
+hypergraphs from different domains are described by their number of nodes, total number of hyperedges
+and number of hyperedges of size 2, 3, 4 and 5.
+snoitcaretni
+fo
+rebmuN
+Participation coefficient
+FIG. A2. Higher-order cartography for additional datasets.
+[1] S. Boccaletti, V. Latora, Y. Moreno, [5] A.-C. Gavin, P. Aloy, P. Grandi, R. Krause,
+M. Chavez, and D.-U. Hwang, Complex M.Boesche,M.Marzioch,C.Rau,L.J.Jensen,
+networks: Structure and dynamics, Physics S. Bastuck, B. Du¨mpelfeld, et al., Proteome
+Reports 424, 175 (2006). surveyrevealsmodularityoftheyeastcellma-
+[2] M. Girvan and M. E. J. Newman, Commu- chinery, Nature 440, 631 (2006).
+nitystructureinsocialandbiologicalnetworks, [6] S. Wasserman, K. Faust, et al., Social network
+Proceedings of the National Academy of Sci- analysis: Methods and applications (Cam-
+ences 99, 7821 (2002). bridge university press, 1994).
+[3] S. Fortunato and D. Hric, Community detec- [7] G. Palla, I. Der´enyi, I. Farkas, and T. Vicsek,
+tioninnetworks: Auserguide,Physicsreports Uncovering the overlapping community struc-
+659, 1 (2016). tureofcomplexnetworksinnatureandsociety,
+[4] N. J. Krogan, G. Cagney, H. Yu, G. Zhong, nature 435, 814 (2005).
+X.Guo,A.Ignatchenko,J.Li,S.Pu,N.Datta, [8] G.Palla,A.-L.Baraba´si,andT.Vicsek,Quan-
+A. P. Tikuisis, et al., Global landscape of pro- tifyingsocialgroupevolution,Nature446,664
+teincomplexesintheyeastsaccharomycescere- (2007).
+visiae, Nature 440, 637 (2006). [9] E.Ravasz,A.L.Somera,D.A.Mongru,Z.N.
+Oltvai, and A.-L. Baraba´si, Hierarchical orga-
+13
+nization of modularity in metabolic networks, ports 11, 1 (2021).
+science 297, 1551 (2002). [24] A. Patania, G. Petri, and F. Vaccarino, The
+[10] M. Sales-Pardo, R. Guimera, A. A. Moreira, shapeofcollaborations,EPJDataScience6,1
+andL.A.N.Amaral,Extractingthehierarchi- (2017).
+cal organization of complex systems, Proceed- [25] C. Berge, Graphs and hypergraphs (North-
+ingsoftheNationalAcademyofSciences104, Holland Pub. Co., 1973).
+15224 (2007). [26] F. Battiston, E. Amico, A. Barrat, G. Bian-
+[11] A.Clauset,C.Moore,andM.E.Newman,Hi- coni, G. Ferraz de Arruda, B. Franceschiello,
+erarchicalstructureandthepredictionofmiss- I. Iacopini, S. K´efi, V. Latora, Y. Moreno,
+ing links in networks, Nature 453, 98 (2008). et al., The physics of higher-order interactions
+[12] T. S. Evans and R. Lambiotte, Line graphs, in complex systems, Nature Physics 17, 1093
+link partitions, and overlapping communities, (2021).
+Phys. Rev. E 80, 016105 (2009). [27] M.T.Schaub,A.R.Benson,P.Horn,G.Lipp-
+[13] Y.-Y. Ahn, J. P. Bagrow, and S. Lehmann, ner, and A. Jadbabaie, Random walks on sim-
+Linkcommunitiesrevealmultiscalecomplexity plicial complexes and the normalized hodge 1-
+in networks, nature 466, 761 (2010). laplacian, SIAM Review 62, 353 (2020).
+[14] R. Lambiotte, M. Rosvall, and I. Scholtes, [28] T. Carletti, F. Battiston, G. Cencetti, and
+From networks to optimal higher-order mod- D. Fanelli, Random walks on hypergraphs,
+elsofcomplexsystems,Naturephysics15,313 Physical Review E 101, 022308 (2020).
+(2019). [29] P. S. Skardal and A. Arenas, Higher order in-
+[15] F. Battiston, G. Cencetti, I. Iacopini, V. La- teractions in complex networks of phase oscil-
+tora, M. Lucas, A. Patania, J.-G. Young, and lators promote abrupt synchronization switch-
+G. Petri, Networks beyond pairwise interac- ing, Communications Physics 3, 1 (2020).
+tions: structure and dynamics, Physics Re- [30] A. P. Milla´n, J. J. Torres, and G. Bianconi,
+ports 874, 1 (2020). Explosive higher-order kuramoto dynamics on
+[16] L. Torres, A. S. Blevins, D. Bassett, simplicial complexes, Physical Review Letters
+and T. Eliassi-Rad, The why, how, and 124, 218301 (2020).
+when of representations for complex [31] M. Lucas, G.Cencetti,andF.Battiston, Mul-
+systems, SIAM Review 63, 435 (2021), tiorderlaplacianforsynchronizationinhigher-
+https://doi.org/10.1137/20M1355896. order networks, Physical Review Research 2,
+[17] F. Battiston and G. Petri, Higher-Order Sys- 033410 (2020).
+tems (Springer, 2022). [32] L.V.Gambuzza,F.DiPatti,L.Gallo,S.Lepri,
+[18] S. Klamt, U.-U. Haus, and F. Theis, Hyper- M.Romance,R.Criado,M.Frasca,V.Latora,
+graphsandcellularnetworks,PLOSComputa- and S. Boccaletti, Stability of synchronization
+tional Biology 5, e1000385 (2009). in simplicial complexes, Nature Communica-
+[19] G. Petri, P. Expert, F. Turkheimer, tions 12, 1 (2021).
+R. Carhart-Harris, D. Nutt, P. J. Hellyer, [33] Y. Zhang, M. Lucas, and F. Battiston, Do
+and F. Vaccarino, Homological scaffolds of higher-orderinteractionspromotesynchroniza-
+brain functional networks, Journal of The tion? (2022).
+Royal Society Interface 11, 20140873 (2014). [34] I.Iacopini,G.Petri,A.Barrat,andV.Latora,
+[20] C. Giusti, R. Ghrist, and D. S. Bassett, Two’s Simplicial models of social contagion, Nature
+company,three(ormore)isasimplex,Journal Communications 10, 1 (2019).
+of Computational Neuroscience 41, 1 (2016). [35] S. Chowdhary, A. Kumar, G. Cencetti, I. Ia-
+[21] A. R. Benson, D. F. Gleich, and J. Leskovec, copini, and F. Battiston, Simplicial contagion
+Higher-order organization of complex net- in temporal higher-order networks, Journal of
+works, Science 353, 163 (2016). Physics: Complexity 2, 035019 (2021).
+[22] J. Grilli, G. Baraba´s, M. J. Michalska-Smith, [36] L. Neuha¨user, A. Mellor, and R. Lambiotte,
+and S. Allesina, Higher-order interactions sta- Multibody interactions and nonlinear consen-
+bilizedynamicsincompetitivenetworkmodels, sus dynamics on networked systems, Physical
+Nature 548, 210 (2017). Review E 101, 032310 (2020).
+[23] G. Cencetti, F. Battiston, B. Lepri, and [37] U. Alvarez-Rodriguez, F. Battiston, G. F.
+M.Karsai,Temporalpropertiesofhigher-order de Arruda, Y. Moreno, M. Perc, and V. La-
+interactions in social networks, Scientific Re- tora,Evolutionarydynamicsofhigher-orderin-
+14
+teractions in social networks, Nature Human [51] F. Musciotto, F. Battiston, and R. N. Man-
+Behaviour 5, 586 (2021). tegna,Identifyingmaximalsetsofsignificantly
+[38] O. T. Courtney and G. Bianconi, Generalized interacting nodes in higher-order networks
+network structures: The configuration model (2022), arXiv:2209.12712 [physics.soc-ph].
+and the canonical ensemble of simplicial com- [52] J.-G. Young, G. Petri, and T. P. Peixoto, Hy-
+plexes, Physical Review E 93, 062311 (2016). pergraph reconstruction from network data,
+[39] J.-G. Young, G. Petri, F. Vaccarino, and Communications Physics 4, 1 (2021).
+A. Patania, Construction of and efficient sam- [53] M.M.Wolf,A.M.Klinvex,andD.M.Dunlavy,
+pling from the simplicial configuration model, Advantages to modeling relational data using
+Physical Review E 96, 032312 (2017). hypergraphsversusgraphs,in2016IEEEHigh
+[40] P. S. Chodrow, Configuration models of ran- Performance Extreme Computing Conference
+dom hypergraphs, Journal of Complex Net- (HPEC) (IEEE, 2016) pp. 1–7.
+works 8, cnaa018 (2020). [54] A.Vazquez,Findinghypergraphcommunities:
+[41] N. Ruggeri, F. Battiston, and C. De Bacco, A a bayesian approach and variational solution,
+principled, flexible and efficient framework for Journal of Statistical Mechanics: Theory and
+hypergraph benchmarking (2022). Experiment 2009, P07006 (2009).
+[42] K. Kovalenko, I. Sendin˜a-Nadal, N. Khalil, [55] T.Carletti,D.Fanelli,andR.Lambiotte,Ran-
+A. Dainiak, D. Musatov, A. M. Raigorodskii, dom walks and community detection in hy-
+K.Alfaro-Bittner,B.Barzel,andS.Boccaletti, pergraphs, Journal of Physics: Complexity 2,
+Growing scale-free simplices, Communications 015011 (2021).
+Physics 4, 1 (2021). [56] A. Eriksson, D. Edler, A. Rojas,
+[43] A. P. Milla´n, R. Ghorbanchian, N. Defenu, M. de Domenico, and M. Rosvall, How
+F. Battiston, and G. Bianconi, Local topologi- choosingrandom-walkmodelandnetworkrep-
+calmovesdetermineglobaldiffusionproperties resentation matters for flow-based community
+of hyperbolic higher-order networks, Physical detection in hypergraphs, Communications
+Review E 104, 054302 (2021). Physics 4, 1 (2021).
+[44] A.R.Benson,R.Abebe,M.T.Schaub,A.Jad- [57] P. S. Chodrow, N. Veldt, and A. R. Ben-
+babaie,andJ.Kleinberg,Simplicialclosureand son, Generative hypergraph clustering: From
+higher-orderlinkprediction,Proceedingsofthe blockmodels to modularity, Science Advances
+National Academy of Sciences 115, E11221 7, eabh1303 (2021).
+(2018). [58] P. Chodrow, N. Eikmeier, and J. Had-
+[45] A. R. Benson, Three hypergraph eigenvector dock, Nonbacktracking spectral clustering
+centralities, SIAM Journal on Mathematics of of nonuniform hypergraphs, arXiv preprint
+Data Science 1, 293 (2019). arXiv:2204.13586 (2022).
+[46] F. Tudisco and D. J. Higham, Node and [59] M.Contisciani,F.Battiston,andC.DeBacco,
+edgenonlineareigenvectorcentralityforhyper- Inference of hyperedges and overlapping com-
+graphs, Communications Physics 4, 1 (2021). munities in hypergraphs, Nature communica-
+[47] Q. F. Lotito, F. Musciotto, A. Montresor, and tions 13, 1 (2022).
+F. Battiston, Higher-order motif analysis in [60] N. Ruggeri, M. Contisciani, F. Battiston,
+hypergraphs, Communications Physics 5, 79 and C. De Bacco, Generalized inference of
+(2022). mesoscale structures in higher-order networks
+[48] Q. F. Lotito, F. Musciotto, F. Battiston, and (2023).
+A. Montresor, Exact and sampling methods [61] J. Stehl´e, N. Voirin, A. Barrat, C. Cat-
+for mining higher-order motifs in large hyper- tuto, L. Isella, J.-F. Pinton, M. Quaggiotto,
+graphs, Computing , 1 (2023). W. Van den Broeck, C. R´egis, B. Lina, et al.,
+[49] S. Krishnagopal and G. Bianconi, Spectral de- High-resolution measurements of face-to-face
+tection of simplicial communities via hodge contactpatternsinaprimaryschool,PloSone
+laplacians, Physical Review E 104, 064303 6, e23176 (2011).
+(2021). [62] P. Vanhems, A. Barrat, C. Cattuto, J.-F.
+[50] F. Musciotto, F. Battiston, and R. N. Man- Pinton, N. Khanafer, C. R´egis, B.-a. Kim,
+tegna, Detecting informative higher-order in- B.Comte,andN.Voirin,Estimatingpotential
+teractions in statistically validated hyper- infectiontransmissionroutesinhospitalwards
+graphs, Communications Physics 4, 1 (2021). using wearable proximity sensors, PloS one 8,
+15
+e73970 (2013). FraLotito/hyperlink-communities (2024).
+[63] R. Mastrandrea, J. Fournet, and A. Barrat, [67] Q. F. Lotito, M. Contisciani, C. De Bacco,
+Contact patterns in a high school: a com- L.DiGaetano,L.Gallo,A.Montresor,F.Mus-
+parison between data collected using wearable ciotto, N. Ruggeri, and F. Battiston, Hyper-
+sensors,contactdiariesandfriendshipsurveys, graphx: a library for higher-order network
+PloS one 10, e0136497 (2015). analysis, Journal of Complex Networks 11,
+[64] V. Gelardi, J. Godard, D. Paleressompoulle, cnad019 (2023).
+N. Claidiere, and A. Barrat, Measuring social [68] R. Guimera` and L. A. N. Amaral, Functional
+networksinprimates: Wearablesensorsversus cartography of complex metabolic networks,
+direct observations, Proceedings of the Royal Nature 433, 895 (2005).
+Society A: Mathematical, Physical and Engi- [69] F.Battiston,V.Nicosia,andV.Latora,Struc-
+neering Sciences 476, 20190737 (2020). turalmeasuresformultiplexnetworks,Physical
+[65] https://journals.aps.org/datasets (2021). Review E 89, 032804 (2014).
+[66] Q. F. Lotito, F. Musciotto, A. Mon- [70] S.G.Aksoy,C.Joslyn,C.O.Marrero,B.Prag-
+tresor, and F. Battiston, hyperlink- gastis, and E. Purvine, Hypernetwork science
+communities, https://github.com/ via high-order hypergraph walks, EPJ Data
+Science 9, 16 (2020).

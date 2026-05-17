@@ -1,0 +1,3115 @@
+REPUBLIQUE ALGERIENNE DEMOCRATIQUE ET POPULAIRE MINISTERE DE L’ENSEIGNEMENT
+SUPERIEUR ET DE LA RECHERCHE SCIENTIFIQUE
+UNIVERSITE MOSTEPHA BEN BOULAID BATNA 2
+FACULTE DE TECHNOLOGIE
+DÉPARTEMENT GÉNIE INDUSTRIEL
+LABORATOIRE D’AUTOMATIQUE ET PRODUCTIQUE
+Dr Hanane ZERMANE
+Maitre de conférences B
+COURS ET TRAVAUX DIRIGES
+INTELLIGENCE Intelligence Artificielle pour l’Ingénierie
+POUR LES CYCLES DE MASTER EN
+Génie industriel
+Management industriel
+ARTIFICIELLE
+POUR
+L’INGENIERIE
+Génie Industriel
+Table de matières
+Table de matières
+Introduction ..................................................................................................................................... 3
+Programme proposé ......................................................................................................................... 3
+Objectif du cours ............................................................................................................................. 4
+Les prérequis ................................................................................................................................... 4
+Chapitre 1 : Introduction à L’intelligence Artificielle .................................................................... 5
+1.1. Introduction ...................................................................................................................... 5
+1.2. Définitions de l’IA ............................................................................................................ 5
+1.3. Historique ......................................................................................................................... 6
+1.4. Domaines d’application .................................................................................................... 8
+1.5. Le raisonnement dans l’IA ............................................................................................... 8
+1.6. Quelques techniques de l’IA............................................................................................. 9
+1.7. Conclusion ........................................................................................................................ 9
+Chapitre 2 : Les systèmes experts ................................................................................................. 10
+2.1. Introduction .................................................................................................................... 10
+2.2. Définitions ...................................................................................................................... 10
+2.3. Rôle des Systèmes Experts ............................................................................................. 10
+2.4. Composantes d’un système expert ................................................................................. 12
+2.4.1. La base de connaissances ........................................................................................ 12
+2.4.2. Le moteur d’inférence ............................................................................................. 14
+2.5. Modes de raisonnement .................................................................................................. 16
+2.5.1. Chainage avant ........................................................................................................ 16
+2.5.2. Chainage arrière ...................................................................................................... 16
+2.5.3. Chainage mixte ........................................................................................................ 17
+2.6. Comment Construire un Système Expert ....................................................................... 17
+2.7. Exercices corrigés ........................................................................................................... 19
+2.8. Exercices proposés ......................................................................................................... 21
+2.9. Conclusion ...................................................................................................................... 22
+Chapitre 3 : La logique floue ......................................................................................................... 23
+3.1. Introduction .................................................................................................................... 23
+3.1.1. Origine ..................................................................................................................... 23
+3.1.2. Définition de la logique floue .................................................................................. 24
+3.1.3. Historique d’application .......................................................................................... 25
+3.2. Les ensembles classiques ................................................................................................ 25
+3.2.1. Les ensembles classiques : rappel ........................................................................... 25
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 1
+Table de matières
+3.2.2. Limite des ensembles classiques ............................................................................. 26
+3.3. Les ensembles flous ........................................................................................................ 27
+3.3.1. Définitions ............................................................................................................... 27
+3.3.2. Opérations sur les ensembles flous ......................................................................... 31
+3.4. Création d’un système de contrôle flou .......................................................................... 33
+3.4.1. La fuzzification ....................................................................................................... 34
+3.4.2. L’inférence floue ..................................................................................................... 36
+3.4.3. L’agrégation et l’activation des règles .................................................................... 36
+3.4.4. La défuzzification .................................................................................................... 39
+3.5. Exercices corrigés ........................................................................................................... 40
+3.6. Conclusion ...................................................................................................................... 44
+Chapitre 4 : Les approches d’apprentissage .................................................................................. 45
+4.1. Introduction .................................................................................................................... 45
+4.2. Historique des réseaux de neurones artificiels ............................................................... 46
+4.3. Le neurone formel .......................................................................................................... 48
+4.4. Perceptron (premier réseau de neurones) ....................................................................... 49
+4.4.1. Types d’apprentissage ............................................................................................. 50
+4.4.2. Règle d’apprentissage ............................................................................................. 51
+4.4.3. Exemple (ET, OU et XOR) ..................................................................................... 52
+4.4.4. Limitation du perceptron ......................................................................................... 53
+4.5. Réseau de neurones multicouches .................................................................................. 54
+4.5.1. Perceptron multicouches (MLP) ............................................................................. 56
+4.5.2. Réseaux à fonction radiales de bases (RBF) ........................................................... 57
+4.6. SVM (Machine à Vecteur de Support) ........................................................................... 58
+4.6.1. Définition ................................................................................................................ 58
+4.6.2. Principe .................................................................................................................... 59
+4.6.3. Fonction du noyau (kernel) ..................................................................................... 60
+4.6.4. Extensions aux cas multi-classe .............................................................................. 61
+4.6.5. Exemple de classification ........................................................................................ 61
+4.7. Exercices corrigés ........................................................................................................... 62
+4.8. Conclusion ...................................................................................................................... 67
+Références Bibliographique .......................................................................................................... 68
+Références bibliographiques proposées ........................................................................................ 68
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 2
+Introduction
+Introduction
+Bien que les ordinateurs soient aujourd'hui capables de résoudre de nombreux problèmes, il
+reste encore des domaines où les humains ont plus de facilité que les machines. Le principe de
+l'intelligence artificielle (IA) est d’imiter l'intelligence humaine, afin de construire des machines
+plus puissantes et plus pratiques.
+Dans ce contexte nous allons présenter ce document, qui est composé de quatre chapitres et
+basé sur le programme proposé pour les étudiants de Master en Génie Industriel.
+Programme proposé
+L'objectif de ce module est de présenter les techniques de l'intelligence artificielle et les
+domaines où elles sont utilisées, et ce dans le but d'offrir un panorama de cette discipline.
+Parmi les prérequis et les connaissances préalables, on recommande : les systèmes formels, la
+logique des propositions et la logique des prédicats. Le programme proposé contient les chapitres
+suivants :
+Chapitre 1 : Introduction à l’intelligence Artificielle (3 semaines)
+Chapitre 2 : La Logique des prédicats et Systèmes Experts (4 semaines)
+Chapitre 3 : La Logique Floue (3 semaines)
+Chapitre 4 : L’Apprentissage Automatique (K-means, K-ppv, RNA, SVM) (4 semaines)
+Les différents travaux pratiques proposés dans le cadre de ce cours sont présentés comme suit :
+TP 1 : Système expert
+L’objectif du premier TP est l’intégration du système expert dans le contrôle d’un système de
+production.
+TP 2 : Logique floue
+L’objectif du deuxième TP est l'application de la logique floue pour la création d’un contrôleur
+flou utilisant les boites à outils de Matlab, Fuzzy Toolbox et Simulink.
+TP 3 : Apprentissage Automatique
+L’objectif du troisième TP est l’utilisation des techniques K-means, K-ppv, RNA et SVM pour la
+classification utilisant Python.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 3
+Introduction
+Objectif du cours
+Le but de ce cours est de présenter une initiation à l’Intelligence Artificielle (IA) essentiellement :
+ Introduction à l’intelligence artificielle, ces différentes définitions, son historique, ces
+domaines d’application et son développement actuel.
+ Présentation des techniques de l’IA : Système expert, la logique floue, les réseaux de
+neurones artificiels et SVM.
+Les prérequis
+ Les systèmes formels : dont la compréhension est un point central pour tout travail sur la
+pensée et les mathématiques.
+ La logique des propositions et des prédicats : constitue la seule théorie mathématiquement
+développée et formulée du savoir, du raisonnement et de la vérité et qui donc est un outil
+de base pour la représentation et la manipulation des connaissances en général.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 4
+Chapitre 1 : Introduction à l’Intelligence Artificielle
+Chapitre 1 : Introduction à L’intelligence Artificielle
+1.1. Introduction
+L’objet de l’IA est de reconstituer des raisonnements et des actions intelligentes, à l'aide de
+moyens artificiels, des ordinateurs ou des machines intelligentes. Dans l’industrie, pour optimiser
+et évoluer le contrôle et la supervision des processus, le recours à ces techniques de l’IA est l’une
+des solutions efficaces. Parmi elles, les systèmes experts, la logique floue, etc. Les techniques de
+l’IA s’appliquent pour la surveillance des systèmes industriels et se présentent comme des
+méthodes utilisées en l’absence du modèle du processus ou dite des modèles symboliques.
+Dans tous les secteurs d’activité, les techniques de l’IA tendent à élargir le champ d’action des
+machines, pour leur donner la possibilité de voir, d’entendre, de raisonner, d’agir, etc. Les
+systèmes de ces machines possèdent des caractéristiques associées avec l’intelligence dans le
+comportement humain.
+L’IA a prouvé son importance, en essayant de résoudre les différents problèmes pouvant être
+engendrés. Ceci peut nous aider à prendre les décisions qui assurent la bonne exécution du système
+sujet de contrôle ou d’optimisation.
+L’importance de l’intelligence artificielle se présente quand par exemple :
+• La connaissance algorithmique peut être impossible à mettre en œuvre : problème d’explosion
+combinatoire. (jeux échec, go (75 milliards de possibilités (5 fois jeux d’échec), …)
+Jeu d’échec : en moyenne 20 coups par étapes et 50 échanges dans une partie => 2050 situations
+à explorer !
+• Il n’existe pas de solution algorithmique connue : Traitement de la langue (parole).
+• Les spécialistes d’un domaine font appel à des connaissances implicites (tacites) basées sur
+leur savoir-faire (Les heuristiques).
+1.2. Définitions de l’IA
+Plusieurs définitions ont été attribuées à l’intelligence Artificielle, parmi celle-ci (Boisard
+2014) :
+Définition 1 : « Si l'informatique est la science du traitement de l'information, l'IA s'intéresse à
+tous les cas où ce traitement ne peut être ramené à une méthode simple, précise, algorithmique »
+(Laurière 87).
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 5
+Chapitre 1 : Introduction à l’Intelligence Artificielle
+Définition 2 : L’IA est « l’application de logiciels et de techniques de programmation mettant en
+lumière les principes de l’intelligence en général, et de la pensée humaine en particulier » (Boden
+1977).
+Définition 3 : « L’étude de l’intelligence, indépendamment de sa manifestation chez l’homme,
+l’animal ou la machine » (McCarthy)
+Définition 4 : « La poursuite de la métaphysique par d’autres moyens » (Longuet-Higgins).
+Définition 5 : « La science s’intéressant aux machines qui réalisent ce qui, fait par l’homme,
+nécessiterait de l’intelligence » (Minsky 1986).
+Définition 6 : « L'intelligence artificielle peut être définie comme la tentative d'obtenir des
+machines comme celles qu'on voit dans les films. » (Russell Beale).
+1.3. Historique
+L’intelligence artificielle, s’est développée en parallèle avec le calcul numérique et non en
+concurrence avec celui-ci. Ce développement a passé par plusieurs étapes, depuis des siècles.
+Parmi ces développements, nous citons :
+Le canard de Vaucanson : est un automate créé par Jacques de Vaucanson en 1738. Ce canard
+artificiel de cuivre doré boit, mange, cancane, barbote et digère comme un vrai canard. Les ailes
+étaient représentées, os par os, d'un mécanisme identique à ceux des
+vrais oiseaux. Il était possible de programmer les mouvements de cet
+automate, grâce à des pignons placés sur un cylindre gravé, qui
+contrôlaient des baguettes traversant les pattes du canard. Le
+mécanisme, placé dans l'imposant piédestal, visible par tous, dans le
+but de montrer la complexité du travail accompli.
+Le test de Turing : en 1950, le mathématicien Anglais Alan Turing publiait un article concernant
+l’IA. Il considérait la question : « Les machines peuvent-elles penser ? ». Le test de Turing,
+précurseur de l’intelligence artificielle, était fondé sur cette idée :
+« on suppose qu’un individu et une machine peuvent indifféremment répondre à des questions
+posées par une deuxième personne située à une certaine distance et qui n’a aucun moyen
+matériel de savoir qui, de la machine ou de l’homme, lui répond ; »
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 6
+Chapitre 1 : Introduction à l’Intelligence Artificielle
+Si cette personne ne devine pas que son interlocuteur est un ordinateur, on pourra dire que celui-
+ci est doté d’intelligence. Évidemment, toutes les réalisations actuelles sont bien loin de pouvoir
+passer ce test. La réponse proposée par Turing dans son article (1950) est :
+« Oui, je crois qu’il sera possible, dans une cinquantaine d’années, de programmer des
+ordinateurs pour les faire jouer au jeu de l’imitation. L’ordinateur aura plus de 70% de chance
+de procéder à l’identification exacte après 5 minutes d’interrogation ».
+Les années 1950 et 1960 : il faut attendre les années 1930 pour que certains mathématiciens
+fassent progresser la logique et les années 1950 pour que les calculateurs investissent le domaine
+civil. Ces deux outils rassemblés vont provoquer la naissance de l’IA, terme introduit en 1954 par
+McCarthy. C’est à cette époque que naissent parallèlement le calcul scientifique (manipulation de
+nombres) et le calcul formel (manipulation de symboles). A ses débuts, l’IA s’est caractérisée par
+la description exhaustive de problèmes simples et généraux. On compte sur les capacités de
+mémoire des ordinateurs et leur capacité de calcul pour engendrer beaucoup de solutions, les
+comparer et choisir la meilleure. Cela a conduit rapidement à l’explosion combinatoire, même si
+la puissance des machines a été démultipliée en très peu de temps.
+Les années 1970 : voient naître le concept de système expert. C’est un système dédié à la
+résolution d’un problème très particulier, grâce à la représentation des connaissances spécialisées
+du domaine. L’intelligence devient alors synonyme de prise de décision dans un contexte difficile,
+en gérant des incertitudes ou des informations incomplètes, voire contradictoires. Ceci, on le
+résume par expertise, par opposition aux connaissances simples et rigoureuses que l’on traitait
+dans les premières applications.
+Les années 1980 et 1990 : les années 1980 sont les années de la pénétration industrielle. Les
+Japonais lancent leur projet d’ordinateurs de la 5ème génération. Ainsi, le langage PROLOG,
+implémentant directement des inférences logiques, se développe et se répand rapidement.
+Nos jours :
+Véhicules autonomes, Machine Learning, Deep Learning, …
+Durant toute cette période, l’intelligence artificielle est intégrée presque dans tous les domaines.
+Son application aujourd’hui s’élargie surtout dans le domaine industriel.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 7
+Chapitre 1 : Introduction à l’Intelligence Artificielle
+1.4. Domaines d’application
+L’intelligence artificielle s’applique dans de différents secteurs et domaines. Nous pouvons
+citer les principaux :
+ Le calcul formel,
+ La vision artificielle : analyse de texte, d’images,
+ La robotique : génération de plans,
+ Les machines autonomes : perception, interprétation, décision, action,
+ Le langage naturel : traduction, compréhension, synthèse,
+ La démonstration de théorèmes,
+ Les jeux,
+ La représentation des connaissances dans diverses disciplines,
+ Médecine,
+ Automatisme,
+ L’apprentissage automatique (RNA, Deep learning, …).
+L’application de l’intelligence artificielle dans ces différents domaines a prouvé son utilité. Ceci
+n’est possible qu’à base des différents raisonnements de l’IA.
+1.5. Le raisonnement dans l’IA
+On rencontre quelques catégories de raisonnement génériques, adaptées à des applications dans
+n’importe quel domaine :
+ Le raisonnement déductif (rendre explicites des connaissances implicites),
+ Le raisonnement abductif (rechercher des causes plausibles à des manifestations),
+ Le raisonnement inductif (construire des lois, des concepts à partir d’exemples),
+ Le raisonnement analogique (rapprochement entre situations particulières),
+ Le raisonnement hypothétique ou par défaut (pallier le manque d’information par des
+hypothèses explicites ou implicites).
+Il existe d’autres catégories de raisonnement spécifiques, adaptées à des applications bien
+particulières :
+ Le raisonnement temporel (gérer le temps pour la planification ou la simulation d’événements
+datés, conduite d’ateliers de production, par exemple),
+ Le raisonnement spatial et géométrique (pour la robotique, par exemple),
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 8
+Chapitre 1 : Introduction à l’Intelligence Artificielle
+ Le raisonnement causal (propager des causes pour en trouver les effets ou encore remonter de
+l’observation d’un effet à sa cause possible),
+ Le raisonnement qualitatif (décrire le comportement de systèmes physiques à l’aide d’ordres
+de grandeurs symboliques).
+1.6. Quelques techniques de l’IA
+Dans tous les secteurs d’activité, les techniques de l’IA tendent à élargir le champ d’action des
+machines, en leur donnant la possibilité de voir, d’entendre, de raisonner, de parler, d’agir, etc.
+C'est-à-dire des systèmes qui possèdent des caractéristiques associées avec l’intelligence dans le
+comportement humain :
+ Le langage de compréhension,
+ L’apprentissage,
+ Le raisonnement,
+ Les solutions des problèmes, etc.
+Répondant aux questions :
+• Comment le cerveau humain fonctionne-t-il ?
+• Est-ce qu’on peut extraire l’intelligence humaine vers des machines ?
+• Des machines peuvent-elles vraiment être intelligentes ?
+1.7. Conclusion
+L’IA est un ensemble de réalisations et de recherches qui essaient d’imiter artificiellement les
+performances humaines. Donc, on essaie d’obtenir un comportement intelligent avec des
+ordinateurs, par le biais des différentes techniques de l’intelligence artificielle. Dans le cadre de ce
+cours, nous allons voir les techniques suivantes :
+ Les Systèmes Experts,
+ La Logique Floue,
+ Les techniques d’apprentissage automatique supervisé et non supervisé (reconnaissance de
+formes, régression ou classification) : K-means, K-ppv, Réseau de Neurones Artificiels et
+SVM.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 9
+Chapitre 2 : Les systèmes experts
+Chapitre 2 : Les systèmes experts
+2.1. Introduction
+L’IA est sans conteste, une des aventures intellectuelles de la fin du vingtième siècle et le début
+de notre siècle, de telle sorte que, les machines se comportent comme des humains. Ce qui nous
+intéresse, c’est le raisonnement dans l’IA. Est-ce qu’on peut vraiment réaliser des systèmes ou des
+machines qui peuvent raisonner pour faire le même travail voulu ? Pour répondre à cette question,
+les systèmes experts sont indispensables, ceux sont eux qui peuvent aider ces machines à exploiter
+les connaissances acquises, et donner les réponses aux requêtes posées par les utilisateurs, dans un
+domaine spécifié.
+Hypothèse :
+Est-ce qu’on peut réaliser des systèmes ou des machines qui peuvent raisonner afin de faire le
+même travail désiré qu’un être humain ?
+Réponses :
+• Les systèmes experts : peuvent aider ces machines à exploiter les connaissances acquises, et
+donner les réponses aux requêtes posées par les utilisateurs.
+• La méthodologie des systèmes experts soulève de nombreux espoirs, et semble s'accorder avec
+le développement accéléré de l’informatique, et la complexité des problèmes et des systèmes
+existants.
+• Les systèmes experts viennent d'exploiter les connaissances, ainsi que les expériences des
+experts pour résoudre ou essayer d'englober le tout d'un problème.
+2.2. Définitions
+Définition 1 : un système expert peut être défini de deux façons. La première est fonctionnelle,
+pour décrire la fonction du système, qu’est-ce qu’il fait ou qu’il devrait faire. La seconde, est
+technique, s’intéresse au système comment est-il construit. Si on combine ces deux formules : «Un
+système expert est un programme conçu pour simuler le comportement d'un humain qui est un
+spécialiste ou un expert dans un domaine très restreint » (Denning 1986).
+Définition 2 : « un ensemble de programmes capable de reproduire la démarche d’un expert
+humain confronté à un problème dans son domaine de compétence » (Denis 2006).
+2.3. Rôle des Systèmes Experts
+Lorsque le processus intellectuel par lequel un humain évalue une situation, ou prend une
+décision est précisément modélisé, il est relativement facile de le programmer, c’est le cas par
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 10
+Chapitre 2 : Les systèmes experts
+exemple, dans des domaines tels que la comptabilité, le calcul scientifique ou la commande
+numérique de machines-outils. Les systèmes experts se sont développés comme une technique
+informatique visant à atteindre trois objectifs :
+ Capturer aisément les unités de savoir-faire : pour faciliter l’expression la plus directe possible
+des règles, par rapport à leur forme d’émergence chez les experts.
+ Exploiter l’ensemble des unités de savoir-faire : donc combiner et/ou chainer des groupes de
+règles pour inférer (ou dériver) des connaissances telles que des jugements, plans, preuves,
+décisions, prédictions, nouvelles règles, …. Et rendre compte de la manière dont les nouvelles
+connaissances ont été inférées.
+ Supporter aisément la révision de l’ensemble des unités de savoir-faire : c’est d’offrir des
+facilités pour les ajouts et les suppressions de règles.
+Le schéma d’un système expert est représenté par la figure 2.1.
+Figure 2.1. Schéma d'un Système Expert.
+Il existe plusieurs systèmes experts crées et appliqués dans plusieurs domaines, médical,
+industriel, chimie, …. Parmi eux :
+• SEDIAG, DIAGNEX, MAINTEX, SOLVEUR/AMIDEC : des systèmes experts pour le
+diagnostic.
+• DENDRAL : 1969, chimie, recherche la formule développée d’un corps organique à partir de
+la formule brute et du spectrogramme de masse du corps considéré. Identifier les constituants
+chimiques d'un matériau.
+• CRYSALIS : 1979, chimie, recherche la structure de protéines à partir de résultats d’analyse
+cristallographique.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 11
+Chapitre 2 : Les systèmes experts
+• MOLGEN : 1977, biologie, engendre un plan de manipulations génétiques en vue de
+construire une entité biologique donnée.
+• PROSPECTOR : 1978, géologie, aide le géologue à évaluer l’intérêt d’un site en vue d’une
+prospection minière. (1600 règles)
+• AM : 1977, mathématiques, proposition de conjectures, de concepts intéressants. (500 règles)
+• MUSCADET : 1984, mathématiques, démonstration de théorèmes.
+• MYCIN : 1974, médecine, système d’aide au diagnostic et au traitement de maladies
+bactériennes du sang (Denis 2006).
+2.4. Composantes d’un système expert
+Un système expert est composé de deux parties principales, une base de connaissances qui
+contient deux parties : une base de faits et une base de règles, et un moteur d’inférence qui changent
+entre elles les mises à jour. L’architecture d’un système expert est présentée sur la figure 2.2.
+Figure 2.2. Architecture d’un système expert.
+2.4.1. La base de connaissances
+Chaque expert acquis au cours de son travail une expertise, cette expertise (connaissances) est
+stockée sous forme de faits et de règles de production. Cet ensemble de connaissances, est conservé
+sur un support de stockage, appelé « une base de connaissances ».
+2.4.1.1. La base de fait :
+Contient les différents faits utiles à l’application. Les faits sont des variables décrivant le
+monde, représentés par un nom et un état. On les utilise pour conditionner l'exécution des règles
+par le moteur d'inférence. La base de fait possède les caractéristiques suivantes :
+i. Mémoire de travail : elle est variable au cours de l’exécution et vidée lorsque l’exécution
+est terminée. Au début, elle contient ce que l’on sait du cas examiné avant toute intervention
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 12
+Chapitre 2 : Les systèmes experts
+du moteur d’inférence (faits initiaux). Puis elle est complétée par les faits déduits par le
+moteur ou demandés à l’utilisateur (méta-faits).
+Par exemple, dans le domaine médical, la base de faits pourra contenir une liste de symptômes
+au début et un diagnostic lorsque celle-ci se terminera.
+ii. Le type d’un fait : les faits peuvent prendre des formes plus ou moins complexes. Les
+valeurs possibles sont :
+ Booléennes : vrai, faux
+ Symboliques ou nominales : appartenant à un domaine fini de symboles
+ Réelles : pour représenter les faits continus.
+Un système expert qui n’utilise que des faits booléens est dit d’ordre 0. Un système expert qui
+utilise des faits symboliques ou réels, sans utiliser de variables, est d’ordre 0+. Et un système
+utilisant la logique du premier ordre (calcul) est d’ordre 1.
+iii. Les formules et les conditions : Dans un système expert d’ordre 0, on pourra par exemple
+écrire des formules d’un fait booléen ou sa négation de la forme :
+actif ou ˥actif
+Dans un système d’ordre 0+, on pourra trouver les formules : Si X est actif et (profession =
+médecin) et (salaire ≤ 20000).
+Illustration : « actif » est un fait booléen, profession est un fait symbolique et salaire est un fait
+réel.
+Dans un système d’ordre 1, on pourra trouver : X maladie(X) et (X = grippe) et (symptôme(X)
+= forteFièvre).
+∀
+Ces formules sont appelées conditions lorsqu’elles servent à déclencher des règles. On
+remarque que les faits booléens peuvent être interprétés comme des formules puisqu’ils possèdent
+une valeur de vérité (1 ou 0).
+iv. Méta-faits et Méta-valeurs : Pour qu’un système expert puisse modéliser un raisonnement
+humain, il est indispensable qu’il puisse raisonner sur ses propres raisonnements, réfléchir
+aux faits qu’il manipule, aux formules qu’il peut construire, etc.
+Il n’est pas suffisant que le système ait des connaissances, il faut aussi qu’il ait des méta-
+connaissances.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 13
+Chapitre 2 : Les systèmes experts
+Ainsi, valeur(profession) est un méta-fait symbolique => médecin
+valeur(salaire) = connue est une méta-condition => ≤ 20000
+Quand un fait est inconnu, on peut envisager de demander sa valeur à l’utilisateur, si possible.
+Mais il n’est pas envisageable par exemple qu’un médecin demande à son patient : "quelle maladie
+avez-vous ?", ni qu’un juge demande à la personne comparaissant devant lui : "à quelle peine dois-
+je vous condamner ?» (Denis 2006).
+2.4.1.2. La Base de Règles :
+La base de règles (BR) représente les raisonnements effectués par un expert. Ces règles sont
+appelées les unes à la suite des autres afin de créer des enchaînements de raisonnements. Tous ces
+raisonnements peuvent être représentés sous la forme de règles de production de type « Si la
+condition est vraie alors exécuter action ».
+Une règle est de la forme « Si conjonction de conditions Alors conclusion » où une conclusion
+est de la forme : Fait = valeur
+La conjonction, comprise entre Si et Alors, est appelée prémisse ou le déclencheur de la règle.
+La conclusion, est appelée le corps de la règle.
+En formalisme logique, en notant les conditions C , · · · ,C ,
+1 n
+On écrit une règle ainsi : C C · · · C [Fait = valeur]
+1 2 n
+(en langage Prolog, la notation est en général : [Fait = valeur] : − C , · · · ,C )
+∧ ∧ ∧ ⇒ 1 n
+Déclencher une règle consiste à remplacer ses prémisses par sa conclusion (chaînage avant), ou
+sa conclusion par ses prémisses (chaînage arrière) (Denis 2006).
+2.4.2. Le moteur d’inférence
+Un moteur d’inférence est un mécanisme qui permet d’inférer des connaissances nouvelles à
+partir de la base de connaissances du système. Selon différentes stratégies, le moteur d'inférence
+utilise des règles, les interprète, les enchaîne jusqu'à arriver à un état représentant une condition
+d'arrêt. L'exécution des règles par le moteur d'inférence influe sur l'état des faits et éventuellement
+sur les autres règles. Le cycle de base d’un moteur d’inférence est présenté sur la figure 2.3.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 14
+Chapitre 2 : Les systèmes experts
+Figure 2.3. Cycle de base d’un moteur d’inférence.
+1) L’évaluation
+La sélection (restriction) : on cherche à déterminer un sous-ensemble F1 de BF et un sous-
+ensemble R1 de BR qui méritent a priori d’être mis en présence lors de l’étape de filtrage.
+Le filtrage (pattern-matching) : En chaînage avant, on compare les prémisses des règles de R1
+avec les faits. En chaînage arrière, on compare les conclusions des règles de R1 avec le sous-but à
+atteindre. Dans les deux cas, on détermine un ensemble R2 de règles qu’il est possible de
+déclencher, appelé ensemble de conflit.
+La résolution de conflit : consiste à choisir dans R2 un sous-ensemble R3 de règles qu’il va falloir
+effectivement déclencher.
+2) Régime irrévocable et retour en arrière
+Lorsque R3 est vide, les systèmes les plus simples se contentent de s’arrêter. On dit que ces
+moteurs d’inférence sont en régime irrévocable (invariable). Un fonctionnement un peu plus
+compétent consiste à réexaminer l’ensemble de conflit R2 du cycle précédent. Certaines règles y
+ont déjà été déclenchées. On peut décider de ne pas remettre en question les modifications de BF
+consécutives à ces déclenchements et de déclencher d’autres règles de R2. Dans ce cas, on dira
+que le système expert est en régime irrévocable.
+Par contre, si on annule les modifications de BF avant de choisir d’autres règles à déclencher
+dans R2, on dit qu’on a effectué un retour arrière. Un système expert fonctionnant de cette manière
+est en régime par tentatives (branch and bound).
+3) L’exécution : mode de raisonnement
+On distingue trois modes principaux de fonctionnement pour la phase d’exécution des moteurs
+d’inférences. C’est à dire trois façons de raisonner : le chaînage avant, le chaînage arrière et le
+chaînage mixte (Denis 2006).
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 15
+Chapitre 2 : Les systèmes experts
+2.5. Modes de raisonnement
+2.5.1. Chainage avant
+Un moteur d'inférence fonctionne dans ce mode lorsque les faits représentent des informations
+dont la vérité a été prouvée. Ce mode de fonctionnement va des faits vers les buts :
+• Détecter les règles dont les prémisses sont vérifiées (filtrage)
+• Sélectionner la règle à appliquer
+• Appliquer la règle
+• Recommencer jusqu'à ce qu'il n'y ait plus de règle applicable
+Le processus de chainage avant suit l’algorithme suivant :
+Algorithme chaînage avant :
+ENTREE: BF, BR, F
+F est le fait à déduire
+Tant que F n’est pas dans BF et qu’il existe dans BR une règle applicable faire
+choisir une règle applicable R
+BR = BR − R (désactivation de R)
+fin tant que
+si F appartient à BF alors
+F est établi
+sinon
+F n’est pas établi
+finsi
+2.5.2. Chainage arrière
+Le moteur d'inférence part d'un fait que l'on souhaite établir, il recherche toutes les règles qui
+concluent sur ce fait, il établit la liste des faits qu'il suffit de prouver pour qu'elles puissent se
+déclencher, puis il applique récursivement le même mécanisme aux autres faits contenus dans cette
+liste. L’exécution de l’algorithme de chaînage arrière peut être décrit par un arbre dont les nœuds
+sont étiquetés soit par un fait, soit par un des deux mots ET, OU.
+Le processus de chainage arrière suit l’algorithme suivant :
+But initial placé au sommet d’une pile
+Détection des règles qui concluent à ce but
+Résolution de conflits
+Application de la règle, i.e, les éléments des prémisses deviennent de nouveau sous- buts à
+atteindre.
+Arrêt : pile vide ou aucune règle applicable
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 16
+Chapitre 2 : Les systèmes experts
+Plusieurs différences apparaissent entre le chainage avant et le chainage arrière sont présentées
+dans le tableau 2.1.
+Tableau 2.1. Différence entre chainage avant et arrière.
+Chaînage avant Chaînage arrière
+Fonctionne bien lorsque le Fonctionne parfaitement lorsque le problème
+problème se présente consiste à prouver une hypothèse ;
+« naturellement » avec des faits Il est focalisé sur le but à prouver et pose donc
+initiaux ; des questions pertinentes, qui ne déroutent pas
+Points
+Produit une grande quantité de l’utilisateur ;
+forts
+faits à partir de faits initiaux très Contrairement au chaînage avant, il recherche
+peu nombreux ; dans la base de connaissances les informations
+Adapté à la planification, le intéressantes pour le problème courant ;
+contrôle, l’interprétation. Adapté au diagnostic et à la prescription.
+Souvent ne perçoit pas certaines Poursuit une ligne de raisonnement même s’il
+Points évidences ; Le système peut poser s’avère qu’il devrait l’abandonner pour une
+faibles de nombreuses questions, qui autre. Les facteurs de croyance et les métarègles
+parfois s’avèrent non pertinentes. peuvent aider à résoudre ce problème.
+2.5.3. Chainage mixte
+L’algorithme de chaînage mixte combine, comme son nom l’indique, les algorithmes de
+chaînage avant et de chaînage arrière.
+Algorithme chaînage mixte :
+ENTREE: BF, BR, F
+F est le fait à déduire
+Tant que F n’est pas déduit mais peut encore l’être faire
+Saturer la base de faits par chaînage avant (déduire tout ce qui peut être déduit)
+Chercher quels sont les faits encore éventuellement déductibles
+Déterminer une question pertinente à poser à l’utilisateur et ajouter sa réponse à la base de
+faits
+fin tant que
+2.6. Comment Construire un Système Expert
+La réalisation d’un système expert est un travail long, et un peu complexe dans sa
+programmation et dans la collection et la formalisation des connaissances. Le système expert
+apporte un intérêt financier aux entreprises qui l’utilise, chaque entreprise devra réaliser un tel
+système lorsqu’elle possède un expert compétent dans son domaine. Même si cet expert vienne de
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 17
+Chapitre 2 : Les systèmes experts
+quitter l’entreprise, les connaissances acquises ne disparaissent plus, parce que le transfert
+d’expertise est réalisé, et l’entreprise ne perd pas du temps et d’argents. La réalisation d’un tel
+système expert passe par quatre étapes :
+1) La Première Étape : Le choix d’un moteur d’inférence
+Le choix d’un moteur d’inférence se fait selon l’ordre du moteur d’inférence si d’ordre 0 (si les
+faits sont des propositions) ou 1 (si on va calculer des prédicats). Un moteur d’ordre 0 peut suffire,
+mais si les problèmes mis en jeu sont plus complexes, un moteur d’ordre 1 est nécessaire ; et à
+l’informaticien de choisir ce type.
+2) La Deuxième Étape : Le travail de l’expert
+L’expert doit arriver à extraire de ses méninges ses connaissances et les traduire sous une forme
+accessible par le moteur. Ce travail est long et difficile ; il n’est pas habitué à ce genre de réflexion
+et quelquefois, son propre raisonnement ne lui est pas complètement accessible. Il est alors aidé
+par un ingénieur cogniticien chargé d’organiser les explications de l’expert. Cette étape aboutit à
+la réalisation d’une maquette système expert sur une partie restreinte du domaine choisi, suit une
+série de tests permettant à l’expert et au cogniticien de vérifier la véracité des diagnostics proposés
+par le système.
+3) La Troisième Étape : Extension au domaine
+Il s’agit d’étendre la version prototype au domaine initialement choisi. Là, l’expert doit
+continuer le travail de mise à plat de sa connaissance et également tester le travail du système
+expert.
+4) La Quatrième Étape : Vers un produit fini
+Un système expert peut être utilisé par des non-experts ou des non-informaticiens. Il est
+indispensable de lui associer un ensemble de logiciels d’interface du type dialogue en langage
+naturel en respectant l’ergonomie et l’interface homme/machine, et par l’explication de
+raisonnement, …. (Denis 2006).
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 18
+Chapitre 2 : Les systèmes experts
+2.7. Exercices corrigés
+Quelques exercices sont proposés pour bien expliquer les modes de raisonnement et différencier
+entre le chainage avant et arrière.
+Exercice 1 : A partir de la base de faits : B, C et des règles suivantes, cherchez le but H par un
+chainage avant.
+R1 Si B et D et E Alors F
+R2 Si G et D Alors A
+R3 Si C et F Alors A
+R4 Si B Alors X
+R5 Si D Alors E
+R6 Si X et A Alors H
+R7 Si C Alors D
+R8 Si X et C Alors A
+R9 Si X et B Alors D
+Lorsque plusieurs règles sont en compétition, on choisira la première.
+Solution : Chainage avant
+Seule la règle R6 possède H comme conséquence, donc : Nouveaux buts : X, A
+La règle R4 possède X comme conséquence, donc : Nouveaux buts : A, B
+B est un fait, donc : Nouveaux buts : A
+Trois règles possèdent A comme conséquence, ce qui détermine trois possibilités R2, R3, ou R8.
+Application de R2 Nouveaux buts : G, D
+G n’est jamais une conséquence donc : Echec ---
+Application de R3 Nouveaux buts : C, F => C est un fait, Nouveau but : F
+Application de R1 Nouveaux buts : B, D, E => B est un fait,
+Nouveaux buts : D, E
+Application de R7 Nouveaux buts : C, E => C est un fait,
+Nouveau but : E
+Application de R5 Nouveaux buts : D
+Application de R7 Nouveaux buts : C, C est un fait, donc Succès.
+Exercice 2 : A partir de l’énoncé de l’exercice 1, cherchez le but H par un chainage arrière.
+Solution : Chainage arrière
+Etape 1 : Règles applicables : 4 ou 7. On choisit 4.
+BF = {B,C,X}, La règle 4 est désactivée.
+Etape 2 : Règles applicables : 7, 8 ou 9. On choisit 7.
+BF = {B,C,X,D}, La règle 7 est désactivée.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 19
+Chapitre 2 : Les systèmes experts
+Etape 3 : Règles applicables : 5, 8 ou 9. On choisit 5.
+BF = {B,C,X,D,E}, La règle 5 est désactivée.
+Etape 4 : Règles applicables : 1, 8 ou 9. On choisit 1.
+BF = {B,C,X,D,E,F}, La règle 1 est désactivée.
+Etape 5: Règles applicables: 3, 8 ou 9. On choisit 3.
+BF = {B,C,X,D,E,F,A}, La règle 3 est désactivée.
+Etape 6 : Règles applicables : 6, 8 ou 9. On choisit 6. H est établi
+On peut obtenir le même résultat en utilisant un arbre :
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 20
+Chapitre 2 : Les systèmes experts
+2.8. Exercices proposés
+Exercice 1 : Explorez toute la base de règles à partir de la base de faits pour déduire tous les faits.
+BF = {H,B,X,C}
+BR :
+1. P B,E,D
+2. A,B D,G
+⊢
+3. A C,P,K
+⊢
+4. D,L C,Y
+⊢
+5. E D,M
+⊢
+6. H A,L
+⊢
+7. H,W Z
+⊢
+8. P,L W
+⊢
+Exercice 2 : à ⊢partir de la base de faits : A, K et des règles :
+R1 A, B, C  D
+R2 I, H  B
+R3 H, F  B
+R4 A  I
+R5 E, F  D
+R6 A  F
+R7 K, L  E
+R8 A  L
+1. Réaliser du chaînage avant jusqu’à ce qu’aucune règle ne puisse plus donner de faits
+supplémentaires.
+2. Utiliser le chaînage arrière pour répondre au but : D
+Exercice 3 : Un expert a construit la base de règles suivante :
+R1 : A et B  C
+R2 : D  A
+R3 : E  F
+R4 : G  H
+R5 : I  F
+R6 : H et F et J  B
+R7 : H et K  J
+R8 : G et F  K
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 21
+Chapitre 2 : Les systèmes experts
+La base initiale de faits est : (D, G, I),
+1- Prouvez le fait C par chaînage arrière. quelle est la suite de règles essayées pour prouver le
+fait I, on indiquera si chaque règle essayée a été un succès ou un échec.
+2- On veut prouver le fait C en chaînage avant ; quelle est la différence entre les deux modes de
+raisonnement (chaînage arrière et chaînage avant).
+2.9. Conclusion
+Les systèmes experts, une des applications de l'intelligence artificielle les plus utilisées dans le
+monde de l'entreprise. De nombreux systèmes experts ont été implantés avec succès pour résoudre
+des problèmes concrets, comme les systèmes de contrôle et de supervision dans les cimenteries.
+Parfois, les systèmes experts souffrent d’une faiblesse intrinsèque, toutes les expertises ne sont
+pas facilement formalisables sous forme de règles ou ne sont pas capables de traiter les systèmes
+non linéaires. La solution à ce problème est la logique floue, plusieurs problèmes non linéaires ont
+été résolus et plusieurs systèmes ont été réalisés afin d’aboutir à un contrôle globale d’une
+entreprise.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 22
+Chapitre 3 : La Logique Floue
+Chapitre 3 : La logique floue
+3.1. Introduction
+La logique floue suscite un intérêt général de la part des ingénieurs et des industriels, mais plus
+de la part de tous ceux qui éprouvent le besoin d'automatiser la prise de décision dans leur domaine,
+de construire des systèmes artificiels pour effectuer les tâches habituellement prises en charge par
+les humains. Les connaissances dont nous disposons sur une situation quelconque sont
+généralement imparfaites, parce que nous avons un doute sur leur validité, elles sont alors
+incertaines, ou parce que nous éprouvons une difficulté à les exprimer clairement, elles sont alors
+imprécises (Meunier 2007). Le fait d'utiliser des connaissances floues permet d'exprimer des
+situations graduelles. Le contrôle flou s'est surtout montré robuste (Gacôgne 2003).
+L’intérêt essentiel de la logique floue, réside dans le fait que les notions linguistiques sont bien
+adaptées et traduisent le raisonnement qualitatif humain dans un processus industriel. Elle décrit
+des situations avec des règles qui représentent des informations. Dans ce cas, un opérateur ne prend
+pas des décisions seulement sur des situations spécifiques dont il n'a qu'une connaissance
+incomplète, mais qu'il agrège le long de son expérience dont il utilise les notions linguistiques
+(Zermane 2017).
+3.1.1. Origine
+Les connaissances dont disposent les humains sur le monde ne sont presque jamais parfaites.
+Ces imperfections peuvent être distinguées en deux classes :
+Incertitudes : pour désigner les connaissances dont la validité est sujette à question.
+Par exemple, si nous savons qu’une personne s’est cognée la tête au plafond, nous devinons qu’il
+est probable qu’elle soit très grande => Probabilité.
+Imprécisions : pour désigner les connaissances qui ne sont pas perçues ou définies nettement.
+Par exemple, au lieu de dire qu'une personne mesure 2.3 m, nous disons usuellement que cette
+personne est très grande => Logique floue.
+La figure 3.1 illustre deux situations différente où la différence entre la précision et la
+signification est très importante et parfois critique.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 23
+Chapitre 3 : La Logique Floue
+Figure 3.1. Différence entre précision et signification.
+Comment faire en sorte d’exprimer ces imprécisions en termes logiques ?
+En logique classique, une proposition est vraie ou fausse.
+Exemple : une personne est grande. Vrai ou faux ? => Pas flexible…
+En logique floue, une proposition peut avoir autant de valeurs que l’on veut.
+Exemple : une personne est grande. C’est vrai à 30% => Flexible !
+Règle de déduction Modus Ponens :
+Si A et (A => B) sont vraies Alors on déduit que B est vraie.
+Soit : m.p : A, (A => B) ├ B
+Question : si A et B n’acceptent ni faux ni vrai ?
+3.1.2. Définition de la logique floue
+C’est une extension (généralisation) de la logique classique qui permet la modélisation des
+imperfections des données et se rapproche dans une certaine mesure de la flexibilité du
+raisonnement humain. La logique floue a été créée par Lotfi Zadeh en 1965 en se basant sur sa
+théorie des ensembles flous, qui est une généralisation de la théorie des ensembles classiques. En
+introduisant la notion de degré dans la vérification d'une condition (degré d’appartenance), nous
+permettons à une condition d'être dans un autre état que vrai ou faux. Un des intérêts de la logique
+floue pour formaliser le raisonnement humain est que ces règles sont énoncées en langage naturel.
+La logique floue est appliquée dans plusieurs domaines, parmi eux :
+ Aide à la décision, diagnostic : (domaine médical, orientation professionnelle…)
+ Base de données : (objets flous et/ou requêtes floues)
+ Reconnaissance de forme,
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 24
+Chapitre 3 : La Logique Floue
+ Agrégation multicritère et optimisation,
+ Commande floue dans les systèmes de supervision, …
+3.1.3. Historique d’application
+1965 : Concept introduit par Pr. Lotfi Zadeh (Berkeley) : «Fuzzy set theory » Définition des
+ensembles flous et opérateurs associés.
+1970 : Premières applications : Systèmes experts, Aide à la décision en médecine, commerce…
+1974 : Première application industrielle. Régulation floue d’une chaudière à vapeur réalisée par
+Mamdani.
+1975 : le professeur Mamdani à Londres développe une stratégie pour le contrôle des procédés et
+présente les résultats très encourageants qu’il a obtenus sur la conduite d’un moteur à vapeur.
+1978 : la société danoise F.L. Smidth a réalisé le contrôle d’un four à ciment. C’est là la première
+véritable application industrielle de la logique floue.
+Japon, la recherche n’est pas seulement théorique mais également très applicative, que la logique
+floue connaît son véritable essor à la fin des années 1980.
+1985 : Les japonais sont les premiers à introduire des produits grand public « Fuzzy Logic Inside ».
+1987 : Métro de Sendai (Hitachi) (Japon).
+1990 : c’est en Allemagne que des applications apparaissent en grand nombre comme la conduite
+de hauts-fourneaux Dunkerque (Allemagne).
+1992 : Usine de papier au Portugal, Produits de consommation courante : Aspirateurs, machines à
+laver, système de climatisation…, Appareils photos, Caméras Canon (autofocus, stabilisateur
+d’image), Photocopieurs (qualité d’image, distribution d’encre et industrie automobile (régulation
+du moteur, système de transmission).
+3.2. Les ensembles classiques
+3.2.1. Les ensembles classiques : rappel
+Le concept d'appartenance dans la théorie des ensembles désigne le fait qu'un élément fasse
+partie ou non d'un ensemble. Par exemple, l'entier 7 {6; 7; 9} et 7 {1; 3; 8; 5}.
+Soient U l’univers du discours, A un sous-ensemble de U, µ la fonction caractéristique de
+∈ ∉
+l'ensemble et x un élément. Une fonction d'appartenance est une fonction qui explicite
+l’appartenance de x ou non à l’ensemble A et on écrit : µ A (x).
+Dans la théorie des ensembles classiques :
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 25
+Chapitre 3 : La Logique Floue
+3.2.2. Limite des ensembles classiques
+Exemple : un patient atteint d'hépatite présente généralement les symptômes suivants :
+ Le patient a une forte fièvre, son degré de température est 39 °C,
+ Sa peau présente une coloration jaune,
+ Il a des nausées.
+Question : Si le patient à 38,9 °C de température, est ce qu’il a de l’hépatite ou non ?
+Selon la logique classique (Figure 3.2), la représentation graphique du degré de la température
+est présentée comme dans le graphe de la figure. Cette représentation montre que le patient n’a pas
+de forte fièvre (38.9 < 39 °C), donc le patient n’a pas d’hépatite.
+Figure 3.2. Ensemble classique.
+Si on peut avoir une autre représentation comme celle présentée sur la figure 3.3, on peut dire
+que le patient possède une forte fièvre à 48%  y a une possibilité qu’il ait une hépatite à x %.
+Figure 3.3. Ensemble flou.
+Cette représentation conduit aux ensembles flous.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 26
+S i
+x
+A
+U
+e s t l a
+A
+A
+f o
+
+
+n
+x
+x
+c
+
+
+t i o n
+0
+1
+d a '
+s i
+s i
+0
+0
+0
+0
+p
+x
+x
+1
+.8
+.6
+.4
+.2
+0
+3
+p
+6
+a
+A
+r t
+A
+A
+v
+e
+o
+n a
+ir
+n c
+u
+3 7
+e
+n
+d e
+E
+e
+l
+nf
+o
+e n '
+s e
+r t e
+3 8
+s e
+m
+f
+m
+biè
+b l
+lev
+e
+r
+3
+A
+c la
+e
+9
+s s iq
+4
+u
+0
+e
+4 1
+T ( ° C )
+4 2
+
+
+
+  
+
+
+
+Ensemble flou
+Avoir une forte fièvre
+1
+0.8
+0.6
+0.4
+0.2
+0 T(°C)
+36 37 38 39 40 41 42
+Chapitre 3 : La Logique Floue
+3.3. Les ensembles flous
+3.3.1. Définitions
+La théorie des sous-ensembles flous est une théorie mathématique du domaine de l’algèbre
+abstraite. Elle a été développée par Lotfi Zadeh en 1965 afin de représenter mathématiquement
+l'imprécision relative à certaines classes d'objets et sert de fondement à la logique floue.
+Les sous-ensembles flous (ou parties floues) ont été introduits afin de modéliser la
+représentation humaine des connaissances, et ainsi améliorer les performances des systèmes de
+décision qui utilisent cette modélisation. Elles sont utilisées soit pour modéliser l'incertitude et
+l'imprécision, soit pour représenter des informations précises sous forme lexicale assimilable par
+un système expert.
+Si µ A (x) est la fonction d’appartenance de l’ensemble flou A, x ϵ U, µ A (x) ϵ [0 ; 1].
+Si µ A (x) = 0,30 : x appartient à l’ensemble flou A avec un deg ∀ ré d’appartenance (valeur de vérité)
+de 30%. Un ensemble flou est totalement déterminé par sa fonction d’appartenance.
+Figure 3.4. Ensemble classique et flou.
+Un ensemble flou A est défini sur un univers de discours U (ensemble d’éléments discrets ou
+continus) par sa fonction d’appartenance µ A . La grandeur µ A (x) définit le degré d’appartenance de
+l’élément x à l’ensemble A.
+µ A: U → [0, 1], x → µ A (x)
+A = {(x, µ A (x)) | x ϵ U}
+Pour pouvoir décrire facilement un sous-ensemble flou, on utilise certaines de ses
+caractéristiques représentées par la figure 3.5. La première caractéristique est le support d’un
+ensemble flou A, c’est-à-dire l’ensemble des éléments x qui appartiennent à A. il est noté Supp(A)
+et présenté par la formule : Supp(A) = {x ϵ U | µ A (x) > 0}. La deuxième caractéristique est le noyau
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 27
+Chapitre 3 : La Logique Floue
+qui présente l’ensemble de tous les éléments appartenant de façon absolue (avec un degré = 1). Le
+noyau est présenté par : Noy (A) = {x ϵ U | µ A (x) = 1}.
+Figure 3.5. Support et noyau d’un ensemble flou.
+L’ensemble flou vide est noté , il est défini par : µ (x) = 0, x ϵ U.
+Le plus grand ensemble flou su ∅ r U est noté 1 U , il est ∅ défini pa ∀ r : µ 1U (x) = 0, x ϵ U.
+La logique floue est basée sur des variables floues dites variables linguistiques divisés en
+∀
+ensembles flous dites valeurs linguistiques présentés dans un univers du discours qui indique
+l’intervalle de mesure de la variable. Par exemple sur la figure 3.6, on définit :
+ Univers du discours est l’intervalle de mesure de la variable linguistique : de 0 à 30 °C.
+ Variable linguistique : Température.
+ Valeurs linguistiques : « Froid », « Tempéré » et « Chaud ».
+Figure 3.6. Univers du discours, variables et valeurs linguistiques.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 28
+Chapitre 3 : La Logique Floue
+Les fonctions d’appartenance peuvent avoir diverses formes selon leurs définitions. Ces formes
+sont représentées dans le tableau 3.1.
+Tableau 3.1. Les fonctions d’appartenance.
+Fonction
+Forme de la fonction d’appartenance
+d’appartenance
+Triangulaire
+(trimf)
+Trapézoïdale
+(trapmf)
+Gaussienne
+(gaussmf)
+Sigmoïdes
+(sigmf)
+La figure 3.7 illustre un exemple de présentation de quelques ensembles flous en forme
+triangulaire.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 29
+Chapitre 3 : La Logique Floue
+Figure 3.7. Exemple de représentation d’ensembles flous.
+Les ensembles classiques sont des cas particuliers d’ensembles flous. Leur fonction
+d’appartenance valant 0 ou 1, sont en créneaux. Comme conclusion, la logique floue englobe la
+logique classique où les données sont certaines. Lorsqu’un fait certain correspond à l’énoncé de la
+valeur d’une variable, on a un singleton :
+Exemples :
+1- Fonction d’appartenance de la classe « le feu est rouge » (Figure 3.8) :
+Figure 3.8. Fonction d’appartenance de la classe « le feu est rouge ».
+2- Fonction d’appartenance de la classe « la température est tiède » (Figure 3.9) :
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 30
+P
+1
+0.8
+0.6
+0.4
+0.2
+0
+1.5
+E n s e m
+e tit
+1.55
+b le flo
+1.6
+u " P
+1.65
+e rs o
+1.7
+n n e d
+1.75
+e p e tite ta ille "
+T a ille (m
+1 1 . . 8 85
+)
+1.9
+Ensemble flou: "Personne de taille moyenne"
+Moyen
+1
+0.8
+0.6
+0.4
+0.2
+Taille(m)
+0
+1.5 1.55 1.6 1.65 1.7 1.75 1.8 1.85 1.9
+E n
+1
+0.8
+0.6
+0.4
+0.2
+0
+1.5
+s e m b
+1.55
+le flo
+1.6
+u :"P
+1.65
+e rs o
+1.7
+n n e d
+1.75
+e g ra n d e ta ille "
+G ra n d
+T a ille (m )
+1 1 1 . . . 8 8 9 5
+partition floue de l'univers du discours
+Petit Moyen Grand
+1
+0.8
+0.6
+0.4
+0.2
+Taille(m)
+0
+1.5 1.55 1.6 1.65 1.7 1.75 1.8 1.85 1.9
+x
+x
+0
+0
+
+
+x
+x
+0
+
+
+0
+1
+p
+p
+o
+o
+u
+u
+r
+r
+x
+x
+x
+x
+0
+0
+
+
+
+
+
+
+
+1 µ(x)
+11
+Couleur du feu
+tricolore
+rouge orange vert
+Chapitre 3 : La Logique Floue
+Figure 3.9. Fonction d’appartenance de la classe « la température est tiède ».
+3.3.2. Opérations sur les ensembles flous
+Comme la logique booléenne standard est un cas particulier de la logique floue, Tous les
+résultats obtenus en logique classique doivent être retrouvés par la logique floue. Comme dans le
+cas des ensembles classiques, On définit l’union, l’intersection, le complément d’ensembles flous.
+Les définitions les plus souvent rencontrées sont :
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 31
+M
+S
+D
+p
+a m d
+u g e n
+a n s
+o u r
+a
+o
+le
+n
+s
+x
+i
+d
+
+e u
+U
+x c a s
+A 
+A 
+A
+B
+B
+x
+ x
+ x
+
+ 
+
+
+A
+
+ x 
+A
+
+
+A
+x
+
+
+x
+B
+
+x 
+B
+
+ x 
+A
+ x  
+B
+ x  e
+e
+t
+t
+A
+A
+
+
+B
+B
+
+x
+x
+
+
+
+
+A
+ x  
+A
+
+B
+x
+
+
+x 
+B
+ x       
+       
+ 
+:
+:
+:
+m
+1
+a x ( , ) m in ( , )
+1. L’union (Mamdani) : A est l’ensemble flou des personnes « petit ». B est l’ensemble flou des
+personnes « moyen ». L’ensemble des personnes petit OU moyen est un ensemble flou de
+fonction d’appartenance (Figure 3.10) : .
+(cid:2020)(cid:3002)∪(cid:3003)((cid:1876)) = (cid:1839)(cid:1853)(cid:1876)((cid:2020)(cid:3002)((cid:1876)),(cid:2020)(cid:3003)((cid:1876))) ∀(cid:1876) ∈ (cid:1847)
+Figure 3.10. Union de deux ensembles flous.
+2. L’intersection : L’ensemble des personnes petit ET moyen est un ensemble flou de fonction
+d’appartenance (Figure 3.11) : .
+(cid:2020)(cid:3002)∩(cid:3003)((cid:1876)) = (cid:1839)(cid:1861)(cid:1866)((cid:2020)(cid:3002)((cid:1876)),(cid:2020)(cid:3003)((cid:1876)))
+0
+0
+0
+0
+1
+.8
+.6
+.4
+.2
+0
+1
+PP
+.5
+e
+a r
+tit
+1
+t it
+.5 5
+io n
+1
+f lo
+.6
+u e
+1
+d
+.6 5
+eM l'u
+o y
+1 .7
+ne iv
+n
+e
+1
+r
+.7
+s
+5
+d u
+1
+d
+.8
+isG
+T
+c o u
+r a n d
+a ille
+1 .8 5
+r
+(
+s
+m )
+1 .9
+1
+0.8
+0.6
+0.4
+0.2
+0
+1.5
+E n s e m
+1.55
+b le flo
+1.6
+u :" P e
+1.65
+rs o n n e
+1.7
+p e tite
+1.75
+O U m
+1.8
+o
+T
+y
+a
+e n
+ille
+1.85
+n e
+(m
+"
+)
+1.9
+µ (x)
+1
+T(°C)
+15°C 20°C
+Tiède
+Chapitre 3 : La Logique Floue
+Figure 3.11. Intersection de deux ensembles flous.
+3. Le complément
+A est l’ensemble flou des personnes petites. L’ensemble des personnes NON petites est un
+ensemble flou de fonction d’appartenance (Figure 3.12) : .
+(cid:2020)(cid:3002)̅ ((cid:1876)) = 1−(cid:2020)(cid:3002)((cid:1876)) ∀(cid:1876) ∈ (cid:1847)
+Figure 3.12. Complément d’un ensemble flou.
+4. Autres propriétés
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 32
+C
+A
+D
+I
+I
+d
+d
+o m m u ta tiv ité
+s s o c ia tiv ité
+is tr ib u ti v ité
+e m p o te n c e
+e n tité
+:
+:
+:
+:
+:
+A
+A
+A
+A
+A
+
+
+
+
+
+B 
+ B 
+ B 
+A 
+
+B
+C
+C
+A ,
+A ,
+ A
+
+
+A
+A
+,
+A
+ A
+
+
+A
+
+
+A
+1
+U
+
+B
+B
+
+
+B
+ 
+ 
+A
+1
+U
+
+C
+
+,
+B
+,
+A 
+A
+
+A
+C
+
+A
+, 
+
+B
+A
+
+,
+
+C
+
+A
+
+B
+
+
+
+
+1
+A
+C
+U
+
+
+
+B
+A
+
+
+A
+
+
+C
+B    A  C 
+  
+2 exceptions notables :
+En logique floue, le principe du tiers exclu est contredit (Figure 3.13) : i.e
+(cid:1827)∪(cid:1827)̅ ≠ (cid:1847)
+(cid:2020)(cid:3002)∪(cid:3002)̅
+((cid:1876)) ≠ 1.
+Figure 3.13. Union de l’ensemble flou et son complément.
+0
+0
+0
+0
+0
+0
+0
+0
+1
+.8
+.6
+.4
+.2
+0
+1
+1
+.8
+.6
+.4
+.2
+0
+1
+PP
+.5
+PP
+.5
+e
+e
+a r
+tit
+1
+a r
+tit
+1
+t it
+.5 5
+t it
+.5 5
+io
+io
+n
+n
+1
+1
+f lo
+.6
+f lo
+.6
+u
+u
+e
+1
+e
+1
+d
+.6 5
+d
+.6 5
+eM
+eM
+l'u
+o y
+1 .7
+l'u
+o y
+1 .7
+ne
+ne
+iv
+n
+iv
+n
+e
+1
+e
+1
+r
+.7
+r
+.7
+s
+5
+s
+5
+d
+d
+u
+1
+u
+1
+d
+.8
+d
+.8
+isG
+T
+isG
+T
+c o u
+r a n d
+a ille
+1 .8 5
+c o u
+r a n d
+a ille
+1 .8 5
+r
+(
+r
+(
+s
+m
+s
+m
+)
+1
+)
+1
+.9
+.9
+E
+1
+0 .8
+0 .6
+0 .4
+0 .2
+0
+1 .5
+E n
+1
+0.8
+0.6
+0.4
+0.2
+0
+1.5
+n
+s
+s
+e
+e m
+1 .5 5
+m b
+1.55
+b le
+le
+f lo
+1 .6
+f lo
+1.6
+u
+u
+: " P e
+1 .6 5
+e : "
+1.65
+r
+P
+s o n n
+1 .7
+e r s
+1.7
+e
+o
+p e tite
+1 .7 5
+n n e s
+1.75
+e t m o y e n n
+T a ille ( m
+1 1 . . 8 8 5
+n o n p e t it
+T a ille (m
+1 1 . . 8 85
+e "
+)
+1 .9
+e s "
+)
+1.9
+Chapitre 3 : La Logique Floue
+Ainsi, on peut être A et ¬A en même temps (Figure 3.14) : i.e .
+(cid:1827)∩(cid:1827)̅ ≠ ∅ (cid:2020)(cid:3002)∩(cid:3002)̅ ((cid:1876)) ≠ 0
+Figure 3.14. Intersection de l’ensemble flou et son complément.
+3.4. Création d’un système de contrôle flou
+Les premières applications de la logique floue étaient dans le domaine du contrôle des systèmes
+fait par des experts humains. Le contrôle de ces systèmes fait apparaître deux types
+d’informations :
+ Des informations numériques obtenues par les mesures des capteurs.
+ Des informations linguistiques obtenues par les experts humains.
+Le contrôle flou (Figure 3.15) utilise la logique floue comme une démarche qui peut couvrir la
+stratégie du contrôle linguistique. Il est intégré dans la partie qui gère les données de commande
+et de contrôle de la partie opérative du système, et appelée contrôleur flou.
+Contrôleur
+Consigne Erreur Commande Partie opérative Sortie
++ Flou
+Base de connaissance
+Base de données Base des règles
+X
+fuzzification défuzzification Y
+Mécanisme
+d’inférence
+Figure 3.15. Schéma d'un contrôleur flou.
+Avant de créer un système de contrôle flou, on doit définir la base de connaissance qui
+comprend les connaissances de l’expert humain pour le contrôle du système ainsi que le domaine
+de variation des variables d’E/S. Elle est donc constituée de :
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 33
+Chapitre 3 : La Logique Floue
+1. Base de données (faits) : On regroupe dans ce bloc, l’ensemble des définitions utilisées dans
+les règles du contrôleur flou (univers du discours, partition flou, choix des opérateurs, …)
+2. Base de règles floues : La base de l’expert est généralement exprimée par des règles floues
+de la forme SI – ALORS.
+Les systèmes à logique floue utilisent une expertise exprimée sous forme d’une base de règles
+floues de type : Si (X est A) Alors (Y est B).
+Exemple : quelques règles de la base de règle d’un contrôleur flou de puissance sont comme suit :
+1. Si la température extérieure est « froide » et la température intérieure est «froide » alors
+mettre la puissance au « maximum »
+2. Si la température extérieure est « froide » et la température intérieure est «bonne » alors
+mettre une puissance « moyenne », …
+Si la temp ext est froide et la temp int est «froide » alors mettre la puiss au maximum
+Prémisses Conjonction Implication Conclusion
+Les systèmes à logique floue traitent de variables d’entrées floues et fournissent des résultats Conclusion
+sur des variables de sorties elles-mêmes floues. Ce processus passe par plusieurs étapes :
+3.4.1. La fuzzification
+La fuzzification est la première étape dans la réalisation d’un contrôle flou. Elle transforme
+chaque valeur réelle d’entrée (mesure) en un ensemble flou. En lui attribuant sa fonction
+d’appartenance à chacune des classes préalablement définie. Donc c’est l’étape qui consiste en la
+quantification floue des valeurs réelles d’une variable qui indique le degré d’appartenance d’une
+valeur réelle à chaque ensemble flou.
+Hypothèse : sur la figure 3.16, Pierre mesure 1.62 m ?
+Est-ce que Pierre est :
+1- Petit ?
+2- Moyen ?
+3- Grand ?
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 34
+Chapitre 3 : La Logique Floue
+Figure 3.16. Appartenance d’une valeur réelle aux ensembles flous.
+Réponse :
+Généralisation : on prend l’exemple des ensembles flous présentés sur la figure 3.17. Pour
+n’importe quelle valeur de x, on calcule ses degrés d’appartenance en valeur absolue par :
+Figure 3.17. Généralisation de calcul des degrés de vérités.
+   
+ : 0,100  0,1
+jeune
+ x1 si x  20
+jeune
+
+
+ 20x
+x   x si 20  x  35
+jeune
+15
+
+  x0 si x  35
+ jeune
+
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 35
+0
+0
+0
+0
+1
+.8
+.6
+.4
+.2
+0
+1
+P
+.5
+P
+e
+a
+t
+r
+it
+1
+t i
+.5
+t
+5
+i o n
+1
+f l
+.6
+o u e
+1
+d
+.6 5
+e
+M
+l 'u
+o y
+1 .7
+n
+e
+i
+n
+v e
+1
+r
+.7
+s
+5
+d u
+1
+d
+.8
+i sG
+T
+c o
+r a n
+a i l l
+1 .8
+u
+d
+e
+5
+r
+(
+s
+m )
+1 .9
+« Pierre est petit » à 75%
+Interface de
+« Pierre est moyen » à 25%
+Pierre mesure 1.62 m
+fuzzification
+« Pierre est grand » à 0%
+Chapitre 3 : La Logique Floue
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 36
+m û r
+:
+
+0 , 1
+x
+0 0
+
+
+
+
+
+m
+m
+m
+m
+0
+û r
+û r
+û r
+û r
+,
+
+1
+  x
+  x
+  x
+  x
+
+
+
+
+0
+1
+5
+x  2
+1 5
+x  5
+2 0
+0
+s i
+s i
+s i
+s i
+x
+2
+3
+5
+0
+5
+5
+
+
+
+
+2 0
+x
+x
+x
+
+
+
+o u
+3
+5
+7
+5
+5
+5
+x  7 5
+
+
+
+
+
+vieu x
+:
+
+0 ,
+x
+1 0 0
+
+
+
+
+
+0
+vieu x
+vieu x
+vieu x
+,
+
+1
+  x 
+  x 
+  x 
+0
+0
+x 
+2
+5
+0
+5
+s
+s
+s
+i
+i
+i
+x
+5
+x
+5
+
+
+
+5
+7
+5
+x
+5
+ 7 5
+
+
+
+
+3.4.2. L’inférence floue
+C’est une opération logique par laquelle on admet une proposition sous sa liaison avec d’autres
+propositions tenues pour vraies (condition vérifiée). Elle exprime la relation qui existe entre les
+variables d’entrée (Variables linguistiques) et les variables de sortie (Variable linguistique).
+• La variable floue X appartient à la classe floue A avec un degré de validité  A (x 0 ).
+• La variable floue Y appartient à la classe floue B à un degré qui dépend du degré de validité
+(y ) de la prémisse.
+B 0
+L’appartenance dans les sorties dépend de :
+1) L’ensemble flou de sortie considérée.
+2) Le degré de validité de la prémisse µ (x ).
+prémisses 0
+3) La méthode d’implication choisie.
+a. Méthode de Mamdani :
+b. Méthode de larsen : (cid:2020)̀(cid:3030)(cid:3042)(cid:3041)(cid:3030)(cid:3039)(cid:3048)(cid:3046)(cid:3036)(cid:3042)(cid:3041)((cid:1877)) = (cid:1839)(cid:1861)(cid:1866)((cid:2020)(cid:3043)(cid:3045)é(cid:3040)(cid:3036)(cid:3046)(cid:3046)(cid:3032)((cid:1876)0),(cid:2020)(cid:3030)(cid:3042)(cid:3041)(cid:3030)(cid:3039)(cid:3048) (cid:3046)(cid:3036)(cid:3042)(cid:3041)((cid:1877)))
+(cid:2020)̀(cid:3030)(cid:3042)(cid:3041)(cid:3030)(cid:3039)(cid:3048)(cid:3046)(cid:3036)(cid:3042)(cid:3041)((cid:1877)) = (cid:2020)(cid:3043)(cid:3045)é(cid:3040)(cid:3036)(cid:3046)(cid:3046)(cid:3032)((cid:1876)0)∗(cid:2020)(cid:3030)(cid:3042)(cid:3041)(cid:3030)(cid:3039)(cid:3048)(cid:3046)(cid:3036)(cid:3042)(cid:3041)((cid:1877))
+3.4.3. L’agrégation et l’activation des règles
+Une règle est activée dès qu’elle a une prémisse ayant une valeur de vérité non nulle. Plusieurs
+règles peuvent être activées simultanément et préconiser des actions avec différents degrés de
+validités ; ces actions peuvent être contradictoires. Il convient d’agréger (associer) des règles pour
+fournir une appartenance de la variable floue de sortie à une classe floue affermie (confirmé)
+Chapitre 3 : La Logique Floue
+(figure 3.18). Il existe dans plusieurs méthodes d’inférence floue qui dépendent des implications
+de la forme des fonctions. On considère que ces règles sont liées par un opérateur OU (on prend
+la valeur Max). Où : µ B (y) = Max [µ Bi (y)] i ϵ {indices des règles activées}.
+Figure 3.18. Agrégation et l’activation des règles.
+Exemples :
+1) Pour un ensemble flou : la conclusion d’une règle floue est l’appartenance d’une variable
+floue de sortie « Chauffer » à une classe floue « fort » (Figure 3.19).
+Règle : SI la temp(cid:2020)é̀ (cid:3030) ra (cid:3042) t (cid:3041) u (cid:3030) r (cid:3039) e (cid:3048) e (cid:3046) s (cid:3036)(cid:3042) t (cid:3041) tr(è(cid:1877)s )ba=sse(cid:1839) A(cid:1861)L(cid:1866)O(R(cid:2020)S (cid:3043)(cid:3045) p é u (cid:3040) is (cid:3036)(cid:3046) s (cid:3046) a (cid:3032) n(ce(cid:1876) 0 ch)a,(cid:2020)uf (cid:3030) f (cid:3042) e (cid:3041) e (cid:3030) s (cid:3039) t (cid:3048) C (cid:3046)(cid:3036) h (cid:3042) a (cid:3041) u(f(cid:1877)fe)r )fort.
+Figure 3.19. Agrégation d’une règle.
+Selon la règle considérée, si T=3 °C, son degré d’appartenance en entrée est 0.7, alors la surface
+de décision de la sortie sera minimisée jusqu’au degré 0.7.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 37
+0
+0
+0
+0
+C
+1
+.8
+.6
+.4
+.2
+0
+0
+h a u ffe r fo rt
+5
+P u is s a
+1 0
+n c e c h a u ffe (K W )1
+5
+Température trés basse
+1
+0.8
+0.7
+0.6
+0.4
+0.2
+0
+T(°C)
+-10 -5 0 3 5 10 15
+T=3°C
+Chapitre 3 : La Logique Floue
+2) Pour plusieurs ensembles flous : On considère un moteur d’inférence à 3 règles qui fournit
+pour sa sortie S les résultats suivants :
+1
+R
+ =0.7
+1
+petite
+R
+Moteur d’inférence 2  =0.3
+à 3 règles
+R
+moyenne
+3  =0.1
+grande
+L’agrégation nous donne le résultat de la figure 3.20.
+Figure 3.20. Agrégation d’un ensemble de règles.
+A ce stade, on a la fonction d’appartenance d’un ensemble flou qui caractérise le résultat et qui
+est toute une surface de décision générée.
+Comment décider quelle valeur de sortie à utiliser ?
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 38
+0
+0
+0
+0
+1
+.8
+.6
+.4
+.2
+0
+P
+0
+e tite
+2
+T e n s
+M
+4
+io
+o
+n
+y
+d
+e
+e
+n
+s o
+n e
+6
+r tie
+8
+G
+V
+r a
+o
+n d e
+lt( v )1
+0
+Implication
+floue
+de Mamdani
+0
+0
+0
+0
+P
+1
+.8
+.6
+.4
+.2
+0
+0
+e tite
+2
+T e n s
+M
+4
+io
+o
+n d
+y e
+e
+n
+s o
+n e
+6
+rtie
+8
+G ra
+V o
+n d e
+lt(v )1
+0
+Agrégation des conclusions (Max)
+0
+0
+0
+0
+1
+.8
+.6
+.4
+.2
+0
+0 2
+T e n s
+4
+io n d e s o
+6
+r t ie
+8
+V o lt ( v )1
+0
+Chapitre 3 : La Logique Floue
+Il faut défuzzifier, c'est-à-dire associer un nombre interprétable par l’utilisateur à cette surface
+floue.
+3.4.4. La défuzzification
+L’objectif de la défuzzification est de transformer un ensemble flou en une valeur de
+commande.
+Soit A un ensemble flou, et defuzz l’opérateur de défuzzification, zu = defuzz(A), est une valeur
+précise. Il existe plusieurs méthodes de défuzzification, dont la méthode du Centre de gravité
+(COG) et la méthode de Moyenne des Maximum (MOM).
+a) Centre de gravité : En commande floue, la défuzzification COG (Figure 3.21) est presque
+toujours utilisée. Elle prend en compte l’influence de l’ensemble des valeurs proposées par la
+solution floue. Elle est présentée par l’abscisse du centre de gravité de la surface sous la courbe
+résultante :
+Tension de sortie
+1
+0.8
+0.6
+0.4
+0.2
+0
+Volt(v)
+0 2 3,5V4 6 8 10
+Figure 3.21. Centre de Gravité.
+b) Moyenne des Maximum : C’est la moyenne des valeurs de sorties les plus vraisemblables
+(Figure 3.22). La défuzzification MOM est plutôt utilisée lorsqu’il s’agit de discriminer une
+valeur de sortie (Ex : reconnaissance de formes).
+Tension de sortie
+1
+0.8
+0.6
+0.4
+0.2
+0
+Volt(v)
+0 1,9 2 4 6 8 10
+V
+Figure 3.22. Moyenne des Maximum.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 39
+s
+o
+o
+ù
+r t
+S
+i e S
+y
+y
+S
+0
+d
+d
+y
+U
+y
+/  y
+0
+ S U P y
+U
+ y     
+
+
+
+
+
+ 
+
+
+Chapitre 3 : La Logique Floue
+3.5. Exercices corrigés
+Exercice 1 : sur la figure ci-contre :
+1. Calculez le centre gravité
+2. Calculez la moyenne des
+maximums
+3. Déterminez la variable
+linguistique, les valeurs
+linguistiques et l’univers
+Tension S (v)
+de discours.
+Solution :
+Centre de gravité : ((0*0.6)+(3*0.6)+(4*0.2)+(6*0.2))/(0.6+0.6+0.2+0.2) =2.375.
+Moyenne des Maximums (on prend la droite des valeurs supérieures et on calcule la moyenne) :
+(0+3)/2 =1.5.
+La variable linguistique : S (Tension), Les valeurs linguistiques : petite, moyenne et grande,
+L’univers de discours : [0-10] v.
+Exercice 2 :
+Dans le schéma ci-contre :
+1. Schématisez l’ensemble :
+intersection des deux ensembles
+moyen et bon.
+2. Schématisez l’ensemble :
+complément de l’ensemble bon.
+3. Schématisez l’ensemble : union
+de tous les ensembles dans le
+schéma.
+Solution :
+Les schémas sont représentés respectivement sur les figures suivantes :
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 40
+Chapitre 3 : La Logique Floue
+Intersection des deux ensembles moyen et bon Complément de l’ensemble bon
+Union de tous les ensembles en couleur jaune
+Exercice 3 : Contrôle de la puissance d’un chauffage central
+1- Description du problème
+On souhaite commander un chauffage central d’un immeuble à l’aide d’un contrôleur flou. On
+dispose de deux sondes de température : l’une à l’extérieur de l’immeuble, l’autre à l’intérieur. Sur
+la base de ces deux mesures et en faisant appel aux règles d’inférence, le contrôleur flou doit régler
+la puissance du chauffage.
+2- Fuzzification de la température externe
+On choisit deux intervalles flous et des fonctions d’appartenance de type trapézoïdales en
+définissant le «froid» comme correspondant à une température inférieure à 5 °C et le « chaud »
+comme étant une température supérieure à 20 °C.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 41
+Chapitre 3 : La Logique Floue
+3- Fuzzification de la température interne
+On choisit trois intervalles flous et des fonctions d’appartenance de type trapézoïdales en
+définissant le «froid» comme correspondant à une température inférieure à 15°C, le «bon» comme
+étant une température comprise entre 19°C et 21°C et le «chaud» comme étant une température
+supérieure à 25 °C.
+4- Fuzzification de la puissance
+On choisit quatre intervalles flous pour
+définir la puissance de l’installation avec des
+fonctions d’appartenance trapézoïdales. On
+définit les intervalles suivants :
+Puissance Valeur en %
+nulle 0-15-25-35
+faible 25 35 45 55
+moyenne 45-55-65-75
+maximale 65-75-85-100
+5- Choix du type de défuzzification
+La défuzzification se fait par le calcul du centre de gravité.
+6- La Base de règles :
+1. Si la température extérieure est « froide » et la température intérieure est « froide » alors
+mettre la puissance au « maximum »
+2. Si la température extérieure est « froide » et la température intérieure est « bonne » alors
+mettre une puissance « moyenne »
+3. Si la température extérieure est « froide » et la température intérieure est « chaude » alors
+mettre une puissance « faible »
+4. Si la température extérieure est « chaude » et la température intérieure est « froide » alors
+mettre une puissance « moyenne »
+5. Si la température extérieure est « chaude » et la température intérieure est « bonne » alors
+mettre une puissance « faible »
+6. Si la température extérieure est « chaude » et la température intérieure est « chaude » alors
+mettre une puissance « nulle »
+Hypothèse : la température extérieure est 10 °C et la température intérieure est 22 °C, quelle sera
+la puissance (%).
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 42
+Chapitre 3 : La Logique Floue
+Solution :
+1. Fuzzification :
+Les valeurs floues de la température extérieure sont donc :
+« froide » avec un degré de vérité de 0,67
+« chaude » avec un degré de vérité de 0,33
+Les variables floues de la température intérieure sont donc :
+« froide » avec un degré de vérité de 0
+« bonne » avec un degré de vérité de 0,75
+« chaude » avec un degré de vérité de 0,25
+A- Inférence floue : en utilisant la base de règles floues, les règles d’inférences donnent les
+valeurs suivantes pour les valeurs floues de sortie :
+1. « maximum » avec un degré de vérité de 0 (minimum entre 0,67 et 0)
+2. « moyenne » avec un degré de vérité de 0,67
+3. « faible » avec un degré de vérité de 0,25
+4. « moyenne » avec un degré de vérité de 0
+5. « faible » avec un degré de vérité de 0,33
+6. « nulle » avec un degré de vérité de 0,25
+Pour l’agrégation, l’opérateur « Max » appliqué sur les règles qui donnent les mêmes valeurs
+floues donnent :
+1. « maximum » avec un degré de vérité de 0
+2. « moyenne » avec un degré de vérité de 0,67 (max entre 0,67 et 0)
+3. « faible » avec un degré de vérité de 0,33 (max entre 0,25 et 0,33)
+4. « nulle » avec un degré de vérité de 0,25
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 43
+Chapitre 3 : La Logique Floue
+B- Défuzzification : Le calcul du centre de gravité se calcule à l’aide de :
+Le contrôleur flou impose donc une puissance de 44,6 % sur l’installation de chauffage pour
+une température extérieure de 10 °C et une température intérieure de 22 °C.
+3.6. Conclusion
+La logique floue offre une meilleure programmation, des possibilités de raffinement extrêmes,
+et une programmation beaucoup plus instinctive. Cependant, son utilisation demande une certaine
+expérience.
+Cette technique, n'est pas restreinte aux systèmes dont la modélisation est difficile, qui sont
+contrôlés par des experts humains, ou ceux qui ont plusieurs entrées-sorties et des réponses non-
+linéaires. Elle est intéressante aussi dans tous les domaines où un « flou » persiste, notamment
+dans les domaines de l'économie et de la science.
+Plusieurs outils et logiciels peuvent nous aider à réaliser des systèmes flous comme :
+ Matlab (Mathworks) : en utilisant Toolbox Fuzzy logic, par la commande fuzzy.
+ FuzzyControl++ (Siemens) : est un outil spécialement pour la création des systèmes flous.
+Ces derniers sont chargés dans des automates programmables Siemens.
+ LABVIEW : FuzzyToolkit (Automatisation).
+ Fuzzyclips : extension de CLIPS (C Language Integrated Production System). Il peut
+traiter le raisonnement exact, flou (ou inexact), permettant des termes flous et normales à
+être hybrider dans des règles et des faits d'un système expert.
+ ….
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 44
+Chapitre 4 : Les Approches d’Apprentissage Automatique
+Chapitre 4 : Les approches d’apprentissage
+4.1. Introduction
+L’un des objectifs majeurs de l’IA est la résolution de problèmes complexes et issus de
+domaines variés. Pour résoudre un problème donné, nous avons souvent besoin de classer et de
+manipuler des connaissances du domaine concerné. Parmi les méthodes ou les outils de
+classification intelligents existes K-means, K-PPV, les RNA et SVM.
+La classification est la catégorisation algorithmique d'objets. Elle consiste à attribuer une classe
+ou catégorie à chaque objet (ou individu) à classer, en se basant sur des données statistiques. Elle
+fait couramment appel à l'apprentissage automatique et est largement utilisée en reconnaissance
+de formes. Parmi les techniques de classification, existent celles qui sont basées sur l’apprentissage
+supervisé et celles basées sur l’apprentissage non supervisé. Quelques techniques sont représentées
+sur la figure 4.1.
+Apprentissage
+Non supervisé Supervisé
+K-means K-ppv RNA SVM
+Figure 4.1. Techniques d’apprentissage.
+K-means (K-moyenne) est basée sur le principe de classification par centre mobiles, plus
+connue sous le nom de K-means. Chaque centre mobile indique le représentant de la classe, il peut
+être calculé avec une fonction mathématique comme le centre de gravité, la distance euclidienne,
+ou autre fonction. A l’arrivé d’une nouvelle observation, elle sera affectée à la classe qui a une
+distance minimale entre son représentant et cette observation. La particularité de la méthode des
+"k-means", c'est que le nombre de classes doit être spécifié préalablement. Cependant, deux cas
+particuliers se présentent dans cette méthode. Le premier est dans le cas où les deux distances entre
+l’observation et les représentants des classes sont égales, ou connus sous le nom de rejet
+d’ambigüité. Le deuxième apparait si la nouvelle observation est jugée comme très lointe des
+représentants des classes et s’appelle un rejet à distance. Une des solutions proposées dans ce cas
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 45
+Chapitre 4 : Les Approches d’Apprentissage Automatique
+dans la littérature, est de proposer d’autres nouvelles classes. Ceci nécessite de refaire la
+classification. Par conséquent, cette solution peut prendre plus de temps. Ainsi, comme cette
+méthode appartienne aux méthodes de classification non supervisée, l’inconvénient majeur est que
+le taux d’erreur de classification des nouvelles observations est maximisé.
+K-PPV (K-Plus Proche Voisin) est une méthode de discrimination non paramétrique, aucune
+estimation des paramètres n’est nécessaire à son exécution. Elle s’emploie sur les données
+continues. L’idée principale est d’observer les K les plus proches d’une nouvelle observation afin
+de décider de l’appartenance de cette observation. Pour classer une observation, nous devons faire
+un calcul de la distance entre la nouvelle observation et chaque point dans la base d’apprentissage.
+Après, les K voisins ayant la distance la plus faible avec la nouvelle observation seront
+sélectionnés. Au vu des classes d’appartenance des K plus proche voisins, on décide sur la classe
+d’appartenance de cette nouvelle observation.
+4.2. Historique des réseaux de neurones artificiels
+L’évolution des réseaux de neurones artificiels jusqu’à nos jours, a passé par plusieurs étapes :
+1890 : W. James, célèbre psychologue américain introduit le concept de mémoire associative, et
+propose ce qui deviendra une loi de fonctionnement pour l'apprentissage sur les réseaux de
+neurones connue plus tard sous le nom de loi de Hebb.
+1943 : J. Mc Culloch et W. Pitts laissent leurs noms à une modélisation du neurone biologique (un
+neurone au comportement binaire). Ce sont les premiers à montrer que des réseaux de neurones
+formels simples peuvent réaliser des fonctions logiques, arithmétiques et symboliques complexes
+(tout au moins au niveau théorique).
+1949 : D. Hebb, physiologiste américain explique le conditionnement chez l'animal par les
+propriétés des neurones eux-mêmes. Ainsi, un conditionnement de type pavlovien tel que, nourrir
+tous les jours à la même heure un chien, entraîne chez cet animal la sécrétion de salive à cette
+heure précise même en l'absence de nourriture. La loi de modification des propriétés des
+connexions entre neurones qu'il propose explique en partie ce type de résultats expérimentaux.
+ Les premiers succès :
+1957 : F. Rosenblatt développe le modèle du Perceptron. Il construit le premier neuro ordinateur
+basé sur ce modèle et l'applique au domaine de la reconnaissance de formes. Notons qu'à cette
+époque les moyens à sa disposition sont limités et c'est une prouesse technologique que de réussir
+à faire fonctionner correctement cette machine plus de quelques minutes.
+1960 : B. Widrow, un automaticien, développe le modèle Adaline (Adaptative Linear Element).
+Dans sa structure, le modèle ressemble au Perceptron, cependant la loi d'apprentissage est
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 46
+Chapitre 4 : Les Approches d’Apprentissage Automatique
+différente. Celle-ci est à l'origine de l'algorithme de rétropropagation de gradient très utilisé
+aujourd'hui avec les Perceptrons multicouches. Les réseaux de type Adaline restent utilisés de nos
+jours pour certaines applications particulières. B. Widrow a créé dès cette époque une des
+premières firmes proposant neuro-ordinateurs et neuro-composants, la "Memistor Corporation".
+1969 : M. Minsky et S. Papert publient un ouvrage qui met en exergue les limitations théoriques
+du perceptron. Limitations alors connues, notamment concernant l'impossibilité de traiter par ce
+modèle des problèmes non linéaires. Ils étendent implicitement ces limitations à tous modèles de
+réseaux de neurones artificiels. Leur objectif est atteint, il y a abandon financier des recherches
+dans le domaine (surtout aux U.S.A), les chercheurs se tournent principalement vers l'IA et les
+systèmes à bases de règles.
+ L’ombre
+1969-1982 : Toutes les recherches ne sont, bien sûr, pas interrompues. Elles se poursuivent, mais
+déguisées, sous le couvert de divers domaines comme : le traitement adaptatif du signal, la
+reconnaissance de formes, la modélisation en neurobiologie, etc. De grands noms travaillent durant
+cette période telle : S. Grossberg, T. Kohonen, ...
+ Le renouveau
+1982 : J. J. Hopfield, à travers un article court, clair et bien écrit, a présenté une théorie du
+fonctionnement et des possibilités des réseaux de neurones. J. J. Hopfield fixe préalablement le
+comportement à atteindre pour son modèle et construit à partir de là, la structure et la loi
+d'apprentissage correspondant au résultat escompté. Ce modèle est aujourd'hui encore très utilisé
+pour des problèmes d'optimisation. Notons qu'à cette date, l'IA est l'objet d'une certaine désillusion,
+elle n'a pas répondu à toutes les attentes et s'est même heurtée à de sérieuses limitations. Aussi,
+bien que les limitations du Perceptron mise en avant par M. Minsky ne soient pas levées par le
+modèle d'Hopfield, les recherches sont relancées.
+ La levée des limitations
+1983 : La Machine de Boltzmann est le premier modèle connu apte à traiter de manière
+satisfaisante les limitations recensées dans le cas du perceptron. Mais l'utilisation pratique s'avère
+difficile, la convergence de l'algorithme étant extrêmement longue (les temps de calcul sont
+considérables).
+1985 : La rétropropagation de gradient apparaît. C'est un algorithme d'apprentissage adapté aux
+réseaux de neurones multicouches (Perceptrons multicouches). Sa découverte réalisée par trois
+groupes de chercheurs indépendants indique que "la chose était dans l'air". Dès cette découverte,
+nous avons la possibilité de réaliser une fonction non linéaire d'entrée/sortie sur un réseau en
+décomposant cette fonction en une suite d'étapes linéairement séparables. De nos jours, les réseaux
+multicouches et la rétropropagation de gradient reste le modèle le plus étudié et le plus productif
+au niveau des applications.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 47
+Chapitre 4 : Les Approches d’Apprentissage Automatique
+4.3. Le neurone formel
+Le premier neurone formel a été modélisé par W. Mc Culloch et W. Pitts, en 1943. Un neurone
+formel ou artificiel est un opérateur mathématique très simple. Un neurone possède des entrées
+qui peuvent être les sorties d'autres neurones, ou des entrées de signaux extérieures, et une sortie.
+La valeur de la sortie résulte du calcul de la somme des entrées, pondérées par des coefficients
+(dits poids de connexions ou poids synaptiques) et du calcul d'une fonction non linéaire (dite
+fonction d'activation) de cette somme pondérée. L'état du neurone, appelé aussi activité, est défini
+comme la somme pondérée de ses entrées. Son schéma de fonctionnement est donné en Figure
+4.2. L'information est ainsi transmise de manière unidirectionnelle. Un neurone se caractérise
+par trois concepts : son Etat, ses Connexions avec d'autres neurones et sa Fonction d'activation.
+x
+1 w
+1
+x
+2
+w
+2
+s Sortie
+∑ f
+y
+w
+n
+b
+Fonction d’activation
+x n +1
+Figure 4.2. Neurone formel.
+Où :
+ x : les entrées du neurone.
+i
+ w : les poids de connexion entre les neurones (coefficients de pondération). Si w est positif,
+i i
+l’entrée x i est excitatrice alors que si w i est négatif, elle est inhibitrice.
+ b : le poids de la connexion entre le neurone biais (+1) et les neurones i.
+ f : la fonction d'activation associée au neurone.
+ y : la sortie du neurone.
+La fonction d’activation f est du type tout ou rien à seuil prenant les valeurs 0 et 1. Le seuil
+de déclenchement est en général provoqué par une entrée b appelée biais. Les fonctions
+d’activation les plus utilisées sont présentées par la figure 4.3.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 48
+Chapitre 4 : Les Approches d’Apprentissage Automatique
+1
+0.8
+0.6
+0.4
+0.2
+0
+-2 -1 0 1 2
+Figure 4.3. Les fonctions d’activation les plus utilisées.
+4.4. Perceptron (premier réseau de neurones)
+Le réseau le plus simple pour classer des données en deux classes est constitué d’un seul
+neurone binaire. Introduit par Frank Rosenblatt en 1958, qui l’a nommé perceptron (Figure 4.4).
+La sortie du perceptron dépend de la somme des composantes x i du vecteur d’entrée, pondérées
+par des poids w i ϵ R. Cette somme pondérée est appelée potentiel.
+Figure 4.4. Schéma du perceptron.
+Le potentiel étant une fonction affine des entrées, on appelle aussi le perceptron « séparateur
+linéaire ». Si le potentiel dépasse le seuil du neurone, s 0 , la sortie du perceptron est σ = +1.
+Autrement, elle est σ = -1. Le perceptron est donc un neurone dont la fonction d’activation est une
+fonction à seuil. Une entrée constante x 0 = 1 est incluse dans l’ensemble des entrées du perceptron
+affectée d’un poids w 0 . Celui-ci a pour effet de déplacer la valeur du seuil de la fonction
+d’activation. Chaque entrée ayant une composante supplémentaire x 0 = 1, cela équivaut à
+considérer un espace des entrées élargi, de dimension N+1. Le potentiel se note par la formule:
+. (1)
+(cid:3015)
+L (cid:1871)0a = so r ∑ ti (cid:3036) e = e 0 s (cid:1875) t (cid:3036)d (cid:1876) o(cid:3036)n = né (cid:1875) e . p (cid:1876) ar : σ = signe( ) (Drefus 2002). (2)
+(cid:1871)0
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 49
+1
+0.5
+0
+-0.5
+-1-2
+-1 0 1 2
+1
+0.8
+0.6
+0.4
+0.2
+0
+-10
+1
+0.5
+0
+-0.5
+-1-10
+-5
+-5
+0
+0
+5
+5
+10
+10
+1
+0.5
+0
+-0.5
+-1-1
+1
+0.8
+0.6
+0.4
+0.2
+0
+-5
+-0.5 0
+0
+0.5 1
+5
+y=hardlim(x) y=logsig(x) y=purelin(x)
+y=hardlims(x) y=tansig(x) y=radbas(x)
+x
+1 w
+1
+x
+2
+w
+2
+s 0 Sortie
+∑
+σ
+w
+n
+Fonction d’activation
+x n x 0 = 1 Seuil
+Chapitre 4 : Les Approches d’Apprentissage Automatique
+4.4.1. Types d’apprentissage
+L'apprentissage est vraisemblablement la propriété la plus intéressante des réseaux neuronaux.
+Par définition l'apprentissage est une phase de développement d'un réseau de neurones durant
+laquelle le comportement du réseau est modifié jusqu'à l'obtention du comportement désiré.
+L'apprentissage a comme objectif l'amélioration des performances futures du réseau, sur la base
+d'une connaissance acquise au fur et à mesure des expériences passées. Il existe principalement
+deux types d’apprentissage : l'apprentissage supervisé et l'apprentissage non supervisé.
+1) Apprentissage supervisé
+L'apprentissage est dit supervisé (Figure 4.5) lorsque les exemples sont constitués de couples de
+valeurs de type (valeur d'entrée, valeur de sortie désirée).
+Étant donné un vecteur d'apprentissage de n couples (x, y), i=1,2,..., n. Il est à déterminer les
+i i
+vecteurs des poids des neurones capables de donner le même vecteur de sortie à partir des mêmes
+vecteurs d'entrées. Ce type d'apprentissage nécessite la présence d'un superviseur qui présente au
+réseau ces entrées et leurs sorties désirées. Il est nécessaire de déterminer, dans ce genre
+d'apprentissage, la fonction qui mesure l'écart entre les sorties désirées et celles fournies par le
+réseau. Cette fonction appelée fonction objectif, constitue le critère à minimiser en agissant sur
+les poids synaptiques. Ce critère est en général une fonction de l'erreur entre la sortie désirée et
+la réponse du réseau : E= ψ(t- σ). (3)
+Où :
+ E : l'erreur entre la sortie désirée et la réponse du réseau ;
+ Ψ : la fonction d’activation ;
+ t : la sortie désirée ;
+ σ : représente l'estimation du réseau.
+Ainsi l'apprentissage devient une procédure qui cherche à minimiser ce critère à travers la
+recherche de la séquence de poids synaptiques favorables.
+σ (Sorties)
+_ (Cible)
++
+P RNA T
+E (Erreurs)
+Mécanisme
+d’apprentissage
+Figure 4.5. Apprentissage supervisé.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 50
+Chapitre 4 : Les Approches d’Apprentissage Automatique
+2) Apprentissage non supervisé :
+L'apprentissage est qualifié de non supervisé (Figure 4.6) lorsque seules les valeurs d'entrée sont
+disponibles. Dans ce cas, les exemples présentés à l'entrée provoquent une auto adaptation du réseau
+afin de produire des valeurs de sortie qui soient proche en réponse pour des valeurs d'entrées
+similaires.
+réseau sortie obtenue
+Figure 4.6. Apprentissage non supervisé.
+4.4.2. Règle d’apprentissage
+L’apprentissage consiste à modifier le poids des connections entre les neurones. Il existe
+plusieurs règles de modification :
+ Loi de Hebb : w =Raa
+ij i j
+ Règle de Widrow-Hoff (delta rule) : w =R(d - a)a
+ij i i j
+ Règle de Grossberg : w =R(a - w )a
+ij j ij i
+1- Loi de Hebb : Si deux unités connectées sont actives simultanément, le poids de leur
+connexion est augmenté ou diminué. R est une constante positive qui représente la force
+d'apprentissage (Learning rate).
+W
+ij
+a = -1 a = 1 i j
+i i
+a j = -1 ΔW ij = R ΔW ij = -R ΔW ij = Ra i a j
+a = 1 ΔW = -R ΔW = R
+j ij ij
+2- Loi de Widrow-Hoff (delta rule) :
+Considérons : a activation produite par le réseau, et d réponse désirée par l'expert humain.
+i i
+Par exemple si la sortie est inférieure à la réponse désirée, il va falloir augmenter le poids de
+la connexion à condition bien sûr que l'unité j soit excitatrice (égale à 1). On est dans l'hypothèse
+d'unités booléennes {0, 1}.
+a = 0 a = 1 W
+i i
+d = 0 ΔW = 0 ΔW = -R i
+ij
+j
+j ij ij
+d
+j
+= 1 ΔW
+ij
+= -R ΔW
+ij
+= 0 ΔW
+ij
+= R(d
+i
+-a
+i
+)a
+j
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 51
+Chapitre 4 : Les Approches d’Apprentissage Automatique
+3- Loi de Grossberg :
+On augmente les poids qui entrent sur l'unité gagnante ai s'ils sont trop faibles, pour les
+rapprocher du vecteur d'entrée a. C’est la règle d’apprentissage utilisée dans les cartes auto-
+j
+organisatrices de Kohonen. W
+ij
+i j
+ΔW = Ra(a-W )
+ij i j ij
+4.4.3. Exemple (ET, OU et XOR)
+Le perceptron est un classifieur binaire. Nous voulons l’appliquer sur les opérations logiques
+ET, OU et OU exclusif.
+Considérons un perceptron avec deux entrées x , x et deux poids correspondants, w et w , et
+1 2 1 2
+une fonction de Seuil θ (y = 1 si s > θ et y = 0 si s ≤ θ).
+L’opération logique ET (AND) : l’opération ET est présentée par sa table de vérité.
+x x s = x ET x
+1 2 1 2
+1 1 1
+1 0 0
+0 1 0
+0 0 0
+Dans le plan (x , x ), elle définit quatre points (Figure 4.7) relatifs aux quatre combinaisons
+1 2
+possibles des valeurs des variables x et x . Pour ce perceptron, les deux représentations donnent
+1 2
+deux classes linéairement séparables.
+x
+2
+(0,1) (1,1)
+ET
+(0,0) x
+(1,0) 1
+Figure 4.7. Représentation de l'opération logique ET.
+L’opération logique OU (OR) : l’opération OU présentée par sa table de vérité.
+x x x OU x
+1 2 1 2
+1 1 1
+1 0 1
+0 1 1
+0 0 0
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 52
+Chapitre 4 : Les Approches d’Apprentissage Automatique
+Dans le plan (x , x ), elle définit quatre points (Figure 4.8) relatifs aux quatre combinaisons
+1 2
+possibles des valeurs des variables x et x . Pour ce perceptron, la représentation donne deux
+1 2
+classes linéairement séparables.
+x
+2
+(0,1) (1,1)
+OU
+(0,0)
+(1,0) x
+1
+Figure 4.8. Représentation de l’opération logique OU.
+Le « OU » Exclusif (XOR) : L’apprentissage de la fonction logique OU exclusif (XOR) entre
+deux variables est un problème classique de test du perceptron multicouches. Il s’agit d’un
+problème de classification, dont les deux classes «0 » ou «1 » ne sont pas linéairement
+séparables. La table de vérité relative à l’opération logique OU exclusif est la suivante :
+x x x OU x
+1 2 1 2
+1 1 0
+1 0 1
+0 1 1
+0 0 0
+Dans le plan (x , x ), elle définit quatre points (figure 4.8) relatifs aux quatre combinaisons
+1 2
+possibles des valeurs des variables x et x .
+1 2
+x
+2
+(0,1) (1,1)
+XOR
+(0,0)
+(1,0) x
+1
+Figure 4.9. Représentation de l'opération logique OU exclusif (XOR).
+4.4.4. Limitation du perceptron
+A partir des exemples précédents, le perceptron ne peut pas apprendre le XOR. Il est incapable
+de distinguer les patterns non séparables linéairement [Minsky 69]. Ce problème peut être résolu
+à l’aide d’un perceptron multicouches.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 53
+Chapitre 4 : Les Approches d’Apprentissage Automatique
+Le problème d’apprendre une classification binaire d’un ensemble de données revient à les
+séparer en deux groupes. Dans l’espace à deux dimensions, chaque donné correspond à un point
+dans l’espace 2D et il s’agit de trouver une ligne droite les séparant. Pour généraliser, dans
+l’espace à 3 dimensions, il s’agit de trouver un plan. Ainsi de suite, dans l’espace à n dimensions,
+un ensemble de données est linéairement séparable s’ils peuvent être séparés par un hyperplan
+de dimension n-1.
+4.5. Réseau de neurones multicouches
+Le neurone lui-même, en tant qu'unité autonome élémentaire n'a aucun pouvoir. La force et
+l'efficacité du cerveau résident en effet, dans le regroupement de ces neurones et le partage des
+tâches entre eux. Ce regroupement est appelé champs de neurones où chaque élément reçoit et
+envoie de l'information. L'organisation de plusieurs champs entre eux, constitue un réseau de
+neurones, dont les unités à l'intérieur doivent travailler ensemble pour remplir une certaine tache
+bien déterminée. Ces neurones sont reliés entre eux par des connexions. Les mécanismes de cette
+organisation déterminent l'architecture du réseau.
+Les neurones sont arrangés par couche. On place ensuite bout à bout plusieurs couches et l'on
+connecte les neurones de deux couches adjacentes. Les entrées des neurones de la deuxième
+couche sont en fait les sorties des neurones de la couche amont. Les neurones de la première
+couche sont reliés au monde extérieur et reçoivent le vecteur d'entrée. Ils calculent alors leurs
+sorties qui sont transmises aux neurones de la seconde couche qui calculent eux aussi leurs sorties
+et ainsi de suite de couche en couche jusqu'à celle de sortie. Il peut y avoir une ou plusieurs sorties
+à un réseau de neurones.
+Dans un réseau multicouche classique (Figure 4.10), il n'y a pas de connexion entre neurones
+d'une même couche et les connexions ne se font qu'avec les neurones de la couche aval. Tous
+les neurones de la couche amont sont connectés à tous les neurones de la couche aval, de prendre
+un nouveau départ. Les couches extérieures du réseau sont appelées respectivement couches
+d'entrée et de sortie ; les couches intermédiaires sont appelées couches cachées.
+Figure 4.10. Réseau multicouche.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 54
+Chapitre 4 : Les Approches d’Apprentissage Automatique
+Il existe plusieurs architectures de réseaux de neurones multicouches, parmi elles :
+A. Réseau à connexions locales
+C'est aussi un réseau multicouche, mais tous les neurones d'une couche amant ne sont pas
+connectés à tous les neurones de la couche avale. Nous avons donc dans ce type de réseau de
+neurones un nombre de connexions moins important que dans le cas du réseau de neurones
+multicouche classique (Figure 4.11).
+Figure 4.11. Réseau à connexions locales.
+B. Réseau à connexions récurrentes
+Un réseau de ce type signifie qu'une ou plusieurs sorties de neurones d'une couche aval sont
+connectées aux entrées des neurones de la couche amont ou de la même couche. Ces connexions
+récurrentes ramènent l'information en arrière par rapport au sens de propagation défini dans un
+réseau multicouche. Les réseaux à connexions récurrentes sont des réseaux plus puissants car ils
+sont séquentiels plutôt que combinatoires comme l'étaient ceux décrits précédemment. La
+rétroaction de la sortie vers l'entrée permet à un réseau de ce type de présenter un comportement
+temporel (Figure 4.12).
+Figure 4.12. Réseau à connexions récurrentes.
+C. Réseau à connexions complexes
+Chaque neurone est connecté à tous les neurones du réseau y compris lui-même, c'est la
+structure d'interconnexion la plus générale (Figure 4.13).
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 55
+Chapitre 4 : Les Approches d’Apprentissage Automatique
+Figure 4.13. Réseau à connexions complexes.
+Les réseaux de neurones les plus répandus sont les réseaux perceptrons multicouches MLP, et
+les réseaux de neurones à fonction radiales de bases RBF.
+4.5.1. Perceptron multicouches (MLP)
+Les réseaux de neurones artificiels perceptrons multicouches MLP consistent à cascader un
+certain nombre de perceptrons en plusieurs couches avec des fonctions de décision différentiables
+reliées entre elles par des coefficients synaptiques (poids) et sont organisés de la manière suivante :
+une couche d'entrée, une ou plusieurs couches cachées et une couche de sortie (Figure 4.14).
+Figure 4.14. Perceptron multicouches (MLP) avec deux couches cachées.
+Les neurones de deux couches consécutives sont entièrement connectés. Le nombre total de
+couches d'un réseau est en général donné par celui des couches cachées plus la couche de sortie.
+L'apprentissage de ces réseaux consiste à trouver les valeurs optimales des différents vecteurs de
+poids. L'approche classique la plus utilisée est la rétro-propagation (back- propagation).
+Mathématiquement, cette méthode est basée sur l'algorithme de la descente du gradient et utilise
+les règles de dérivation des fonctions dérivables. Dans cette méthode, l'erreur commise en sortie
+du réseau est rétro- propagée vers les couches cachées, d'où le nom de rétro-propagation. En effet,
+la convergence de l'algorithme est basée sur l'ajustement de multiples variables, citons par exemple
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 56
+Chapitre 4 : Les Approches d’Apprentissage Automatique
+: la structure du réseau, le nombre maximum d'itérations d'apprentissage, le coefficient
+d'apprentissage, nature de la fonction d'activation, nombre de couches cachées, la taille de la
+couche cachée.
+Néanmoins, ces réseaux sont connus pour avoir un certain nombre d'inconvénients (la
+sensibilité aux minimums locaux lors de l'étape d'optimisation des poids qui empêche la
+convergence et cause l’oscillation de l’erreur, et l'absence de résultats théoriques satisfaisantes qui
+permettent de dimensionner correctement un réseau (combien de couches cachées faut-il utiliser?
+et combien doit-il y avoir de neurones dans chacune des couches cachées ?), seule l'expérience
+permet de donner une idée sur ce choix. La sortie de l’unité j par exemple de la couche q est donnée
+par :
+(4)
+(cid:3044) (cid:3015)(cid:3292)−1 (cid:3044) (cid:3044)−1
+(cid:1851)o(cid:3037)ù = (cid:1858) r(e∑pr(cid:3036)=és1en(cid:1849)te(cid:3036) (cid:3037)l(cid:1851)e(cid:3036) poi)ds entre le neurone i de la couche q-1 et le neurone j de la couche q,
+(cid:3044)
+e(cid:1849)st(cid:3036) (cid:3037)la sortie de l'unité i dans la couche q-1, et f représente la fonction d'activation ou de
+(cid:3044)−1
+décision pour toutes les unités des couches cachées. C'est une fonction différentiable non linéaire.
+(cid:1851)(cid:3036)
+Le plus souvent, la fonction d’activation utilisée est la fonction sigmoïde définie pour tout réel x
+par [30] : (5)
+1
+−(cid:3299)
+4.5 (cid:1858) .2 ((cid:1876) . ) R = és1e+a(cid:3032)ux à fonction radiales de bases (RBF)
+Parmi les méthodes alternatives permettant de tenir compte de la non linéarité, mais
+conceptuellement plus simples sont les réseaux de neurones artificiels à fonctions radiales de base
+RBF (Figure 4.15). La construction d'un réseau de neurones artificiel RBF est rapide et facile, et
+c'est là le principal avantage de ce type de réseau de neurones (Douha 2013).
+Figure 4.15. Réseau de neurones à fonctions radiales de base (RBF).
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 57
+Chapitre 4 : Les Approches d’Apprentissage Automatique
+Un réseau de neurones artificiel RBF comporte deux couches de neurones ; une couche cachée
+dont les neurones sont connectés à ceux de la couche d'entrée par des connexions non pondérées,
+et une couche de sortie dont les neurones sont connectés à ceux de la couche cachée par des
+connexions pondérées. Dans la couche de sortie, la fonction d'activation est linéaire. La sortie
+réalisée par le réseau est exprimée sous la forme d'une combinaison linéaire de fonctions radiales
+[30] :
+(6)
+(cid:3038)
+(cid:1877)((cid:1876)o)ù= k∑ r(cid:3037)e=p1r(cid:2019)é(cid:3037)se(cid:2004)n(t‖e(cid:1876) le− n(cid:1855)(cid:3037)o‖m)bre de neurones dans la couche cachée, λj est le poids associé à la
+connexion entre le neurone j de la couche cachée et la couche de sortie et c est la valeur des centres.
+j
+Dans la couche cachée, la fonction radiale la plus couramment utilisée est le noyau gaussien [30] :
+2
+(‖(cid:1876)−(cid:1855)(cid:1862)‖) (7)
+−( 2 )
+2(cid:2012)(cid:1862)
+(cid:2004)(
+o
+‖
+ù(cid:1876) −δ
+j
+(cid:1855)e(cid:1862)s
+‖
+t
+)
+la= la(cid:1857)r(cid:1876)g(cid:1868)eur associée au noyau j, x=(x
+1
+,….x
+n
+) et c
+i
+= (c
+i1
+…..c
+in
+) représentent le vecteur
+d'entrée et le vecteur "centre" propre à chaque neurone respectivement. Dans un réseau de neurones
+artificiel RBF il y a quatre paramètres principaux à régler.
+1. Le nombre de neurones k dans la couche cachée.
+2. La position des centres des gaussiennes c de chacun des neurones.
+3. La largeur de ces gaussiennes δ (généralement l'écarts-types des noyaux gaussiens)
+j
+4. Les poids des connexions λ entre les neurones de la couche cachée et les neurones de la
+i
+couche de sortie.
+La procédure d'apprentissage dans ce cas est divisée en deux étapes, un apprentissage non
+supervisé dans la couche cachée suivi par un apprentissage supervisé dans la couche de sortie.
+L'algorithme des K-means et la méthode des moindres carrés sont souvent utilisées pour la
+sélection des centres "c" et l'adaptation des poids de connexions λ respectivement. Comparés aux
+réseaux multicouches, l'apprentissage des réseaux RBF est plus rapide. En effet cette rapidité vient
+du fait que ce type de réseaux possède deux couches seulement (c+δ et λ) (Douha 2013).
+4.6. SVM (Machine à Vecteur de Support)
+4.6.1. Définition
+Les machines à vecteurs de support SVM (Support Vector Machine) développées au cours des
+années 90 par Vapnik, sont une famille d'algorithmes d'apprentissage destinées à résoudre les
+problèmes de classification et de régression et la détection des valeurs aberrantes qui sont
+aujourd'hui considérées comme une des méthodes les plus performantes sur de nombreux
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 58
+Chapitre 4 : Les Approches d’Apprentissage Automatique
+problèmes réels, notamment pour les problèmes en grande dimension. L'efficacité de SVM est due
+à sa base théorique solide qui constitue l'un de ses atouts (Douha 2013).
+Les SVM possèdent plusieurs avantages, parmi eux :
+ Efficace dans les espaces de grande dimension.
+ Toujours efficace dans les cas où le nombre de dimensions est supérieur au nombre
+d'échantillons.
+ Utilise un sous-ensemble de points d'apprentissage dans la fonction de décision (appelés
+vecteurs de support), donc il est également efficace en mémoire.
+ Polyvalent : différentes fonctions du noyau peuvent être spécifiées pour la fonction de
+décision. Des noyaux communs sont fournis, mais il est également possible de spécifier des
+noyaux personnalisés.
+Les SVM possèdent aussi des inconvénients, comme :
+ Leurs besoins de calcul et de stockage augmentent rapidement avec le nombre de vecteurs de
+formation.
+ Si le nombre de fonctionnalités est beaucoup plus grand que le nombre d'échantillons, évitez
+de sur-ajuster dans le choix des fonctions du noyau et le terme de régularisation est crucial.
+ Ne fournissent pas directement d'estimations de probabilité, celles-ci sont calculées à l'aide
+d'une validation croisée coûteuse.
+4.6.2. Principe
+L'algorithme des machines à vecteurs de support a initialement été développé comme un
+algorithme de classification binaire par apprentissage supervisé. L'algorithme sous sa forme
+initiale revient à chercher une frontière de décision linéaire appelé hyperplan qui permet de
+regrouper les données similaires dans une même classe et de séparer les données hétérogènes, en
+garantissant que la marge entre l'hyperplan et les points les plus proches de chaque classe soit
+maximale.
+Le problème de recherche de l’hyperplan séparateur optimal possède une formulation duale.
+Ceci est particulièrement intéressant car, sous cette formulation duale, le problème peut être résolu
+au moyen de méthodes d'optimisation quadratique standard. L’intérêt de cette méthode est la
+sélection de vecteurs supports qui représentent les vecteurs discriminants grâce auxquels est
+déterminé l’hyperplan. Les exemples utilisés lors de la recherche de l’hyperplan ne sont alors plus
+utiles et seuls ces vecteurs supports sont utilisés pour classer un nouveau cas, ce qui peut être
+considéré comme un avantage pour cette méthode.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 59
+Chapitre 4 : Les Approches d’Apprentissage Automatique
+Une machine à vecteurs de support construit un hyper-plan ou un ensemble d'hyperplans dans
+un espace de dimension élevée ou infinie, qui peut être utilisé pour la classification, la régression
+ou d'autres tâches. Intuitivement, une bonne séparation est obtenue par l'hyper-plan qui a la plus
+grande distance des points de formation les plus proches de n'importe quelle classe (marge dite
+fonctionnelle), car plus la marge est grande, plus l'erreur de généralisation du classificateur est
+faible (Douha 2013).
+4.6.3. Fonction du noyau (kernel)
+Séparer n’importe quel jeu de données par un simple hyperplan est un problème qui n'est pas
+évident. Les SVM sont forts dans le cas où les données sont linéairement séparables. C'est une
+limitation sévère qui condamne à ne pouvoir résoudre que des problèmes particuliers. Cependant,
+dans la plupart des problèmes réels, ce n’est pas toujours le cas et il est donc nécessaire de
+contourner ce problème. Dans ce but, l'idée clé de la méthode SVM est de changer l'espace des
+données.
+Le principe consiste à projeter les données d’apprentissage x i dans un espace de dimension (d’),
+plus élevée que celle de l'espace d'origine (d) grâce à une fonction non linéaire Φ(x) qu’on appelle
+fonction noyau, choisie a priori et de réaliser une séparation linéaire dans le nouvel espace.
+L’espace ainsi obtenu est appelé espace des caractéristiques ou aussi espace transformé ou espace
+d'attributs ou encore espace de redescription [45]. La figure 4.16 donne une illustration de ce
+principe.
+Figure 4.16 . Formes du spéparateur hyperplan de SVM.
+En d'autre terme, L'idée est de transformer un problème de séparation non linéaire dans l'espace
+original en un problème de séparation linéaire dans l'espace de redescription de plus grande
+dimension. En effet, intuitivement, plus la dimension de l’espace de redescription est grande, plus
+la probabilité de pouvoir trouver un hyperplan séparateur entre les exemples est élevée (Douha
+2013).
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 60
+Chapitre 4 : Les Approches d’Apprentissage Automatique
+4.6.4. Extensions aux cas multi-classe
+Dans le cas où la variable de sortie y compte plus de deux classes, il existe plusieurs façons
+d’étendre directement les méthodes du cas binaire.
+ Un contre un : Dans le cas où l’on cherche à prédire un label pouvant K ≥ 3 classes, on peut
+considérer toutes les paires de labels (k, l) possibles, 1 ≤ k < l ≤ K (il y en a ) et ajuster un
+2
+classifieur C k,l (x) pour chacune d’entre elles. La prédiction correspond alor (cid:1829) s(cid:3012) au label qui a
+gagné le plus de "duels".
+ Un contre tous : Pour chaque classe k, on apprend un classifieur permettant de discriminer
+entre les populations Y = k et Y ≠ k. A partir des estimations des probabilités a posteriori, on
+affecte le label estimé le plus probable.
+4.6.5. Exemple de classification
+Si les données sont sous forme vectorielle, on peut utiliser un noyau classique. On peut aussi
+construire un noyau spécifique qui travaille plus directement sur la représentation initiale
+(structure).
+ Images 2D : choix d'une résolution et d'une discrétisation des couleurs.
+• Vecteur des valeurs des pixels,
+• Coefficients d'une transformée en ondelettes,
+• Histogramme des couleurs.
+ Textes : choix d'un dictionnaire (suppression des mots simples).
+• Sac de mots : vecteur des occurrences,
+• Autres attributs (liens, position des mots...).
+ Séquences d'ADN
+• Fenêtres de taille fixe (sous-séquence) et représentation binaire (un bit par valeur possible).
+A T A G C A
+1 0 1 0 0 1
+0 1 0 0 0 0  (1,0,0,0, 0,1,0,0, 1,0,0,0, 0,0,1,0, 0,0,0,1, 1,0,0,0)
+0 0 0 1 0 0
+0 0 0 0 1 0
+• Coefficients d'un modèle probabiliste générateur.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 61
+Chapitre 4 : Les Approches d’Apprentissage Automatique
+4.7. Exercices corrigés
+Exercice 1 : Soit le neurone artificiel avec 3 entrées et 1 sortie :
+x1
+• Une fonction de combinaison : produit scalaire.
+• Une fonction d’activation : linéaire. x2 s y
+Calculez la réponse y à l’excitation x= (5 2 1) et les poids w = (1 - x3
+5 2).
+Solution:
+x =[0 1 5]
+w=[1 -2 6]’
+s=x*w
+s=28
+y=s=28
+Exercice 2 : Programmez un neurone artificiel à 3 entrées et 1 sortie, avec :
+• Une fonction de combinaison : distance euclidienne.
+• Une fonction d’activation : radiale de base, avec γ=1.
+Calculez la réponse y en utilisant un script Matlab à l’excitation : x=(0 1 5) et les poids w=(1 -2
+6).
+Solution :
+x=[0 1 5]
+w=[1 -2 6]
+s=abs(x-w)
+s=sqrt(sum(s.*s))
+s =3.3166
+y=exp(-s*s)
+y = 1.6702e-005
+Exercice 3 :
+Sur le réseau de neurones suivant, en utilisant l’application d’entrée par sommation des
+pondérations et la fonction d’activation Threshold (Seuil), Comment conclure que :
+• L’objet de sortie est un Oiseau.
+• Il ne s’agit pas d’un Avion.
+• Il ne s’agit pas d’un Aéroplane.
+N.B : Les valeurs d’entrée = +1 (vrai), 1 (faux), et 0 (indéterminé).
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 62
+Chapitre 4 : Les Approches d’Apprentissage Automatique
+Ailes
++1 -0.8
+H1 Oiseau
+1.0
+Queue -1.6 -0.7 +1
+0 -0.2
+-0.1
+Bec
+-1.1
+H2 Avion
++1 2.2
+0.0
+1.0
+1
+-1.0
+Plumes
+2.8
++1 -1.6
+-2.9 H 3 1.0 Aéroplane
+Moteur
+-1.1 1.9 1
+1
+-1.3
+Solution :
+En utilisant la fonction Seuil, avec les valeurs d’entrée +1 (vrai), -1 (faux), ou 0 (indéterminé),
+il est possible de donner une interprétation sémantique à l’activation de tout neurone de sortie.
+X 1*(0.8)0*(0.2)1*2.21*2.8(1)*(1.1)5.30
+H1
+Y Y 1
+H1 Oiseau
+X 1*(0.7)0*(0.1)1*0.01*(1.6)(1)*1.94.20
+H2
+Y Y 1
+H2 Avion
+X 1*(0.6)0*(1.1)1*(1.0)1*(2.9)(1)*(1.3)4.20
+H 3
+Y Y 1
+H3 Aeroplane
+Si l’objet d’entrée possède des ailes (+1), un bec (+1) et des plumes (+1), mais pas de moteur
+(-1), nous pouvons conclure qu’il s’agit d’un oiseau (+1) :
+Exercice 4 : Rétro-propagation du gradient
+On a un réseau 3-2-3,
+ Première couche (entrée) = 3 neurones d’entrée,
+ Deuxième couche (cachée) = 2 neurones cachés,
+ Troisième couche (sortie) = 3 neurones de sortie,
+ X1 = 0.9, X2 = 0.1, X3 = 0.9 doivent correspondre aux sorties : Y1 = 0.1, Y2 = 0.9, Y3 =
+0.9
+Étape 1 : Initialisation du réseau
+Les poids sont initialisés aléatoirement sur [-m, +m], On augmente les corrections apportées lors
+de la rétro-propagation.
+Étape 2 : Propagation avant
+1- Calculez les potentiels pour chaque neurone de forme : P = ∑w * s
+i ji j
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 63
+Chapitre 4 : Les Approches d’Apprentissage Automatique
+2- Pour chaque neurone de la couche cachée calculez son signal utilisant la fonction sigmoïde
+3- On propage les résultats de la couche cachée vers la couche de sortie, calculez les potentiels
+des neurones de sortie.
+4- Calculez le signal des neurones de sortie.
+Étape 3 : calcul de l’erreur
+Calculez l’erreur afin de voir si le réseau a convergé en utilisant la formule : E = ½ ∑(d – s )²
+o o
+Étape 4 : calcul du signal d’erreur sur la couche de sortie
+Si le réseau n’a pas convergé, on doit calculer le signal d’erreur sur les neurones de sortie
+,
+1- Calculez la dérivé, sachant que pour la fonction logistique : .
+2- Calculez les signaux d’erreur.
+(On a besoin des poids initiaux pour rétro-propager l’erreur de la sortie sur les neurones de la
+couche cachée.)
+Étape 5 : calcul du signal d’erreur sur la couche cachée
+Le calcul de la dérivée est identique à la couche de sortie.
+Pour chaque neurone de la couche cachée, on doit cumuler les signaux d’erreur des neurones de
+sortie qui leur sont liés, pondérés par les coefficients synaptiques : H et H
+1 2
+1- Calculez les signaux d’erreur : δ et δ
+h1 h2
+Étape 6 : Correction des poids synaptiques de la couche de sortie W et d’entrée W
+hi,yj xi,hj
+La correction utilise les fonctions : w (t+1) = w (t) + ∆w , ∆w = η . δ .s Avec η = 1
+ho ho ho ho o h
+Solution :
+Étape 1 : Initialisation du réseau
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 64
+Chapitre 4 : Les Approches d’Apprentissage Automatique
+Étape 2 : Propagation avant
+1. Calculons les potentiels pour chaque neurone de forme : P = ∑w * s
+i ji j
+ P = 0.9*0.10+0.1*0.15+0.9*0.05=0.150
+h1
+ P = 0.9*0.12+0.1*0.18+0.9*0.08=0.198
+h2
+2. Chaque neurone de la couche cachée calcul son signal utilisant la fonction sigmoïde :
+ S = 1/(1+e-0.150 )= 0.537,
+h1
+ S = 1/(1+e-0.198 )= 0.549
+h2
+3. On propage les résultats de la couche cachée vers la couche de sortie, on calcul les potentiels
+des neurones de sortie :
+ P = 0.537*0.10+0.549*0.14=0.131
+y1
+ P = 0.537*0.125+0.549*0.21=0.182
+y2
+ P = 0.537*0.130+0.549*0.07=0.108
+y3
+4. On calcul le signal des neurones de sortie :
+ S = 1/(1+e-0.131 )= 0.533,
+y1
+ S = 1/(1+e-0.182 )= 0.545,
+y2
+ S = 1/(1+e-0.130 )= 0.527,
+y2
+Étape 3 : calcul de l’erreur
+Afin de voir si le réseau a convergé : E = ½ ∑(d – s )²
+o o
+ Y = 0.1 (sortie désiré) – 0.533 (sortie actuelle) = -0.433
+1
+ Y = 0.9 – 0.545 = 0.355
+2
+ Y = 0.9 – 0.527 = 0.373
+3
+ E = 0.5 * (-0.433² + 0.355² + 0.373²) = 0.226
+Si l’erreur est jugée suffisamment faible, on considère que l’apprentissage est terminé.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 65
+Chapitre 4 : Les Approches d’Apprentissage Automatique
+Étape 4 : calcul du signal d’erreur sur la couche de sortie
+Si le réseau n’a pas convergé, on doit calculer le signal d’erreur sur les neurones de sortie
+, on calcul la dérivé, sachant que pour la fonction logistique :
+.
+Y = 0.533 * (1- 0.533) = 0.249
+1
+Y = 0.545 * (1- 0.545) = 0.248
+2
+Y = 0.527 * (1- 0.527) = 0.249
+3
+Les signaux d’erreur :
+= -0.433 * 0.249 = - 0.108
+= 0.355 * 0.248 = 0.088
+= 0.373 * 0.249 = 0.093
+On a besoin des poids initiaux pour rétro-propager l’erreur de la sortie sur les neurones de la couche
+cachée.
+Étape 5 : calcul du signal d’erreur sur la couche cachée
+Le calcul de la dérivée est identique à la couche de sortie.
+ H = 0.537 * (1-0.537) = 0.249
+1
+ H = 0.549 * (1-0.549) = 0.247
+2
+Pour chaque neurone de la couche cachée, on doit cumuler les signaux d’erreur des neurones de
+sortie qui leur sont liés, pondérés par les coefficients synaptiques :
+H = -0.108*0.10 + 0.088*0.125 + 0.093*0.13 = 0.0123
+1
+H = -0.108*0.14 + 0.088*0.21 + 0.093*0.07 = 0.00987
+2
+Ce qui ne donne les signaux d’erreur suivants :
+δ = 0.249 * 0.0123 = 0.0031 et
+h1
+δ = 0.247 * 0.0987 = 0.0024
+h2
+Étape 6 : Correction des poids synaptiques de la couche de sortie
+La correction utilise les fonctions : w (t+1) = w (t) + ∆w , ∆w = η . δ .s Avec η = 1
+ho ho ho ho o h
+W = 0.10 +(-0.108 * 0.537) = 0.042
+h1,y1
+W = 0.125 +(0.088 * 0.537) = 0.172
+h1,y2
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 66
+Chapitre 4 : Les Approches d’Apprentissage Automatique
+W = 0.130 +(0.093 * 0.537) = 0.080
+h1,y3
+W = 0.140 +(-0.108 * 0.549) = 0.081
+h2,y1
+W = 0.210 +(0.088 * 0.549) = 0.258
+h2,y2
+W = 0.070 +(0.093 * 0.549) = 0.121
+h2,y3
+Étape 7 : Correction des poids synaptiques de la couche d’entrée
+La correction utilise les fonctions : w (t+1) = w (t) + ∆w , ∆w = η . δ .s Avec η = 1
+ih ih ih ih oh i
+W = 0.10 +(0.0031 * 0.9) = 0.103
+x1,h1
+W = 0.15 +(0.0031 * 0.1) = 0.150
+x2,h1
+W = 0.05 +(0.0031 * 0.9) = 0.053
+x3,h1
+W = 0.12 +(0.0024 * 0.9) = 0.122
+x1,h2
+W = 0.18 +(0.0024 * 0.1) = 0.180
+x2,h2
+W = 0.08 +(0.0024 * 0.9) = 0.082
+x3,h2
+ Les nouveaux poids sont presque les mêmes poids initiaux,
+ On peut juger que l’erreur est suffisante et le réseau converge,
+ On peut faire une deuxième itération pour avoir les poids exacts de ce réseau de neurone.
+4.8. Conclusion
+L’apprentissage est l’opération qui consiste à adapter les poids des connexions en fonction des
+stimuli présentés à la couche d’entrée. Les règles d‘apprentissage indiquent comment les poids
+évoluent en réponse à un exemple. Pendant la phase d’exploitation ou de rappel du réseau, on
+présente à l’entrée du réseau un nouveau vecteur et on obtient après la réponse apprise par le
+réseau.
+Les mécanismes d’apprentissage sont les propriétés les plus intéressantes des réseaux de
+neurones car certains d’entre eux tentent de copier le processus de mémorisation des connaissances
+du cerveau humain. Cette mémorisation est essentiellement assurée par les poids synaptiques qui
+sont ajoutés, supprimés ou au contraire atténués lors de la phase d’apprentissage.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 67
+Références Bibliographiques
+Références Bibliographiques
+• O. Boisard, Cours d’Intelligence Artificielle, Cours, Ecole Centrale de Lille, France, 2014.
+• P. J. Denning, Towards a science of expert systems, IEEE Expert, 1, No. 2, pp. 80–83
+(Summer, 1986).
+• F. Denis, Cours d'intelligence artificielle, Systèmes experts, Lille, France, 2002.
+• H. Farreny, Les Systèmes Experts, principes et exemples, Techniques Avancées de
+l'Informatique. Paris. Edition : Berti, 1989.
+• B. Meunier, La logique floue, Édition : Presses Universitaires de France – PUF, France, 2007.
+• L. Gacôgne, Logique floue et application, Editions : CANM, Institut d'Informatique
+d'Entreprise d'Evry, France, 2003.
+• H. Zermane, Télécontrôle et Techniques d'IA pour un Système de Conduite à Distance, Thèse
+de doctorat, Département Génie Industrie, Université Batna 2, 2017.
+• G. Dreyfus J.-M. Martinez M. Samuelides M. B. Gordon F. Badran S. Yhiria L. Hérault,
+Réseaux de neurones: méthodologie et applications, Eyrolles 2002.
+• L. Douha, Analyse des données en grande dimension en utilisant des modèles linéaires et non
+linéaires, Thèse de Doctorat, Département Electronique, Université Batna 2, 2013.
+Références bibliographiques proposées
+1. S. Russell, P. Norvig, Intelligence artificielle: avec plus de 500 exercices, livre, Pearson
+Education, France, 2010.
+2. L. Frécon, O. Kazar, Manuel d'intelligence artificielle, PPUR Presses Polytechniques, 2010.
+3. B. Faltings, M. Schumacher, L'intelligence artificielle par la pratique, Edition : PPUR Presses
+Polytechniques, 2009.
+4. P. Habermehl, Intelligence Artificielle, Cours Master Informatique, Université Paris 7, 2006.
+5. Meghyn, Introduction à l’Intelligence Artificielle, Cours L3, Université Aix-Marseille 1,
+2008.
+6. P. Marquis, O. Papini and H. Prade, Panorama de l'Intelligence Artificielle- Ses bases
+méthodologiques, ses développements, vol. 3, Edition : Cépaduès, France, 2014.
+7. J. L. Laurière, Intelligence Artificielle, Résolution de problèmes par l'homme et la machine,
+Editions : Eyrolles, France, 2006.
+8. J.C. Pomerol, Les Sytèmes Experts, Technologies de Pointe. Paris. Edition : Hermes, 1988.
+9. K. Arnold, Le pramétrage des moteurs d'inférence, Traité des nouvelles technologies, Série
+Mathématiques Appliquées. Edition : Hermes, France, 1988.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 68
+Références Bibliographiques
+10. L. Gacôgne, Logique floue et application, Editions : CANM, Institut d'Informatique
+d'Entreprise d'Evry, France, 2003.
+11. C. Earl, La Logique Floue Pour les affaires et l'industrie. [trad.] Maurice Clerc. Edition :
+Internationnal Thomson Publishing, France, 1997.
+12. F. Chevrie, F. Guély, La logique Floue, Extrait du Cahier Technique Schneider n° 191.
+Edition : Schneider Electric, 1998.
+13. F. Chevalier et J. Le Bellac, La classification, Cours, Faculté des sciences économiques,
+Université de Rennes 1, France, 2013.
+Dr Hanane Zermane Département Génie Industriel Université Batna 2 69

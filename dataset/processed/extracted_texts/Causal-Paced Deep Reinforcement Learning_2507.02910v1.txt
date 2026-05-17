@@ -1,0 +1,946 @@
+5202
+nuJ
+42
+]GL.sc[
+1v01920.7052:viXra
+Causal-PacedDeepReinforcementLearning
+Causal-Paced Deep Reinforcement Learning
+GeonwooCho JaegyunIm DoyoonKim SundongKim
+{gwcho.public, jaegyun.public, dykim.research}@gmail.com,
+sundong@gist.ac.kr
+GwangjuIntsituteofScienceandTechnology
+Abstract
+Designing effective task sequences is crucial for curriculum reinforcement learning
+(CRL), where agents must gradually acquire skills by training on intermediate tasks.
+A key challenge in CRL is to identify tasks that promote exploration, yet are sim-
+ilar enough to support effective transfer. While recent approach suggests compar-
+ing tasks via their Structural Causal Models (SCMs), the method requires access to
+ground-truth causal structures, an unrealistic assumption in most RL settings. In this
+work, we propose Causal-Paced Deep Reinforcement Learning (CP-DRL), a curricu-
+lum learning framework aware of SCM differences between tasks based on interac-
+tion data approximation. This signal captures task novelty, which we combine with
+theagent’slearnability, measuredbyrewardgain, toformaunifiedobjective. Empir-
+ically, CP-DRL outperforms existing curriculum methods on the Point Mass bench-
+mark, achieving faster convergence and higher returns. CP-DRL demonstrates re-
+duced variance with comparable final returns in the Bipedal Walker-Trivial setting,
+and achieves the highest average performance in the Infeasible variant. These results
+indicate that leveraging causal relationships between tasks can improve the structure-
+awarenessandsampleefficiencyofcurriculumreinforcementlearning. Weprovidethe
+full implementation of CP-DRL to facilitate the reproduction of our main results at
+https://github.com/Cho-Geonwoo/CP-DRL.
+1 Introduction
+Just as a child first learns to crawl before walking and running, intelligent behavior in complex
+environments is rarely acquired in a single leap. Instead, learning unfolds through a gradual ac-
+cumulationofsimplerskillsthat scaffoldmoreadvancedcapabilities. Thisprinciple underliesthe
+ideaofcurriculumlearninginreinforcementlearning(RL),whereagentsaretrainedonastructured
+sequenceoftasksthatprogressively increaseincomplexity(Narvekaretal.,2020;Florensa etal.,
+2018;Klinketal.,2022). Bymasteringsimplersubtasksbeforefacingthetargettask,theagentcan
+avoidinefficientexplorationandacceleratelearning.
+Acorechallengeincurriculumreinforcementlearning(CRL)istomeasurehowtasksdiffer,iden-
+tifywhattheagenthasnotyetlearned,andexposeittonovelyettransferabletasks(Hughesetal.,
+2024). Existingapproachestypicallyapproximatetaskdifferencesusingagent-centricsignals,such
+as regret (Jiang et al., 2021) or value disagreement (Zhang et al., 2020), but these are inherently
+policy-dependent and sensitive to noise. As a more principled alternative, Li et al. (2024) pro-
+posecomparingtasksviadifferencesintheirStructuralCausalModels(SCMs),enablingapolicy-
+independentandstructure-awaremeasureoftransferability.
+While SCM-based comparison provides a principled way to quantify task differences, it relies on
+access to the true causal structure, which is rarely available in realistic RL environments (Zanga
+etal.,2022).Inthiswork,weproposeCausal-PacedDeepReinforcementLearning(CP-DRL),a
+1
+Causal-PacedDeepReinforcementLearning
+Task A TaskB
+Trajectory 1 Trajectory 1
+Causal
+Difference
+Trajectory N Trajectory K
+Teacher Student
+Curriculum
+Figure1: AnoverviewoftheCP-DRL.Weestimatethecausaldifferencebetweentasksbasedon
+the observed trajectories in each task. This structural signal is used by the teacher to construct a
+curriculumthatgraduallyexposesthestudenttonoveltasks.
+frameworkthataddressesthislimitationbyapproximatingtheSCMdifferencebetweentasksusing
+only interaction data. Specifically, we estimate the differences in state, action, transition, and re-
+wardcomponents,thekeyconstituentsofSCMdifferenceindeterministicreinforcementlearning,
+bymeasuringthedisagreementacrossmodularensemblemodels. Thesecomponent-wisedisagree-
+ments are then aggregated into a causal misalignment score, which serves to identify tasks whose
+underlying causal structures remain unfamiliar to the agent. To balance novelty with learnability,
+wecombinethecausalmisalignmentscorewiththeagent’srewardimprovement,yieldingaunified
+signalthatcharacterizesbothstructuralnoveltyandlearningpotential.Thisunifiedsignalisthenin-
+corporatedintoanoptimaltransport-basedcurriculumoptimizationframework(Klinketal.,2022),
+enablingthecurriculumtoprioritizetasksthatarestructurallyinformativeyetlearnable,andguide
+trainingsmoothlytowardthetargetdistribution. ThisprocessisconceptuallyillustratedinFigure1.
+We conduct experiments on two RL benchmarks, Point Mass (PM) and Bipedal Walker (BW),
+demonstrating that CP-DRL effectively balances exploration and transfer through causal reason-
+ing. InthePMenvironment,CP-DRLachievesthehighestreturnandconvergesfasterthanbaseline
+methods. In the Bipedal Walker-Trivial setting, it achieves comparable final performance with re-
+ducedvariance,andintheInfeasiblesetting,itachievesthehighestmeanreturnamongallmethods.
+TheseresultshighlightCP-DRL’spotentialtogeneratestructure-awarecurriculathatenhancegen-
+eralizationandsampleefficiencyincomplexreinforcementlearningenvironments.
+2 Preliminary
+2.1 MarkovDecisionProcessandContextualRLforcurriculumlearning
+We assume each task or environment can be modeled as a Markov Decision Process (MDP) M,
+defined by the tuple ⟨S,A,p,r,γ⟩, where S is the state space, A the action space, p(s′ | s,a)
+with s,s′ ∈ S and a ∈ A the transition probability function, r(s,a) the reward function, and
+γ ∈ [0,1)thediscountfactor. ThesolutiontoanMDPisanoptimalpolicyπ(a|s)thatmaximizes
+theexpectedreturnJ(π)=E [ (cid:80)∞ γtr(s ,a )]. Insomecurriculumlearningscenarios,tasksare
+π t=0 t t
+parameterized or varied by some additional context c ∈ C, where C denotes the space of possible
+contexts(Hallaketal.,2015). Forexample,ccouldrepresentthegoallocationinanavigationtask,
+thelayoutofamaze,orphysicalpropertiesoftheenvironment. Wecanformalizeafamilyoftasks
+asaContextualMDPM(c) = ⟨S,A,p ,r ,γ⟩wherecinfluencesthetransitiondynamicsp and
+c c c
+rewardfunctionr . EachvalueofccorrespondstoadifferentMDP,buttypicallythereisstructure
+c
+sharedacrosscontexts(e.g.,commonstateandactionspaces,andsomecommondynamics).
+Thecurriculumlearningproblemcanthenbeformulatedas,
+⟨q∗,q∗,...,q∗⟩= argmax J (cid:0) π (cid:1) where π =Update(π ,q ) and q =µ. (1)
+0 1 T T t+1 t t T
+⟨q0,q1,...,qT⟩
+2
+Causal-PacedDeepReinforcementLearning
+whereT isatotalnumberofcurriculumsteps,q isthecontextdistributionusedattrainingstept,
+t
+π is the agent’s policy after t updates, µ is a target task distribution and Update(π ,q ) denotes
+t t t
+thelearningsteptogetnextpolicyπ usingcurrentpolicyπ andthedatasampledfromq . The
+t+1 t t
+finalpolicyπ istrainedviathesequence(q ,...,q )andisevaluatedonµ. Thegoalistofinda
+T 0 T
+curriculum(q ,...,q )thatyieldsapolicyπ performingwellonthetargetdistribution.
+0 T T
+2.2 StructuralCausalModelinRL
+A Structural Causal Model (SCM) describes causal
+relationships between variables (Pearl, 2009; Pearl
+& Bareinboim, 2011). An SCM M is defined as a
+tuple(U,V,F,P),whereUisasetofexogenous
+(unobserved) variables, V is a set of endogenous
+(observed) variables, F = {f : Pa(V)∪U →
+V V
+V} is a set of structural functions, where each
+V∈V
+Figure2: CausalgraphinourRLsetting.
+f determines V based on its endogenous parents
+V
+Solid arrows: environment-induced transi-
+Pa(V) ⊆ V(endogenousvariablesthatdirectlyin-
+tions and reward generation, Dotted arrows:
+fluence V) and exogenous inputs U ⊆ U (exoge-
+V
+denotepolicy-induceddependencies.
+nousvariablesthatdirectlyinfluenceV),andP(U)
+isthedistributionoverU,fromwhichtheexogenousvariablesaresampled.
+FromanRLperspective,MDPcanbeinterpretedthroughthelensofSCM,wherethestatespaceS,
+theactionspaceX,andtherewardspaceY aresubsetsofthesetofendogenousvariablesV,and
+therandomnessintherewardandtransitionfunctionsiscapturedbythesetofexogenousvariables
+U(Lietal.,2024).Inthispaper,weassumeadeterministicsettingwithoutexogenousvariables,i.e.,
+thereisnounderlyingrandomnessintheenvironment. Theresultingcausalstructureisillustrated
+inFigure2. Here,s ,s ∈ S,a ,a ∈ X,andr ,r ∈ Y,andthestructuralfunctionsinF
+t t+1 t t+1 t t+1
+map(s ,a )toboths andr .
+t t t+1 t
+2.3 Curriculumreinforcementlearningviaconstrainedoptimaltransport
+OurmethodisbuiltuponCURROT(Klinketal.,2022),whichmakesacurriculumusingtheoptimal
+transportproblemwithconstraints.
+(cid:40)
+p(c)>0⇒J(π,c)≥δ ∀c∈C
+p (c)=argminW (p(c),µ(c)) s.t. (2)
+W 2
+p W (p(c),q(c))≤ϵ
+2
+It tries to minimize the 2-Wasserstein distance W , the distance between the current source task
+2
+distributionp(c)andthetargettaskdistributionµ(c),withtwoconstraints:(1)amongalltasks,only
+those with nonzero probability under p(c)-i.e., tasks actually selected for training-must yield an
+expected return abovea threshold δ (which decreases overtime), and (2) the Wassersteindistance
+between consecutive source task distributions p(c) and q(c) should be lower than the threshold
+ϵ. This optimization enables the construction of a curriculum that smoothly approaches the target
+distribution,whilemaintainingper-taskexpectedreturnJ(π,c)aboveadecreasingthresholdδand
+boundingthedistributionalshiftbetweensuccessivetaskdistributions.
+3 Method
+Weproposeacurriculumlearningmethodthatencouragestheagenttoexploretaskswithunderex-
+ploredcausalstructures. Toachievethis,weintroducetheCausalMisalignment(CM)score,which
+quantifieshowunfamiliaratask’scausalstructureisrelativetotheagent’spreviouslylearnedexpe-
+rience. WeempiricallyanalyzetherelationshipbetweentheCMscoreandunderlyingcausaldiffer-
+encesintheCausalWorldenvironment(Ahmedetal.,2021). WeincorporatethisscoreintoCUR-
+ROTtoiterativelyupdatethetaskdistribution. Byguidingtheagenttowardtaskswithhighcausal
+misalignment,ourmethodpromotesmoreefficientexplorationandfostersgeneralizablelearning.
+3
+Causal-PacedDeepReinforcementLearning
+3.1 PrioritizingCausallyunderexploredTasksinCurriculumLearning
+Toconstructaneffectivecurriculum,itisessentialtoaccuratelyquantifyhowanewtaskdiffersfrom
+previouslyencounteredonesintermsoflearningdynamicsandstructuralcomplexity(Hughesetal.,
+2024).IftheSCMsoftaskswereavailable,theycouldserveasaprincipledbasisforcomparingtasks
+intermsoftheirunderlyingcausalmechanisms(Lietal.,2024). However, directaccesstoSCMs
+is rarely feasible in realistic reinforcement learning environments, and uncovering such structures
+from purely observational data remains a challenging problem (Zanga et al., 2022; Zeng et al.,
+2024). Indeterministicsettings, theinterplayamongstate, action, transition, andrewarddefinesa
+structureddependencythatimplicitlycapturesthetask’scausalstructure.Thus,thecausaldifference
+between two tasks can be approximated by aggregating the differences in these four components.
+Toestimateeachcomponent-wisedifference,wetraindedicatedmodelsusingtrajectoriescollected
+frompreviouslyexperiencedtasksandcomputedisagreementamongensemblepredictions.
+Stateencoder: zs ∼q (zs |s )
+t ϕs t t
+Statedecoder: sˆ ∼p (sˆ |zs)
+t θs t t
+Actionencoder: za ∼q (za |a )
+t ϕa t t
+Actiondecoder: aˆ ∼p (aˆ |za)
+t θa t t
+Transitionpredictor: sˆ ∼p (sˆ |s ,a )
+t+1 ϕτ t+1 t t
+Rewardpredictor: rˆ ∼p (rˆ |s ,a )
+t ϕr t t t
+Wetrainsixseparateneuralnetworks.(sˆ,aˆ,sˆ ,rˆ)denotethemodel’sreconstructionorprediction
+t+1 t
+ofacorrespondingvariable.Thestateencoderq (zs |s )andthestatedecoderp (sˆ |zs)encode
+ϕs t t θs t t
+thecurrentstates intoalatentrepresentationzsandreconstructittothestatesˆ.Theactionencoder
+t t t
+q (za | a ) and the action decoder p (aˆ | za) encode the action a into a latent representation
+ϕa t t θa t t t
+za and reconstruct it to the action aˆ . The transition predictor p (sˆ | s ,a ) predicts the next
+t t ϕτ t+1 t t
+statebasedonthecurrentstateandaction,approximatingtheenvironment’stransitionfunction.The
+reward predictor p (rˆ | s ,a ) predicts rewards for the current state and action, modeling the
+ϕr t t t
+environment’s reward function. The detailed architecture of these neural networks is provided in
+AppendixB.3.
+L =∥sˆ −s ∥2+β ·KL(q (zs |s )|N(0,I))
+state t t 2 1 ϕs t t
+L =∥aˆ −a ∥2+β ·KL(q (za |a )|N(0,I))
+action t t 2 2 ϕa t t
+(3)
+L =∥sˆ −s ∥2
+transition t+1 t+1 2
+L =∥rˆ −r ∥2
+reward t t 2
+These models are trained using separate loss functions, each guiding a distinct component of the
+causal structure. The state and action losses, L and L , guide the model to accurately re-
+state action
+constructthestateandaction,respectively,ensuringthatthelatentrepresentationscapturesufficient
+information to regenerate the original inputs. These losses also regularize the latent distributions
+towardastandardGaussianpriorviaKLdivergenceasinHigginsetal.(2017). Thetransitionloss,
+L ,guidesthemodeltoapproximatethetransitiondynamicsbypredictingthenextstategiven
+transition
+thecurrentstateandaction. Similarly, therewardloss, L , promotesaccuratemodelingofthe
+reward
+rewardfunctionbysupervisingrewardpredictionfromthecurrentstateandaction.
+While component-wise neural networks enable the separate modeling of individual environment
+components, simply training these models is insufficient to assess the causal difference between a
+newtaskandpreviouslylearnedtasks. Toquantifythisdifference,wetrainanensembleofKnet-
+worksforeachofthefourcomponents-state, action, transition, andreward-andmeasurethestruc-
+tural unawareness of each component through ensemble disagreement, computed as the standard
+deviationofpredictionsacrossensemblemembersasinZhangetal.(2020).
+(cid:18)(cid:110) (cid:111)K (cid:19)
+Disagreement =std yˆ(k)(·) , i∈{state,action,transition,reward} (4)
+i i
+k=1
+4
+Causal-PacedDeepReinforcementLearning
+Here,yˆ(k)denotesthepredictionofthek-thensemblememberforcomponenti.Ahighlevelofdis-
+i
+agreementindicatesthatthetask’scausalstructuresignificantlydiffersfrompreviouslyencountered
+tasks,whichweinterpretascausalmisalignment,suggestingthattheagenthasnotyetconfidently
+capturedtheunderlyingstructure.Incontrast,lowdisagreementimpliesthattheagenthasdeveloped
+areliableunderstandingofthecorrespondingenvironmentcomponent.
+We aggregate these component-wise disagreements into a CM score, which quantifies the overall
+causal structure unawareness associated with a given context. The CM score is computed as a
+weightedsumoftheindividualcomponentdisagreements.
+(cid:88)
+CM(c)= w ·Disagreement i∈{state,action,transition,reward} (5)
+i i
+i
+Thisscorequantifiestheextenttowhichthestructuralpropertiesofagiventaskdeviatefromthose
+capturedbytheagent’scurrentmodel. Taskswithhighermisalignmentscoresareprioritizedduring
+curriculumsampling,guidingtheagenttowardregionsofthetaskspacewhereitsunderstandingof
+thecausalstructureremainsunderdeveloped.Detailsoftheweightinghyperparametersareprovided
+inAppendixC.
+WeextendCURROTbyincorporatingcausalmisalignmentintothecontextdistributionupdate. At
+eachiteration,theagentsamplesabatchoftasksfromthecurrentcontextdistribution,collectsinter-
+actiontrajectories,andupdatesitspolicy. Foreachtask,component-wiseensembledisagreements
+are computed and aggregated into a CM score via a weighted sum. This score, combined with
+episodic rewards, captures both structural novelty and learnability. These signals are stored and
+used to update the context distribution through an optimal transport-based objective (Eq. 2). The
+fullprocedureisdescribedinAppendixD.
+3.2 DisagreementasaProxyforCausalDifference: AToyExampleinCausalWorld
+T1 T2 T3 T4
+Figure 3: Visualization of tasks T1–T4 from the CausalWorld General environment. In this
+setup,agentsreceiverewardsproportionaltotheintersectionratiobetweeneachblockandthegoal
+configuration. From T1 to T4, we progressively increase the block size, action magnitude, and
+rewardscale,inducingincreasingcausaldifferencesbetweentasks.
+To assess the effectiveness of the CM score in capturing task-level causal differences, we conduct
+acontrolledexperimentusingtheCausalWorldGeneralenvironment(Ahmedetal.,2021). Causal-
+Worldprovidesarealisticandstructuredenvironmentsuitableforanalyzinghowmodulardisagree-
+mentrelatestounderlyingcausalchanges.
+Weconstructfourtasks,T1throughT4(Figure3),byprogressivelyincreasingtheblocksize,action
+magnitude, and reward scale, thereby inducing increasing levels of causal variation across tasks.
+ThesemodificationsinducemonotonicincreasesincausaldifferencesrelativetoT1. Detailedtask
+configurations are provided in Appendix E. We use the same model architecture described in Ap-
+pendix B.3, except that, for this experiment, the hidden dimension of the transition and reward
+predictorsisfixedto64andtheensemblesizeissetto5. WedesignateT1asthebasetaskandpre-
+trainonitfor10episodesusingarandompolicy. Then,wecollect5episodesofrandomtrajectories
+fromeachofthefourtasksandevaluatethedisagreementscoresacrossstate,action,transition,and
+rewardmodels.
+5
+Causal-PacedDeepReinforcementLearning
+Transition Reward State Action
+0.26
+0.555 0.25 1.36 1.0
+0.550 0.24 1.34 0.9
+0.545 0.23
+0.540 0.22 1.32 0.8
+0.535 0.21 1.30 0.7
+0.530 0.20 1.28 0.6
+T1 T2 T3 T4 T1 T2 T3 T4 T1 T2 T3 T4 T1 T2 T3 T4
+Figure4:DisagreementmetricsacrosstasksT1–T4.EachmetriciscomputedaftertrainingonT1
+for10episodesandsampling5episodesfromeachtask. Transition,state,andactiondisagreements
+increasemonotonically,suggestingtheyeffectivelyreflectcausaldifferences. Rewarddisagreement
+showsnocleartrendduetorewardsparsityandrandomtrajectorycollection.
+Figure4presentstheaverageddisagreementmetricsoverthreerandomseeds. Transition,state,and
+actiondisagreementsincreasemonotonicallyfromT1toT4,aligningwellwiththeintendedcausal
+differencesinducedbytaskvariations. Incontrast,rewarddisagreementshowsnoconsistenttrend,
+likely due to sparse reward signals and the use of random policies during data collection. These
+resultsvalidatethattheproposedcomponent-wisedisagreementmetrics-especiallyforstate,action,
+andtransition-serveaseffectiveproxiesforcapturingstructuraldifferencesacrosstasks.
+Moreover,furtheranalysisinAppendixErevealsthattransitiondisagreementisprimarilyinfluenced
+bybothblocksizeandactionmagnitude,actiondisagreementcorrelateswithactionscale,andstate
+disagreement increases with block size. These findings reinforce our interpretation that modular
+disagreementmeaningfullyreflectsthecausalcomponentsunderlyingtaskvariations.
+4 Experiments
+(a)PointMass (b)BipedalWalker
+Figure5:Illustrationsoftheenvironmentsusedinourexperiments.(a)PointMass.(b)Bipedal-
+Walker.
+Weevaluatedourmethod,CP-DRL,ontwobenchmarkenvironments:PointMass(PM)andBipedal
+Walker(BW).ForthePMenvironment,weusedProximalPolicyOptimization(PPO)asthestudent
+algorithm,whileforBW,weemployedSoftActor-Critic(SAC)asinKlinketal.(2022). Visualiza-
+tionsofeachenvironmentareprovidedinFigure5.
+For comparison, we evaluated several curriculum learning baselines, including CURROT, SPRL,
+GoalGAN,ALPGMM,ACL,PLR,andVDS(Klinketal.,2022;2021a;Florensaetal.,2018;Porte-
+las et al., 2020; Graves et al., 2017; Jiang et al., 2021; Zhang et al., 2020). All experiments are
+conductedwithmultiplerandomseedstoensurestatisticalreliability,10seedsforPM,5seedsfor
+BWtrivialtasks,and3seedsforBWinfeasibletasks. WepresentacomparisonwithCURROT,the
+strongestamongthebaselines,andincludeacomprehensiveevaluationinAppendixA.
+4.1 PointMass
+ThePMenvironmentrequirescontrollingapointagenttonavigatethroughanarrowgateinorder
+to reach a target location on the opposite side of a wall (Klink et al., 2020a;b; 2021a). The task
+difficulty is modulated by the gate’s width and position. The target context distribution µ(c) is
+6
+Causal-PacedDeepReinforcementLearning
+CP-DRL (Ours) CURROT (best method)
+6
+3
+0 25 50 75 100 125 150 175 200
+Epoch
+.teR
+.csiD
+.muC
+1.75
+1.50 1.25
+1.00
+0.75
+0.50
+0.25
+0.00
+0 50 100 150 200
+Epoch
+(a)Cumulativediscountedreturn
+noitisoP
+etaG
+4
+3
+2
+1
+0
+0 50 100 150 200
+Epoch
+(b)Gateposition
+htdiW
+etaG
+(c)Gatewidth
+Figure 6: Performance comparison between CP-DRL and CURROT in Point Mass environ-
+ment. (a)Cumulativediscountedreturn. (b)Mediandistancetothetargetgateposition. (c)Median
+distancetothetargetgatewidth. Allcurvesshowthemeanwith95%confidenceintervals.
+bimodal, corresponding to two gate positions on opposite sides. Each training epoch consists of
+4,096 rollouts, and all methods are trained for 200 epochs to ensure convergence. For a detailed
+descriptionoftheenvironment,pleaserefertoAppendixB.1.
+CP-DRLdemonstratessuperiorperformancethroughouttraining,reachingareturnof6.17±0.08
+atepoch195. Thissubstantiallyoutperformsthesecond-bestmethod,CURROT(5.6±0.34),with
+animprovementofapproximately10.2%. Moreover,CP-DRLmaintainsconsistentlylowstandard
+errors during training, indicating more stable learning compared to CURROT, which exhibits in-
+creasingvarianceovertime. TheoverallperformancetrendisillustratedinFigure6a.
+WealsoexaminehowCP-DRLadaptsthecurriculumovertimebyvisualizingtheevolutionofgate
+positions and gate width precision. The agent quickly converges to tasks aligned with the target
+gatepositionandprogressivelyfocusesonnarrowergatewidths,demonstratingthatthecurriculum
+drives the agent toward more precise and challenging contexts. These patterns reflect CP-DRL’s
+abilitytofacilitateefficientexplorationbyprioritizingcausallyunfamiliartasks,therebyaccelerating
+convergenceandenhancingadaptation. VisualizationsareprovidedinFigure6bandFigure6c.
+4.2 BipedalWalker
+CP-DRL (Ours) CURROT (best method)
+150
+100
+50
+0
+50
+100
+150
+0 5 10 15 20 25 30 35 40
+Epoch
+ecnamrofreP
+150
+100
+50
+0
+50
+100
+150
+0 5 10 15 20 25 30 35 40
+Epoch
+(a)PerformanceinBipedalWalker(Trivial)
+ecnamrofreP
+(b)PerformanceinBipedalWalker(Infeasible)
+Figure 7: Performance comparison between CP-DRL and CURROT in BipedalWalker. (a)
+Trivial. (b)Infeasible. Allcurvesshowthemeanwith95%confidenceintervals.
+The BW environment is a continuous control benchmark where a bipedal agent must traverse un-
+even terrain consisting of randomly spaced stumps. Each task is parameterized by two contextual
+variables: stump height and stump spacing, which respectively control the vertical and horizontal
+difficulty of locomotion. In the Trivial setting, stump height is sampled from [−3,3] and clipped
+at zero, resulting in approximately half of the tasks being flat and easy. In contrast, the Infeasible
+settingusesawiderrange[0,9]forstumpheight,leadingtomanytasksthatarephysicallyimpos-
+7
+Causal-PacedDeepReinforcementLearning
+sibletosolve. Stumpspacingissampledfrom[0,6]inbothsettings. Eachtrainingepochconsists
+of5×104environmentsteps,andallmethodsaretrainedfor40epochstoensureconvergence. For
+furtherenvironmentdetails,refertoAppendixB.2.
+In the Trivial setting (Figure 7a), CP-DRL achieves the fastest convergence among all methods,
+reachingareturnof93.82±8.12at20kstepsandmaintainingstableperformancethereafter. While
+CURROTattainsslightlyhigherfinalreturns, CP-DRLexhibitsalowerstandarderrorformostof
+thetrainingperiod. Othermethods,suchasALP-GMMandGOALGAN,exhibitmoderatesuccess,
+whileSPRLandRandomsamplingfailtoachievemeaningfulprogress.
+In the Infeasible setting (Figure 7b), CP-DRL outperforms all baselines during the mid-training
+phase,achievingthehighestmeanreturnof130.61±9.32at30ksteps.AlthoughCURROTachieves
+a higher final return (123.58±5.72 vs. 101.85±13.87), CP-DRL reaches superior performance
+earlier in training. In contrast, several baselines, such as SPRL, RIAC, and Random, show severe
+instabilityorcollapseentirely.
+Together,theseresultsconfirmthatCP-DRLnotonlyachievescompetitiveperformancebutalsoex-
+celsinstabilityandconvergencespeed,especiallyinstructurallydiverseordifficultenvironments.
+5 Limitations
+Our approach, while effective, has several limitations that highlight opportunities for future im-
+provement. The method depends on approximating SCMs to estimate differences between tasks,
+butthequalityofthisapproximationisinherentlylimitedbythechoiceofmodelarchitectureand
+trainingstrategy. Incorporatingmoreexpressiveorcausallygroundedmodels,suchasthosebased
+oncounterfactualreasoningorlatentcausalrepresentations,mayleadtomoreaccurateconsistency
+estimationandimprovedcurriculumdesign.
+The current evaluation is confined to a small set of benchmark environments, leaving open the
+question of how well the method generalizes to more complex or diverse settings. Environments
+withsparserewardsorunobservedconfoundersmaypresentdifferentchallenges,andextendingour
+experimentstothesedomainswouldhelpvalidatetherobustnessandscalabilityoftheapproach.
+Although the framework integrates naturally with CURROT, its applicability to other curriculum
+learningparadigmshasnotbeenexplored.Understandingwhethertheproposedcausal-guidedstrat-
+egycanbetransferredtoalternativeframeworkswouldclarifyitsgeneralutilityandflexibility.
+Finally,initscurrentform,themethodusesheuristicrules,suchasthresholdsorfixedweightings.
+Developing more principled weighting mechanisms, potentially through meta-learning or causal
+scorematching,couldimprovetheadaptivityandperformanceofthecurriculum.
+6 Conclusion
+We presented CP-DRL, a curriculum learning framework that leverages causal reasoning to guide
+taskselection. InsteadofrelyingonaccesstotrueSCMs,CP-DRLquantifiestheagent’sunfamil-
+iarity with the causal structure of a task through the disagreement of the state, action, transition,
+andrewardpredictors. Thesestructuralsignalsareintegratedintoatransport-basedcurriculumop-
+timization scheme, enabling the agent to explore causally underexplored regions while gradually
+aligningwiththetargettaskdistribution.
+Throughexperimentsontworeinforcementlearningbenchmarks,PMandBW,wedemonstratethe
+effectivenessofCP-DRLinimprovingcurriculumlearning. Ourfindingsdemonstratethepromise
+ofcausalsignalsasageneraltoolforcurriculumdesigninRL.Futureworkmayexploretighterin-
+tegrationwithcausalrepresentationmethods,applicationtoreal-worldroboticsystems,orextension
+topartiallyobservableandsparserewardsettings. Wehopethatthisworkinspiresfurtherresearch
+intocausallygroundedlearningandstructure-awareexplorationforadaptiveagentsinopen-ended
+environments.
+8
+Causal-PacedDeepReinforcementLearning
+References
+Ossama Ahmed, Frederik Träuble, Anirudh Goyal, Alexander Neitz, Manuel Wüthrich, Yoshua
+Bengio,BernhardSchölkopf,andStefanBauer.Causalworld:Aroboticmanipulationbenchmark
+forcausalstructureandtransferlearning. InInternationalConferenceonLearningRepresenta-
+tions,2021.
+Lars Buesing, Theophane Weber, Yori Zwols, Nicolas Heess, Sebastien Racaniere, Arthur Guez,
+andJean-BaptisteLespiau. Woulda,coulda,shoulda: Counterfactually-guidedpolicysearch. In
+InternationalConferenceonLearningRepresentations,2018.
+MaximeChevalier-Boisvert, LucasWillems, andSumanPal. Minimalisticgridworldenvironment
+forgymnasium. https://github.com/Farama-Foundation/Minigrid, 2018. Ac-
+cessed: 2025-06-01.
+Daesol Cho, Seungjae Lee, and H Jin Kim. Diversify & Conquer: Outcome-directed curriculum
+rlviaout-of-distributiondisagreement. AdvancesinNeuralInformationProcessingSystems,36:
+53593–53623,2023a.
+DaesolCho,SeungjaeLee,andHJinKim.Outcome-directedreinforcementlearningbyuncertainty
+&temporaldistance-awarecurriculumgoalgeneration. arXivpreprintarXiv:2301.11741,2023b.
+CarlosFlorensa,DavidHeld,MarkusWulfmeier,MichaelZhang,andPieterAbbeel. Reversecur-
+riculumgenerationforreinforcementlearning. InConferenceonRobotLearning,pp.482–495.
+PMLR,2017.
+CarlosFlorensa,DavidHeld,XinyangGeng,andPieterAbbeel.Automaticgoalgenerationforrein-
+forcementlearningagents. InProceedingsoftheInternationalConferenceonMachineLearning,
+pp.1515–1528.PMLR,2018.
+Alex Graves, Marc G Bellemare, Jacob Menick, Remi Munos, and Koray Kavukcuoglu. Auto-
+matedcurriculumlearningforneuralnetworks. InProceedingsoftheInternationalConference
+onMachineLearning,pp.1311–1320.PMLR,2017.
+Assaf Hallak, Dotan Di Castro, and Shie Mannor. Contextual markov decision processes. arXiv
+preprintarXiv:1502.02259,2015.
+Irina Higgins, Loic Matthey, Arka Pal, Christopher Burgess, Xavier Glorot, Matthew Botvinick,
+Shakir Mohamed, and Alexander Lerchner. beta-vae: Learning basic visual concepts with a
+constrained variational framework. In International Conference on Learning Representations,
+2017.
+Peide Huang, Mengdi Xu, Jiacheng Zhu, Laixi Shi, Fei Fang, and Ding Zhao. Curriculum rein-
+forcement learning using optimal transport via gradual domain adaptation. Advances in Neural
+InformationProcessingSystems,35:10656–10670,2022.
+Edward Hughes, Michael Dennis, Jack Parker-Holder, Feryal Behbahani, Aditi Mavalankar, Yuge
+Shi, Tom Schaul, and Tim Rocktäschel. Open-endedness is essential for artificial superhuman
+intelligence. arXivpreprintarXiv:2406.04268,2024.
+MinqiJiang,EdwardGrefenstette,andTimRocktäschel. Prioritizedlevelreplay. InProceedingsof
+theInternationalConferenceonMachineLearning,pp.4940–4950.PMLR,2021.
+PascalKlink,HanyAbdulsamad,BorisBelousov,andJanPeters. Self-pacedcontextualreinforce-
+mentlearning. InConferenceonRobotLearning,pp.513–529.PMLR,2020a.
+Pascal Klink, Carlo D’Eramo, Jan R Peters, and Joni Pajarinen. Self-paced deep reinforcement
+learning. AdvancesinNeuralInformationProcessingSystems,33:9216–9227,2020b.
+9
+Causal-PacedDeepReinforcementLearning
+Pascal Klink, Hany Abdulsamad, Boris Belousov, Carlo D’Eramo, Jan Peters, and Joni Pajarinen.
+Aprobabilisticinterpretationofself-pacedlearningwithapplicationstoreinforcementlearning.
+JournalofMachineLearningResearch,22(182):1–52,2021a.
+Pascal Klink, Carlo D’Eramo, Jan Peters, and Joni Pajarinen. Boosted curriculum reinforcement
+learning. InInternationalConferenceonLearningRepresentations,2021b.
+Pascal Klink, Haoyi Yang, Carlo D’Eramo, Jan Peters, and Joni Pajarinen. Curriculum reinforce-
+mentlearningviaconstrainedoptimaltransport. InProceedingsoftheInternationalConference
+onMachineLearning,pp.11341–11358.PMLR,2022.
+PascalKlink,CarloD’Eramo,JanPeters,andJoniPajarinen. Onthebenefitofoptimaltransportfor
+curriculumreinforcementlearning. IEEETransactionsonPatternAnalysisandMachineIntelli-
+gence,2024.
+Mingxuan Li, Junzhe Zhang, and Elias Bareinboim. Causally aligned curriculum learning. In
+InternationalConferenceonLearningRepresentations,2024. URLhttps://openreview.
+net/forum?id=hp4yOjhwTs.
+Sanmit Narvekar, Bei Peng, Matteo Leonetti, Jivko Sinapov, Matthew E Taylor, and Peter Stone.
+Curriculum learning for reinforcement learning domains: A framework and survey. Journal of
+MachineLearningResearch,21(181):1–50,2020.
+Jack Parker-Holder, Minqi Jiang, Michael Dennis, Mikayel Samvelyan, Jakob Foerster, Edward
+Grefenstette,andTimRocktäschel. Evolvingcurriculawithregret-basedenvironmentdesign. In
+Proceedings of the International Conference on Machine Learning, pp. 17473–17498. PMLR,
+2022.
+JudeaPearl. Causality: Models,Reasoning,andInference. CambridgeUniversityPress,2edition,
+2009. DOI:10.1017/CBO9780511803161.
+Judea Pearl and Elias Bareinboim. Transportability of causal and statistical relations: A formal
+approach. InProceedingsoftheAAAIConferenceonArtificialIntelligence,volume25,pp.247–
+254,2011.
+Rémy Portelas, Cédric Colas, Katja Hofmann, and Pierre-Yves Oudeyer. Teacher algorithms for
+curriculum learning of deep rl in continuously parameterized environments. In Conference on
+RobotLearning,pp.835–853.PMLR,2020.
+Clément Romac, Rémy Portelas, Katja Hofmann, and Pierre-Yves Oudeyer. Teachmyagent: a
+benchmark for automatic curriculum learning in deep rl. In Proceedings of the International
+ConferenceonMachineLearning,pp.9052–9063.PMLR,2021.
+ErdiSayar,GiovanniIacca,OzgurSOguz,andAloisKnoll. Diffusion-basedcurriculumreinforce-
+mentlearning. AdvancesinNeuralInformationProcessingSystems,37:97587–97617,2024.
+Max-Philipp B. Schrader. Gym-sokoban. https://github.com/mpSchrader/
+gym-sokoban,2018. Accessed: 2025-06-04.
+MaximilianSeitzer,BernhardSchölkopf,andGeorgMartius.Causalinfluencedetectionforimprov-
+ingefficiencyinreinforcementlearning.AdvancesinNeuralInformationProcessingSystems,34:
+22905–22918,2021.
+Sumedh A Sontakke, Arash Mehrjou, Laurent Itti, and Bernhard Schölkopf. Causal curiosity: Rl
+agentsdiscoveringself-supervisedexperimentsforcausalrepresentationlearning.InProceedings
+oftheInternationalConferenceonMachineLearning,pp.9848–9858.PMLR,2021.
+YuewenSun,KunZhang,andChangyinSun.Model-basedtransferreinforcementlearningbasedon
+graphicalmodelrepresentations. IEEETransactionsonNeuralNetworksandLearningSystems,
+2021.
+10
+Causal-PacedDeepReinforcementLearning
+GeorgiosTzannetos,BárbaraGomesRibeiro,ParameswaranKamalaruban,andAdishSingla.Prox-
+imalcurriculumforreinforcementlearningagents. TransactionsonMachineLearningResearch,
+2023.
+Rundong Wang, Longtao Zheng, Wei Qiu, Bowei He, Bo An, Zinovi Rabinovich, Yujing Hu,
+YingfengChen,TangjieLv,andChangjieFan. Towardsskilledpopulationcurriculumformulti-
+agentreinforcementlearning. arXivpreprintarXiv:2302.03429,2023.
+Junlin Wu and Yevgeniy Vorobeychik. Robust deep reinforcement learning through bootstrapped
+opportunisticcurriculum. InProceedingsoftheInternationalConferenceonMachineLearning,
+pp.24177–24211.PMLR,2022.
+AlessioZanga,ElifOzkirimli,andFabioStella. Asurveyoncausaldiscovery:Theoryandpractice.
+InternationalJournalofApproximateReasoning,151:101–129,2022.
+YanZeng,RuichuCai,FuchunSun,LiboHuang,andZhifengHao. Asurveyoncausalreinforce-
+mentlearning. IEEETransactionsonNeuralNetworksandLearningSystems,2024.
+YunzhiZhang, PieterAbbeel, andLerrelPinto. Automaticcurriculumlearningthroughvaluedis-
+agreement. AdvancesinNeuralInformationProcessingSystems,33:7648–7659,2020.
+Zheng-Mao Zhu, Shengyi Jiang, Yu-Ren Liu, Yang Yu, and Kun Zhang. Invariant action effect
+model for reinforcement learning. In Proceedings of the AAAI Conference on Artificial Intelli-
+gence,volume36,pp.9260–9268,2022.
+11
+Causal-PacedDeepReinforcementLearning
+Supplementary Materials
+Thefollowingcontentwasnotnecessarilysubjecttopeerreview.
+A ComprehensiveExperimentsResults
+CP-DRL (Ours) SPRL GoalGAN ACL VDS
+CURROT Random ALP-GMM PLR
+6
+3
+0 25 50 75 100 125 150 175 200
+Epoch
+.teR
+.csiD
+.muC
+2.0 1.5
+1.0
+0.5
+0.0
+0 50 100 150 200
+Epoch
+(a)Cumulativediscountedreturn
+noitisoP
+etaG
+6
+5 4
+3 2
+1
+0
+0 50 100 150 200
+Epoch
+(b)Gateposition
+htdiW
+etaG
+(c)Gatewidth
+Figure 8: Performance comparison in Point Mass environment under different curriculum
+methods. (a)Cumulativediscountedreturnover200epochs. (b)Mediandistancetothetargetgate
+position(c)Mediandistancetothetargetgatewidth.Allcurvesshowthemeanwith95%confidence
+intervals.
+CP-DRL (Ours) SPRL GoalGAN RIAC
+CURROT Random ALP-GMM
+150
+100
+50
+0
+50
+100
+150
+0 5 10 15 20 25 30 35 40
+Epoch
+ecnamrofreP
+150
+100
+50
+0
+50
+100
+150
+0 5 10 15 20 25 30 35 40
+Epoch
+(a)PerformanceinBipedalWalker(Trivial)
+ecnamrofreP
+(b)PerformanceinBipedalWalker(Infeasible)
+Figure 9: Performance comparison of curriculum methods in BipedalWalker. (a) Trivial, (b)
+Infeasible. Allcurvesshowthemeanwith95%confidenceintervals.
+B ImplementationDetails
+B.1 PointMassEnvironment
+The Point Mass environment presents a continuous 2-dimensional task where the agent, starting
+from[x=0,y =0],mustpassthroughthenarrowgateaty =0andreachthegoalat[0,−3]. The
+agent’sstateisrepresentedas[x,v ,y,v ]where[x,y]isapositionandthe[v ,v ]isaspeed(Klink
+x y x y
+etal.,2020a;b;2021a).Theactionspaceisa2-dimensionalcontinuousvectorwithin[−10.0,10.0]2,
+sotheaction[a ,a ]isclippedinto[−10.0,10.0]2.Theagentstartsfromtheposition[0.0,3.0]with
+x y
+novelocity. Theagent’sstateisupdated10timesperstepwithatimeintervalof0.01usingEuler
+integrationtoapproximatethedifferentialequation. Theupdateruleforthex-axisisgivenby
+x =x +∆t·v
+t+1 t x,t
+v =v +∆t·(1.5·a −f ·v +ϵ), ϵ∼N(0,0.052)
+x,t+1 x,t x,t x,t
+12
+Causal-PacedDeepReinforcementLearning
+wherex isanxcoordinateattimestept,v thevelocityatx-axis,f thefractionconstantwhichis
+t x,t
+setto0inoursetting,andϵistheGaussiannoisewithmeanzeroandstandarddeviation0.05. The
+sameruleisappliedtothey-axis. Therewardisdefinedasr = exp(−0.6·|[x,y]−[0.0,−3.0]| )
+2
+where the reward gradually diminishes based on the Euclidean distance from the goal position. If
+thedistancebecomeslessthan0.25, theepisodeisconsideredsuccessful. Eachtaskisdefinedby
+thecontextvectorc = [x ,w ]wherex isthecenterofthedoorlocatedaty = 0andw
+gate gate gate gate
+the width of the door. On the timestep that the agent passes the y = 0 and its x-coordinate is out
+of (cid:2) x − wgate,x + wgate (cid:3) , it is considered a collision with the wall. In this case, the agent’s
+gate 2 gate 2
+positionisresettothecollisionpoint,anditsvelocityisresetto0.
+B.2 BipedalWalkerEnvironment
+The BipedalWalker environment is based on the environment BipedalWalkerHardcore provided
+by OpenAI Gym, as implemented in Romac et al. (2021). In this environment, the agent is a
+bipedal robot that walks forward on terrain with evenly spaced stumps of uniform height, using
+a4-dimensionalcontinuousactionvectortocontrolitsleftandrighthipandkneejoints. Theagent
+receivesdifferenttypesofrewardandpenaltywhichare(1)forwardreward: basedontheincrease
+in the agent’s horizontal position (2) torque penalty: proportional to the magnitude of the joint
+torques(3)stabilityreward: givenwhentheagentmaintainsastablehullposturewhilewalking(4)
+termination penalty: applied when the agent’s head touches the ground. The episode ends when
+theagentreachestheendofthetrack,exceeds2000steps,ortheagent’sheadtouchestheground.
+Observationspaceisa24-dimensionalcontinuousvectorconsistingof10-dimensionallidarsensor
+detectingfrontstumps,4-dimensionalhullstatecontaininginformationsuchasangle,angularveloc-
+ityandhorizontal/verticalvelocity,4-dimensionaljointangleand4-dimensionalvelocitycontaining
+leftandrighthipandkneeangleorvelocity,andinformationofwhethereachlegiscontactingthe
+ground (2-dimensional). Each context (task) is defined by the context vector c = [h ,s ]
+stump stump
+whereh istheheightofthestump,s istheintervalbetweentwostumps.
+stump stump
+B.3 NetworkStructures
+Ourframeworkemploysmodularneuralnetworkstoapproximateeachcomponentoftheunderlying
+causalstructure—state,action,transition,andreward. Eachmodelisinstantiatedasanensembleto
+enableSCMdifferenceapproximationthroughdisagreement.
+TransitionPrediction. Thetransitionmodelapproximatestheenvironmentdynamicsbypredict-
+ingthenextstatesˆ fromthecurrentstates andactiona . Eachensemblememberisatwo-layer
+t+1 t t
+MLP:theinput[s ;a ]ispassedthroughahiddenlayerofdimension32,followedbyaReLUacti-
+t t
+vationandafinallinearlayeroutputtingavectorofthesamedimensionasthestatespace. Theloss
+isdefinedasthemeansquarederrorbetweenpredictedandactualnextstates:
+L =∥sˆ −s ∥2.
+transition t+1 t+1 2
+RewardPrediction. Therewardmodellearnstoapproximatetherewardfunctionr(s ,a )using
+t t
+asimilararchitecturetothetransitionmodel. Ittakes[s ;a ]asinput,processesitthroughasingle
+t t
+hidden layer with ReLU activation, and outputs a scalar reward prediction. The loss is again the
+meansquarederror:
+L =∥rˆ −r ∥2.
+reward t t 2
+StateandActionReconstruction. Tomodelstateandactionrepresentations,weemployaβ-VAE
+for each modality. Each encoder maps the input (state or action) to a Gaussian latent distribution
+parameterized by mean and log-variance vectors. A latent code is sampled via the reparameteri-
+zation trick and decoded to reconstruct the input. The loss combines reconstruction error and KL
+divergence:
+L =∥xˆ−x∥2+β·KL(q(z|x)|N(0,I)),
+VAE 2
+13
+Causal-PacedDeepReinforcementLearning
+wherexiseitherastateoranactionvector. ThelatentdimensionsforstateandactionVAEsare32
+and 16, respectively. We use a weighting coefficient of β=4 to balance reconstruction fidelity and
+latentspaceregularization.
+EnsembleandUncertaintyEstimation. Allfourmodeltypes(transition,reward,stateVAE,and
+actionVAE)aretrainedasensemblesofsize10.Disagreementisquantifiedasthestandarddeviation
+of predictions across ensemble members, averaged over a batch of samples. This disagreement
+servesasaproxyforcausalmisalignmentandisintegratedintothetaskselectioncriterion.
+Optimization. EachmodelintheensembleisoptimizedindependentlyusingtheAdamoptimizer
+with a shared learning rate. During training, the reconstruction or prediction losses are computed
+andbackpropagatedpermodel.
+B.4 ReproducingBaselines
+Allbaselinemethodswereintegratedfromtheirrespectiveopen-sourceimplementationsandeval-
+uated under our unified experimental settings. For the PM baselines, we used the implementation
+availableathttps://github.com/psclklnk/currot,andforBW,weadoptedtheimple-
+mentationfromhttps://github.com/flowersteam/TeachMyAgent.
+C Hyperparameters
+Table1: Hyperparametersusedfortrainingeachmethodineachenvironment.
+HyperParameter PointMass BipedalWalker
+PPO/SAC
+γ 0.95 0.99
+λ 0.99 0.95
+PPOrolloutlength 4096 -
+PPOepochs 10 -
+PPOminibatchessize 128 -
+PPOcliprange 0.2 -
+PPOnumberofworkers 1 -
+PPOmaxgradientnorm 0.5 -
+PPOvalueclipping False -
+PPOEntropycoefficient 0.0 -
+SACbatchsize - 1000
+SACreplaybuffersize - 2e6
+SACpolyak,ρ - 0.995
+SACstartsteps - 1e4
+SACEntropycoefficientα - 5e-3
+Adamlearningrate 3e-4 1e-3
+Adam,ϵ 1e-5 1e-8
+CP-DRL
+stateweight,w 0 100
+state
+actionweight,w 0 20
+action
+transitionprobabilityweight,w 10 100
+transition
+rewardweight,w 0 100
+reward
+Ensemblesize,K 10 10
+14
+Causal-PacedDeepReinforcementLearning
+D OverallWorkflow
+This section outlines the overall workflow of CP-DRL. As illustrated in Algorithm 1, the method
+iterativelyupdatesacontextdistributiontoguidecurriculumlearning. Ateachiteration, theagent
+samplesabatchoftasks,trainsitspolicy,andcollectsthecorrespondingtrajectories. Thedisagree-
+ment scores for the sampled tasks are computed as defined in Eq. 4. This score is combined with
+episodicreturnandisusedasacostinCURROT’soptimaltransportframeworktoupdatethecon-
+text distribution. This procedure encourages the agent to prioritize causally informative tasks and
+facilitatesefficientlearningprogression.
+Algorithm1Causally-PacedDeepReinforcementLearning(CP-DRL)
+1: Input:Initialcontextdistributionpˆ W,0 (c),ensemblesizeK,componentweights{w j },distance
+boundϵ,numberofcurriculumiterationsL,numberofsampledtasksperiterationM,episode
+lengthT
+2: forl=0toL−1do
+3: AgentImprovement:
+4: forj =1toM do
+5: Samplecontextc j ∼pˆ W,l (c)
+6: Trainpolicyπonc j andcollecttrajectoryτ cj ={(s t ,a t ,r t ,s t+1 )}T t=1
+7: foreachcausalfactori∈{state,action,transition,reward}do
+8: ComputedisagreementforcomponentiusingEq.4
+9: TrainanensembleofK neuralnetworksusinglossL i (Eq.3)
+10: endfor
+11: ComputeepisodicreturnR j =
+(cid:80)T
+t=1 r cj (s t ,a t )
+12: ComputecausalmisalignmentscoreCM(c j )usingEq.5
+13: endfor
+14: ContextDistributionUpdate:
+15: Updatecontextdistributionpˆ W,l (c)usingCURROTwithcostR j +CM(c j )
+16: endfor
+E Component-wiseSensitivityAnalysisofDisagreementMetrics
+Tofurthervalidatethateachdisagreementscorecapturestheintendedcomponentofcausalvariation,
+weconductacontrolledanalysisbyindependentlyvaryingblocksize,actionscale,andrewardscale,
+whilekeepingtheothertwofactorsfixed.Specifically,wedefinefourconfigurationsforeachfactor,
+resulting in three experimental groups: B1-B4 for block size, A1-A4 for action scale, and R1-R4
+for reward scale. All configurations are derived from a base environment corresponding to Task
+T1, which uses a block size of 0.05, an action scale of 1.0, and a reward weight of 1.0. For each
+subsequent task (T2 through T4), these parameters are progressively increased, with T4 using a
+blocksizeof0.1,anactionscaleof4.0,andarewardweightof4.0.
+Toisolatetheeffectofeachcomponent,wemodifyonefactoratatime:intheblocksizegroup(B1-
+B4),wevaryblocksizefrom0.05to0.1whilefixingactionscaleandrewardweight;intheaction
+scale group (A1-A4), we vary action scale while holding block size and reward weight constant;
+and in the reward scale group (R1-R4), we vary only the reward weight. Figure 10 reports the
+disagreementscoresobtainedfromeachsetting.
+Weobservethattransitiondisagreementincreasesconsistentlywithbothblocksizeandactionscale,
+aligningwiththeintuitionthatchangesinthesefactorsdirectlyaffecttheenvironment’stransition
+dynamics. Similarly,actiondisagreementsteadilygrowswithincreasingactionscale,whichisex-
+pectedsincetherangeofagentactionsexpands.Statedisagreementisprimarilyinfluencedbyblock
+size,suggestingthatlargerblocksalterthespatialconfigurationoftheenvironmentandtherebyaf-
+fecttheagent’sstaterepresentation.Incontrast,rewarddisagreementexhibitsnoclearpatternunder
+15
+Causal-PacedDeepReinforcementLearning
+Transition Reward State Action
+0.24 1.36 0.6030
+0.540 0.23 0.6028
+1.34
+0.22 0.6026
+0.535 0.21 1.32
+0.6024
+0.530 0 0 . . 1 2 9 0 1.30 0.6022
+1.28 0.6020
+0.18
+B1 B2 B3 B4 B1 B2 B3 B4 B1 B2 B3 B4 B1 B2 B3 B4
+(a)Disagreementtrendswithincreasingblocksize.
+Transition Reward State Action
+1.2956
+0.5375 0.235 1.2955 1.0
+0.5350
+0.5325 0.230 1 1 . . 2 2 9 9 5 5 3 4 0.9
+0.5300 1.2952 0.8
+0.5275 0.225 1.2951 0.7
+0.5250 0.220 1.2950 0.6
+A1 A2 A3 A4 A1 A2 A3 A4 A1 A2 A3 A4 A1 A2 A3 A4
+(b)Disagreementtrendswithincreasingactionscale.
+Transition Reward State Action
+0.5240 1.29600 0.60325
+0.2215 1.29575 0.60300
+0.5239 1.29550 0.60275
+0.2210 1.29525 0.60250
+0.5238 0.2205 1.29500 0.60225
+1.29475 0.60200
+0.5237
+R1 R2 R3 R4 R1 R2 R3 R4 R1 R2 R3 R4 R1 R2 R3 R4
+(c)Disagreementtrendswithincreasingrewardscale.
+Figure 10: Component-wise disagreement under isolated changes to block size, action scale,
+andrewardscale.
+any of the settings, which we attribute to the sparsity of the reward signal and the use of random
+trajectoriesduringdatacollection.
+Together, these observations reinforce the interpretation that the proposed modular disagreement
+metrics serve as meaningful proxies for the underlying causal differences introduced by structural
+variationsintheenvironment.
+F WhenCausalSignalsFail: ACaseStudyinSGR
+Figure11: IllustrationoftheSparseGoalReachingenvironment.
+To further investigate the limitations of CP-DRL, we conducted an additional experiment in the
+Sparse Goal Reaching (SGR) environment. SGR is a 2D continuous maze-like setting adapted
+from Florensa et al. (2018), where the agent must navigate to a specified goal location. The envi-
+ronmentisboundedwithinasquareregion[−7,7]2,withanimpassablesquarewalloccupyingthe
+centralarea[−5,5]2. Theagent’sstateisrepresentedbya2Dpositionvector[x,y],anditsactionis
+a2Dvector[a ,a ]clippedto[−1,1]2,scaledby0.3. Iftheaction’snormexceeds1,itisnormal-
+x y
+izedtounitlengthbeforescaling. Collisionswiththewallpreventmovement,resultingintheagent
+remainingatitscurrentposition.
+16
+Causal-PacedDeepReinforcementLearning
+CP-DRL (Ours) SPRL GoalGAN ACL VDS
+CURROT Random ALP-GMM PLR
+1
+0.75
+0.5
+0.25
+0
+0 100 200 300 400
+Epoch
+etaR
+sseccuS
+101
+100
+10 1
+0 100 200 300 400
+Epoch
+(a)SuccessRate
+ecnareloT
+(b)Tolerance
+Figure 12: Performance comparison of curriculum methods in Sparse Goal Reaching. (a)
+Successrate(b)Mediantolerance. Allcurvesshowthemeanwith95%confidenceintervalsover10
+randomseeds.
+Each task in this environment is defined by a context vector c = [x ,y ,ϵ] ∈ R3, where
+goal goal
+(x ,y ) specifies the goal location and ϵ is a fixed tolerance threshold, set to 0.05 in our ex-
+goal goal
+periments. Theagentreceivesarewardof1.0uponreachingthegoalwithintheϵ-radiusandastep
+penalty of −1.0 otherwise. Episodes terminate upon successful goal reaching. The agent’s initial
+position is uniformly sampled from [−7.0,−5.0]2, corresponding to the bottom-left region of the
+maze. To ensure convergence, we trained all baselines for 400 epochs and report results averaged
+over10randomseeds.
+AsshowninFigure12,CP-DRLunderperformscomparedtoCURROT.Thisperformancedropis
+attributed to the absence of meaningful structural differences between tasks. In the SGR environ-
+ment,tasksdifferonlybythegoalposition,whiletheunderlyingstate,action,transitiondynamics,
+and reward mechanisms remain invariant. As detailed in Appendix E, when causal structure re-
+mainsunchanged,thedisagreementmetricsareprimarilydrivenbynoise. Consequently,CP-DRL
+degenerates into a noisier variant of CURROT. These results highlight a limitation of CP-DRL:
+when structural variation is minimal or absent, causality-driven curriculum shaping can introduce
+detrimentalstochasticity.
+G RelatedWorks
+Curriculum learning aims to enhance the efficiency of reinforcement learning (RL) and improve
+performance on the target task by training on a sequence of intermediate tasks guided by various
+surrogate objectives (Narvekar et al., 2020; Klink et al., 2022). The learning progress perspective
+prioritizes tasks that maximize a model’s performance gain (Portelas et al., 2020; Wu & Vorob-
+eychik, 2022). The task difficulty perspective focuses on employing tasks of moderate difficulty
+relative to the current learning state (Florensa et al., 2017; 2018; Huang et al., 2022; Tzannetos
+etal.,2023;Choetal.,2023b;Sayaretal.,2024). Theregretperspectiveselectstasksbasedontheir
+learningpotential,quantifiedbythedifferencebetweenoptimalandcurrentpolicyrewards(Parker-
+Holder et al., 2022; Wang et al., 2023). The disagreement perspective estimates uncertainty by
+usingmultipleQ-functionstomeasurethevarianceormeandistanceacrossstate-actionpairs,and
+constructsacurriculumthatprogressesfromhightolowdisagreementtopromoteexplorationand
+reduceepistemicuncertainty(Zhangetal.,2020;Choetal.,2023a).
+Self-pacedcurriculumRL(Klinketal.,2020b)automaticallygeneratesandselectstasksbasedon
+the agent’s learning state without relying on external models. Interpolation-based approaches im-
+plementthisbygraduallyshiftingthetasksamplingdistributionfromaninitialtoatargetdistribu-
+tion(Klinketal.,2020a;b;2021a;b;2022;Huangetal.,2022;Tzannetosetal.,2023;Klinketal.,
+17
+Causal-PacedDeepReinforcementLearning
+2024). SPRL(Klinketal.,2020b)achievesthisbyusingKLDivergencebetweentwotaskdistribu-
+tionsandusestheexpectedperformanceconstraint. However,ittendstoignoreintermediate-level
+tasksandlacksflexibilityinthatthetaskdistributionisconstrainedtobeGaussianoruniform(Klink
+etal.,2022;2024).CURROT(Klinketal.,2022)resolvedthisproblembyviewingtheinterpolation-
+basedcurriculumasanoptimaltransportproblem.
+ResearcheffortsthatfocusonutilizingcausalinferenceinRLconsiderthecausalrelationshipbe-
+tweenvariables(Buesingetal.,2018;Sontakkeetal.,2021;Seitzeretal.,2021;Sunetal.,2021;Zhu
+etal.,2022). Theseworkscanbedividedintotwocategories,whetheritconsiderstructuralcausal
+models(SCM),whichareDirectedAcyclicGraphsthatrepresentcausalrelationshipsbetweenvari-
+ables, as given or not (Zeng et al., 2024). Li et al. (2024) applied causal inference to curriculum
+learning, extracting causally aligned states via conditional independence tests and constructing a
+curriculum by editing them in reverse topological order of actions. Although this approach has
+demonstrated significant performance gains on specific benchmarks such as Colored Sokoban and
+ButtonMaze(Schrader,2018;Lietal.,2024;Chevalier-Boisvertetal.,2018),itstillreliesontheas-
+sumptionthattheunderlyingSCMisknowninadvance,whichisoftennotthecaseinenvironments
+withcomplexorunknowncausalstructures(Zengetal.,2024).
+UnsupervisedEnvironmentDesign(UED)approachesutilizeanexternalmodeltogeneratesuitable
+environments that help agents acquire the ability to handle diverse situations. It differs from our
+curriculumlearningsettinginthatitgeneratestheentireenvironmentandfocusesonrobustnessof
+thepolicy(Parker-Holderetal.,2022).
+H ExperimentalSetupandReproducibility
+ALL experiments were performed on a server running Ubuntu 22.04.4 LTS, equipped with an
+AMDEPYC754332-coreCPU,885GBofRAM,andan8NVIDIAA100GPU.FortheBipedal-
+Walkerexperiments,eachrunwasassignedGPUusingPython3.7.12,PyTorch(v1.13.1)andGym
+(v0.17.3). ForthePointMassexperiments, onlyCPUresourceswereusedwithPython3.8.0, Py-
+Torch(v2.4.1),andGym(v0.17.3).
+18

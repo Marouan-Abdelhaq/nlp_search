@@ -1,0 +1,303 @@
+Modular Belief Updates and Confusion about
+Measures of Certainty in Artificial Intelligence Research •
+Eric Horvitz and David Heckermau • •
+Medical Computer Sc:lence Group
+Knowledce Systems Laboratory, TCJ35 SUMC, Stanford University
+Abstract mak�s sen.!e to talk about a tlcfrce or bellet and to say that one
+belief Is strongtr than another. We Insist that beller updates
+Over the last decade, there has been growing
+Interest. thangc are al!o continuous and ordered. In addition. the combination
+In the use or measures or In belief ror
+or two updates which correspond to two different pieces or
+reasoning with uncertainty In artlrlclal Intelligence
+evid••nre should Itself be an update. Before tbls basic upd3.te
+researt'h. An Important characteristic or several
+pr�perty Is stated formally, It should be realized thai updating
+methodologies that reason wlt.b changes In belief or
+a beller In a hypothtsls H ginn some evidence E may depend oo
+belief updates, Is a property that we term
+p:-ior e\"ldenre for the bypot hesis. Therefore. update! logically
+modularit11. We call updates that !atisfy thl!
+mu!t haw thrre ar'uments: a hypothesis H. new evidence E.
+property modular update.. Whereas probabilistic and prior evldenrt e. \\'ltb thl!, we formally capture the notion
+measures or belld update • wblcb satisfy the or an updatr by ln!istlng that there Is some runctlou • such
+modularity property were first discovered In tb"e
+that
+nlneternth t'f'nt.ury, knowledge and discussion or
+(!)
+t.hese quantities remains obsrure In artlflc.-lal
+lnlelll&enre research. \Ve define modular updates
+where t'(H.E1.e) denotes the update on H given E1 and prior
+and dl�russ their Inappropriate use In two Influential
+expert systems. evldtnre e. l'(H,E:.E1e) denotes the update on H given E: and
+prior evidence E1 and e, and U{H.E1E2.e) denotes the combined
+lntroduc:tloD
+upd:�te 'Inn prior e\"ldeuce e.
+• .Most work In reasoning about uncertainty bas c:eutered on the Now we lntroduC'e the formal concept or modularity. ·we say
+manipulation or measurrs or. d•olutc belief. That Is, most that an upd:�te Is modular. If the update Is Independent or prior
+methods for managing uncertainty c:oncern themselves wltb eYident'e. Form:�lly,
+q so u m en e lo b n � s ·po of t b t e h s e ls ! f orm A . l t G ho iv u e g n h c m ur o r r e e n t o e b v s i c d u e r n e c , e, t h b e o r w e c h e as rt a b in e e I n s U(H,E,e) � U(H,E.t) &i U(H,E} (2)
+change
+lnvtstli�ntlon Into the U!e or me3.Surrs or In belief. Here.
+\'l.'e not.e that the notion or modularity Is not new. For
+qutstlons are or the form. Given a piece or evidence, bow bas
+�x:�mple. Informal notions of modularity bave been a central
+the certainty or some hypothesis changed! The distinction 1
+theme In the MYCIN expert system project •
+between rea.sotllng with quantities representing changes In belief
+and reasoning wltb quantities representltlg absolute measures of As!umlng mod•Jiarity or belief updates may or may not be
+belief 15 significant In the design and characterization of reasonable depending on the nature or dependencies within the
+methods for handling uncertainty In reasoning systems. domain or lntert!t. However. the property Is often assumed in
+expert system researC'h to eliminate the need to consider
+In this paper, we rorus on measures or change In belld �bat
+satisfy a special proper�y tha� we call modulorit11. We will possible complex Interactions among e\'ldence. The modularity
+property thereby eases the task or knowledge acquisition and
+define modularl�y and describe quanmles c�lled morlulor
+update•. Modular updates are central t.o t.be Intent or several explanation. facilitates the construction and maintenance or
+knowledge bases and allows the use of relatively simple
+methodologies for reasoning under uncertainty In expert
+runetlons for belltr updating. The desirability or these features
+systems. We will discuss �wo medical expert systems, MYCIN
+makes It tempting to use the modularity assumption even wben
+and INTERNIST-I and show that both sYStems bave Implicitly
+It Is Inappropriate.
+assumed modularity In reasoning with uncertainty. Finally, we
+argue that MYCIN and INTERNIST-I have used Inappropriate History and derlvatloD of a modular update
+measures or belld update.
+The first modular update was proposed In 1878 by Pelrce2•
+DeltDltlon of a modular update
+Tbls quantity, which be called "weight of evidence," Is equal to
+In this senlon, we rormall:r.e tbe concept or a modular update. the logarithm or a rr.tlo or conditional probabilities commonly
+Before we examine tbe notion or modularity, le\ us define what called the likelihood ratio. Several other researchers
+we mean by au uprlGte. Informally, a belle! update represents Independently disC'overed this simple but powerful me�ure of
+the change of belief In some hypothesis clven a piece or change In belief. Tbey Include Turlng1, Good4 and Minsky and
+evidence. Thb must be contrasted with the notion or absolute Seltrldges. To see that thlll quantity Is a modular upd:lel , first
+belief In a b)'pothesis given evidence. We shall asus me In �hi! consider Ba�·es· Theorem for evidence E and hypothesis H:
+paper, tb. at belief Is a continuous, ordered quantity. That Is, It p(E He)p(Hie)
+p(HIEe) : ----------........
+*Thil •ark wa• 1uppon•cl lo part b7 d1• l01iall M�. lr. FoUDda&loo aud tb• P(Eie )
+Htaf7 I. J,:a;,., Family Fonda&iao.
+.. Orcin of ..l bonbip b-el oo a colo nip.
+Tbr rorrr!pondlng formula Cor tbe negation or the hypothesis. Carnap originally lntroduc�d tbe phrase. degree of
+-H. Is ronfirmation In his classic work. Logical Foundation� of
+P(WHe)p(-Hje) Pro6a6ilit118• primarily to dlstln,ulsh · the subjective
+p(-H]Ee) : -----·-······-­ (3) lnterprttatlon of probabilities from the classical Crequtncy
+Interpretation. \\'bile Carnap's original intent was noble, he
+p(Eie)
+and others began to use degree or conflrmatloo.to represeot two
+Di\'ldlng tbe two. Wf crt very dlfftrent conctpts. \\'hereas be used degree or
+connrmat.ion to denote what is now commonly called subjective
+P(H[Ee) P(E!He} p(Hje)
+probability, bt also used tbe phrase to ref�r to change in belier.
+·-----·- = ---··--- ··-----
+Mnnwhile, within tbe philosophy of science literature. Popper8
+p{"HiEe) p(Ej·He) p(-Hje)
+lntroductd torroboration. his term for a clearly defined
+The quantity measure or changt' In belief based on a combination of
+probabiiiEtlt' quantities. In trying to disentangle terminolo�t.Y
+P(EIHe) about measures of chance In belief. Popper pointed out
+problems with Carnap's Inconsistent use or the wor�
+P(WHe) conflrm:�tlon. Much confusion bad already prollfnated by tlle
+Is called tbe likelihood ratio, and Is written >.(H,E,e). To see time Carnap apolocized tor his wavering use of terminology io
+that >. 15 an update by definition (1 ), consider Bayes' theorem the second of edition of bls book10•
+for two pieces of t'\'ldence: We note that tbe quantities defined by Popper are very
+similar to Petree's "w�lghts or evidence." In fact. In 1960.
+Good showed that tbe loc·llkellbood ratio satisfies a slightly
+(s)
+modified version of Popper's :uioms or corroboratlonll.
+p("HjE1Ez) P(E1��·H) p("H) P(�j-HE1) p(E1j"H) p(•H)
+Wt believe that confusion in the mid-twentieth century about
+Thtrdore. by tbe definition or >. we see that ttrms such as confirmation and corroboration and poor
+>.(H,E1�.e) z >.(H.E,.f1e) >.(H,E1,e). (6) u m n i d gh er t s t l a n n d d �e ln d c b o r r t r h o e n i t r r l r b e u le t v in a g n c f e a c t t o o r m s e to asu m re o s r e o r r c e h c a en n t c e c o In n f b u e s l i i o e n f
+In particular, >. Is a probabilistic update with the update surrounding 1 he us� or modular belief updates versus absolute
+romblnatlon function.#. being simple multiplication. bellt'f in marhine intelligence research.
+If we assume that evidence for a bypothesl5 15 conditionally
+Modular updates ln MYCIN
+lndeptndent on the hypothesl5 and Its negation. then
+>.(H,E,e): >.(H,f,e). (7) MYCJN. EMYCJN, and Its descendants have reasoned with
+measur�s of changes In belief called certainty factors (CF's).
+In otber words, t-he likelihood ratio Is a modular update wben MYCIN's knowledge Is represented as rulu in tbe rorm or
+condltl�na.l lndtpendence Is a.ssumed. IF E THEN H where H Is a hypothesis and E is evidence bavlng
+relt\'ance to the hypotl)esls. A certainty !actor' Is associated
+Note that with this a.ssuJIJtJ) lon, the combination of tbe
+with tach MYCIN rule. CF's were deslcned as measures or
+update loc(>.l takes on the simple form
+thangc In belief about a hypothesis clven some evidence12. The
+la&(>.(H,£1 . .. fa )} :o .t1 IOC[>.(H.ft)). quantities ranee between ·l and l; positive numbers correspood
+to an incrcue In belief In a hypothesis wblle negative quantities
+Petree referred to these modular updates as •weights of
+correspond to a decrca.c In belief wben certain evidence
+nldenrr• because they are added just as wel�ts on a scale.
+becomes available.
+Peirce argued that logfXI 15 a usetul probab1115tlc quantity Cor
+acquiring and making Inferences with uncertainty. Often In MYCI�. srveral pieces of evidence are reiHant to
+the samt hypotheses. Thus. tbe creators of tbe CF model
+Historical confusion about absolute beller and denloptd methods for tom6ining certainty factors. In tbe
+beller updates original work. they presented a function for calculating an
+errecti\'e certainty Cact.or for two pieces or f\'ldence In terms or
+The· usr of wtll·characterlzed updates In reasoning systems
+ctrtalnty factors for each piece of evidence separately. That is.
+ba.s bern rart. Only a few systems have accurately manipulated they as!umed the basic update property, (1 ). Furthermore.
+wtll-undtrst.odo measures or change In belief (e.g., the
+tht'y Implicitly assumed that the CF quantity satisfied tbe
+GL.-\SGOW DYSPEPSIA system, using the measure modularity property (:!). by writing certaloty factors as a
+ln>.((H.E)J1). One explanation for the Infrequent and often
+Cunrtlon of only H and E.
+Inappropriat-e use or measures or chance In belief Is that
+Now let us ronslder the original definition of certainty
+di!!<'U!!Ion or tht quant.lt.lts Is rtlatlvely obscure; treatises on
+factors:
+probability theory often focus solely oa the use or absolute
+mt�urts of belief In lnfer�ntlal reasoning. Another reason may p(HJE) • p(H)
+bt related to p�t coaru�lon about the relatloosblp of belief
+-·-··-------- P(HIE) > P(H}
+updates and a.b301ute belief In the literature. 1 · p(H)
+Confusion surrounding the relationship of measures of
+ab!Oiute belld and belief updates surfaced In discussions In the CF(H.E} � (e)
+mld·twentleth crntury as res�archers began to rediscover tbe
+subjtctlv� Interpretation of probabilities. 'Whereas Bayes p(H�E} • p(H)
+proposed probability as a personal measure of belief over two --+•�----·-·· p(H) > p(HIE)
+hundred years aco. the tarly twentieth century was marked by p(H)
+the rlst of tbe Interpretation of probabilities as frequencies.
+Alt-hough tbe frtqutncy Interpretation of probability Is still
+quite popular, the early lg30's saw a "rediscovery" or
+probability as a measure of personal bellef7. Among others.
+Ramsey. Savage. Carnap, and DIFenettt led tbl5 redl5covery.
+This dfflnltlon clearly demonstrates that certainty factors are Howtver, (!!) with E = e then Implies that
+lnttnded to reprucnt chan,es In belief. However, there arc
+p(Hic) = p(H)
+problems with the dtflnltlon. First. we shall show that malclll&
+the assumpc ion or eondlc.loDal IDdtpeDdeDce or evlde11ce given H That Is, evldenre and hypotheses arc marginally Independent.
+and -H Is Inconsistent wltb the modularity axiom. We find Using tbe limiting value or the CF dertnillon as an
+tbls lnronslstency to be UDrea.so11able as u. Is Impossible to approximation for a modular belief update Implies that evidence
+capture complex lnuractloDs among evlde11ce ror hypotheses can have no Impact on belief 111 hypotheses. Given such a
+wheD modularity Is assumed. Second, we shall show that, In result. It Is surprising tbat tbe ori&IDal definition or certainty
+certain sltuatloDs, the modularity axiom Implies marginal factors was not questioned. Unrort.unat.cly, In the case or
+independence which Is unacceptable as It makes updatllll MYCIN, tbls problem Jed to the elicitation or absolute
+Impossible. quantities 111 \leu or updatest'. We note here that It Is possible
+Consider the natural extensloD of the certainty factor to fl11d updates which are runcllo11s or the prior and posterior
+deOnllloD to Include prior evidence: probabilities, In the spirit or (8). wblcb are modular. These
+p{HIEe) - P(H!e) qua11tltles are closely related to the likelihood ratio >. 1 4•
+p{HIEe) > p{Hie) Modular updates in INTERNIST·l
+I •
+p(Hie)
+INTERNIST·! was the result of a major research project to
+CF(H,E,e) ( ) build an expert system for Internal medicine diagnosis. The
+= 9 sysum uses 111 ad hoc: methodology for reasoning UDder
+p(H!Ee) - p(Hje) uncertainty. The method ror mana&ID& UDcertaiDtY In
+·--------------- p(Hie) > P(HIEe) INTERNIST·! Is associated with similar problems with
+modularity. In fact, INTERNIST-I. like MYCIN, uses
+P{Hie)
+quantities ellc:lted as absolute measures of belief In a
+l'nder the a.ssumpt1o11 or co11dltlonal Independence or evidence methodolog,v that lmpllrltly asus mes they are modular updates.
+glnD H and -H. It can be shown by counterexample that the The creators or INTERNIST·l elicited measures or belief from
+abovt CF dtriDilloo does not satisfy the modularity property, experts called et•oHng •trength•. Evoking strellgths can take
+(�). In particular. consider updates where on Integer \'alues between 0 and 5. An IDformal dertnitioD Is
+p(H) : .01, assorlated with tarh or these \'alucs. For example, an evoking
+strength or 1 means that the "diagnosis (or the disease In
+X(H,E ) and questloDIIs a rare or unusual cause or the listed manifestation."
+1 = 99,
+AD evoking strc-ngtb or 3 meaDs that the "diagnosis Is the most
+common but not the overwhelmln& cause or listed
+>.(H.�) &,99 manifestation." And an evoking stren,th of S means that the
+In this cue It Is easy to show that "llSttd m3nlrestation is pathognomonic ror tlmpiJeatesJ tjle
+dlsea,c."
+CF(H,£ 1 ••) -. 5 and E•;oklng strengths are elirited In quite the same way as 011e
+would elicit the posterior probability p(HIE). The measure is
+CF(H,E1.�) ..,. 1 vltwtd as an an!wer to tbe questloD •Given a patient with this
+rlndln,. how strongly should I consider this diagnosis to be its
+Indeed, asus ming condltloul Independence leads to a violation
+or the modularity axiom. explan3tlon7"16 In fact. e\·oklng strengths are described as
+brln& "somewhat analogous to a posterior probability. "18
+We now coDSider the ddlnltloD of certainty factors 111 a
+limiting c�e. In rac:t, this situation was discussed In the In INTERl':IST-1. evoking strengths are u�ed 111 determining
+original work In a sec:t1o11 c:oncernlng the elicitation or certal11ty tht •srorts• ror dlseast hypotheses. A disease's score. in turD.
+rough!)' reflec-ts the belief that it Is present in a patie11t: a high
+factors rrom cxperts12:
+score Is assoc:lated with a likely disease hypothe.:sls. The score
+We 110ttd earlier that experts arc often wlllln& to
+ror a disease Is computed In part by summing evoking
+state de&rees or belld In terms or tODdltlonal
+strength,. This strongly suggests that these quaDtltl!s are
+probabilities (p(HIE>l .••. IL Is perhaps reveal111g to Intended to be updates a.s defllltd by the basic update property
+note, therrfore. tbat wheD tbe a priori belief Is small (1 ). Furthermore, evoking strengths are o11ly a fUDctlon or the
+(I.e., p(H) Is clast to z:ero). the CF of � hypothesis
+two arguments H and E. Tberdore. INTERNIST·l researchers
+eonflrmtd by evidence Is approximately equal to Its
+also Implicitly assumed that evoking stre11gths satisfy the
+conditional probabUU.y on that evidence:
+modularitY property (2). However, as 111 MYCIN. the
+p(HIE) - p{H) assumptloD that p(HIEe) is a modular update leads to the
+CF(H.E) a ···- -·-- -- --- .._ p(HIE) unacC'eptable rc:�ult that evidence aDd hypotheses are
+1 p(H) marginally Independent.
+•
+Tbls observation suggests tbat coDrlrmatlon, to Summaey and c:onc:lusions
+the extent that It Is adequately represented by CF's,
+Is close \o conditional probability (In certain cases). We ban formally defined the property of modularity With
+rrsptct to measures or change In belief, which we call modular
+altbough It still defies analysis as a. probability
+update.. As we bave discussed, modular updates were
+measure.
+Introduced In tbe nineteenth century !Jut have remained
+The authors are saying tbat the posterior probability or H obscure In comparison with tbe more familiar use or absolute
+given E Is approximately equal to the certainty factor ror H and measures or belief ID rea.so11lng under unc:ertalnty. We have
+E (a modular update) when p(H} Is small. Note that. If tbls argued t-bat two plausible reasoning systems have used
+argumtnt Is applied to tbe definition of certainty factors IDapproprlatc: measures or belief ill systems that assume tbe
+extended to IDcludc prior evidence, we get modularity property. It Is Important that measures or belief or
+CF(H,E,e) .,_ p(H[Ee) when p(HJe) .,_ 0. belief update are combined In a way eonslstellt with their
+rllcltaUon from experc.s lest srrlous flaws In reuontn& may 13. f'a,an. L. Personal communication
+result. We rind confusion about modular updates In two
+Influential systems to be troublln&. We believe that future 14. Heckerman. D.E., "A probabilistic Interpretation ror
+syst.ems would brndlt from explicit consideration of the
+MYCIN's certainty faetors", To be presented at the
+properties and requirements a.5soclated wltb tbe use or modular
+AAAIIIEEE Workshop on Uncertainty and Probability
+belief updates In plausible rea.sonlnc.
+In Artificial lnltlll&ence
+Aekaowledgemeats
+15. Miller. ft. A., Pople, H. E., . and Myers, J.D. •
+We would like to tbank Curt Lan&lotz, Mart Museu,
+"INTERNIST-I, AD Experimental Computer·Ba.5ed
+Lawrence Facan and Ted Sbortlltfe tor usdul discussions.
+DlacnostlC' Consultant for General lnttrnal Medicine,"
+Nn• England Journal of Medicine, Vol. 307, No. 8,
+Rererencee 1982. pp. 468-176.
+1. Buchanan, B.G., Sbortllrte, E.H., Rulc-Ba•ed Ezpert 18. Pople, H., "Hturlst.lc methods for tmposlnc structure on
+s,.cem•: tile AfYCIN ezperimcnt• o/ tile Stanford lll·structurtd problems: tbe structurln& of medic&!
+Heun.Cit Protramminf Projcd, Addison-Wesley, dlacnostlcs," In Artificial Intelligence In Medicine, P.
+fteadiD&, MA., 1984. Stolovlc.s. ed., Westview Press. 1982.
+2. Peirce, C.S., "Tbe probabJIIty or Induction," In Tlae
+li'!Jrlcl a/ Alatltcmatic:•, V.t, Simon azad Shuster, 1956,
+pp. 1341-1354.
+3, Good. I.J. • "The B3:reslan lnrtuence, or bow to sweep
+subjeeUvbm under tbe carpet," In Foundation• of
+Pro6a6ilit11 71aeorr, Stati1tiral In/erenec, and
+Slati•tiral 71acorie� of Science, Vol. II, D. Reidel
+Publlsblo& Company. 1978, pp. 125-174.
+4. Good, J.J., Pro6a6ilitr and tile 11/eitAint of etndcnce,
+Hafners, New York, 11�50.
+s. Minsky, M., and Setrrld&e, O.G., "Le&rnln& lu random
+11et.s," In In/ormation Tlaeorp, Butterwortbs, London,
+1961, pp. 335-347.
+8. Splecelbalter. D.J.. and Knill-lones, ft.P.. "Statl"leal
+and lcnowled&e-based approaches to clinical decision­
+support systems, wnb an application In
+&a.5troenterolo&)'," J. R. Stati1t. Soc:. A, No. 147, 1084.
+pp. 35-77.
+7. JaYJ�tS, E.T., "Tbe Intuitive Inadequacy of clas:slcal
+st3tlstlcs", Presented a� tbe lnterna�looal Convenl•.:ln on
+Fundament3ls of Probability aDd Statlstles, Lulno, Italy
+8. C'arnap, ft, IA,tral Foundation� of Pro6a6ilicp, Cblcaco
+Vnlvrrslty Press, Iv so.
+o. Popper. K.R .. "Corroboration, �be wel�t of evidence,"
+In The Logie o/ Scicnlifle Di•coverv, Scientific Editions,
+New York. UISV, pp. 387-410.
+10. Carnap, ft. IA,iral Foundation• of Pro6a6ilit11: Second
+Edition, Cbl�'o University Press. 10&2.
+11. Good, I.J., "Wel&bt or evidence, corroboration,
+explanatory power, Information and tbe utlllt.y or
+exptrlmenc.s," J. R. Stati•t. Soc. B, No. 22. toea. pp.
+31t-331.
+12. Sbortlltre, E.H.. and Bucbanaza, B.G., "A model of
+lnrxact reason Inc ID medlrlne," Matlacmalital
+Bio�ricnru, No. :!3, 1975, pp. 351-37g,

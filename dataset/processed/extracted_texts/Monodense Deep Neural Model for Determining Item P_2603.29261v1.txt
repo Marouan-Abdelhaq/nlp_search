@@ -1,0 +1,404 @@
+Monodense Deep Neural Model for Determining
+Item Price Elasticity
+Lakshya Garg Sai Yaswanth Deep Narayan Mishra Karthik Kumaran
+Walmart Inc. Walmart Inc. Walmart Inc. Walmart Inc.
+Hoboken,NJ, USA Seattle,WA, USA Sunnyvale,CA, USA Sunnyvale,CA, USA
+lakshya.garg@walmart.com sai.yaswanth@walmart.com deep.mishra@walmart.com karthik.kumaran@walmart.com
+Anupriya Sharma Mayank Uniyal
+Walmart Inc. Walmart Inc.
+Sunnyvale,CA, USA Bangalore, KA, IND
+anupriya.sharma0@walmart.com mayank.uniyal@walmart.com
+Abstract—Item Price Elasticity is used to quantify the re- and design effective promotional campaigns. Industries such
+sponsiveness of consumer demand to changes in item prices, as retail, e-commerce, and consumer goods heavily rely on
+enabling businesses to create pricing strategies and optimize
+elasticity insights to understand how customers respond to
+revenue management. Sectors such as store retail, e-commerce,
+price variations across different product, categories, and de-
+and consumer goods rely on elasticity information derived from
+historical sales and pricing data. This elasticity provides an partments.
+understanding of purchasing behavior across different items, Traditionalapproachestoelasticityestimation,suchasecono-
+consumer discount sensitivity, and demand elastic departments. metric models, often assume linear or exponential relation-
+Thisinformationisparticularlyvaluableforcompetitivemarkets
+ships between demand and price and fail to capture com-
+andresource-constrainedbusinessesdecisionmakingwhichaims
+plex, non-linear, and non exponential patterns. These methods
+to maximize profitability and market share. Price elasticity also
+uncovers historical shifts in consumer responsiveness over time. also typically overlook contextual factors such as seasonality,
+Inthispaper,wemodelitem-levelpriceelasticityusinglarge-scale substitute-item interactions, competitor pricing, and dynamic
+transactional datasets, by proposing a novel elasticity estimation shifts in demand, which are increasingly important in today’s
+framework which has the capability to work in an absence
+competitive and data-rich environments. Moreover these tra-
+of treatment control setting. We test this framework by using
+ditional econometric approaches fail to scale across millions
+Machine learning based algorithms listed below, including our
+newly proposed Monodense deep neural network. of items due to price and business constraints of running
+1) Monodense-DLnetwork–Hybridneuralnetworkarchitec- control/treatment (C/T) experiments across the whole item
+ture combining embedding, dense, and Monodense layers universe. For retailers with millions of items sold across
+2) DML – Double machine learning setting using regression thousands of stores, conducting experiments for every item-
+models
+store combination is financially infeasible. Additionally, the
+3) LGBM – Light Gradient Boosting Model
+commitment to providing consistent lowest prices within each
+We evaluate our model on multi-category retail data spanning
+millions of transactions using a back testing framework. Ex- channelcreatesafundamentalchallenge:offeringtwodifferent
+perimental results demonstrate the superiority of our proposed prices for the same item in the same store simultaneously
+neural network model within the framework compared to other undermines the experimental design required for C/T testing.
+prevalent ML based methods listed above.
+This dual challenge—catalog scalability and single-price-per-
+Index Terms—Price Elasticity, Feedforward Networks, Mono-
+channel constraints—affects not only large-scale retailers but
+tonicity Constraints, Deep Learning, Demand Forecasting.
+also small independent retailers operating even a single loca-
+I. INTRODUCTION tion.
+Priceelasticityofdemandmeasuressensitivityofconsumer Recent advancements in machine learning (ML) and deep
+demand to changes in item prices. To make economic and learning (DL) offer promising alternatives to conventional
+business sense this elasticity of demand measure will be models by leveraging large-scale transactional data and un-
+always negative. covering intricate patterns in demand responsiveness. In this
+% change in quantity demanded work, we propose the following:
+E = (1)
+d % change in price
+1) A novel framework to model item elasticity by using
+Accurate estimation of this plays a critical role in enabling
+utilizing the rich transactional data that is universally
+businesses to optimize pricing strategies, forecast revenue,
+available to any retailer.
+2) Innovative deep learning model (DLM) that can be
+Correspondingauthor:lakshya.garg@walmart.com
+©2026IEEE. incorporated within the framework to solve the item
+6202
+raM
+13
+]GL.sc[
+1v16292.3062:viXra
+price elasticity problem recognition in complex datasets. Despite these differences,
+both approaches currently require the creation of treatment
+and control groups or a carefully catered dataset for training
+the algorithms—often through randomized experiments or by
+creating two datasets capturing demand of the same item at
+two different price points. As demonstrated by Hua et al.,
+2021 [1], where the same item was listed on two different
+marketplaces at different prices.
+Fig.1. Proposedframework
+A. Econometric based methods
+Asseeninfigure1westartbydatacreation,creatingacross
+Houthakker et al., 1970 [2] pioneered the use of demand
+joindatasetoftheaggregatedmonthlytransactioninformation
+system models to estimate price elasticity of consumer goods,
+therebycreatingalagmonthandaleadmonthcombinationfor
+employing linear expenditure systems grounded in utility
+each item pair. We track the prices across these lead and lag
+theory. Subsequent studies, such as Deaton et al., 1980 [3],
+month combination along with multiple other signals across
+introduced the Almost Ideal Demand System (AIDS), which
+boththeleadandlagmonthssuchasiteminventory,substitute
+allowed flexible substitution patterns and provided robust
+item availability, item out of stock (OOS) days, item rating
+elasticity estimates across multiple commodity groups. These
+count, days launched, competitor price, and etc. Once we
+models typically relied on household survey data and aggre-
+create this information rich feature set we pass it to through
+gateconsumptionstatistics,applyingmaximumlikelihoodand
+our proposed DLM to predict the items demand in the lead
+generalized least squares techniques for elasticity estimation.
+month wrt to the items price in the lead month. Finally we
+Similarly, Hausman et al., 1996 [4] utilized instrumental vari-
+use the DLM to evaluate demand at different prices to get
+able approaches to address endogeneity in price and quantity
+item elasticities (refer equation 3). Our proposed framework
+data,improvingthereliabilityofelasticityestimatesindiscrete
+has the following advantages as compared to the traditional
+choice frameworks. Traditional econometric methods have
+econometric methods and current ML based methods being
+thus formed the foundation for empirical demand analysis,
+used to solve price elasticity.
+emphasizing functional form assumptions and statistical con-
+1) Scalable across millions of items at minimal price to sistency in elasticity measurement.
+company. It should be noted that most econometric approaches, such as
+2) No requirement for a creation C/T group or the need to the Linear Expenditure System or the Almost Ideal Demand
+run recurrent expensive experiments. System (AIDS), assume a specific mathematical relationship
+3) Our modeling approach ensures the economic relation- between price, quantity, and income (e.g., linear or log-linear
+ship between price and demand is intact where as a forms). If the true demand relationship deviates from these
+decrease in price should resultin an increase in demand assumptions, which is often the case in real life demand
+andviceversa.Thereforethemodelimposesmonotonic- scenarios,theelasticityestimatescanbebiasedormisleading.
+ity between demand and price.
+B. Machine-learning based methods
+Our paper consist of the following sections: In section-II
+we review the relevant methods present to solve the problem Zhang et al., 2023 [5] explored gradient boosting frame-
+of item elasticity, focusing on econometric and ML methods. works for estimating price elasticity in retail demand fore-
+In section-III, we present the proposed framework, including casting, leveraging tree-based ensembles to capture nonlin-
+the network architecture, training details, data creation, and ear relationships between price and quantity. A feature-rich
+elasticity evaluation. In section-IV we showcase our results approach was adopted, incorporating historical sales, promo-
+and findings henceforth followed by a conclusion in section- tional indicators, and seasonality effects to improve predictive
+V. accuracy. More recently, Safonov et al., 2024 [6] utilized
+deep neural networks to model consumer price responses,
+II. RELATEDWORK
+employing feed-forward architectures trained on simulated
+The literature on price elasticity estimation can be broadly transactional data. These models were fine-tuned using regu-
+classifiedintotwocategories:econometric-basedandmachine- larization techniques to mitigate overfitting and enhance gen-
+learning-based methods. eralization. Similarly, Gupta et al., 2020 [7] applied recurrent
+Theeconometricapproach(e.g.,traditionalregressionmodels, neural networks (RNNs) and attention mechanisms to airline
+instrumental variable techniques) focuses on estimating elas- pricing environments, enabling elasticity estimation under
+ticity using statistical models grounded in economic theory, temporal dependencies and demand shocks. Unlike traditional
+whereas the machine-learning approach (e.g., gradient boost- econometric models, these machine learning approaches do
+ing, neural networks) leverages predictive algorithms to infer not impose restrictive functional form assumptions and can
+elasticity from observed transaction data. Econometric meth- scale effectively to high-dimensional datasets, making them
+odstypicallyrelyonparametricassumptionsandinterpretabil- suitable for personalized pricing and real-time optimization,
+ity,whileML-basedmethodsemphasizeflexibilityandpattern however as often seen in real world transactional data, price
+and demand fail to uphold a monotonic relationship, wherein be negative. Therefore the acceptable range of month
+a decrease in item price does not result in increase of demand difference between lead and lag month is between 1 to
+andviceversa.Astheprice–demandrelationshipisoftennon- 12.
+monotonicacrossmosttraininginstances,themodelfrequently 2) We only consider those combinations as valid where
+infers positive item elasticity values. This non monotonic item inventory is greater than zero in both lead and lag
+relationship between price and demand usually happens due months.
+to seasonal demand variations, or consumer preferences for
+certain products. Our proposed Monodense DLM ensures B. Proposed Monodense-DLM network
+that the final evaluated item elasticities are always negative,
+Creation of data is the first step in our framework. Post
+thereby making them economically consistent, as it bakes in
+creating the data we pass the lead lag month combination
+the monotonicity between price and demand while modeling
+pair data to our proposed DLM. Our neural network
+the demand to price relationship.
+architecture is designed for demand prediction at different
+III. FRAMEWORK prices and incorporates both product and item embedding
+layers alongside dense layers to capture complex feature
+In the following section we go over our proposed Frame-
+interactions.Themainpurposeistoenablethemodeltolearn
+work.
+the following mathematical relationship D = f(P ,X ,S )
+i i i i
+A. Dataset creation where D represents the units sold for the item in the lead
+i
+month, P denotes the price of the item in the lead month,
+As discussed earlier post creating a cross join dataset of i
+X represents the item, seasonal, and environment variables,
+themonthlytransactioninformationwebringinthefollowing i
+and S represents price change percentage between lead and
+additional information for each lead and lag month. i
+lag months.
+1) Inventory data to account for stock-outs and availability
+The model (figure 3) starts with an encoder like structure
+constraints, ensuring elasticity estimates reflected true
+where each input depending on whether its a categorical
+consumer behavior rather than supply limitations.
+or a continuous variable is passed through an embedding
+2) Item attribute information, including brand, size, and
+or a feed forward dense layer. Each embedding layer is
+category, subcategory to model heterogeneity across
+followed by a flatten layer, and each dense layer is followed
+products and identify cross-category effects.
+by a Relu activation. Post learning the higher dimensions
+3) Seasonal event data, such as holidays and promotional
+of the input features the embedding and continuous feature
+periods, to adjust for temporal demand fluctuations and
+outputs are further concatenated together and passed through
+isolate price-driven changes.
+multiple dense layers to further learn higher dimension
+4) Competitor item pricing and Item substitute to capture
+feature interactions. We saw in our experiments when price
+market dynamics and substitution effects
+was passed in the top of the proposed model, the models
+The data creation is done using pyspark which leverages
+sensitivity towards the price was being lost, thereby to make
+spark distributed computing. 2 years and 3 month of data
+the model more price sensitive we introduced the item price
+is considered while creating the training dataset. Our model
+at the lower layers of the model through monodense layer.
+is trained on 2 years worth of data (80% used in training
+This monodense layer ensures that in the learned price to
+and 20% as validation set) and the 3 months of data is kept
+demand relationship a decrease in price results in an increase
+as a out of time test set which is subsequently used to test
+in demand and vice versa.
+model performance metrics such as WMAPE. Figure 2 shows
+an example snapshot of how our final data looks like.
+For our implementation of the monodense layer we follow
+the work proposed by Davor et al., 2023 [8]
+• We apply weight constraints based on a monotonicity
+indicator vector t, where each element t corresponds to
+i
+a feature x .
+i
+– If t = 1 The feature is considered to be monoton-
+i
+ically increasing so an increase in input X would
+Fig.2. Forsimplicitysomefeaturesarenotshown result an increase in output Y . The corresponding
+weights (w ) are constrained to be non-negative
+i
+Figure 2 shows only one cross join combination where (w ≥0).
+i
+lag month is one. In the final training set we have multiple – If t = −1: The feature is considered to be mono-
+i
+combinations where lag month can be 1,2,3,4,...12 and lead tonicallydecreasingsoanincreaseininputXwould
+monthsstartsfrom1,2,3,4,5...12andsoon.Westrictlyensure result a decrease in output Y. The corresponding
+the below constraints while creating the cross join data. weights (w ) are constrained to be non-positive
+i
+1) The year month difference between lead and lag year (w ≤0).Thisisimplementedbytakingthenegative
+i
+months cannot exceed more than 12 months and cannot of a non-negative weight.
+– Ift =0:Thefeaturehasno monotonic constraint. 3) Toenhancepricesensitivity,thepriceinputisintroduced
+i
+The corresponding weights (w ) are not constrained atthelowerlayersofthenetwork,allowinghigherprice
+i
+and can be positive, negative, or zero. sensitivityofthemodelandimprovingresponsivenessto
+• To correctly capture the both concave and convex nature price changes
+of demand to price relationship as proposed by Davor et
+C. Training Details
+al.,2023[8]westartwithazero-centered,monotonically
+For training the model, the mean squared error (MSE) loss
+increasing, convex activation function (ρ) (e.g., ReLU,
+function is used. This loss minimizes the error between the
+ELU, SELU). Then Construct two additional monotonic
+model-predicted demand for the lead month and the actual
+variants:
+observed demand in the lead month. Given a continuous
+– Concave upper-bounded function:
+demandtargety andmodelpredictionyˆ,thelossiscomputed
+i i
+ρˆ(x)=−ρ(−x) as:
+– Bounded function: 1 (cid:88) N (cid:0) (cid:1)2
+(cid:40) ρˇ(x+1)−ρˇ(1), if x<0 L MSE = N y i −yˆ i
+ρ˜(x)= (2) i=1
+ρˆ(x−1)+ρˇ(1), otherwise
+where N denotes the number of samples in the batch. The
+network outputs a single continuous value per item-instance
+Defined piecewise to ensure saturation at its bounds.
+yˆ, representing predicted demand. The input consists of a
+• Finally we apply these three activations across different fe i ature vector P ,X ,S ∈ RF for each observation i, which
+neuron subsets in the monodense layer: i i i
+includes price, promotion indicators, inventory signals, com-
+– Original convex activation (ρ)
+petitor prices, and seasonal features. The network is trained
+– Concave activation (ρˆ)
+using the Adam optimizer for 25 epochs. A batch size of
+– Bounded activation (ρ˜)
+128 is used along with a learning rate of 0.01. To stabilize
+trainingandimprovegeneralization,inputsarestandardizedto
+zeromeanandunitvariance,andL2weightdecayisincluded
+in dense layers. Model performance is monitored through
+tracking training/validation loss and MSE. For training the
+model a GPU with CUDA Core 3840 was used. We tested
+our model on 32 Core, 2.10 GHz CPU.
+Fig.3. ArchitectureofourproposedDLM
+Our DLM network is inherently different from the tra- Fig.4. Modeltrainingandvalidationloss
+ditional machine learning/deep learning based methods for
+solving price elasticity in the following ways. D. Item elasticity evaluation
+1) A key innovation in our architecture is the inclusion Themodelreturnsitemdemandintheprojectedmonthwith
+of a monodense layer, which enforces monotonicity of respecttoaninputprice.Therefore,thepriceelasticityforany
+price with respect to demand, ensuring economically price change ∆p can be evaluated as:
+consistent predictions.
+yˆ(p+∆p)−yˆ(p) p
+2) Unlike traditional feed-forward models mainly consist E = × (3)
+∆p yˆ(p) ∆p
+of only dense layers. Our network learns jointly from
+both embeddings and dense representations, enabling it Here, ∆p represents the price change that can be submitted
+to model for both categorical and continuous attributes by the user or predefined as per business requirements. In
+effectively while solve the price elasticity problem. practice, to evaluate elasticity for a future month, we create
+our inference set consisting of the most recent lag month data represent lower agreement. It is observed that our proposed
+for the item and consider the lead month as lag month+1. model outperforms the other two models in terms of overall
+Then, we predict counterfactual demands in the lead month WMAPE.
+at two prices p+∆p and p to evaluate elasticity in the lead We are aware that WMAPE is not the only criterion to
+month for a price change of ∆p leveraging equation number judge our model as our final goal is to evaluate elasticities
+3. so for this we calculate the MAE between a set of items
+for which we have a known elasticity referred as ground
+IV. RESULTSANDFINDINGS
+truth elasticities going forward. MAE measures the deviation
+The result evaluation is done through two metrics from these ground truth elasticities and the model evaluated
+1) Calculating the actual demand weighted mean absolute elasticities below is the formula for the same.
+percentage error (WMAPE) between predicted and ac-
+tual demand on the test set. n
+1 (cid:88)
+2) By calculating the mean absolute error (MAE) between MAE= |e −eˆ|,
+n i i
+model evaluated elasticities and actual observed elastic- i=1
+ities across a sample set of items. where eˆ =predicted elasticity (model evaluated output),
+i
+The WMAPE is assessed by comparing the ground truth e =actual ground truth elasticity.
+i
+demand and the model predicted demand across an out of
+time test set (OTS). To create this OTS we use last 3 months
+Deeplearningmodel LGBM Doublemachinelearning
+of the overall data. The model has never been exposed to this
+0.36 0.42 0.43
+set while training. TABLEII
+MAECOMPARISONACROSSMODELS
+(cid:80)n
+y ·|y −yˆ|
+WMAPE= i=1 i i i ×100%,
+(cid:80)n
+i=1 y i The model having the least MAE is considered to have the
+where yˆ =model predicted demand, best elasticities. Ideally a zero MAE would signify that the
+i
+model predicted elasticities perfectly match the ground truth
+y =actual demand.
+i
+elasticities whereas a higher number would represent lower
+A systematic WMAPE comparison of our proposed model agreementbetweenelasticities.Whencomparingourproposed
+isdonewithLGBMandadoublemachinelearningregression Monodense DL model with other two models the MAE is
+based model. LGBM model consists of multiple gradient lower for our model.
+boosting trees with the objective to minimize the gradient
+of demand in the lead month. We have leveraged LGBMs V. CONCLUSION
+(Guolin et al., 2017 [9]) inbuilt monotonicity indicator to This paper has showcased that it is possible to use deep
+impose the monotonicity between demand and price. For neural networks for evaluating item elasticity while making
+double machine learning (DML) (Victor et al., 2018 [10]) economically consistent predictions. We successfully evaluate
+we have trained a regression based outcome, treatment, and itemelasticityusinganewlyproposedMonodensedeepneural
+residual model. As regression models have no inherent way network(DNN)architecture.WebenchmarkMonodenseDNN
+of imposing a price to demand monotonic relationship, we model with other prevalent elasticity modeling techniques
+do observe some positive item elasticities. Both the models whicharepossibletorunwithinourproposedframeworksuch
+were implemented within the same proposed framework and as LGBM and double machine learning methods. The experi-
+therefore use the same underlying data distributions. mental results demonstrate that our novel model outperforms
+double machine learning and LGBM model. This can be said
+Table 1 shows the comparison of all three models using by observing that Monodense DLM achieves a lower overall
+the WMAPE evaluation criterion. The model having the least WMAPE and MAE value than the other two models.
+demand WMAPE is considered the best. As better demand Paper also demonstrates that with our proposed data creation
+prediction will in turn lead to a more reliable elasticity metric methoditispossibletomodelthepriceelasticityusingahuge
+because elasticity is evaluated as difference of demands vis a real world transaction dataset (1 billion+ rows) counterpart
+vis equation 3. to the other studies conducted in the area which have only
+utilized comparatively small or synthetically created datasets.
+Deeplearningmodel LGBMmodel DoubleMachineLearning*
+We also display that there is no need to artificially impose
+30.90% 35.9% 36.1%
+TABLEI demand to price monotonic relation in the underlying training
+*FORDOUBLEMACHINELEARNINGWMAPEOFOUTCOMEMODELIS data through data filtering or to subset specific items to run
+RECORDED
+C/T experiment, which might have been following the correct
+demand to price relationship. This monotonic relationship can
+A zero WMAPE would signify that the model predicted be baked in the DNN model itself.
+demandvaluesandactualobserveddemandvaluesatdifferent Asfuturedirectionsofourworkweplantoexperimentwithan
+price points are in perfect sync while higher values would evendeepermodelarchitecture,andexperimentwithdifferent
+activationfunctionstofurtherbettermodelthedemandtoprice
+relationship thereby decreasing our WMAPE and MAE even
+further.
+REFERENCES
+[1] Hua, J., Yan, L., Xu, H., and Yang, C. (2021). Markdowns in
+E-CommerceFreshRetail:ACounterfactualPredictionandMulti-Period
+Optimization Approach. In *Proceedings of KDD ’21*. arXiv preprint
+arXiv:2105.08313.
+[2] Houthakker,H.S.,andTaylor,L.D.(1970).ConsumerDemandinthe
+UnitedStates,1929–1970:AnalysesandProjections.HarvardUniversity
+Press.
+[3] Deaton, A., and Muellbauer, J. (1980). An Almost Ideal Demand
+System.*TheAmericanEconomicReview*,70(3),312–326.
+[4] Hausman,J.A.(1996).ValuationofNewGoodsunderPerfectandIm-
+perfectCompetition.In*TheEconomicsofNewGoods*,pp.207–248.
+UniversityofChicagoPress.
+[5] Zhang, Y.; Li, H.; Ren, G. (2023). Data-driven exploration of hetero-
+geneous gasoline price elasticities using generalized random forests.
+*Transportation*, **52**, 215–237. https://doi.org/10.1007/s11116-
+023-10417-w
+[6] Safonov, K. (2024). Neural Network Approach to Demand Estimation
+andDynamicPricinginRetail.arXivpreprintarXiv:2412.00920.
+[7] Gupta,A.,etal.(2020).DeepLearningforAirlinePricingandRevenue
+Management: A Recurrent Neural Network Approach with Attention
+Mechanisms.In*ProceedingsofINFORMSAnnualMeeting*.
+[8] Runje,D.,andShankaranarayana,S.M.(2023).ConstrainedMonotonic
+NeuralNetworks.In*Proceedingsofthe40thInternationalConference
+onMachineLearning(ICML)*,volume202,pp.29338–29353.PMLR.
+[9] Ke,G.,Meng,Q.,Finley,T.,Wang,T.,Chen,W.,Ma,W.,Ye,Q.,and
+Liu, T.-Y. (2017). LightGBM: A Highly Efficient Gradient Boosting
+DecisionTree.In*Proceedingsofthe31stInternationalConferenceon
+NeuralInformationProcessingSystems(NeurIPS)*,pp.3149–3157.
+[10] Chernozhukov,V.,Chetverikov,D.,Demirer,M.,Duflo,E.,Hansen,C.,
+Newey,W.,andRobins,J.(2018).Double/debiasedmachinelearningfor
+treatment and structural parameters. The Econometrics Journal, 21(1),
+C1–C68.https://doi.org/10.1111/ectj.12097

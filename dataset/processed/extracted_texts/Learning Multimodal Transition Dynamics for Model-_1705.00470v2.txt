@@ -1,0 +1,727 @@
+Learning Multimodal Transition Dynamics for
+Model-Based Reinforcement Learning
+Thomas M. Moerland, Joost Broekens, and Catholijn M. Jonker
+Department of Computer Science
+Delft University of Technology, The Netherlands
+{T.M.Moerland,D.J.Broekens,C.M.Jonker}@tudelft.nl
+Abstract. In this paper we study how to learn stochastic, multimodal
+transition dynamics in reinforcement learning (RL) tasks. We focus on
+evaluating transition function estimation, while we defer planning over
+this model to future work. Stochasticity is a fundamental property of
+many task environments. However, discriminative function approxima-
+torshavedifficultyestimatingmultimodalstochasticity.Incontrast,deep
+generative models do capture complex high-dimensional outcome distri-
+butions. First we discuss why, amongst such models, conditional varia-
+tionalinference(VI)istheoreticallymostappealingformodel-basedRL.
+Subsequently, we compare different VI models on their ability to learn
+complex stochasticity on simulated functions, as well as on a typical
+RL gridworld with multimodal dynamics. Results show VI successfully
+predictsmultimodaloutcomes,butalsorobustlyignoresthesefordeter-
+ministicpartsofthetransitiondynamics.Insummary,weshowarobust
+method to learn multimodal transitions using function approximation,
+which is a key preliminary for model-based RL in stochastic domains.
+1 Introduction
+Reinforcement learning (RL) is a succesful learning paradigm for sequential de-
+cision making from data in agents and robots. A long standing debate in RL
+researchhasbeenwhethertolearn‘model-free’or‘model-based’(Figure1)[31].
+Model-basedRLhasshownsomeimportantbenefits,mostnoteworthyincreased
+dataefficiency[7],thepotentialfortargetedexploration[30],andnaturaltransfer
+between tasks when only the reward function changes. Model-based RL consists
+of two steps: 1) transition function estimation through supervised learning, and
+2) (sample-based) planning over the learned model (Figure 1, green arrows).
+Each step has a particular challenging aspect. For this work we focus on a key
+challenge of the first step, stochasticity in the transition dynamics, while we de-
+fer the second step, planning (under uncertainty), to future work (see Sec. 6 as
+well).
+Stochasticity is an inherent property of many environments, and increases
+in real-world settings due to sensor noise. Transition dynamics usually combine
+both deterministic aspects (such as the falling trajectory of an object due to
+gravity) and stochastic elements (such as the behaviour of another car on the
+7102
+guA
+8
+]LM.tats[
+2v07400.5071:viXra
+Fig.1. Two types of reinforcement learning. Model-free RL (blue) directly learns a
+behavioural policy, while model-based RL (green) also attempts to learn the environ-
+ment’stransitiondynamics.Learningthistransitionmodelallowstheagenttopredict
+future states and thereby allows the agent to plan.
+road). Our goal is to learn to jointly predict these. Note that stochasticity has
+many forms, both homoscedastic versus heteroscedastic, and unimodal versus
+multimodal. In this work we specifically focus on multimodal stochasticity, as
+this should theoretically pose the largest challenge.
+To learn such transition models, we require high-capacity function approxi-
+matorsthatcanpredictnext-statedistributionsofcomplexshape.Thisproblem
+is not yet accurately solved by currently used methods in model-based RL, like
+tabular learning [3] (which does not scale to high-dimensions), linear function
+approximation [1] with Gaussian noise [20], random forests [14], or deep feed-
+forward networks trained on mean-squared error (MSE) [25] (See also Sec. 2).
+ApotentialsolutiontothisproblemareDeepGenerativeModels(DGM)[13],
+as they are non-linear function approximators that can learn complex outcome
+distributions and scale to high-dimensions. In Section 2 we compare different
+DGM’s on their theoretic appeal for stochastic model learning in the RL set-
+ting, and identify conditional Variational Inference (VI) as the most promising
+solution.
+The remainder of the paper then continues as follows. In Section 3, we for-
+mally describe conditional variational inference with different types of discrete
+and continuous latent variables. In Section 4 we empirically compare the differ-
+ent approaches on a simulated function and on a typical RL tasks. Our results
+show that VI is accurately able to discriminate deterministic from stochastic
+aspects of the transition dynamics. We also show how the RL agent manages to
+learn an accurate transition model while solving a task. Finally, Sections 5 and
+6 connect our work to related literature and identify opportunities for future
+work, respectively.
+All code to reproduce the results in this paper is publicly available at www.
+github.com/tmoer/multimodal_varinf.
+Fig.2.Multimodaloutcomedistributionp(y|x)(blueline)forasimple1Dobservation
+space. Training on a mean-squared error will deterministically predict the conditional
+mean (dashed line), which implicitly assumes a uni-modal Gaussian outcome (green
+line).
+2 Challenge of Multimodal Transitions
+We will write x ∈ X for the current state and action, and y ∈ Y for the next
+state we want to predict. We are interested in models that can approximate
+distributions p(y|x) with multiple local maxima (‘modes’). A cardinal example
+of such a distribution is shown in Figure 2 (blue line).
+Discriminativefunctionapproximators,forexampletrainedatmean-squared
+error (MSE) loss, fail at this task. The point prediction of the function approx-
+imator will be the conditional expectation of the outcome distribution (Fig. 2,
+dashed line). Obviously, point estimate predictions will never be a good method
+to approximate a distribution, but they have actually been frequently applied
+in model-based RL work [25].1 Clearly, a unimodal outcome distribution will
+neither solve the multimodality problem (Fig. 2).
+AmixtureofGaussiansperoutcomedimensionwouldneithersolvetheprob-
+lem. Full covariance matrix Gaussians clearly do not scale to high-dimensional
+domains(suchas[24]),whilediagonalGaussianswouldlooseallcovariancestruc-
+tureinthepredictions.Moreover,mixturemodelsaretedioustotrain.Whatwe
+require are models that 1) flexibly approximate joint distributions of complex
+(multimodal) shape and 2) scale to high-dimensions.
+Wehypothesizethegroupofdeepgenerativemodels(DGN)[13]areapromis-
+ing candidate, as they fulfill both requirements. For model-based RL, where we
+will use the models to sample (a lot of) traces, we additionally require that the
+model is 1) easy to sample from, and 2) ideally allows for planning at an ab-
+stract level. Following the DGN taxonomy by Goodfellow [13] (Figure 3), we
+1 Forexample,Ohetal.[25]showsMSEtrainingdoesworkwellinhigh-dimensional,
+deterministic domains. However, for example inspecting their Ms. Pacman (a
+stochastic game) predictions at https://youtu.be/cy96rtUdBuE, we see that the
+predictions for the stochastic elements (ghosts) fail. The ghosts disappear when
+they reach a corridor junction, where they stochastically choose in which direction
+tocontinue.Thefeed-forwardnetworkpredictstheconditionalmeanofthesechoices,
+which completely blurs the ghosts in a few frames.
+Fig.3. Deep generative model taxonomy following [13].
+now compare DGN models on their theoretical appeal for transition function
+estimation.
+Implicit density models, like Generative Adverserial Networks (GAN) lack a
+clear probabilistic objective function, which was the focus of this work. Among
+theexplicitdensitymodels,therearetwocategories.Change of variable formula
+models, like Real NVP [9], have the drawback that the latent space dimension
+must equal the observation space. Fully visible belief nets like pixelCNN [26],
+whichfactorizethelikelihoodinanauto-regressivefashion,holdstate-of-the-art
+likelihoodresults.However,theyhavethedrawbackthatsamplingisasequential
+operation (e.g. pixel-by-pixel, which is computationally expensive), and they do
+not allow for latent level planning either. Therefore, most suitable for model-
+based RL seem approximate density models, most noteworthy the variational
+auto-encoder(VAE)[19]framework.Thesemodelscanestimatestochasticityat
+alatentlevel,allowforlatentplanning[33],areeasytosamplefrom,andhavea
+clear probabilisticinterpretation.In the next section,wewill formally introduce
+this methodology in the conditional setting, where the generative process of y is
+conditioned on other variables x.
+3 Conditional Variational Inference
+Wewillfirstintroducetheconditionalvariationalauto-encoder(CVAE)[28].Our
+goalistolearnagenerativemodelofa(possiblymultimodal)distributionp(y|x).
+We assume the generative process is actually conditioned on latent variables z:
+(cid:90)
+p(y|x)= p(y|z,x)p(z|x)dz (1)
+Here p(z|x) is the prior and p(y|z,x) is the generative model or ‘decoder’.
+The stochastic latent variables z provide the flexibility to predict more complex
+outcome distributions y. The posterior over z, p(z|y,x) is intractable in most
+models of interest, for example deep non-linear neural networks. However, the
+parameters of this distribution can be efficiently approximated with Stochastic
+Gradient Variation Bayes (SGVB) [19], which uses a parametric recognition
+or inference model q(z|y,x) to approximate the true posterior p(z|y,x). The
+inference model learns a mapping from observations to latent space, providing
+generalizationandtherebyamortizingthecostofinference(comparedtoMarkov
+chain Monte Carlo (MCMC) inference methods that needed computationally
+expensive iterative procedures to estimate the latent variables per datapoint).
+Fig.4.ConditionalVariationalAuto-Encoderasacomputationalprocess.Squaresare
+deterministic,circlesareprobabilisticnodes.Left:Trainingprocedure.Duringtraining,
+we sample z according to q(·|x,y), where q is parametrized by φ . The training loss
+q
+consists of two terms (indicated by the red dotted boxes): 1) the reconstruction loss
+p(y|z,x), and 2) the KL-divergence between q(z|x,y) and p(z|x). The latter ensures
+thattheposteriorq putsprobabilitymassatthesamepointsasthepriorp,effectively
+actingasaregularizerinlatentspace.Wecomputez withthereparametrizationtrick,
+where e can be any appropriate noise distribution. Right: Test procedure. At test
+time,wecutawaytheinferencenetworkq,andinsteadsamplez accordingtotheprior
+p(z|x). This allows us to make stochastic predictions for y.
+WecanderiveavariationallowerboundL(y|x)onourdatalikelihoodp(y|x):
+(cid:20) (cid:21)
+p(y,z|x)
+logp(y|x)≥E log
+z∼q(z|x,y) q(z|y,x)
+=E [logp(y|z,x)]−D [q(z|x,y)(cid:107)p(z|x)]=L(y|x;θ,φ) (2)
+z∼q(z|x,y) KL
+where θ denotes the parameters in the generative network, φ denotes the
+parameters in the inference network and prior, and D denotes the Kullback-
+KL
+Leibler(KL)divergence.Wecaninterprettheleft-handtermofthelastequation
+(logp(y|z,x)) as the negative reconstruction error, which measures how well we
+reconstruct y after sampling z. The right-hand term (KL divergence) ensures
+q does not diverge too much from the prior p. This acts as a regularizer, and
+ensuresthatwecanattesttime(whenwedonotobservey)samplefromp(z|x)
+instead of q(z|x,y).
+In practice, we slightly modify the objective in Eq. 2, where we use impor-
+tance sampling [4] to obtain a tighter bound, and minimize a different distance
+function instead of the KL-divergence (namely α-divergence with α=0.5 [8]).
+Details are provided in Appendix A.
+3.1 Reparametrization
+Forthisworkwefocusonvariationalmethodsthatreparametrizethedistribution
+of q (z|y,x) to allow gradient-based training on a single computational graph.
+φ
+The trick works when we can write z as a function z = f ((cid:15),y,x), with f (·)
+φ φ
+a deterministic, differentiable function, and (cid:15) ∼ p((cid:15)) a noise distribution with
+independent marginal.
+Foracontinuousvariablez,thecardinalexampleisalocation-scaletransfor-
+mationofastandardGaussiandistribution.Ifq (z|y,x)=N(z|µ (y,x),Σ (y,x)),
+φ φ φ
+then we can write
+z =f ((cid:15),y,x)=µ (y,x)+Σ (y,x)·(cid:15), with (cid:15)∼N(0,1) (3)
+φ φ φ
+The gain is that we can now backpropagate through expectations of the
+random variable z [19]:
+∇ E [ξ(z)]=E (cid:2) ∇ ξ(f ((cid:15),y,x)) (cid:3) (4)
+φ z∼qφ(z|x,y) (cid:15)∼N(0,1) φ φ
+for some function ξ(·) of z. The right-hand term can then be approximated
+with a Monte-Carlo estimate. This allows us to backpropagate through z (see
+Fig.4,left),givingthevanillaconditionalvariationalauto-encoder(CVAE)with
+Gaussianlatentvariables.Theoveralltrainandtestprocedureissummarizedin
+Figure 4. We now consider two methods to improve the capacity of the latent z
+distribution, that both could improve learning multimodal outcomes.
+3.2 Discrete Latent Variables
+As we want to model multimodal outcomes, it seems natural to consider dis-
+crete latent variables. However, for the reparametrization trick to be applicable
+we require the function f (·) to be differentiable, which is not possible for a
+φ
+discrete variable. It turns out we can get good estimates by making a smooth
+approximation to the discrete loss [17,22].
+Letω beanorderedsetofclassprobabilitiesofadiscretevariablez 2 withn
+i i i
+categories.WecandrawsamplesfromthisdistributionthroughtheGumbel-Max
+trick:
+(cid:18) (cid:19)
+z =one-hot argmax[g +logω ] (5)
+i j i,j
+j∈[1..ni]
+with g i.i.d. draws from a Gumbel(0,1) distribution3. Since argmax is not
+j
+differentiable, we can make a softmax approximation to the above equation:
+exp((logω +g )/τ)
+z = i,j j for j =1,..,n (6)
+i,j (cid:80)ni
+exp((logω +g )/τ)
+i
+o=1 i,o o
+which is known as the Gumbell-Softmax [17] or Concrete [22] distribution.
+The softmax temperature τ ∈ (0,∞) regulates the discreteness of the approx-
+imation: for τ → 0, the samples effectively become one-hot, while for τ → ∞,
+2 We use subscripts z to index the elements of the vector random variable z, and
+i
+double subscripts z to index the categories within one discrete random variable.
+i,j
+3 WecansamplefromaGumbel(0,1)distributionbysamplingu∼Uniform(0,1)and
+computing g=−log(−log(u)).
+the samples become uniform over the class categories. The above specification
+allows us to use the reparametrization trick for discrete latent variables, as the
+noise distribution g is now decoupled from the gradient path δz. Note that Eq.
+δω
+6isatypeofreparametrizationf (·)(asintroducedinSec.3.1,withg thenoise
+φ
+distribution and ω (x,y) the distribution parameters. In practice, we anneal τ
+φ
+from >1 to 0 over the course of training.
+3.3 Transformations of Continuous Variables (Flow)
+We already specified the reparametrization trick for spherical Gaussian latent
+variables(Eq.3).AssphericalGaussiansmaybetoorestrictingformultimodal-
+ity, we can increase the capacity of the latent layer by using transformations of
+distributions for which we can track the density.
+Toobtainmoreexpressivedistributionsforacontinuousrandomvariablez ∈
+RD with known density q(z), we consider bijective smooth mappings h:RD →
+RD with inverse h−1. We are interested in the distribution of the transformed
+variablez(cid:48) =h(z).Aslongasweareabletoinverth,wecaneasilycomputethe
+density of the transformed variable z(cid:48):
+q(z(cid:48))=q(z) (cid:12) (cid:12) (cid:12)det( δh−1(z(cid:48)) ) (cid:12) (cid:12) (cid:12)=q(z) (cid:12) (cid:12) (cid:12)det( δh(z) ) (cid:12) (cid:12) (cid:12) −1 (7)
+(cid:12) δz(cid:48) (cid:12) (cid:12) δz (cid:12)
+whichisknownasthechange-of-variableformula.Ifwecanspecifyourneural
+network to learn transformations which are easily invertible, we can construct
+morecomplicateddistributionsbyrepeatedlyapplyingtheabovetransformation
+(while being able to track the density). If we repeatedly apply a sequence of
+transformations zL =hL◦...◦h1(z0) for some random variable z0 ∼q0(·), then
+the density of the last variable zL can be computed as:
+logqL(zL)=logq0(z0)− (cid:88) L log (cid:12) (cid:12) (cid:12)det δzl (cid:12) (cid:12) (cid:12) (8)
+(cid:12) δzl−1(cid:12)
+l=1
+The problem with the above transformation is that, especially for high-
+dimensional domains, computing the determinant is computationally very ex-
+pensive. An elegant solution appears from the observation that the determinant
+ofatriangularmatrixissimplytheproductofitsdiagonalterms[9][18].There-
+fore, given a random variable z of length D, we can specify the transformation
+z(cid:48) =h(z) as:
+z(cid:48) =z
+1:d 1:d
+z(cid:48) =t(z )+z(cid:48) (cid:12)exp(s(z )) (9)
+d+1:D 1:d d+1:D 1:d
+The Jacobian of the this transformation is:
+δz(cid:48) (cid:34) I
+d
+0 (cid:35)
+= δz(cid:48) (10)
+δz d+1:D diag(exp(s(z )))
+δz1:d 1:d
+(cid:2)(cid:80) (cid:3)
+Thedeterminantofthismatrixiseasilycomputedasexp s(z ) ) .Note
+i 1:d i
+that the t(·) (translation) and s(·) (scale) function can be arbitrarily complex
+functions, for example deep, non-linear neural networks. In these transforma-
+tions, we do not need to compute the determinant of s(·) or t(·) to track the
+density of the random variable z(cid:48). Moreover, it is trivial to invert the above
+transformation:
+z =z(cid:48)
+1:d 1:d
+z =(z −t(z(cid:48) ))(cid:12)exp(−s(z(cid:48) )) (11)
+d+1:D d+1:D 1:d 1:d
+This allows us to use the change-of-variable formula of the previous section.
+We effectively perform an auto-regressive transformation on the z variables. In
+practice,werepeatedlymodifytheorderofthezvariablestohaveadifferentpart
+of z transformed in each layer. In Fig. 4, we would apply these transformations
+to a sample from q(z|x,y) before calculating the KL-divergence with p(z|x).
+3.4 Enforcing Latent Variable Use
+One of the challenges of training latent variable models is their tendency to
+overfit the prior early in training. Initially, the likelihood term p(y|z,x) is rela-
+tively weak. Therefore, the learning signal is dominated by the KL-divergence,
+andstochasticoptimizationgetsstuckintheundesirableequilibriumq(z|y,x)≈
+p(z|x).
+To give a simple illustration, imagine y is strictly bimodal given a fixed x,
+takingvaluey ory withp(y |x)=0.3andp(y |x)=0.7.Wefitalatentmodel
+1 2 1 2
+with a single binary variable z taking values z or z . Clearly, we want our prior
+1 2
+p(z|x)tolearnthedistribution{p(z |x)=0.3,p(z |x)=0.7}(assumingz maps
+1 2 1
+toy andz toy ,whichcanofcoursebeinterchanged).However,theinference
+1 2 2
+network q(z|x,y) has access to additional information, as it knows which y we
+need to reconstruct. Therefore, if we present a datapair (x,y ), then we want
+1
+our latent distribution more like {q(z |x,y ) = 0.999,q(z |x,y ) = 0.001}, as
+1 1 2 1
+this ensures we make a good draw and good reconstruction. However, for this
+datapoint this would incur a KL-penalty D (q(z|x,y )(cid:107)p(z|x)) ≈ 1.20. This
+KL 1
+illustrates how a good fitting VI model will necessarily incur some KL-cost.
+A solution is to enforce each (set of) latent variables to encode a minimum
+amount of information [18], i.e. force q(z|y,x) to at least have a KL-divergence
+of λ from the prior p(z|x). The modified objective becomes:
+(cid:20) (cid:21)
+L˜(y|x)=E E (cid:2) logP(y|z,x) (cid:3) −
+(x,y)∼M z∼q(z|y,x)
+(cid:88)
+Dz
+max
+(cid:18)
+λ,E (cid:2) D [q(z |x,y)(cid:107)p(z |x)] (cid:3)
+(cid:19)
+(12)
+(x,y)∼M KL j j
+j=1
+where D is the dimensionality of the latent space z, and M denotes a mini-
+z
+batch. Different solutions have been proposed, like KL annealing [29], but we
+empirically found them to be less effective.
+4 Results
+We now test the different types of conditional variational inference, introduced
+in the previous section, on two tasks. Evaluating generative model performance
+is not straightforward, as standard metrics like mean-squared error (MSE) are
+non-validformultimodaloutcomedistributions.Inthiswork,weevaluatei)the
+log likelihood of a test set under the learned generative model (see Appendix
+B), and (if possible) ii) we draw new data from the learned model and compute
+KL divergences or Hellinger distances with respect to the true data generating
+distribution. Training details and hyperparameters are described in Appendix
+C.
+4.1 Toy Problem
+We generate a one-dimensional multimodal transition function by sampling x∼
+Uniform(−1,1)andsamplingyfromaconditionalGaussiandistributionN(·|µ=
+f(x),σ =0.1) according to:
+
+N(2.5), if x<−0.3
+
+p(y|x)= ρ N(4x)+ρ N(−4x), if −0.3≤x<0.3
+1 2
+ρ N(5+log(x+1))+ρ N(−x+0.2)+ρ N(5x2), if x≥0.3
+3 4 5
+where ρ = 0.2, ρ = 0.8, ρ = 0.3, ρ = 0.5 and ρ = 0.2. This generates the
+1 2 3 4 5
+multimodalfunctionshowninFigure5a.Westudythistoyproblemtovisualize
+how different architectures will fit this simple data structure with conditional
+unimodal (left), bimodal (middle) and trimodal (right) structure (see Figure 5a
+left,middleandrightparts).Figure5b-fshowthesamplesgeneratedbydifferent
+models after training on 30,000 mini-batch steps (See Appendix C for details).
+Table 1 displays the variational lower bound (VLB) and negative log-likelihood
+(NLL) on a test set.
+Afeed-forwardnetworktrainedonmeansquarederrordeterministicallypre-
+dicts the conditional expectation (Figure 5b). For fair comparison, we also train
+a feed-forward network that does receive noise variables (cid:15) as input but with-
+outan inferencenetwork (Figure5c).Theoreticallythisnetworkcouldlearn the
+same decoder distribution, but without the inference network the model does
+not converge.
+Figure 5d-f show the samples generated by different variational methods
+(spherical Gaussian Sec. 3.1), Gaussian with flow (Sec. 3.3), and discrete latent
+variables(Sec.3.2),respectively.Weseehowthesemodelsaremuchbetteratfit-
+tingthetruedatadistribution.Importantly,noticethatthevariationalapproach
+consistently predicts the deterministic part correctly (left part of the function).
+Thisisimportant,asthenetworkisabletoignoretheinputnoisewhenneeded.
+Table 1 indicates the discrete latent variable model fits this problem best.
+4.2 Stochastic Gridworld
+WenowstudyatypicalRLgridworldtaskwithmultimodalstochasticdynamics.
+Theworldisa7x7grid(seeFigure6)withsomewalls.Theagent(green)startsin
+Fig.5. Comparison of samples from the models produced by multi-layer perceptron
+(MLP) and variational inference (VI) networks after training for 30,000 mini-batches.
+a) Ground truth data. b) MLP (deterministic predictions). c) MLP with stochastic
+inputs. d) VI with spherical Gaussian. e) VI with spherical Gaussian and 5 layers of
+flow. f) VI with discrete latent variables. Numerical results are reported in Table 1.
+Table 1. Performance on toy domain. All results are averaged over 10 runs. VLB =
+Variational Lower Bound, NLL = Negative Log Likelihood on test dataset, MLP =
+Multi-Layer Perceptron, VAE = Variational Auto-Encoder.
+Method VLB NLL
+MLP (deterministic) NA NA
+MLP (with stochastic input) NA 4.49
+VAE continuous (n=3, no flow) 0.33 -0.29
+VAE continuous (n=3, n =5) 0.32 -0.33
+flow
+VAE discrete (n=3, k=3) 0.47 -0.48
+thebottom-left,candeterministicallymoveineachcardinaldirection,andneeds
+to reach the top-right (r =+10). There are two ghosts, starting in locations as
+shown in Fig. 7, top-left. Ghost 1 (red) uniformly chooses one of the available
+directions. Ghost 2 (blue) has a bias to move to the left or right (40% each),
+and moves vertically with small probability (10%). Our interest here is to learn
+to predict this stochasticity from observed data. As state-space we use a vector
+of length 6 containing the 2D coordinates for the agent and both ghosts. Each
+element in the vector is treated as a categorical variable with 7 classes (for the
+7x7 grid).4
+Uncorrelated Data. On of the core challenges of RL is the exploration prob-
+lem, which can make the data we observe strongly correlated. For example, if
+4 Note that, although this is a discrete MDP, it is not a trivial task to model multi-
+modality here. Indeed, the outcome distribution per state dimension is categorical,
+butthejointdistribution(generally)doesnotfactorizeoverthedimensions.There-
+fore, we would already need a categorical with 76 = 117649 outcome categories to
+learn this problem without conditional variational inference, and this would expo-
+nentially aggravate in larger state-spaces (e.g. images).
+Fig.6. Visual predictions on gridworld. Each sub-picture shows the agent (green),
+ghost 1 (red) and ghost 2 (blue) with current location as a circle, and predicted next
+location as a shaded box (color intensity corresponds to predicted probability). Black
+locationsarewalls,thetextaboveeachsubplotindicatestheactionchosenbytheagent.
+Left: Continuous latent variables (n=8, no flow), Middle: continuous latent variable
+(n=8, n =6), Right: discrete latent variables (n=8,k=4). We observe stochastic
+flow
+predictionsfortheghostsanddeterministicpredictionsfortheagent.Numericalcom-
+parison is provided in Table 2.
+Table 2.Performanceongridworldpredictionsfordifferenttypesofvariationalinfer-
+ence. For this table, pˆdenotes the predicted distributions by the VAE model, while p
+denotesthegroundtruth(whichisknownforthisscenario).VLB=VariationalLower
+Bound, NLL = Negative Log Likelihood.
+Method VLB NLL D (p(cid:107)pˆ) D (p(cid:107)pˆ) D (pˆ(cid:107)p)
+KL Hel KL
+VAE Continuous (n=8, no flow) -2.53 2.52 0.91 0.48 3.12
+VAE Continuous (n=8, n =6) -2.66 2.70 2.74 0.60 4.29
+flow
+VAE Discrete (n=8, k=4) -2.17 2.20 1.26 0.61 4.75
+the agent never explores the top-left region of the domain, we can not expect it
+to learn an accurate model there. To overcome this problem, we first study an
+idealized setting in which our dataset consists of the transitions of state-action
+combinations randomly sampled across state-space.
+On-policy Agent. TheresultsonthistaskareshowninTable2.Comparedto
+Table 1 we do not show MLP results anymore for this task. We see the discrete
+latent variables again perform best on negative log-likelihood (NLL) evaluation.
+However, when we compare the learned distribution to the true distribution
+(which is available for this problem), we see the continuous latent variables
+withoutflowactuallyperformbest.Weseeaconflictbetweenbothperformance
+measures (the NLL indicates the discrete model performs best, while the dis-
+tances with the true distribution point at the continuous latent model). In this
+case, visual comparison (Figure 6) does not show important differences across
+methods. We therefore conclude that the differences between methods are small
+Fig.7.On-policypredictionsforRLagent(seeFig.6forcolorexplanation).Thesub-
+plotsprogressrow-wisealongaroll-outinthelearnedtransitionmodel.Notethatthis
+is a true 12-step roll-out, i.e. each next plot is based on sampling a single prediction
+from the model (we do not observe any true next state along the way).
+for this problem, while the best performance measures for generative models
+remains an open questions in general (see [13]).
+As a next step, we investigate to what extend an RL agent is capable of
+learning an accurate transition model on-policy, i.e. while observing correlated
+data.Notethattheagentisstilllearningitspolicyinamodel-freesensehere(as
+a deep Q-network [24]), and we simply investigate to what extend the learned
+transition model is accurate after observing correlated data. Therefore, we eval-
+uate the learned transition model while the agent is executing the policy.
+Figure 7 shows the results of a roll-out in the learned model under a model-
+free policy. We see the agent first walking along the bottom corridor, and then
+moving up in the vertical corridor. Note that the agent consistently predicts its
+next state deterministically and correctly. In frame 6 it makes a wrong action
+decision,probablybecauseweexecutethebehaviouralpolicywithsmall(cid:15)-greedy
+noise. The ghosts have multimodal, stochastic behaviour. The first ghost (red)
+moves uniformly in one of the available directions, which is captured by the
+red shades around the current ghost location. Note that the model consistently
+predicts the ghost to move at each step. The second ghost (blue) has a bias to
+primarily step to the left or right. We also note the difference in the predicted
+nextstatebetweenredandblueghost,matchingtheirtruedynamics.Altogether,
+the agent has learned to predict both the deterministic effects of its own actions
+as well as its stochastic environment, from on-policy, correlated data.
+5 Related Work
+Variational inference in the conditional setting was previously studied by Sohn
+et al. [28] and Walker et al. [32]. Compared to our work, these papers only
+use spherical Gaussian priors, and do not focus on reinforcement learning tasks.
+Our work focussed on VI with reparametrization gradients. There is a second
+line of research on latent variable models that uses score function gradients
+[23], which are also known as REINFORCE in the RL context. A benefit of
+reparametrization gradients is that they don’t suffer from the high variance
+usually encountered with score function gradients (a problem also known in
+RL).
+The idea to apply flow to the latent layer originates from Rezende and Mo-
+hamed[27].ThetransformationinEq.9arerelatedtotheaffine coupling layers
+of Dinh et al. [9], but then applied to the latent layer of a CVAE, while Dnih
+et al. [9] use them directly from observation level without variational inference.
+Applying flow transformations at latent VI level was introduced by Kingma et
+al. [18], where the authors used fully autoregressive transformations (which are
+hardertoimplementcomparedtoourtransformations,butpotentiallyhavemore
+representational capacity).
+To increase the expressivity of the latent approximation, we focussed on
+different types of latent variables, as well as (normalizing) flow. A third way to
+increase latent capacity is to factorize the distribution into several layers [29].
+However,activatingdeeperstochasticlayersisnotstraightforward[29],requiring
+either batch normalization or weight normalization [18]. We defer factorized
+inference networks to future work, especially in higher-dimensional tasks.
+The different deep generative models discussed in Section 3 are not mu-
+tually exclusive. For example, the variational lossy auto-encoder (LVAE) [5]
+combines variational inference with PixelCNN-based decoders [26]. Such archi-
+tectures force high-level conceptual information into the latent level, while the
+decoder should capture fine-grained details. This could be beneficial to sparsify
+the latent layer and as such benefit RL planning as well.
+ThereisrelativelylittleworkonBayesianNeuralNetworksforRL.Closestto
+oursistheworkbyDepewegetal.[8],whostudyVItoestimatebothtransition
+function stochasticity (as studied in this work) combined with uncertainty (due
+tolimiteddata).Comparedtotheirwork,weuseaparametricinferencenetwork
+which allows us to generalize in the inference part, while they perform VI per
+individual datapoint. Second, they only considered Gaussian latent variables,
+while we investigate discrete latent variables and normalizing flow as well. The
+results of Depeweg et al. [8] also show the ability to learn multimodal stochas-
+ticity, and additionally show the benefit of planning over the model. Watter et
+al. [33] also used variational auto-encoders in a control task, but only as a reg-
+ularizer for learning representations, not to make stochastic predictions. Gal et
+al.[11]usesBayesianneuralnetworks,intheformofBayesiandropout,totrack
+uncertainty (due to limited data) in transition dynamics estimation.
+Finally, there is also a line of RL research that uses the transition function
+target to speed-up model-free RL. This idea has been identified as RL with
+‘auxiliary tasks’ [16]. The gradients of the transition function predictions are
+densercomparedtothesparseRLtrainingsignal,andusedtospeed-uptraining
+ofdeepernetworklayerssharedbetweenpolicyandtransitionnetwork.However,
+thisapproachdoesnotlearnstochastictransitions(butcouldbenefitfromit,as
+it improves the learning signal), nor is it used for sample-based planning as in
+model-based RL.
+6 Future Work
+One clear line of future work is to use these transition models to improve agent
+performance, by planning over the model with either a given or learned reward
+function.Depewegetal.[8]alreadyprovidedastudyinthisdirection.Compared
+totheirwork,itwouldespeciallybeinterestingtoapplymoreadaptiveroll-outs
+in the model, like Monte Carlo Tree Search (MCTS). Moreover, it would be
+important to evaluate these methods in high-dimensional RL tasks, e.g. with
+convolutional neural networks on raw pixel data [25]. Another extension is to
+use these models to improve exploration in stochastic domains (e.g. [25,15]).
+An important second challenge, briefly mentioned in the Introduction and
+Section 4.2, is planning under uncertainty. RL initially provides correlated data
+fromalimitedpartofstate-space.Whenplanningoverthismodel,weshouldnot
+extrapolatetoomuch,nortrustourmodeltooearlywithlimiteddata.Planning
+under uncertainty was for example studied by Gal et al. [11] and Houthooft et
+al. [15]. Note that ‘uncertainty’ (due to limited data) is fundamentally different
+from the ‘stochasticity’ (true probabilistic nature of the domain) discussed in
+this paper.
+A third challenge for transition dynamics estimation is memory (partial ob-
+servability),whenthecurrentstatedoesnotprovideallavailableinformationto
+makeanprediction.Proposedsolutionsarerecurrentneuralnetworks(RNN)or
+NeuralTuringMachines(NTM),whichhavebothbeenstudiedinthevariational
+inference context (in [6] and [12], respectively).
+Combining stochasticity, uncertainty and memory in one function approxi-
+mator would be an important integrating step in model-based RL.
+7 Conclusion
+This paper studied multimodal transition function estimation for RL agents,
+with a focus on variational inference with different types of latent variables.
+Our experiments show variational inference is a robust method to discriminate
+deterministic and stochastic elements of the transition function using function
+approximation,clearlyimprovingoverdiscriminativetraining.Weverifiedresults
+onatypicalRLdomainwheretabularlearningwouldbeinfeasible,showingthe
+ability of these models to learn the multimodal transition dynamics online. We
+didnotobserveimportantdistinctioninperformancebetweenthedifferenttypes
+oflatentvariablesstudied.Therefore,forthedomainsizestudiedinthiswork,it
+seems safe to use the standard spherical Gaussian conditional VAE. Our results
+are generally applicable in RL, and help solve a fundamental problem of many
+domains: the complex stochastic behaviour of its transition dynamics. Code to
+reproduce the results in this paper is publicly available at www.github.com/
+tmoer/multimodal_varinf.
+References
+1. Atkeson,C.G.,Moore,A.W.,Schaal,S.:Locallyweightedlearningforcontrol.In:
+Lazy learning, pp. 75–113. Springer (1997)
+2. Bellemare, M., Srinivasan, S., Ostrovski, G., Schaul, T., Saxton, D., Munos, R.:
+Unifyingcount-basedexplorationandintrinsicmotivation.In:AdvancesinNeural
+Information Processing Systems. pp. 1471–1479 (2016)
+3. Brafman, R.I., Tennenholtz, M.: R-max-a general polynomial time algorithm
+for near-optimal reinforcement learning. Journal of Machine Learning Research
+3(Oct), 213–231 (2002)
+4. Burda, Y., Grosse, R., Salakhutdinov, R.: Importance weighted autoencoders.
+arXiv preprint arXiv:1509.00519 (2015)
+5. Chen, X., Kingma, D.P., Salimans, T., Duan, Y., Dhariwal, P., Schulman,
+J., Sutskever, I., Abbeel, P.: Variational Lossy Autoencoder. arXiv preprint
+arXiv:1611.02731 (2016)
+6. Chung, J., Kastner, K., Dinh, L., Goel, K., Courville, A.C., Bengio, Y.: A recur-
+rent latent variable model for sequential data. In: Advances in neural information
+processing systems. pp. 2980–2988 (2015)
+7. Deisenroth, M., Rasmussen, C.E.: PILCO: A model-based and data-efficient ap-
+proach to policy search. In: Proceedings of the 28th International Conference on
+machine learning (ICML-11). pp. 465–472 (2011)
+8. Depeweg, S., Herna´ndez-Lobato, J.M., Doshi-Velez, F., Udluft, S.: Learning and
+policysearchinstochasticdynamicalsystemswithbayesianneuralnetworks.arXiv
+preprint arXiv:1605.07127 (2016)
+9. Dinh,L.,Sohl-Dickstein,J.,Bengio,S.:DensityestimationusingRealNVP.arXiv
+preprint arXiv:1605.08803 (2016)
+10. Finn, C., Levine, S.: Deep visual foresight for planning robot motion. In: IEEE
+International Conference on Robotics and Automation (ICRA) (2017)
+11. Gal,Y.,McAllister,R.T.,Rasmussen,C.E.:ImprovingPILCOwithBayesianNeu-
+ralNetworkDynamicsModels.In:Data-EfficientMachineLearningworkshop.vol.
+951, p. 2016 (2016)
+12. Gemici, M., Hung, C.C., Santoro, A., Wayne, G., Mohamed, S., Rezende, D.J.,
+Amos,D.,Lillicrap,T.:GenerativeTemporalModelswithMemory.arXivpreprint
+arXiv:1702.04649 (2017)
+13. Goodfellow, I.: NIPS 2016 Tutorial: Generative Adversarial Networks. arXiv
+preprint arXiv:1701.00160 (2016)
+14. Hester,T.,Stone,P.:Learningandusingmodels.In:ReinforcementLearning,pp.
+111–141. Springer (2012)
+15. Houthooft,R.,Chen,X.,Duan,Y.,Schulman,J.,DeTurck,F.,Abbeel,P.:VIME:
+Variational information maximizing exploration. In: Advances in Neural Informa-
+tion Processing Systems. pp. 1109–1117 (2016)
+16. Jaderberg, M., Mnih, V., Czarnecki, W.M., Schaul, T., Leibo, J.Z., Silver, D.,
+Kavukcuoglu,K.:Reinforcementlearningwithunsupervisedauxiliarytasks.arXiv
+preprint arXiv:1611.05397 (2016)
+17. Jang,E.,Gu,S.,Poole,B.:CategoricalReparameterizationwithGumbel-Softmax.
+arXiv preprint arXiv:1611.01144 (2016)
+18. Kingma, D.P., Salimans, T., Jozefowicz, R., Chen, X., Sutskever, I., Welling, M.:
+ImprovedVariationalInferencewithInverseAutoregressiveFlow.In:Advancesin
+Neural Information Processing Systems. pp. 4743–4751 (2016)
+19. Kingma, D.P., Welling, M.: Auto-encoding variational bayes. arXiv preprint
+arXiv:1312.6114 (2013)
+20. Li,L.,Littman,M.L.,Walsh,T.J.,Strehl,A.L.:Knowswhatitknows:aframework
+for self-aware learning. Machine learning 82(3), 399–443 (2011)
+21. Li,Y.,Turner,R.E.:R´enyidivergencevariationalinference.In:AdvancesinNeural
+Information Processing Systems. pp. 1073–1081 (2016)
+22. Maddison, C.J., Mnih, A., Teh, Y.W.: The Concrete Distribution: A Continuous
+RelaxationofDiscreteRandomVariables.arXivpreprintarXiv:1611.00712(2016)
+23. Mnih,A.,Gregor,K.:Neuralvariationalinferenceandlearninginbeliefnetworks.
+arXiv preprint arXiv:1402.0030 (2014)
+24. Mnih, V., Kavukcuoglu, K., Silver, D., Rusu, A.A., Veness, J., Bellemare, M.G.,
+Graves, A., Riedmiller, M., Fidjeland, A.K., Ostrovski, G., et al.: Human-level
+control through deep reinforcement learning. Nature 518(7540), 529–533 (2015)
+25. Oh,J.,Guo,X.,Lee,H.,Lewis,R.L.,Singh,S.:Action-conditionalvideoprediction
+usingdeepnetworksinatarigames.In:AdvancesinNeuralInformationProcessing
+Systems. pp. 2863–2871 (2015)
+26. Oord, A.v.d., Kalchbrenner, N., Vinyals, O., Espeholt, L., Graves, A.,
+Kavukcuoglu, K.: Conditional image generation with PixelCNN decoders. arXiv
+preprint arXiv:1606.05328 (2016)
+27. Rezende, D.J., Mohamed, S.: Variational inference with normalizing flows. arXiv
+preprint arXiv:1505.05770 (2015)
+28. Sohn, K., Lee, H., Yan, X.: Learning structured output representation using deep
+conditionalgenerativemodels.In:AdvancesinNeuralInformationProcessingSys-
+tems. pp. 3483–3491 (2015)
+29. Sønderby,C.K.,Raiko,T.,Maaløe,L.,Sønderby,S.K.,Winther,O.:Laddervaria-
+tional autoencoders. In: Advances in Neural Information Processing Systems. pp.
+3738–3746 (2016)
+30. Stadie, B.C., Levine, S., Abbeel, P.: Incentivizing exploration in reinforcement
+learning with deep predictive models. arXiv preprint arXiv:1507.00814 (2015)
+31. Sutton,R.S.:Dyna,anintegratedarchitectureforlearning,planning,andreacting.
+ACM SIGART Bulletin 2(4), 160–163 (1991)
+32. Walker,J.,Doersch,C.,Gupta,A.,Hebert,M.:AnUncertainFuture:Forecasting
+from Static Images Using Variational Autoencoders. In: European Conference on
+Computer Vision. pp. 835–851. Springer (2016)
+33. Watter, M., Springenberg, J., Boedecker, J., Riedmiller, M.: Embed to control: A
+locally linear latent dynamics model for control from raw images. In: Advances in
+Neural Information Processing Systems. pp. 2746–2754 (2015)
+A Variational Auto-Encoder (VAE) Training Objective
+We can obtain a tighter bound on Equation 2 by using importance sampling
+[4]. We sample M values of z per datapoint, and average over them inside the
+log. Otherwise, the model strongly penalizes for single samples that explain the
+objective poorly. Second, instead of the KL divergence we optimize Renyi α-
+divergences [21]). We use α=0.5 according to the results by Depeweg et al. [8],
+which makes the divergence term become a function of the Hellinger distance
+[21]. The combined objective, known as the variational Renyi (VR) bound [21]
+is:
+1 1 (cid:88) M (cid:20)(cid:18) p(y,zm|x) (cid:19)1−α(cid:21)
+L (y|x)= log (13)
+VR 1−α M q(zm|y,x)
+m=1
+with zm ∼q(·|x,y).
+B Test Set Negative Log-likelihood (NLL) for VAE
+We are interested in the likelihood p(y|x) of a set of test data {x ,y }N . We
+i i i=1
+therefore need to marginalize over z:
+(cid:20) (cid:21)
+p(y|x)=E p(y|z,x) (14)
+z∼p(·|x)
+Oneproblemwiththisestimatoristhatwemayneedmanyempiricalsamples
+from z to get an accurate estimate. As an alternative, we estimate the quantity
+through importance sampling, by sampling from q(·|x ,y ) instead of p(·|x ):
+i i i
+(cid:20) (cid:21)
+p(z|x)
+p(y|x)=E p(y|z,x) (15)
+z∼q(·|x,y) q(z|x,y)
+The empirical estimate of the negative log likelihood (NLL), as reported in
+the results section, then becomes
+−logp(y|x)=− 1 (cid:88) N log (cid:104) 1 (cid:88) M p(y |zm,x ) p(z i m|x i ) (cid:105) (16)
+N M i i i q(zm|x ,y )
+i=1 m=1 i i i
+with zm ∼q(·|x ,y ).
+i i i
+C Training Details
+For all experiments we follow standard train, validation and test set set-up. For
+all domains, we train the VAE target on k =3 importance samples with Renyi-
+α divergence for α = 0.5 (see appendix A). This gave us slightly better results
+compared to the ‘default’ settings of k =1 and α=1.0. All models are trained
+in Tensorflow using Adam optimizer.
+Toy Domain: We draw a training set of size 2000, and independent valida-
+tion and test sets of size 500 and 2000, respectively. The decoder distribution is
+Gaussian,wherewealsolearnitsstandarddeviation.Wetrainfor30000batches
+with batch size 64, with a learning rate linearly annealed from 0.005 to 0.0005
+over 90% of training steps. The minimal KL penalty per dimension λ (Eq. 12)
+is fixed at 0.07.
+The generative network has three layers with 50 units per layer and Relu
+non-linearities.Theinferencenetworkhastwolayerswith30unitsperlayerand
+Relunon-linearities.Forthediscretelatentvariables,weannealthetemperature
+from 2.0 to 0.001 over 70% of training steps.
+Gridworld:Forthefirsttask,werepeatedlydrawtrainingdatabysampling
+anewstate-actioncombinationuniformlyacrossstate-space,andsamplingasin-
+gle transition. Optimal model performance is based on a VAE performance on a
+validation and test set of size 750 and 1500 respectively. The decoder distribu-
+tion is discrete takingvalues in 7categories.We train on mini-batches of size 32
+for75000iterations,withalearningratelinearlyannealedfrom0.0005to0.0001
+over 70% of training steps. The generative network has three layers with 250
+units per layer and Relu non-linearities. The inference network has two layers
+with 100 units per layer and Relu non-linearities. The minimal KL penalty per
+dimension λ (Eq. 12) is fixed at 0.07.
+Fortheon-policyevaluation,theRLpolicyistrainedasadeepQ-network[24]
+with target network and no experience replay. The state-action value network
+has three layers of 50 units and Relu activations. Given a mini-batch M of roll-
+outdataunderthecurrentpolicy,thenetworkistrainedonthe1stepQ-learning
+objective:
+(cid:20)(cid:18) (cid:19)2(cid:21)
+L (η)=E r+γmaxQ(s(cid:48),a(cid:48);η−)−Q(s,a;η) (17)
+RL (s,a,r,s(cid:48))∼M
+a(cid:48)
+where s,a,r denote state, action and reward, Q(s,a) is the expected dis-
+counted return (discount parameter γ = 0.99) from state s and action a under
+the current policy, η are the parameters in the value function network, and η−
+theparametersinthetargetnetwork(whicharefixedintheaboveloss,andonly
+updated every 500 steps). During learning, we follow an (cid:15)-greedy policy with (cid:15)
+linearly decayed from 1.0 to 0.10 over 60% of training steps.

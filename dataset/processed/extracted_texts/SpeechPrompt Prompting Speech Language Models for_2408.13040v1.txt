@@ -1,0 +1,1082 @@
+1
+SpeechPrompt: Prompting Speech Language Models
+for Speech Processing Tasks
+Kai-Wei Chang, Haibin Wu, Yu-Kai Wang, Yuan-Kuei Wu, Hua Shen, Wei-Cheng Tseng, Iu-thing Kang,
+Shang-Wen Li, Hung-yi Lee
+Abstract—Prompting has become a practical method for uti-
+Task A loss Task B loss Task C loss
+lizing pre-trained language models (LMs). This approach offers
+several advantages. It allows an LM to adapt to new tasks
+with minimal training and parameter updates, thus achieving
+efficiencyinbothstorageandcomputation.Additionally,prompt- Expert Expert Expert
+Downstream Model A Downstream Model B Downstream Model C
+ing modifies only the LM’s inputs and harnesses the generative
+capabilities of language models to address various downstream
+tasksinaunifiedmanner.Thissignificantlyreducestheneedfor
+Speech Speech Speech
+humanlaborindesigningtask-specificmodels.Theseadvantages Representation Model Representation Model Representation Model
+become even more evident as the number of tasks served by
+the LM scales up. Motivated by the strengths of prompting, we
+are the first to explore the potential of prompting speech LMs
+in the domain of speech processing. Recently, there has been
+a growing interest in converting speech into discrete units for Pre-train, fine-tune paradigm
+languagemodeling.Ourpioneerresearchdemonstratesthatthese
+Prompting paradigm
+quantized speech units are highly versatile within our unified Cross-entropy loss
+prompting framework. Not only can they serve as class labels,
+but they also contain rich phonetic information that can be re-
+synthesizedbackintospeechsignalsforspeechgenerationtasks.
+Specifically, we reformulate speech processing tasks into speech- Speech
+to-unitgenerationtasks.Asaresult,wecanseamlesslyintegrate Language Model
+tasks such as speech classification, sequence generation, and
+speechgenerationwithinasingle,unifiedpromptingframework.
+The experiment results show that the prompting method can
+achieve competitive performance compared to the strong fine- Task A
+tuning method based on self-supervised learning models with a Prompt
+similarnumberoftrainableparameters.Thepromptingmethod
+also shows promising results in the few-shot setting. Moreover,
+with the advanced speech LMs coming into the stage, the
+proposed prompting framework attains great potential. Fig.1. Comparisonofthe“pre-train,fine-tune”paradigmwiththeprompting
+paradigm.The“pre-train,fine-tune”paradigminvolvesdesigningtask-specific
+Index Terms—Prompting, speech language model, self- downstream models and loss functions by human experts, with distinct
+supervised learning, representation learning models trained for each task. In contrast, the prompting paradigm handles
+all downstream tasks in a unified manner, where only the prompt varies for
+eachtask,whilethelanguagemodelremainsfixed.
+I. INTRODUCTION
+Recently, self-supervised representation learning has be- in Fig. 1, requires delicately designing a task-specific down-
+come an essential component in the speech processing streammodelandlossfunctionforeachtask.Thiscomplexity
+field[1].Thespeechrepresentationmodelistrainedonalarge- significantly causes an increasing burden of human labor.
+scale unlabeled corpus in a self-supervised learning (SSL) Furthermore, the requirement to train the expert downstream
+manner. The learned representation has been demonstrated model alongside the optionally fine-tuned speech represen-
+to be informative and can benefit a wide range of speech tation model leads to substantial computational and storage
+processing tasks [2]–[4]. demands. This is especially challenging as the number of
+When leveraging these speech representation models for a downstream tasks grows due to the necessity to store separate
+downstreamtaskofinterest,atypicalapproachistofollowthe model parameters for each task.
+“pre-train,fine-tune”paradigm[1],[5].Underthisparadigm, On the otherhand, researchers have exploredthe “prompt-
+the representation models serve as feature extractors. The ing paradigm” [5] as an alternative method to leverage pre-
+models encode speech into informative representations, which trained language models (LMs) to solve downstream tasks in
+are subsequently fed into a task-specific model. This model, an efficient manner. Originating from the Natural Language
+referred to as the expert downstream model, specializes in Processing (NLP) field, prompting refers to the technique
+solving a specific speech processing task. While fine-tuning that finds a task-specific template or instruction, which is
+often yields optimal performance, this paradigm, as depicted called prompt, to steer a pre-trained LM without modifying
+4202
+guA
+32
+]SA.ssee[
+1v04031.8042:viXra
+2
+TABLEI In the table, we also compare the task-specific perfor-
+COMPARATIVEANALYSISOFPROMPTINGAND“PRE-TRAIN,FINE-TUNE” mance and low-resource performance. The “pre-train, fine-
+PARADIGMSACROSSVARIOUSCRITERIA.SYMBOLSUSED:✓INDICATESA
+tune” paradigm delicately performs expert model and ob-
+RELATIVEADVANTAGE.△DENOTESCOMPARABLEPERFORMANCE.×
+INDICATESNOSIGNIFICANTADVANTAGE. jective engineering. Therefore, it usually shows advantages
+when one wants to achieve better performance for a specific
+Criterion Prompting Pre-trainFine-tune downstream task. On the other hand, prompting utilizes the
+ObjectiveEngineering × ✓ prior knowledge of the LM, therefore usually achieving better
+ExpertModelEngineering × ✓
+performance in low-resource settings, such as the few-shot
+Task-SpecificPerformance △ ✓
+Low-resourcePerformance ✓ △ learning scenario.
+StorageEfficiency ✓ × This paper focuses on prompting the textless speech lan-
+ComputationEfficiency ✓ ×
+guage models [18]–[20]. These models are a class of gen-
+DeploymentEfficiency ✓ ×
+erative LMs that are trained on discrete speech units ob-
+tained by quantizing the SSL speech representations [21].
+its architecture and parameters. For each specific task, these Discrete speech units have gained researchers’ attention be-
+templates can be hand-crafted or identified through a search cause they offer several advantages: (1) Discrete units require
+processandarecomposedofthemodel’svocabulary,knownas less storage space and transmission bitrate compared to raw
+hardprompts[6],[7].Forinstance,insentimentclassification, waveforms [22]. (2) Discrete units contain essential acoustic
+an input sentence ⟨S⟩ can be fit into a template: “⟨S⟩. It was and linguistic information while minimizing speaker-specific
+.” and then fed into a pre-trained LM. The LM’s output information [21], which is useful for scenarios where privacy
+(e.g., “great”, “terrible”) is then transformed into sentiment is a major concern [22], [23]. Mirroring the text LMs in the
+classes (positive, negative) by a verbalizer [8], [9], which is NLP field, these textless speech LMs adopt discrete units
+often a hand-crafted or a searched mapping function [10], as their vocabulary and undergo pre-training through tasks
+enabling us to determine the sentiment of ⟨S⟩. Alternatively, like next token prediction [24] and the denoising sequence-
+promptsarenotnecessarilytobehuman-readable.Researchers to-sequence [25] task. Thanks to these speech LMs, several
+haveproposedapromptingmethodknownasprompttuning, works have demonstrated promising results in challenging
+which involves learning continuous prompts [5], [11]–[14] speech processing tasks, including speech continuation [18]
+within the model’s embedding space. These prompt vectors, and speech-to-speech translation [20]— tasks that are hard to
+also called soft prompts, are trainable and have shown to be achieve with the traditional “pre-train, fine-tune” paradigm.
+effective and efficient for leveraging pre-trained models, with The textless property is particularly compelling since many
+applications extending beyond the NLP field. For example, languages worldwide lack substantial text resources [26].
+prompt tuning has been applied to computer vision [15] and These languages may either have no written form or lack a
+speech processing [16]. standardizedwrittenformat.Bydirectlymodelingthephonetic
+Thepromptingparadigmpresentsmultipleadvantagescom- and acoustic patterns, we can not only bypass the constraints
+pared to the traditional “pre-train, fine-tune” paradigm: and potential biases of written languages but also reduce the
+(1) Training Efficiency: Only prompt vectors require up- need for paired speech-text data, which is often costly to get.
+dating, offering better computational efficiency than the full Furthermore, the ability of these discrete units to encap-
+model and downstream head training in the typical fine- sulate both acoustic and linguistic [18], [21] information
+tuning paradigm. Moreover, reformulating downstream tasks without text supervision has opened up new opportunities for
+into a unified sequence generation task eliminates the need prompting the speech LM for a variety of speech processing
+for Expert Model Engineering (i.e., designing specialized tasks. Leveraging the unique characteristic of discrete units,
+downstream models for each task) and Objective Engineering we reformulate (1) speech classification tasks (speech to
+(i.e., designing loss functions for each downstream task). class label), (2) sequence generation tasks (speech to label
+(2)InferenceUniformity:Withprompting,theLMremains sequence), and (3) speech generation tasks (speech to speech)
+fixed, enabling a uniform forward process for diverse tasks. intoaunifiedspeech-to-unitgenerationtask.Inthemeantime,
+Thetaskspecificityisdrivenbytheinputprompts,facilitating we propose utilizing a learnable verbalizer specifically for
+in-batchtasking[11],[14],theconcurrenthandlingofmultiple addressingspeechclassificationandsequencegenerationtasks.
+tasks within a single batch. Despiteitssimplicityasalineartransformation,thisverbalizer
+(3)DeploymentScalability:Recently,languagemodelsare can effectively utilize the information encapsulated in the dis-
+increasingly deployed as services. The low computational and creteunits,bridgingthatrichinformationwiththedownstream
+storage demands of prompting offer significant advantages. labels. The experiment results show that with the proposed
+This is because the LM does not require retraining when method, the speech LM can solve speech classification tasks
+serving a user’s own dataset and task; instead, only task- and sequence generation tasks with competitive performance
+specific prompts containing a small set of parameters need compared to the “pre-train, fine-tune” paradigm. Also, thanks
+to be identified. As the number of tasks or users grows, to the generative capability of the speech LMs, the proposed
+the scalability and efficiency of prompting become even methodcanalsodeliverpromisingresultsonspeechgeneration
+more beneficial [17]. The advantages of both the prompting tasks, which are challenging for the fine-tuning paradigm. All
+paradigmandthe“pre-train,fine-tune”paradigmareillustrated the tasks are solved in a unified pipeline and with promising
+in Table I. trainable parameter efficiency.
+3
+The advantages of the proposed unified prompt framework
+are as follows: (1). We are pioneers in introducing prompt
+46 28 17 13
+engineering to the speech domain. Our proposed method Unit
+achieves results comparable to the fine-tuning approach based Deduplicate Language Model
+onself-supervisedlearning.(2).Comparedwiththe“pre-train, 46 46 28 28 17 13
+fine-tune” paradigm, our unified framework is adaptable to
+a wide range of speech tasks and eliminates the need for Quantizer 31 89 67 43 21 11
+designingtask-specificdownstreammodelsandlossfunctions.
+Thisapproachnotonlysavesconsiderableeffortbutalsopaves
+the way for a universal speech model. (3). The learnable SSL Representation Model Unit-to-Speech
+verbalizer boasts commendable explainability and adeptly uti- Decoder
+Speech-to-Unit Encoder
+lizes the semantic information within the discrete units. This
+capacity allows for an effective linkage of that information
+with the labels associated with various downstream tasks.
+(4). The evolution from GSLM [18] to Unit mBART [20]
+has significantly enhanced the performance of our prompt
+Fig. 2. The textless speech LM. It consists of three components, including
+framework. With more advanced speech LMs coming into the
+(1)Thespeech-to-unitencoder,(2)theunitlanguagemodel,and(3)theunit-
+stage,weanticipatethesedevelopmentswillelevateourmeth- to-speechdecoder.
+ods to unprecedented levels of success. (5). Imagine a near
+future where speech language models are offered in the cloud TABLEII
+servers by major companies and widely adopted by numerous DATASIZEFORDIFFERENTFORMATSOFT-SECONDSPEECH.
+smaller businesses. In this scenario, our prompt framework
+Dataformat Datasize(bits) Sizeratio
+utilizesdiscreteunits,whichsavestoragespace,speedupdata
+Rawwaveform 16×16000×T 1
+transmission, and potentially improve privacy. For example,
+SSLrepresentation 32×1024×50×T 6.4
+discrete speech units have demonstrated a tendency to reduce HuBERTunits(100clusters) 7×50×T 1×10−3
+speaker (timbre) information [21]. Therefore, employing dis- HuBERTunits(1,000clusters) 10×50×T 2×10−3
+crete speech units can potentially mitigate privacy concerns
+compared to transmitting raw speech 1.
+HuBERT representation with a dimension of 768 and a frame
+II. RELATEDWORKS rate of 50 per second results in 6.4 times the data size using
+floating-pointvectors(32-bit).Discreteunitswith100clusters
+A. Self-supervised Speech Representation and Discretization
+(approximately 7 bits) and 1,000 clusters (approximately 10
+The exploration of speech representations through Self- bits) offer even more efficient speech data formats.
+Supervised Learning (SSL) objectives has evolved into a
+crucialresearchtopicwithinthespeechresearchareainrecent
+years. By utilizing different SSL pre-training tasks, the repre- B. Textless Speech Language Models
+sentation models can mainly be grouped into three categories: TextlessspeechLMsregarddiscretespeechunitsaspseudo-
+predictivemodels[29],[30],contrastivemodels[31]–[33],and text and adopt them as LM’s vocabulary. Leveraging these
+generativemodels[34]–[36].ToleverageSSLrepresentations, discrete units, speech LMs are trained to perform language
+a common way is to build specialized downstream models on modeling tasks that mirror those in the NLP field.
+top of SSL representations and fine-tune the entire model or As shown in Fig. 2, in the textless speech language model,
+onlythedownstreammodelsforsuperviseddownstreamtasks. there are three components: (1) speech-to-unit encoder, (2)
+Based on this, SUPERB [2] benchmarks SSL speech models unit language model, and (3) unit-to-speech decoder. Speech-
+with a wide variety of downstream tasks. to-unitencodercomprisesanSSLrepresentationmodel,such
+Although using continuous SSL representations as features as HuBERT [29], paired with a quantizer, like K-means.
+for downstream tasks can yield stronger performance [37], The continuous representation extracted by the SSL model
+there’s a growing trend of adopting discrete speech units is clustered into discrete units. These discrete units have
+derived by quantizing the SSL representations [22], [38]. A showntoencapsulaterichphoneticandlinguisticinformation,
+common approach involves applying the K-means algorithm thereby effectively representing speech [18], [21]. In conven-
+totheSSLrepresentations,quantizingthemintoclusters.Dis- tional speech language models, these discrete units undergo
+creteunitssignificantlyreducestoragespaceandtransmission a deduplication process, which removes consecutive repeated
+bandwidthcomparedtorawwaveformsandSSLfeatures[22], unitstoformamorecompactsequenceoftokensforlanguage
+[37].Forinstance,asdiscussedin [22]andshowninTableII, modeling. The unit language model is an LM that performs
+a T-second 16kHz waveform in 16-bit format requires 16 × generative language modeling based on the discrete units. For
+16,000 × T bits for storage and transmission. In contrast, instance, in GSLM [18], the unit language model conducts
+the next-token-prediction task akin to GPTs [24], [39]. Unit
+1Theextentofspeakerinformationremovaldependsonthecontext.Recent
+mBART performs the denoising sequence reconstruction task
+studies[27],[28]showthatwhenthenumberofdiscreteunitsincreases,the
+retentionofspeakerinformationmaybecomemorenoticeable. similar to the BART model [25]. The unit-to-speech decoder
+4
+Speech Classification Sequence Generation Speech Generation TABLEIII
+NOTATIONTABLE
+[Active] [Lights] [Bedroom] This is a book.
+Symbol Description
+Sec. III-D
+u Unitintheunitsequence
+Verbalizer Verbalizer Speech Decoder ux Discretizedspeech,sourceunitsequence
+(Optionally learnable) (Optionally learnable) (off-the-shelf) uy Generatedtargetunitsequence
+C Context,includingtheinputdiscretizedspeech,sequenceof
+37 65 38 28 98 eos speech-to-unit generation unitsbeforethecurrentunitandthetaskprompts
+Sec. III-C
+ztj Logitforj-thunitattimestept
+Sec. III-B
+P(uj|Ct) Probabilityofunituj attimesteptgivencontextCt
+Unit Language Model Sec. III-A E Encoderinencoder-decoderunitLM
+D Decoderindecoder-onlyorencoder-decoderunitLM
+46 29 117 24 67 13 e(u) UnitLM’svocabularyembeddingvectorforaunitu
+IC ASR ST V Vocabularyset{u1,u2,...,u |V| }
+Quantizer g(i) Hiddenrepresentationinputtothei-thlayerofencoder
+PR SF SC h(i) Hiddenrepresentationinputtothei-thlayerofdecoder
+SSL Speech Model
+T Sequencelengthofencoder’shiddenrepresentation
+Downstream T′ Sequencelengthofdecoder’shiddenrepresentation
+Tasks Prompt
+p Trainablepromptsequence[p1,...p
+l
+]withpromptlengthl
+y Downstreamlabelsequence[y1,...y T′]
+|Y| Numberofclassesinthedownstreamtask
+Fig.3. Anoverviewoftheproposedframework,wherealldownstreamtasks
+aretreatedasspeech-to-unitgenerationprocesses.Thegenerationofunitsis papertobridgethegapbetweendiscreteunitsanddownstream
+directed by the task-specific prompts that guide the unit language model. A
+task labels, enhancing both explainability and performance.
+verbalizerorspeechdecoderthenbridgesthegapbetweenthegeneratedunits
+andthecorrespondingdownstreamlabels. WavPrompt[45]isalsoapioneerinstudyingtheprompting
+paradigm in speech processing. WavPrompt consists of a text
+LM, GPT-2 [39], and an audio encoder, wav2vec 2.0 [32].
+is responsible for transforming the generated discrete unit se- The text LM is prompted with audio embeddings and text
+quences back into continuous speech signals. The architecture questions to perform few-shot speech understanding tasks. In
+is akin to the conventional speech synthesis models [40], [41] contrast to SpeechPrompt, which uses textless speech LM for
+that train on the unit sequence and speech signal. various speech processing tasks, WavPrompt employs a text
+In addition to GSLM and Unit mBART, there are other LM and performs limited speech understanding tasks.
+notable speech language models such as AudioLM [42], On the other hand, the work [46] studies hand-crafted
+TWIST [43], and SPECTRON [44]. These models bring promptsforaspeechrecognitionmodel,Whisper[47],forvar-
+additionalcomplexityandadvancementstothefield;however, ious speech recognition tasks. The backbone model, Whisper,
+theyarenotcurrentlyfullyopen-sourced.Asthedevelopment istrainedusinglarge-scalespeech-textpaireddata.Incontrast,
+of speech LMs continues to evolve, there is significant po- ourworkpromptsatextlessspeechLM,andwenotonlyfocus
+tential for our framework to be expanded and utilized more onspeechrecognition,atypeofsequencegenerationtask,but
+extensively in future research and applications. also explore speech generation tasks.
+Anotherbranchofutilizingapre-trainedmodel’scapability
+fordifferenttasksismodelreprogramming[48],[49].In[50],
+C. Prompting and Reprogramming in Speech Processing
+[51],theinputdata(targetdomain)arefirsttransformedwitha
+Thisjournalpaperisanextensionofourpreviouswork[16], task-specific function to become the reprogrammed data. The
+where we explored the concept of prompting on speech LM, pre-trainedacousticmodelisthencapableofgeneratinglabels
+particularly GSLM. Previous work [16] showed promising for this reprogrammed data. These labels (source domain)
+results in speech classification tasks such as spoken com- are then mapped to the classes of downstream tasks (target
+mand recognition and intent classification and demonstrated domain)byamappingfunction.Thismappingfunctionserves
+better parameter efficiency compared to the “pre-train, fine- the same role as the verbalizer in the prompting method and
+tune” paradigm. However, despite achieving notable results is usually a random mapping in the reprogramming literature.
+in sequence generation tasks like ASR and slot filling, its We also adopt the idea of reprogramming a foundation model
+performance still lags behind the fine-tuning method. In this for solving various tasks. For example, in speech classifica-
+paper,wefurtherexploreanadvancedencoder-decoderspeech tion tasks and sequence generation tasks, the speech LM is
+LM,UnitmBART,acrossabroaderrangeofspeechprocessing prompted/reprogrammed to adapt to the distribution of the
+tasks. This includes a more diverse set of speech classifica- target domain (the class label and the transcription).
+tion tasks, as well as speech generation tasks. The results
+are more promising: (1) Prompting Unit mBART achieves
+III. METHOD
+competitive performance in sequence generation tasks and (2) The overview of the proposed framework is depicted in
+Prompting Unit mBART is well-suited for speech generation Fig. 3. The input speech waveform is encoded into a se-
+tasks, thereby establishing a unified prompting framework for quence of discrete units using an SSL speech model and a
+various speech processing tasks. Additionally, compared to quantizer. The unit LM (Section III-A) then takes this unit
+our previous work, we introduce a learnable verbalizer in this sequence and performs conditional generation based on the
+5
+C A T [UP]
+verbalizer verbalizer
+Attention Module
+65 28 98 eos 65 eos
+Encoder Decoder Decoder
+(Transformer encoders) (Transformer decoders) (Transformer decoders)
+g h h
+pI Embedding Table e pI Embedding Table e pI Embedding Table e
+pK 37 12 28 98 bos 65 28 98 37 12 28 98 sep 65
+pV
+Discretized speech (Autoregressive generation) Discretized speech
+(a) Prompts at the input of the Transformer layer (b) Prompting Encoder-Decoder unit language model (c) Prompting Decoder-only unit language model
+Fig.4. Anoverviewoftheproposedframework,wherealldownstreamtasksaretreatedasspeech-to-unitgenerationprocesses.Thegenerationofunitsis
+directed by the task-specific prompts that guide the unit language model. A verbalizer or speech decoder then bridges the gap between the generated units
+andthecorrespondingdownstreamlabels.
+task-specificprompts.Thedesignoftask-specificpromptswill 1) Encoder-Decoder Unit LM: The encoder-decoder unit
+be illustrated in Section III-B. The prompts steer the unit LM includes the encoder E and decoder D based on Trans-
+LM to solve the downstream speech processing task, which is former.Thediscretizedspeechisfirstprocessedbytheencoder
+reformulatedintoaspeech-to-unitgenerationtaskasdiscussed E to form part of the enriched context that the decoder D
+in Section III-C. The resulting unit sequence is transformed performs cross-attention on to guide the generation of the
+into the downstream task’s target through a verbalizer (for discrete units. The encoder E is composed of multiple layers
+speechclassificationandsequencegenerationtasks)orthrough that process the input unit sequence:
+a pre-trained speech decoder (for speech generation tasks) as
+g(1) =[e(ux),e(ux),...,e(ux)], (2)
+discussed in Section III-D. The notations used in the section 1 2 T
+are listed in Table III. whereT isthesequencelengthande(·):Z(cid:55)→Rd denotesthe
+vocabulary embedding table, which transforms a discrete unit
+A. Unit Language Models u ∈ Z into its corresponding embedding vector e(u) ∈ Rd,
+and d is the embedding dimension. In the encoder, the i-th
+This subsection explains the backbone unit language model
+layerreceiveshiddenrepresentationg(i) =[g(i),g(i),...,g(i)]
+inourpromptframework.AsshowninFig.4,theseunitLMs 1 2 T
+as input and outputs g(i+1). The decoder layers operate
+receive discretized speech units sequence ux and trainable
+similarly, with each taking input h(i) = [h(i),h(i),...,h(i)],
+prompts p as inputs, subsequently using them to generate 1 2 T′
+target unit sequence uy for downstream speech processing andoutputsh(i+1),whereT′ representsthedecodersequence
+length, which increases incrementally during the autoregres-
+tasks.
+sive process.
+Without loss of generality, in this paper, we investigate
+2) Decoder-only Unit LM: In the decoder-only LM, the
+twovariantsofwidely-adoptedunitLMsbasedonTransform-
+model lacks the encoder and relies solely on the decoder
+ers [52]: (1) The decoder-only unit LM that mimics the GPT
+D, which functions in an analogous fashion to the encoder-
+architecture [24], and (2) The encoder-decoder unit LM that
+decodersetupbutwithouttheencoder’sguidance.Withoutthe
+mirrorstheBARTlanguagemodel[25].Bothmodeltypesem-
+encoder, the discretized source speech ux is integrated at the
+ploy a causal decoder and are characterized as autoregressive
+beginning of the sequence, serving as the initial context for
+LMs, enabling the capability to generate outputs of varying
+lengths. Specifically, the probability of each unit uy ∈ uy thedecodertopredictthesubsequentunits.Aseparationtoken
+t ⟨sep⟩ is inserted in between the source unit sequence ux and
+generatedbythemodelatthetimesteptisconditionedonthe
+the generated units uy. Therefore, for each timestep t in the
+preceding context, denoted by C . The context C includes
+t t
+the input discretized source speech ux, the task prompts p, autoregressive process, the input to the decoder D is:
+and the units uy generated preceding the timestep t in the
+autoregressive p < ro t cess. Formally, the autoregressive model h(1) =[e(ux),e(⟨sep⟩),e(uy 1 ),...,e(uy <t )]. (3)
+generates the probability of a unit u within a vocabulary
+j
+V = {u 1 ,u 2 ,...,u |V| } at timestep t given the context C t B. Prompt Tuning
+as:
+As depicted in Fig. 3, the speech LM is capable of per-
+eztj forming predefined speech tasks when provided with various
+P(u |C )= , (1)
+j t (cid:80)|V| eztk types of prompts. In this subsection, we will elaborate on the
+k=1 process of prompt design.
+wherez ∈R|V|×1 isthelogitforthej-thunitattimestep Prompting employs task-specific templates, known as
+tj
+t, and the denominator is the sum of exponentiated logits for prompts,tosteerthegenerationprocessoftheLM.Thistech-
+all units at that timestep. niqueinvolvesfreezingtheLM’sparameterswhileintegrating
+6
+prompts as part of the input. Our method, inspired by the [uy,...,uy ,⟨eos⟩]. Each unit uy represents a discrete token
+1 T′ t
+prompt tuning approaches [12], [14], is implemented in two corresponding to the character y in the target character se-
+t
+positions:(1)attheinputoftheunitLM,termedinputprompt quencey =[y ,...,y ].Themappingfromunitstocharacters
+1 T′
+tuning, and (2) at the input of each Transformer layer, termed is facilitated by the verbalizer, detailed in Section III-D. For
+deep prompt tuning. speech classification tasks like spoken command recognition
+1) Input Prompt Tuning: Inspired by the method in [14], (SCR), which involve single-label classification, the model’s
+input prompt tuning prepends continuous prompt vectors at goal is to classify an utterance into a predefined category.
+the LM’s input. Specifically, the prompts are prepended at the Instead of directly predicting a label y , it generates a unit
+1
+embedding sequence of the first layer’s input h(1) (and g(1) sequence uy = [uy,⟨eos⟩], where uy will be transformed
+1 1
+for Encodoer-Decoder model): into the label y . In speech generation tasks, the generated
+1
+unit sequence can be synthesized back into the target speech
+h(1) ←Concat(pI,h(1)), (4)
+signal using an off-the-shelf unit-to-speech decoder. Notably,
+g(1) ←Concat(pI,g(1)), (5) theautoregressivenatureofspeechLMsallowsthemtohandle
+where pI = [pI,pI,...,pI] represents a series of prompt varying label lengths across different tasks, thus enabling a
+vectors p∈Rd a 1 t th 2 e input l of the unit LM, with l indicating unified framework.
+the prompt length.
+2) Deep Prompt Tuning: Inspired by prefix-tuning [12], D. Verbalizer and Speech Decoder
+deep prompt tuning involves concatenating prompt vectors at Within the prompting paradigm, the verbalizer [8], [9] v(·)
+theinputoftheTransformerlayer.Specifically,itmodifiesthe is a label-mapping module, which establishes the connection
+inputoftheattentionmodulestoguidetheforwardprocessof between the downstream task labels and the LM’s vocabu-
+the LM. The self-attention module at the beginning of each lary. For speech LM, the vocabulary is the discrete units.
+transformer layer takes the Query (Q), Key (K), and Value The verbalizer can adopt various forms, including random
+(V) as input: mapping [51], [53], [54] and heuristic methods [16], we refer
+(cid:18) QKT(cid:19) to this as “fixed verbalizer” since the mapping is pre-defined
+Attn(Q,K,V)=softmax √ V, (6) and does not include updates. On the other hand, to generate
+d
+√ k speech signal, a speech decoder is employed to synthesize
+where d k , the square root of the dimensionality of the key waveform from discrete unit sequence 2.
+vectors, scales the dot product to ensure normalization of the 1) FixedVerbalizer: Thefixedverbalizerestablishesastatic
+attention weights by the softmax function. For self-attention, mappingbetweenthedownstreamtasklabelandauniqueunit.
+the matrices Q, K, and V are projections of the same input g For example, in the ASR task, it might map the character
+or h transformed by the weight matrices W Q , W K , and W V , “a” to “unit 28” and “b” to “unit 72.” In spoken command
+respectively. Trainable prompt vectors are prepended to the recognition(SCR),itcouldmapthecommand“[UP]”to“unit
+input of each transformer layer, affecting both Key (K) and 65,” following either a random mapping or a frequency-based
+Value (V) matrices in the attention mechanism: approach [16]. Once established, this mapping remains static
+K ←Concat(pK,h)W , (7) withoutfurtherlearningoradaptation.Inpractice,withafixed
+K
+verbalizer,themostprobableunitateachtimesteptisselected
+V ←Concat(pV,h)W , (8)
+V and directly converted to the downstream task’s label y .
+t
+where pK = [pK,pK,...,pK] and pV = [pV,pV,...,pV] 2) SpeechDecoder: Forspeechgenerationtasks,wherethe
+1 2 l 1 2 l
+are series of trainable prompt vectors for key and value, targetoutputisaspeechsignalratherthanasequenceoflabels,
+respectively, and has the same prompt length l as pI. the discrete units can be synthesized back into speech signals
+Similar adjustments are applied to the encoder’s represen- using a pre-trained, off-the-shelf unit-to-speech decoder. This
+tationg forencoder-decoderunitLM.Itiscrucialtonotethat speech decoder is self-supervised and trained with pairs of
+throughouttheprompttuningprocess,onlythepromptvectors discrete units and their corresponding speech. In this work,
+are trainable. The embedding table and the unit LM remain we employ a speech decoder that corresponds to the given
+fixed. unit LM, as illustrated in Fig. 2.
+C. Speech-to-Unit Generation E. Learnable Verbalizer
+In this paper, we focus on leveraging the generative ca- Fixed verbalizers can lead to subpar performance in speech
+pabilities of autoregressive speech LMs to handle various processingtasksbecause,unlikethedistinctsemanticmeaning
+downstream tasks. Specifically, we recast speech processing present in NLP vocabulary, the vocabulary of discrete speech
+tasks,includingspeechclassification,sequencegeneration,and units lacks clear semantic meanings. To address this, we
+speech generation, into a unified speech-to-unit generation
+2While the term “verbalizer” is usually associated with the concept of
+task. In this approach, speech LM takes discretized speech as
+“speaking”, we use it here to refer to the label-mapping module in line
+inputandgeneratesasequenceofdiscreteunitscorresponding withthepromptingparadigminNLP[9],[10],[55].Theverbalizerconnects
+to the intended output for the task at hand. the LM’s output (discrete tokens or probability distributions) to the labels
+ofdownstreamtasks,facilitatingtask-orientedresponses.Ontheotherhand,
+In sequence generation tasks, like automatic speech recog-
+the “speech decoder” is responsible for transforming the LM’s outputs into
+nition (ASR), the model generates a unit sequence uy = audiblespeech.
+7
+C A T eos TABLEIV
+C A T eos
+THEDOWNSTREAMTASKSPERFORMEDINTHISPAPER,INCLUDING
+Linear Transformation SPEECHCLASSIFICATION,SEQUENCEGENERATION,ANDSPEECH
+Learnable Verbalizer GENERATIONTASKS.LANGUAGEABBREVIATIONSAREINISO639-1
+... ... ... ... FORMAT.N CLASS :NUMBEROFCLASSESFOREACHDOWNSTREAMTASK.
+|ux|:AVERAGEDISCRETEUNITLENGTHOFTHEUTTERANCE.|u
+de
+|:
+AVERAGEDEDUPLICATEDDISCRETEUNITLENGTHOFTHEUTTERANCE.
+Decoder Transformed Embedding Table |y|:AVERAGELABELLENGTH.
+(Transformer decoders) Z
+softmax Task Dataset Language N class |ux| |u de | |y|
+Embedding Table weighted sum SpeechClassification
+GoogleSCv1 en 12 48 25 1
+bos C A T ArabicSC ar 16 41 25 1
+SCR LithuanianSC lt 15 51 28 1
+(Autoregressive generation) Vocabulary (Units) Embedding Table DM-SC zh 19 169 68 1
+GraboSC nl 36 132 71 1
+Fig.5. Illustrationofthelearnableverbalizer.Thelogitsaretransformedinto IC FluentSC en 24 115 61 3
+labelsforthedownstreamtaskthroughalineartransformation.Furthermore, SD Mustard++ en 2 229 128 1
+theoriginalvocabularyembeddingsareconvertedintoclass-specificembed-
+dings using weighted transformations, aligning them more closely with the AcC AccentDB en 9 205 91 1
+downstreamtask. en,es,
+LID Voxforge fr,de, 6 392 231 1
+ru, it
+introduce a learnable verbalizer coupled with a novel input GoogleSCv2/ en/
+VAD 2 31 16 1
+transformation (Fig. 5) that aligns the discrete units with the FreeSound audio
+downstream task labels more meaningfully. In a learnable SequenceGeneration
+verbalizer, the mappings are determined by a learnable linear ASR LibriSpeech en 28 591 355 172
+transformation matrix W ∈ R|Y|×|V|, where |V| is the size
+PR LibriSpeech en 71 591 355 116
+of the original LM’s vocabulary, and |Y| is the number of
+SF AudioSNIPS en 107 142 96 53
+classes in the downstream task. This matrix is applied to the
+logits vector z ∈ R|V|×1 to produce a transformed logits SpeechGeneration
+t
+vector zˆ ∈R|Y|×1 over the downstream task labels: ST CoVoST2 en,es |V| 305 167 120
+t
+SC LJSpeech en,es |V| 328 199 199
+zˆ =W ·z (9)
+t t
+Following this transformation, the label y is sampled from task. The process effectively creates class-specific embed-
+t
+the transformed logits: dings by aggregating the original embeddings, each weighted
+according to the transformed softmax outputs. This method
+y t =argmax P(y|zˆ t ), (10) not only preserves the intrinsic properties of the original
+y
+vocabularyembeddingsbutalsoalignsthemmorecloselywith
+where P(y|zˆ) is the probability of class y given the trans- the target classes of the downstream task, thereby enhancing
+t
+formed logits zˆ at timestep t. the model’s adaptability and effectiveness in handling varied
+t
+To facilitate autoregressive processing and incorporate the speech processing applications.
+predicted downstream tasks’ labels as input to the unit LM, The learnable verbalizer offers improved explainability,
+we propose an input transformation mechanism, which is effectively utilizing the information in the discrete units,
+coupled with the learnable verbalizer matrix W. This mecha- which will be discussed in Sec. V-C. Meanwhile, it preserves
+nism transforms the original vocabulary embeddings into new parameter efficiency in the prompting paradigm. For instance,
+embeddings suitable for the downstream task’s labels. intheASRtaskfeaturing28classesandaUnitmBARTmodel
+Mathematically, the transformed embedding for a given with1,000units,theverbalizernecessitatesfewerthan30,000
+class y, denoted as eˆ(y), is computed as a weighted sum of learnable parameters.
+the original vocabulary embeddings e. Let W denote the
+y:
+y-th row of the matrix W, where the i-th element in W
+IV. EXPERIMENTALSETUP
+y:
+represents the learned weight of the i-th unit contributing to Inthiswork,wecomparethe“pre-train,fine-tune”paradigm
+the class y. W is then input into the softmax function with with the prompting paradigm for speech processing across
+y:
+the temperature parameter τ, transforming the weights into three types of tasks: (1) speech classification tasks, (2) se-
+probabilities. The formula is expressed as: quence generation tasks, and (3) speech generation tasks. The
+useddatasetandthebasicstatisticsarepresentedinTable IV.
+|V| (cid:18) (cid:18) (cid:19)(cid:19)
+eˆ(y)= (cid:88) softmax W τ y: ·e(u i ) (11) A. Tasks and Datasets
+i=1 i 1) Speech Classification Tasks:
+In this formulation, eˆ(y) signifies the newly generated em- Speech Command Recognition (SCR): The task is to rec-
+beddingforclassy,tailoredtothedemandsofthedownstream ognize which keyword is presented in a given utterance. We
+8
+adopted the Google Speech Commands dataset [56] and low- BLEU with sacrebleu 5. We perform Mean Opinion Score
+resource datasets in different languages. These include Grabo (MOS) prediction with TorchAudio-Squim [70] to assess the
+SpeechCommands(Grabo-SC)[57],LithuanianSpeechCom- naturalness of the generated speech 6.
+mands (LT-SC) [58], Dysarthric Mandarin Speech Commands Speech Continuation (SC): SC aims to generate coherent
+(DM-SC) [59], and Arabic Speech Commands (AR-SC) [60]. continuation of a given speech input while preserving the
+Intent Classification (IC): This task classifies utterances into semantic context. In the experiment, we adopt LJSpeech [71],
+predefined classes to determine the intent of speakers. We which contains approximately 24 hours of English speech
+used the Fluent Speech Commands dataset [61], where each from a single speaker. We divided the LJSpeech dataset into
+utterance has three labels: action, object, and location. training, validation, and testing subsets. Within these subsets,
+SarcasmDetection(SD):Thistaskaimstodetermineifanut- we designated each utterance’s initial r fraction as the seed
+teranceissarcastic.WeemployedtheMustard++dataset[62]. segment for the speech continuation tasks. We refer to the
+Accent Classification (AcC): This task involves classifying value of r as the conditional ratio. Given this seed segment,
+accents within the same language. We utilized the AccentDB our model aims to generate a coherent continuation of the
+Dataset[63],whichincludesfourIndian-Englishaccents,four speech.FollowingST,thegeneratedspeechisfirsttranscribed
+native English accents, and one metropolitan Indian-English intotext,afterwhichPerplexity(PPX)7 andAuto-BLEU[18]
+accent. are evaluated. We report MOS prediction results to assess the
+Language Identification (LID): The objective of this task naturalness of the speech and evaluate the speaker similarity
+is to recognize the language present in a given utterance. We (SIM) between the seed segment and the generated speech.
+utilizedtheVoxforgeDataset[64],whichcomprisesutterances SIM is obtained by computing the cosine similarity between
+in six different languages.
+speakerembeddings,derivedfromtheResemblyzerpackage8.
+Voice Activity Detection (VAD): This task is to determine
+whether a segment of an utterance contains human speech or B. Model and Training Setup
+isjustbackgroundnoiseorsilence.FollowingMarbleNet[65], We compare the “pre-train, fine-tune” paradigm with the
+weusedGoogleSpeechCommandsv2[56]asspeechdataand prompting paradigm to assess whether prompting can achieve
+FreeSound dataset [66] as background noise data. We refer to competitive performance while also providing parameter effi-
+this mixed dataset as GFSound. ciency and other associated benefits as discussed in Table. I.
+The evaluation metric for speech classification tasks men- 1) Prompting Paradigm: We explore two types of speech
+tioned above is accuracy. LMswithinthepromptingparadigm:thedecoder-onlyGener-
+2) Sequence Generation Tasks: ative Spoken Language Model (GSLM) [18] and the encoder-
+Automatic Speech Recognition (ASR): The task is to tran- decoder model Unit mBART [20]. GSLM is pre-trained using
+scribe an utterance into text (character sequence). We utilized a next token prediction task on discrete units obtained by
+the LibriSpeech [67] train-clean-100 dataset for training and quantizing the 6-th layer of HuBERT representations into 100
+the test-clean dataset for testing. The evaluation metrics are clusters. The GSLM paper [18] considered different settings,
+word error rate (WER) and character error rate (CER). including various SSL models and cluster numbers. This set-
+PhonemeRecognition(PR):Thetaskinvolvestranscribingan tingisselectedforitssuperiorperformance.GSLMconsistsof
+utterance into a phoneme sequence. We utilized LibriSpeech 12 Transformer-decoder layers, each with 16 attention heads,
+train-clean-100andtest-cleandatasetsfortrainingandtesting. anembeddingsizeof1024,andafeedforwardnetwork(FFN)
+The evaluation metric is phoneme error rate (PER). size of 4096, totaling 150 million parameters. It is pre-trained
+Slot Filling (SF): In the slot filling task, models are expected on HuBERT discrete units derived from a clean 6k-hour sub-
+not only to recognize the spoken content but also to decode sample of the Libri-Light dataset [72]. On the other hand,
+the associated slot type. Specifically, the slot type is decoded Unit mBART is pre-trained on a multilingual denoising task
+in conjunction with the transcription in a sequence generation usingdiscreteunitsderivedfromquantizingthe11-thlayerof
+approach. We adopted AudioSNIPS dataset [68] and the mHuBERT representations into 1,000 clusters. Unit mBART
+evaluationmetricsarecharactererrorrate(CER)andF1score. includes 12 Transformer-encoder layers and 12 Transformer-
+decoder layers, each with an embedding size of 1024, an
+3) Speech Generation Tasks: FFN dimension of 4096, and 16 attention heads, totaling
+Speech Translation (ST): ST is the process of converting 353 million parameters. The embedding tables of the encoder
+speech signals from the source language into speech in the and decoder share the same parameters. Unit mBART is pre-
+target language, enabling communication between individuals trained on mHuBERT discrete units obtained from VoxPopuli
+who speak different languages. We utilize the CoVoST2 [69] with 16k hours for Spanish, 14k hours for English, and Libri-
+Es-En dataset. This dataset comprises parallel text data for Light with 60k hours for English.
+Spanish (Es) and English (En) translations. Following [20],
+we utilize a single-speaker TTS system 3 to synthesize the 5https://github.com/mjpost/sacrebleu
+speechofthetargetlanguage.Weutilizeanoff-the-shelfASR 6TorchAudio-Squimutilizesnon-matchingreference(NMR)forMOSpre-
+system 4 to transcribe the generated speech and calculate the diction.Forassessingeachutterance,werandomlysampleonecleanspeech
+fromtheoriginaldatasetasthereference.
+7Evaluated with a pre-trained LM, “transformer lm.wmt19.en”, available
+3https://huggingface.co/espnet/kan-bayashi ljspeech vits onFairseq.
+4“Wav2vec2 large lv60k”withCTCdecoderavailableonPyTorch 8https://github.com/resemble-ai/Resemblyzer
+9
+TABLEV
+PERFORMANCECOMPARISONONSPEECHCLASSIFICATIONTASKSFORTHE“PRE-TRAIN,FINE-TUNEPARADIGM”(FT)ANDTHE“PROMPTING
+PARADIGM”(PT).THEEVALUATIONMETRICISACCURACY.HuBERT+ExpertANDmHuBERT+Expert:BUILDINGANEXPERTDOWNSTREAM
+MODELONTOPOFTHESSLSPEECHMODELANDFINE-TUNINGTHEEXPERTMODEL.GSLMfixedANDUnitmBARTfixed:PROMPTINGTHESPEECH
+LANGUAGEMODELWITHAFIXEDVERBALIZER.GSLMlearnANDUnitmBARTlearn:PROMPTINGTHESPEECHLMWITHALEARNABLEVERBALIZER.IN
+THEPTSCENARIOS,AROUND0.15MTRAINABLEPARAMETERSAREINCLUDED;WHILEFTADOPTSAROUND0.2MPARAMETERS.
+SpeechClassificationTasks(fulldatasetsetting)
+SCR IC SD AcC LID VAD
+Paradigm Scenario
+Google-SC AR-SC LT-SC DM-SC Grabo-SC FluentSC Mustard++ AccentDB Voxforge GFSound
+FT HuBERT+Expert 94.88 98.38 92.86 52.14 91.44 93.18 61.72 99.53 97.73 98.55
+PT
+GSLMfixed 94.50 99.70 93.20 74.30 92.40 98.76 63.33 78.90 90.90 96.60
+GSLMlearn 94.71 99.19 92.86 74.36 95.76 98.58 65.83 80.02 87.69 97.01
+FT mHuBERT+Expert 93.59 99.46 91.84 64.96 89.92 93.57 60.42 93.78 98.23 98.40
+PT
+UnitmBARTfixed 93.99 96.22 91.84 64.96 97.11 97.81 63.33 88.71 98.81 97.26
+UnitmBARTlearn 94.45 99.73 91.84 77.78 95.07 97.81 63.33 87.38 98.13 97.43
+In our experiments, we set the prompt length l = 5 for derives the discrete units for the expert downstream model.
+GSLM on speech classification tasks and l = 3 for Unit [37] indicates that using the SSL speech representation as
+mBART. In sequence generation tasks, the prompt lengths are input is a strong baseline compared to using discrete units
+l = 180 for GSLM and l = 50 for Unit mBART. For speech as input. Both HuBERT and mHuBERT adopt the HuBERT-
+generation tasks, we adopt a prompt length of l = 200 for base architecture [29], containing 12 Transformer layers with
+Unit mBART and a prompt length of l = 180 for GSLM. 95 million parameters.
+The prompt length is a hyperparameter that can be adjusted For the expert downstream model’s design, we follow SU-
+for different numbers of trainable parameters. Since the ar- PERB[2]andadjustthehiddendimensionofthedownstream
+chitecture of both models is different, the positions in which model to achieve a lightweight expert model to compare with
+the prompts can be inserted differ; notably, Unit mBART has the prompting paradigm. For speech classification tasks, we
+an extra encoder for this purpose. Consequently, we have employ a linear model with a cross-entropy loss function.
+employeddifferentpromptlengthsforthetwomodelswiththe Weutilizea2-layerLSTMwithahiddendimensionof256
+aimofachievingcompetitiveperformancewhilemaintaininga for sequence generation tasks 9, and a 2-layer Transformer
+comparable number of trainable parameters to compare with withanembeddingsizeof512and8attentionheadsforspeech
+the “pre-train, fine-tune” paradigm. Specifically, for GSLM generation tasks. For speech classification tasks, we adopted
+in sequence and speech generation tasks, we used a prompt theAdamoptimizerwithalearningrateof5e-3.Forsequence
+length of 180, which was determined to provide effective generation tasks, we use the Adam optimizer with a learning
+results based on the previous study [16]. Conversely, for Unit rate of 1e-2 for phoneme recognition and 1e-4 for ASR. For
+mBART, we aimed to showcase its parameter efficiency in speech generation tasks, we use the Adam optimizer with a
+speechclassificationandsequencegenerationtasks,aswellas learning rate of 5e-4 for 10 epochs.
+demonstrate feasibility in speech generation tasks. Therefore,
+we adopted specific prompt lengths accordingly.
+V. RESULTS
+We used random mapping for the fixed verbalizer. We
+A. Main Results
+adopt random mapping instead of a heuristic frequency-based
+approach [16] for two reasons: (1) In the preliminary study, 1) Speech Classification Tasks: The comparison of the
+wedonotobservesignificantperformanceimprovementwhen prompting paradigm (PT) and the “pre-train, fine-tune”
+utilizing the heuristic method. (2) In the few-shot learning paradigm (FT) for the speech classification tasks are shown
+scenario, the statistics of the discrete units are inadequate. in Table V. Our results indicate that the prompting method
+For the learnable verbalizer, we set the softmax’s temperature generally delivers competitive performance and often outper-
+τ =0.01 in the input transformation. formsthefine-tuningapproach.Specifically,forHuBERTand
+For prompt tuning in each task, the prompt vectors are GSLM models, prompting outperforms fine-tuning in 6 out
+randomly initialized. We use the Adam optimizer with β of 10 datasets (AR-SC, LT-SC, DM-SC, Grabo-SC, Fluent-
+parameters set to (0.9, 0.98) and a learning rate of 5e-3. SC, and Mustard++). For mHuBERT and mBART, prompting
+An early stopping mechanism is adopted to prevent over- excels in 8 out of 10 datasets, including all datasets under
+fitting. Additionally, the speech LM conducts autoregressive SCR (with LT-SC achieving identical performance), IC, SD,
+generation throughout inference across all tasks. Beam search and LID.
+algorithmwithabeamsizeof5isadoptedduringthesampling Forthefewtasks wherepromptingisslightlyoutperformed
+process. by fine-tuning in HuBERT and GSLM settings (Google-SC,
+and GFSound), the performance gap is minimal, within a
+2) Pre-train, Fine-tune Paradigm: In the “pre-train, fine-
+tune”paradigm,wetrainanexpertdownstreammodelforeach
+9In the SUPERB setting, phoneme recognition utilizes CTC loss and a
+task, utilizing the SSL speech representation as inputs. We
+lineardownstreammodelforframe-wiseprediction.FollowingSUPERB,we
+adopt the same layer of the intermediate representation that alsoemployalinearmodelforthe“pre-train,fine-tune”paradigm.
+10
+TABLEVI
+PERFORMANCECOMPARISONONSEQUENCEGENERATIONTASKSFORTHE“PRE-TRAIN,FINE-TUNEPARADIGM”(FT)ANDTHE“PROMPTING
+PARADIGM”(PT).*:THELEARNABLEVERBALIZERINTRODUCESANEXTRASMALLNUMBEROFPARAMETERS,WHICHISNEGLIGIBLEHERE.
+Sequence Generation Tasks
+ASR-LibriSpeech PR-LibriSpeech SF-AudioSnips
+Paradigm Scenario
+# Params. WER ↓ CER ↓ # Params. PER ↓ # Params. CER ↓ F1 ↑
+FT HuBERT + Expert 2.9M 15.67 4.55 2.6M 5.34 2.9M 40.08 78.53
+PT GSLM 4.5M 34.17 26.14 4.5M 21.10 4.5M 66.90 59.47
+fixed
+FT mHuBERT + Expert 2.9M 14.44 4.43 2.6M 12.42 2.9M 32.24 85.26
+Unit mBART 2.6M 13.85 5.91 2.6M 5.16 2.6M 33.09 87.20
+PT fixed
+Unit mBART 2.6M* 11.56 5.13 2.6M* 4.95 2.6M* 30.69 87.08
+learn
+TABLEVII
+EVALUATIONFORTHESPEECHCONTINUATIONTASK.BOTHGSLMANDUnitmBARTAREINTHEPROMPTINGPARADIGM.ORIGINAL:THEGROUND
+TRUTHCORPUSINTHEDATASET.r:CONDITIONALRATE.ABBREVIATIONS:PPX(PERPLEXITY),AB1(AUTO-BLEU-1),AB2(AUTO-BLEU-2),MOS
+(MEANOPINIONSCORE),SIM(SPEAKERSIMILARITY).
+SpeechGenerationTask(SpeechContinuation)
+r=0.25 r=0.5 r=0.75
+Scenario
+PPX(↓) AB1 AB2 MOS(↑) SIM(↑) PPX(↓) AB1 AB2 MOS(↑) SIM(↑) PPX(↓) AB1 AB2 MOS(↑) SIM(↑)
+GSLM 422.62 21.58 8.80 3.88 0.72 341.30 20.43 7.76 3.87 0.76 282.26 18.57 6.98 3.87 0.78
+UnitmBART 543.80 14.20 1.51 4.45 0.78 420.49 13.84 1.60 4.45 0.85 283.03 14.09 2.41 4.45 0.88
+Original 202.92 13.9 2.42 4.47 0.86 202.92 13.9 2.42 4.47 0.95 202.92 13.9 2.42 4.47 0.98
+TABLEVIII still underperforms compared to the fine-tuning paradigm by
+EVALUATIONONSPANISHTOENGLISHSPEECH-TO-SPEECH a substantial margin. The reasons are discussed in previous
+TRANSLATION.
+work[16],includingthatquantizingspeechintodiscreteunits
+results in longer sequences, which might be difficult for a
+SpeechGenerationTask(SpeechTranslation)
+decoder model to handle. In our preliminary study, even
+Paradigm Scenario BLEU(↑) MOS(↑) #Params.
+FT mHuBERT+Expert × utilizing a learnable verbalizer for prompting GSLM does not
+PT GSLM × show performance improvement.
+PT UnitmBART 15.89 4.32 10M
+On the other hand, surprisingly, prompting an encoder-
+FT UnitmBART 18.47 4.33 353M
+decoder model like Unit mBART can achieve competitive
+performance, outperforming the fine-tuning paradigm in most
+scenarios, except for the metric CER in ASR, which falls
+2%difference.However,fine-tuningdemonstratesanoticeable
+behind by 0.7. Furthermore, we can observe the effectiveness
+advantageintaskslikeAcCandLID.Thiscouldbeattributed
+of introducing a learnable verbalizer in Unit mBART. For
+to the loss of certain information, such as prosody, in the
+every metric other than the F1 score in Slot Filling (SF),
+quantized HuBERT discrete units, leading to inferior GSLM
+there is a substantial improvement when comparing Unit
+performance compared to HuBERT with the downstream
+mBART with Unit mBART . The analysis of the learn-
+expert model. In the mHuBERT and Unit mBART settings, learn fixed
+ableverbalizerwillbediscussedinSectionV-C.FromGSLM
+while fine-tuning outperformed in 2 tasks, the performance
+to Unit mBART, the speech LM becomes better, and tasks
+difference in VAD is marginal (about 1.2%).
+thatpreviouslyyieldedpoorresultswithGSLMcannowyield
+When assessing the effectiveness of utilizing a learnable
+favorable outcomes with Unit mBART. We anticipate that in
+verbalizer compared to a fixed one for prompting, it’s ob-
+the future, with more advanced speech LMs emerging, further
+served that for GSLM, performance is enhanced in 6 out
+performance improvement can be seen with the proposed
+of 10 datasets (Google-SC, DM-SC, Grabo-SC, Mustard++,
+prompting framework.
+AccentDB,andGFSound).ForunitmBART,theperformances 3) Speech Generation Tasks: In speech generation tasks,
+haveimprovedorareonparin7datasets(Google-SC,AR-SC,
+we focus on two tasks: Speech Translation (ST) and Speech
+LT-SC, DM-SC, Fluent-SC, Mustard++, and GFSound).
+Continuation (SC). Our experiments show the effectiveness
+Insummary,thepromptingmethodsgreatlymatchorexceed of prompting Unit mBART for speech translation, as detailed
+the performance of the fine-tuning approach across most in Table VIII. Speech-to-speech translation poses significant
+speech classification tasks (6 outperform and 3 comparable challenges, often requiring incorporating auxiliary tasks [73],
+for HuBERT and GSLM; 8 outperform and 1 comparable for [74]oradoptinganadvancedspeechLM[20].Ourresultsalso
+mHuBERT and unit BART), except in accent classification. supportthisobservation:neitherthepromptingGSLMbaseline
+2) Sequence Generation Tasks: The experiment results of nor the fine-tuning baseline with an expertly built mHuBERT
+sequence generation tasks are shown in Table VI. In sequence model yielded reasonable results. We experimented with var-
+generation tasks, we observe that although prompting the ious learning rates and downstream expert models; however,
+decoder-only model GSLM can yield non-trivial results, it the fine-tuning baseline still yielded unsatisfactory outcomes.
+11
+TABLEIX
+PERFORMANCECOMPARISONONSPEECHCLASSIFICATIONTASKSWITHLOWRESOURCEDATASETSETTING(10-SHOT)FORTHE“PRE-TRAIN,FINE-TUNE
+PARADIGM”(FT)ANDTHE“PROMPTINGPARADIGM”(PT).THEEVALUATIONMETRICISACCURACY.
+SpeechClassificationTasks(10-shotsetting)
+SCR IC SD AcC LID VAD
+Paradigm Scenario
+Google-SC AR-SC LT-SC DM-SC Grabo-SC Fluent-SC Mustard++ AccentDB Voxforge GFSound
+FT HuBERT+Expert 75.33 68.65 80.61 50.42 43.55 47.04 54.17 78.71 56.69 92.85
+PT
+GSLMfixed 79.55 42.16 79.59 62.39 49.23 73.5 55.83 22.35 32.16 87.1
+GSLMlearn 77.15 90.00 68.36 61.50 86.50 72.87 65.83 26.71 85.41 89.30
+FT mHuBERT+Expert 76.88 94.59 72.45 47.01 76.24 47.01 56.77 50.96 90.65 95.97
+PT
+UnitmBARTfixed 81.47 95.14 78.57 70.85 87.10 55.81 63.33 49.23 94.46 95.21
+UnitmBARTlearn 80.46 93.51 86.74 64.96 85.85 64.90 53.33 57.32 93.83 92.84
+On the other hand, prompting Unit mBART demonstrates paradigm (FT) in most speech classification tasks. For Hu-
+proficiency in producing reasonable translations, as evidenced BERT and GSLM, the FT method can only outperform the
+by its BLEU score. Compared to fine-tuning the whole Unit PT in 3 out of 10 tasks (LT-SC, AccentDB, GFSound).
+mBART, the prompting method has a performance drop but Meanwhile, for mHuBERT and Unit mBART, the FT method
+shows promising trainable parameter efficiency. Examples of can only outperform the PT in 1 out of 10 tasks (GFSound).
+thespeechgenerationtaskscanbefoundonthedemopage10. Generally, in speech classification tasks under few-shot
+Similarly, in speech continuation tasks, the SSL speech scenarios, prompting with Unit mBART achieves the best
+models (HuBERT and mHuBERT) paired with expert models overall performance, showing top or near-top results in most
+did not produce reasonable results. As shown in Table VII, tasks. Interestingly, we do not observe consistent performance
+for various conditional ratios r, we observed that prompting improvement when utilizing a learnable verbalizer in these
+GSLM outperformed Unit mBART in terms of Perplexity few-shot scenarios. We hypothesize that this might be due to
+(PPX), aligning with GSLM’s pre-training for such tasks. the limited data, which causes challenges for the learnable
+RegardingtheAuto-BLEUmetric[18],UnitmBARTachieved verbalizertoextractthehiddeninformationencapsulatedinthe
+scores comparable to the original utterances in the LJ Speech discrete units effectively. The investigation of the underlying
+dataset. This suggests that the utterances generated by Unit reason remains a future work.
+mBART are as diverse as the oracle utterances, a challenge
+where GSLM falls behind. Future research will explore vary-
+C. Verbalizer Analysis
+ing the sampling temperature to enhance utterance generation
+quality, as discussed in [18]. For speech quality, both GSLM In this study, we introduce an optional learnable verbalizer
+and Unit mBART exhibit comparable MOS and speaker sim- thatbridgesthegapbetweendiscreteunitsandthedownstream
+ilarity to the original LJ Speech utterances 11. tasks’ labels. Prior research has shown that discrete units
+encapsulate acoustic and phonetic information [18], [75].
+Thus,ratherthanemployingarandommappingoftheheuristic
+B. Few-shot Learning
+method in ASR and PR, it is more reasonable to employ a
+Thepromptingmethodhasdemonstrateditsfew-shotlearn-
+learnableverbalizerthatdiscernswhichdiscreteunitscorrelate
+ing capabilities in the NLP field [5], [9] because of the inher-
+with specific labels, such as characters or phonemes. The
+ent rich prior knowledge within language models. Similarly,
+efficacyofthelearnableverbalizerispresentedinFig.6.This
+speech LMs have already learned to comprehend discretized
+figure demonstrates the capability of the learnable verbalizer
+speech,thatis,thediscretespeechunits.Thisstudyextendsthe
+in linking discrete units with characters for the ASR task, as
+investigationintothefew-shotlearningabilitiesoftheprompt-
+displayed in the figure’s first row, and with phonemes for the
+ing method for speech LMs. We conduct 10-shot learning
+PRtask,asillustratedinthesecondrow.Theheatmapsdisplay
+experiments.ForbothPTandFT,thetrainableparametersare
+the weights W from the learnable verbalizer in Euqation 9,
+updatedwiththeprovidedfew-shottrainingdata.Specifically,
+with each map’s right side indicating the connected discrete
+10 samples per class were used as training data. The models
+unit.Besidestheunits,thetopthreephonemeswiththehighest
+are evaluated using the same testing set as the full dataset
+correlation to the discrete units are listed, as determined by
+setting.
+forced alignment. We observe that for a particular character,
+Table IX illustrates the performance of the prompting
+such as “B,” the verbalizer prefers discrete units with a strong
+method in comparison to the “pre-train, fine-tune” paradigm
+associationwiththephoneme“B.”Thispatternisconsistentin
+in a 10-shot learning scenario. The experiment shows that
+the second row, which pertains to phoneme recognition tasks.
+thepromptingparadigm(PT)possessesrobustfew-shotlearn-
+Here,labelsareconnectedtounitswithahighcorrespondence
+ing capabilities and generally outperforms the fine-tuning
+to the relevant phonemes.
+10Demopage:https://ga642381.github.io/SpeechPrompt/speechgen
+11Notethatthequalityofthegeneratedspeechisprimarilycontrolledby VI. DISCUSSION
+thespeechdecoder,andhighspeakersimilaritycanberootedinthefactthat
+thepre-trainingdataofthespeechdecoderincludesLJSpeech. We list observations, limitations, and future directions:
+12
+CharacterDiscrete unit and its
+top 3 related phonemes
+Learnable verbalizer's weight
+Phoneme
+Fig.6. AnalysisoftheLearnableVerbalizer.ThetoprowpresentsheatmapsfortheASRtask,witheachsubplotdedicatedtotheanalysisofanindividual
+character.ThebottomrowrelatestothePhonemeRecognition(PR)task,witheachsubplotfocusedonaparticularphoneme.Theheatmapsshowtheweights
+thatthelearnableverbalizerassignstothediscreteunits;forexample,thephoneme“AE1”ismoststronglylinkedto“Unit463”.Besidestheunits,thetop
+threephonemeswiththehighestcorrelationtothediscreteunitsarelisted,whichisdeterminedbyforcedalignment.Thisvisualizationillustratesthelearnable
+verbalizer’s ability to effectively utilize the information encoded in the discrete units to map to suitable labels. Related phonemes to the downstream tasks
+labelsarecircled.
+Architecture and Pre-training Task of Speech Language TABLEX
+Models: In the field of NLP, there is a growing trend to- SEQUENCEGENERATIONTASKPERFORMANCE.THEMODELSARE
+ORDEREDBASEDONTHEASRPERFORMANCE.
+wards employing decoder-only language models, particularly
+GPT variants, for a broad range of text generation tasks.
+Model ASR(WER↓) SF(CER↓) SF(F1↑) #params
+However, based on the experimental results, we suggest that
+FBANK 23.18 52.94 69.64 43M
+encoder-decoder models may offer distinct advantages for modifiedCPC 20.18 49.91 71.19 43M
+TERA 18.17 54.17 67.5 43M
+speech processing. We hypothesize that it is because many
+vq-wav2vec 17.71 41.54 77.68 43M
+speech processing tasks require handling different modalities, wav2vec 15.86 43.71 76.37 43M
+DeCoAR2.0 13.02 34.73 83.28 43M
+especially the speech signal and text. The unique continuous
+UnitmBARTlearn 11.56 30.69 87.08 2.89M
+characteristics of speech signals may be more effectively wav2vec2.0Base 6.43 24.77 88.3 43M
+HuBERTBase 6.42 25.2 88.53 43M
+processed by an encoder. Therefore, encoder-decoder models
+WavLMBase 6.21 22.86 89.38 43M
+are likely better suited for the first encoding of the speech data2vecLarge 3.36 22.16 90.98 43M
+signal into a compact representation, after which the decoder
+generates the desired output, whether it is a class label, example,thesettinginvolvesperformingaweightedsumover
+text, or another speech signal. This observation aligns with the representations of each layer of SSL speech models and
+recentwork[76]comparingGSLMandWav2Seq[77]models building an expert model on top of this, along with adopting
+of similar sizes and datasets. The encoder-decoder model a customized loss for the downstream task. Although such a
+Wav2Seq demonstrates an advantage. setting requires considerable human labor and computational
+However, it is important to note that the pre-training tasks resources, its performance is competitive. In Table. X, we list
+ofthesemodelsmayalsoplayasignificantroleintheirperfor- the ranking of the prompted Unit mBART for the ASR task
+mance. For instance, GSLM, which performs the next-token and compare it with the SSL speech models on SUPERB.
+prediction task during pre-training, achieves promising results DevelopAdvancedSpeechLanguagemodels:Speechlan-
+for the speech continuation task. Conversely, Unit mBART’s guage models are currently in their nascent stage of develop-
+pre-training task focuses on denoising, which may contribute ment compared to text-based language models. The proposed
+to its superior performance in other speech processing tasks. prompt framework, although effective in motivating speech
+The exploration of model architectures and their respective LMs, may not achieve exceptional performance. However,
+pre-trainingtasksremainsaninterestingandvaluabledirection with advancements in speech LMs, such as the transition
+for future research in the prompting paradigm. from GSLM to Unit mBART, there has been a significant
+Performance of Prompting Speech Language Models: improvement in prompt performance. Particularly, tasks that
+Wehaveobservedthecompetitiveperformanceoftheprompt- were previously challenging for GSLM now exhibit improved
+ing Unit mBART model in both speech classification and performance with Unit mBART. We anticipate the emergence
+generation tasks. Notably, in speech generation tasks, relying of even more promising speech LMs in the future.
+solely on an SSL speech model does not yield satisfactory Moreover, this paper primarily focuses on textless speech
+performance. However, a discernible performance gap still LMs,wherethemodeladaptstovarioustasksthroughprompt
+exists between the prompting and fine-tuning paradigms, es- optimization. Achieving true 0-shot inference remains a chal-
+pecially the sequence generation task. Taking SUPERB as an lenging but compelling goal within the field of speech pro-
+13
+cessing. Recent advances, such as instruction-tuned speech [5] P. Liu, W. Yuan, J. Fu, Z. Jiang, H. Hayashi, and G. Neubig, “Pre-
+LMs [78]–[80], although they might be restricted to a specific train, prompt, and predict: A systematic survey of prompting methods
+innaturallanguageprocessing,”ACMComputingSurveys,vol.55,no.9,
+languagewithwrittentext,highlightpromisingavenuestoward
+pp.1–35,2023.
+achieving 0-shot adaptation by guiding the LMs with text [6] T.Shin,Y.Razeghi,R.L.L.IV,E.Wallace,andS.Singh,“AutoPrompt:
+instructions. Elicitingknowledgefromlanguagemodelswithautomaticallygenerated
+prompts,”inProceedingsofthe2020ConferenceonEmpiricalMethods
+Beyond Content Information: Current speech LMs do
+inNaturalLanguageProcessing(EMNLP),2020,pp.4222–4235.
+not fully capture speaker and emotion information, posing [7] C. Raffel, N. Shazeer, A. Roberts, K. Lee, S. Narang, M. Matena,
+a challenge for tasks beyond content-related aspects. In sce- Y.Zhou,W.Li,andP.J.Liu,“Exploringthelimitsoftransferlearning
+with a unified text-to-text transformer,” J. Mach. Learn. Res., vol. 21,
+narios where preserving speaker and emotion information is
+pp.140:1–140:67,2020.
+possible, we plan to explore the integration of plug-and-
+[8] T.SchickandH.Schu¨tze,“It’snotjustsizethatmatters:Smalllanguage
+play modules specifically designed to incorporate speaker models are also few-shot learners,” in NAACL-HLT. Association for
+and emotion details into the framework. Looking ahead, we ComputationalLinguistics,2021,pp.2339–2352.
+[9] T. Schick and H. Schu¨tze, “Exploiting cloze-questions for few-shot
+anticipatethatfuturespeechLMswillincorporateandleverage
+text classification and natural language inference,” in Proceedings of
+theseadditionalfactorsandbetterhandlespeakerandemotion- the 16th Conference of the European Chapter of the Association for
+related aspects in speech generation tasks. Google’s latest ComputationalLinguistics:MainVolume,2021,pp.255–269.
+[10] S.Hu,N.Ding,H.Wang,Z.Liu,J.Wang,J.Li,W.Wu,andM.Sun,
+speech LM [44] tries to include such information.
+“Knowledgeable prompt-tuning: Incorporating knowledge into prompt
+verbalizer for text classification,” in Proceedings of the 60th Annual
+VII. CONCLUSION
+Meeting of the Association for Computational Linguistics (Volume 1:
+In this paper, we investigate how prompting can leverage LongPapers),2022,pp.2225–2240.
+[11] N. Ding, Y. Qin, G. Yang, F. Wei, Z. Yang, Y. Su, S. Hu, Y. Chen,
+the generative capabilities of speech language models (speech
+C.-M. Chan, W. Chen et al., “Parameter-efficient fine-tuning of large-
+LMs)forsolvingawiderangeofspeechprocessingtasks.Our scalepre-trainedlanguagemodels,”NatureMachineIntelligence,vol.5,
+approach includes minimal trainable parameters to guide the no.3,pp.220–235,2023.
+speechLMswithinaunifiedframework,achievingcompetitive [12] X.L.LiandP.Liang,“Prefix-Tuning:Optimizingcontinuousprompts
+for generation,” in Proceedings of the 59th Annual Meeting of the
+performance compared to the fine-tuning paradigm while
+Association for Computational Linguistics and the 11th International
+keepingthebenefitsofthepromptingparadigm.Theproposed Joint Conference on Natural Language Processing (Volume 1: Long
+framework exhibits several desirable characteristics, including Papers),2021,pp.4582–4597.
+[13] X.Liu,Y.Zheng,Z.Du,M.Ding,Y.Qian,Z.Yang,andJ.Tang,“GPT
+its textless nature, versatility, efficiency, transferability, and
+understands,too,”AIOpen,2023.
+affordability. To demonstrate our framework’s capabilities, [14] B. Lester, R. Al-Rfou, and N. Constant, “The power of scale for
+we study the decoder-only GSLM and encoder-decoder Unit parameter-efficientprompttuning,”inProceedingsofthe2021Confer-
+enceonEmpiricalMethodsinNaturalLanguageProcessing(EMNLP),
+mBART as case studies. We conduct experiments on three
+2021,pp.3045–3059.
+distinct types of speech processing tasks: speech classifica- [15] M. Jia, L. Tang, B.-C. Chen, C. Cardie, S. Belongie, B. Hariharan,
+tion, sequence generation, and speech generation. Also, the and S.-N. Lim, “Visual prompt tuning,” in European Conference on
+ComputerVision. Springer,2022,pp.709–727.
+proposed framework shows promising results in the few-
+[16] K.-W. Chang, W.-C. Tseng, S.-W. Li, and H. yi Lee, “An Exploration
+shot scenario. We observe a trend that as more advanced of Prompt Tuning on Generative Spoken Language Model for Speech
+speech LMs are developed, the performance of prompting ProcessingTasks,”inProc.Interspeech2022,2022,pp.5005–5009.
+[17] T.Sun,Y.Shao,H.Qian,X.Huang,andX.Qiu,“Black-boxtuningfor
+willsignificantlyimprove.Wealsodiscussthelimitationsand
+language-model-as-a-service,” in International Conference on Machine
+futuredirectionsofpromptingspeechLMs.Withtheimminent Learning. PMLR,2022,pp.20841–20855.
+arrival of advanced speech LMs, our unified framework holds [18] K. Lakhotia, E. Kharitonov, W.-N. Hsu, Y. Adi, A. Polyak, B. Bolte,
+immense potential in terms of efficiency and effectiveness, T.-A. Nguyen, J. Copet, A. Baevski, A. Mohamed et al., “On gener-
+ative spoken language modeling from raw audio,” Transactions of the
+standing on the shoulders of giants. AssociationforComputationalLinguistics,vol.9,pp.1336–1354,2021.
+[19] E. Kharitonov, A. Lee, A. Polyak, Y. Adi, J. Copet, K. Lakhotia,
+REFERENCES
+T. A. Nguyen, M. Riviere, A. Mohamed, E. Dupoux, and W.-N. Hsu,
+[1] A. Mohamed, H.-y. Lee, L. Borgholt, J. D. Havtorn, J. Edin, C. Igel, “Text-free prosody-aware generative spoken language modeling,” in
+K. Kirchhoff, S.-W. Li, K. Livescu, L. Maaløe et al., “Self-supervised Proceedingsofthe60thAnnualMeetingoftheAssociationforCompu-
+speech representation learning: A review,” IEEE Journal of Selected tationalLinguistics(Volume1:LongPapers),S.Muresan,P.Nakov,and
+TopicsinSignalProcessing,vol.16,no.6,pp.1179–1210,2022. A.Villavicencio,Eds. Dublin,Ireland:AssociationforComputational
+[2] S. Yang, P. Chi, Y. Chuang, C. J. Lai, K. Lakhotia, Y. Y. Lin, A. T. Linguistics,May2022,pp.8666–8681.
+Liu, J. Shi, X. Chang, G. Lin, T. Huang, W. Tseng, K. Lee, D. Liu, [20] S. Popuri, P.-J. Chen, C. Wang, J. Pino, Y. Adi, J. Gu, W.-N. Hsu,
+Z. Huang, S. Dong, S. Li, S. Watanabe, A. Mohamed, and H. Lee, and A. Lee, “Enhanced direct speech-to-speech translation using self-
+“SUPERB: speech processing universal performance benchmark,” in supervised pre-training and data augmentation,” in Proc. Interspeech
+Proc.Interspeech2021,2021,pp.1194–1198. 2022,2022,pp.5195–5199.
+[3] S. Evain, H. Nguyen, H. Le, M. Z. Boito, S. Mdhaffar, S. Alisamir, [21] A.Polyak,Y.Adi,J.Copet,E.Kharitonov,K.Lakhotia,W.Hsu,A.Mo-
+Z. Tong, N. A. Tomashenko, M. Dinarelli, T. Parcollet, A. Allauzen, hamed,andE.Dupoux,“Speechresynthesisfromdiscretedisentangled
+Y.Este`ve,B.Lecouteux,F.Portet,S.Rossato,F.Ringeval,D.Schwab, self-supervised representations,” in Proc. Interspeech 2021, 2021, pp.
+andL.Besacier,“LeBenchmark:Areproducibleframeworkforassessing 3615–3619.
+self-supervised representation learning from speech,” in Proc. Inter- [22] X.Chang,B.Yan,Y.Fujita,T.Maekaku,andS.Watanabe,“Exploration
+speech2021,2021,pp.1439–1443. ofefficientend-to-endASRusingdiscretizedinputfromself-supervised
+[4] H. Tsai, H. Chang, W. Huang, Z. Huang, K. Lakhotia, S. Yang, learning,”inProc.Interspeech2023,2023,pp.1399–1403.
+S. Dong, A. T. Liu, C. Lai, J. Shi, X. Chang, P. Hall, H. Chen, [23] A.Nautsch,A.Jime´nez,A.Treiber,J.Kolberg,C.Jasserand,E.Kindt,
+S.Li,S.Watanabe,A.Mohamed,andH.Lee,“SUPERB-SG:enhanced H. Delgado, M. Todisco, M. A. Hmani, A. Mtibaa et al., “Preserving
+speech processing universal performance benchmark for semantic and privacy in speaker and speech characterisation,” Computer Speech &
+generative capabilities,” in Proceedings of the 60th Annual Meeting of Language,vol.58,pp.441–480,2019.
+theAssociationforComputationalLinguistics(Volume1:LongPapers), [24] A.Radford,K.Narasimhan,T.Salimans,I.Sutskeveretal.,“Improving
+2022,pp.8479–8492. languageunderstandingbygenerativepre-training,”2018.
+14
+[25] M.Lewis,Y.Liu,N.Goyal,M.Ghazvininejad,A.Mohamed,O.Levy, IEEE/ACM Transactions on Audio, Speech, and Language Processing,
+V. Stoyanov, and L. Zettlemoyer, “BART: denoising sequence-to- vol.31,pp.2523–2533,2023.
+sequence pre-training for natural language generation, translation, and [43] M. Hassid, T. Remez, T. A. Nguyen, I. Gat, A. Conneau, F. Kreuk,
+comprehension,” in Proceedings of the 58th Annual Meeting of the J. Copet, A. De´fossez, G. Synnaeve, E. Dupoux, R. Schwartz, and
+AssociationforComputationalLinguistics,2020,pp.7871–7880. Y. Adi, “Textually pretrained speech language models,” Advances in
+[26] E. Dunbar, N. Hamilakis, and E. Dupoux, “Self-supervised language Neural Information Processing Systems, vol. 36, pp. 63483–63501,
+learning from raw audio: Lessons from the zero resource speech chal- 2023.
+lenge,”IEEEJournalofSelectedTopicsinSignalProcessing,vol.16, [44] E.Nachmani,A.Levkovitch,R.Hirsch,J.Salazar,C.Asawaroengchai,
+no.6,pp.1211–1226,2022. S. Mariooryad, E. Rivlin, R. Skerry-Ryan, and M. T. Ramanovich,
+[27] T.A.Nguyen,B.Sagot,andE.Dupoux,“Arediscreteunitsnecessary “Spokenquestionansweringandspeechcontinuationusingspectrogram-
+for spoken language modeling?” IEEE Journal of Selected Topics in powered LLM,” in International Conference on Learning Representa-
+SignalProcessing,vol.16,no.6,pp.1415–1423,2022. tions,2024.
+[28] E. Kharitonov, J. Copet, K. Lakhotia, T. A. Nguyen, P. Tomasello, [45] H.Gao,J.Ni,K.Qian,Y.Zhang,S.Chang,andM.Hasegawa-Johnson,
+A. Lee, A. Elkahky, W.-N. Hsu, A. Mohamed, E. Dupoux et al., “WavPrompt: Towards few-shot spoken language understanding with
+“textless-lib: a library for textless spoken language processing,” in frozen language models,” in Proc. Interspeech 2022, 2022, pp. 2738–
+Proceedings of the 2022 Conference of the North American Chapter 2742.
+of the Association for Computational Linguistics: Human Language [46] P.Peng,B.Yan,S.Watanabe,andD.Harwath,“Promptingthehidden
+Technologies:SystemDemonstrations,2022,pp.1–9. talentofweb-scalespeechmodelsforzero-shottaskgeneralization,”in
+[29] W.-N.Hsu,B.Bolte,Y.-H.H.Tsai,K.Lakhotia,R.Salakhutdinov,and Proc.Interspeech2023,2023,pp.396–400.
+A.Mohamed,“HuBERT:self-supervisedspeechrepresentationlearning [47] A. Radford, J. W. Kim, T. Xu, G. Brockman, C. McLeavey, and
+by masked prediction of hidden units,” IEEE/ACM Transactions on I. Sutskever, “Robust speech recognition via large-scale weak super-
+Audio,Speech,andLanguageProcessing,vol.29,pp.3451–3460,2021. vision,” in International Conference on Machine Learning. PMLR,
+[30] C.-C. Chiu, J. Qin, Y. Zhang, J. Yu, and Y. Wu, “Self-supervised 2023,pp.28492–28518.
+learning with random-projection quantizer for speech recognition,” in [48] G.F.Elsayed,I.Goodfellow,andJ.Sohl-Dickstein,“Adversarialrepro-
+International Conference on Machine Learning. PMLR, 2022, pp. grammingofneuralnetworks,”inInternationalConferenceonLearning
+3915–3924. Representations,2019.
+[31] M.Riviere,A.Joulin,P.-E.Mazare´,andE.Dupoux,“Unsupervisedpre- [49] P.-Y. Chen, “Model reprogramming: Resource-efficient cross-domain
+trainingtransferswellacrosslanguages,”inICASSP2020-2020IEEE machinelearning,”inProceedingsoftheAAAIConferenceonArtificial
+International Conference on Acoustics, Speech and Signal Processing Intelligence,vol.38,no.20,2024,pp.22584–22591.
+(ICASSP). IEEE,2020,pp.7414–7418. [50] C.-H. H. Yang, Y.-Y. Tsai, and P.-Y. Chen, “Voice2series: Reprogram-
+[32] A.Baevski,Y.Zhou,A.Mohamed,andM.Auli,“wav2vec2.0:Aframe- ming acoustic models for time series classification,” in International
+workforself-supervisedlearningofspeechrepresentations,”Advances ConferenceonMachineLearning. PMLR,2021,pp.11808–11819.
+inNeuralInformationProcessingSystems,vol.33,pp.12449–12460, [51] H. Yen, P.-J. Ku, C.-H. H. Yang, H. Hu, S. M. Siniscalchi, P.-Y.
+2020. Chen, and Y. Tsao, “Neural model reprogramming with similarity
+[33] D. Jiang, W. Li, M. Cao, W. Zou, and X. Li, “Speech SimCLR: basedmappingforlow-resourcespokencommandrecognition,”inProc.
+Combining contrastive and reconstruction objective for self-supervised Interspeech2023,2023,pp.3317–3321.
+speech representation learning,” in Proc. Interspeech 2021, 2021, pp. [52] A.Vaswani,N.Shazeer,N.Parmar,J.Uszkoreit,L.Jones,A.N.Gomez,
+1544–1548. Ł. Kaiser, and I. Polosukhin, “Attention is all you need,” Advances in
+[34] Y.-A. Chung and J. Glass, “Generative pre-training for speech with NeuralInformationProcessingSystems,vol.30,2017.
+autoregressive predictive coding,” in ICASSP 2020 - 2020 IEEE In- [53] T.Schick,H.Schmid,andH.Schu¨tze,“Automaticallyidentifyingwords
+ternational Conference on Acoustics, Speech and Signal Processing thatcanserveaslabelsforfew-shottextclassification,”inProceedingsof
+(ICASSP). IEEE,2020,pp.3497–3501. the28thInternationalConferenceonComputationalLinguistics,2020,
+[35] S.LingandY.Liu,“DeCoAR2.0:Deepcontextualizedacousticrepre- pp.5569–5578.
+sentations with vector quantization,” arXiv preprint arXiv:2012.06659, [54] S.Min,X.Lyu,A.Holtzman,M.Artetxe,M.Lewis,H.Hajishirzi,and
+2020. L. Zettlemoyer, “Rethinking the role of demonstrations: What makes
+[36] A.T.Liu,S.-W.Li,andH.-y.Lee,“TERA:Self-supervisedlearningof in-context learning work?” in Proceedings of the 2022 Conference on
+transformerencoderrepresentationforspeech,”IEEE/ACMTransactions EmpiricalMethodsinNaturalLanguageProcessing,2022,pp.11048–
+on Audio, Speech, and Language Processing, vol. 29, pp. 2351–2366, 11064.
+2021. [55] G.Cui,S.Hu,N.Ding,L.Huang,andZ.Liu,“Prototypicalverbalizer
+[37] X. Chang, B. Yan, K. Choi, J.-W. Jung, Y. Lu, S. Maiti, R. Sharma, for prompt-based few-shot tuning,” in Proceedings of the 60th Annual
+J.Shi,J.Tian,S.Watanabe,Y.Fujita,T.Maekaku,P.Guo,Y.-F.Cheng, Meeting of the Association for Computational Linguistics (Volume 1:
+P. Denisov, K. Saijo, and H.-H. Wang, “Exploring speech recognition, LongPapers),2022,pp.7014–7024.
+translation,andunderstandingwithdiscretespeechunits:Acomparative [56] P.Warden,“Speechcommands:Adatasetforlimited-vocabularyspeech
+study,” in ICASSP 2024 - 2024 IEEE International Conference on recognition,”arXivpreprintarXiv:1804.03209,2018.
+Acoustics, Speech and Signal Processing (ICASSP). IEEE, 2024, pp. [57] Y. Tian and P. J. Gorinski, “Improving end-to-end speech-to-intent
+11481–11485. classification with reptile,” in Proc. Interspeech 2020, 2020, pp. 891–
+[38] Y.Yang,F.Shen,C.Du,Z.Ma,K.Yu,D.Povey,andX.Chen,“Towards 895.
+universal speech discrete tokens: A case study for ASR and TTS,” [58] A.KolesauandD.Sˇesˇok,“Unsupervisedpre-trainingforvoiceactiva-
+in ICASSP 2024 - 2024 IEEE International Conference on Acoustics, tion,”AppliedSciences,vol.10,no.23,p.8643,2020.
+Speech and Signal Processing (ICASSP). IEEE, 2024, pp. 10401– [59] Y.-Y.Lin,W.-Z.Zheng,W.C.Chu,J.-Y.Han,Y.-H.Hung,G.-M.Ho,C.-
+10405. Y.Chang,andY.-H.Lai,“Aspeechcommandcontrol-basedrecognition
+[39] A.Radford,J.Wu,R.Child,D.Luan,D.Amodei,I.Sutskeveretal., system for dysarthric patients based on deep learning technology,”
+“Language models are unsupervised multitask learners,” OpenAI blog, AppliedSciences,vol.11,no.6,p.2477,2021.
+vol.1,no.8,p.9,2019. [60] L. T. Benamer and O. A. Alkishriwo, “Database for Arabic speech
+[40] J.Shen,R.Pang,R.J.Weiss,M.Schuster,N.Jaitly,Z.Yang,Z.Chen, commandsrecognition,”inCEST,2020.
+Y. Zhang, Y. Wang, R. Skerrv-Ryan et al., “Natural TTS synthesis by [61] L. Lugosch, M. Ravanelli, P. Ignoto, V. S. Tomar, and Y. Bengio,
+conditioningwavenetonmelspectrogrampredictions,”inICASSP2018 “Speechmodelpre-trainingforend-to-endspokenlanguageunderstand-
+-2018IEEEInternationalConferenceonAcoustics,SpeechandSignal ing,”inProc.Interspeech2019,G.KubinandZ.Kacic,Eds.,2019,pp.
+Processing(ICASSP). IEEE,2018,pp.4779–4783. 814–818.
+[41] J. Kong, J. Kim, and J. Bae, “HiFi-GAN: Generative adversarial [62] A. Ray, S. Mishra, A. Nunna, and P. Bhattacharyya, “A multimodal
+networks for efficient and high fidelity speech synthesis,” Advances corpus for emotion recognition in sarcasm,” in Proceedings of the
+inNeuralInformationProcessingSystems,vol.33,pp.17022–17033, ThirteenthLREC,2022,pp.6992–7003.
+2020. [63] A.Ahamad,A.Anand,andP.Bhargava,“Accentdb:Adatabaseofnon-
+[42] Z.Borsos,R.Marinier,D.Vincent,E.Kharitonov,O.Pietquin,M.Shar- nativeenglishaccentstoassistneuralspeechrecognition,”inProceed-
+ifi,D.Roblek,O.Teboul,D.Grangier,M.Tagliasacchi,andN.Zeghi- ings of the Twelfth Language Resources and Evaluation Conference,
+dour,“AudioLM:Alanguagemodelingapproachtoaudiogeneration,” 2020,pp.5351–5358.
+15
+[64] K. MacLean, “Voxforge,” 2018, Ken MacLean.[Online]. Available:
+http://www.voxforge.org/home.[Acedidoem2012].
+[65] F. Jia, S. Majumdar, and B. Ginsburg, “MarbleNet: Deep 1d time-
+channel separable convolutional neural network for voice activity de-
+tection,” in ICASSP 2021 - 2021 IEEE International Conference on
+Acoustics, Speech and Signal Processing (ICASSP). IEEE, 2021, pp.
+6818–6822.
+[66] E. Fonseca, J. Pons, X. Favory, F. Font, D. Bogdanov, A. Ferraro,
+S. Oramas, A. Porter, and X. Serra, “Freesound Datasets: A platform
+forthecreationofopenaudiodatasets,”inISMIR,2017,pp.486–493.
+[67] V.Panayotov,G.Chen,D.Povey,andS.Khudanpur,“Librispeech:An
+ASR corpus based on public domain audio books,” in ICASSP 2015 -
+2015 IEEE International Conference on Acoustics, Speech and Signal
+Processing(ICASSP). IEEE,2015,pp.5206–5210.
+[68] C. Lai, Y. Chuang, H. Lee, S. Li, and J. R. Glass, “Semi-supervised
+spokenlanguageunderstandingviaself-supervisedspeechandlanguage
+model pretraining,” in ICASSP 2021 - 2021 IEEE International Con-
+ferenceonAcoustics,SpeechandSignalProcessing(ICASSP). IEEE,
+2021,pp.7468–7472.
+[69] C. Wang, A. Wu, J. Gu, and J. Pino, “CoVoST 2 and massively
+multilingual speech translation,” in Proc. Interspeech 2021, 2021, pp.
+2247–2251.
+[70] A. Kumar, K. Tan, Z. Ni, P. Manocha, X. Zhang, E. Henderson,
+and B. Xu, “Torchaudio-squim: Reference-less speech quality and
+intelligibility measures in torchaudio,” in ICASSP 2023 - 2023 IEEE
+International Conference on Acoustics, Speech and Signal Processing
+(ICASSP). IEEE,2023,pp.1–5.
+[71] K. Ito and L. Johnson, “The LJ speech dataset,” https://keithito.com/
+LJ-Speech-Dataset/,2017.
+[72] J. Kahn, M. Riviere, W. Zheng, E. Kharitonov, Q. Xu, P.-E. Mazare´,
+J.Karadayi,V.Liptchinsky,R.Collobert,C.Fuegenetal.,“Libri-Light:
+abenchmarkforasrwithlimitedornosupervision,”inICASSP2020-
+2020 IEEE International Conference on Acoustics, Speech and Signal
+Processing(ICASSP). IEEE,2020,pp.7669–7673.
+[73] Y.Jia,R.J.Weiss,F.Biadsy,W.Macherey,M.Johnson,Z.Chen,and
+Y.Wu,“Directspeech-to-speechtranslationwithasequence-to-sequence
+model,”inProc.Interspeech2019,2019,pp.1123–1127.
+[74] A.Lee,P.-J.Chen,C.Wang,J.Gu,S.Popuri,X.Ma,A.Polyak,Y.Adi,
+Q.He,Y.Tangetal.,“Directspeech-to-speechtranslationwithdiscrete
+units,” in Proceedings of the 60th Annual Meeting of the Association
+forComputationalLinguistics,2022,pp.3327–3339.
+[75] D. Wells, H. Tang, and K. Richmond, “Phonetic analysis of self-
+supervisedrepresentationsofenglishspeech,”inProc.Interspeech2022,
+2022,pp.3583–3587.
+[76] K.-W. Chang, M.-H. Chen, Y.-P. Lin, J. N. Hsu, P. K.-M. Huang, C.-
+y. Huang, S.-W. Li, and H.-y. Lee, “Prompting and adapter tuning for
+self-supervisedencoder-decoderspeechmodel,”in2023IEEEAutomatic
+SpeechRecognitionandUnderstandingWorkshop(ASRU). IEEE,2023,
+pp.1–8.
+[77] F. Wu, K. Kim, S. Watanabe, K. J. Han, R. McDonald, K. Q. Wein-
+berger, and Y. Artzi, “Wav2Seq: pre-training speech-to-text encoder-
+decodermodelsusingpseudolanguages,”inICASSP2023-2023IEEE
+International Conference on Acoustics, Speech and Signal Processing
+(ICASSP). IEEE,2023,pp.1–5.
+[78] C.-y. Huang, K.-H. Lu, S.-H. Wang, C.-Y. Hsiao, C.-Y. Kuan, H. Wu,
+S.Arora,K.-W.Chang,J.Shi,Y.Pengetal.,“Dynamic-superb:Towards
+a dynamic, collaborative, and comprehensive instruction-tuning bench-
+markforspeech,”inICASSP2024-2024IEEEInternationalConference
+on Acoustics, Speech and Signal Processing (ICASSP). IEEE, 2024,
+pp.12136–12140.
+[79] Y. Gong, A. H. Liu, H. Luo, L. Karlinsky, and J. Glass, “Joint audio
+andspeechunderstanding,”in2023IEEEAutomaticSpeechRecognition
+andUnderstandingWorkshop(ASRU). IEEE,2023,pp.1–8.
+[80] C. Tang, W. Yu, G. Sun, X. Chen, T. Tan, W. Li, L. Lu, Z. MA,
+andC.Zhang,“SALMONN:Towardsgenerichearingabilitiesforlarge
+language models,” in International Conference on Learning Represen-
+tations,2024.

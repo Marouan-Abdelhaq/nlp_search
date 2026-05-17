@@ -1,0 +1,2492 @@
+{
+  "1706.10207v1.txt": {
+    "filename": "1706.10207v1.txt",
+    "pdf_original": "1706.10207v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 13495,
+    "taille_txt_kb": 80.3,
+    "taille_pdf_kb": 614.7,
+    "source": "arxiv"
+  },
+  "1709.02840v3.txt": {
+    "filename": "1709.02840v3.txt",
+    "pdf_original": "1709.02840v3.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 59059,
+    "taille_txt_kb": 355.8,
+    "taille_pdf_kb": 2182.0,
+    "source": "arxiv"
+  },
+  "1805.05052v17.txt": {
+    "filename": "1805.05052v17.txt",
+    "pdf_original": "1805.05052v17.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 87994,
+    "taille_txt_kb": 508.0,
+    "taille_pdf_kb": 4091.6,
+    "source": "arxiv"
+  },
+  "2102.04883v2.txt": {
+    "filename": "2102.04883v2.txt",
+    "pdf_original": "2102.04883v2.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 32831,
+    "taille_txt_kb": 191.9,
+    "taille_pdf_kb": 4242.9,
+    "source": "arxiv"
+  },
+  "2301.09517v3.txt": {
+    "filename": "2301.09517v3.txt",
+    "pdf_original": "2301.09517v3.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 6941,
+    "taille_txt_kb": 57.8,
+    "taille_pdf_kb": 631.9,
+    "source": "arxiv"
+  },
+  "2312.08365v3.txt": {
+    "filename": "2312.08365v3.txt",
+    "pdf_original": "2312.08365v3.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 18425,
+    "taille_txt_kb": 127.8,
+    "taille_pdf_kb": 1281.8,
+    "source": "arxiv"
+  },
+  "2409.02668v2.txt": {
+    "filename": "2409.02668v2.txt",
+    "pdf_original": "2409.02668v2.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 187988,
+    "taille_txt_kb": 1013.9,
+    "taille_pdf_kb": 5679.4,
+    "source": "arxiv"
+  },
+  "A 20 Gbps Data Transmitting ASIC with PAM4 for Par_2010.16064v1.txt": {
+    "filename": "A 20 Gbps Data Transmitting ASIC with PAM4 for Par_2010.16064v1.txt",
+    "pdf_original": "A 20 Gbps Data Transmitting ASIC with PAM4 for Par_2010.16064v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 1746,
+    "taille_txt_kb": 9.9,
+    "taille_pdf_kb": 253.8,
+    "source": "cours"
+  },
+  "A Benchmark Study of Machine Learning Models for O_1905.04749v2.txt": {
+    "filename": "A Benchmark Study of Machine Learning Models for O_1905.04749v2.txt",
+    "pdf_original": "A Benchmark Study of Machine Learning Models for O_1905.04749v2.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 4089,
+    "taille_txt_kb": 59.0,
+    "taille_pdf_kb": 416.6,
+    "source": "cours"
+  },
+  "A Comparative Review Of Internet Protocol Version_1407.2717v1.txt": {
+    "filename": "A Comparative Review Of Internet Protocol Version_1407.2717v1.txt",
+    "pdf_original": "A Comparative Review Of Internet Protocol Version_1407.2717v1.pdf",
+    "langue": "en",
+    "theme": "Réseaux",
+    "nb_mots": 2886,
+    "taille_txt_kb": 16.6,
+    "taille_pdf_kb": 52.2,
+    "source": "cours"
+  },
+  "A Comprehensive Review of State-of-The-Art Methods_2306.06371v1.txt": {
+    "filename": "A Comprehensive Review of State-of-The-Art Methods_2306.06371v1.txt",
+    "pdf_original": "A Comprehensive Review of State-of-The-Art Methods_2306.06371v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 6644,
+    "taille_txt_kb": 72.0,
+    "taille_pdf_kb": 1043.2,
+    "source": "cours"
+  },
+  "A Demonstration of Issues with Value-Based Multiob_2004.06277v1.txt": {
+    "filename": "A Demonstration of Issues with Value-Based Multiob_2004.06277v1.txt",
+    "pdf_original": "A Demonstration of Issues with Value-Based Multiob_2004.06277v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 2767,
+    "taille_txt_kb": 31.5,
+    "taille_pdf_kb": 762.1,
+    "source": "cours"
+  },
+  "A Holistic Natural Language Generation Framework f_1911.01248v1.txt": {
+    "filename": "A Holistic Natural Language Generation Framework f_1911.01248v1.txt",
+    "pdf_original": "A Holistic Natural Language Generation Framework f_1911.01248v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 3562,
+    "taille_txt_kb": 32.3,
+    "taille_pdf_kb": 371.7,
+    "source": "cours"
+  },
+  "A Learning Framework for n-bit Quantized Neural Ne_2004.02396v1.txt": {
+    "filename": "A Learning Framework for n-bit Quantized Neural Ne_2004.02396v1.txt",
+    "pdf_original": "A Learning Framework for n-bit Quantized Neural Ne_2004.02396v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 9381,
+    "taille_txt_kb": 60.6,
+    "taille_pdf_kb": 1086.8,
+    "source": "cours"
+  },
+  "A Neural Network-Evolutionary Computational Framew_1905.05918v1.txt": {
+    "filename": "A Neural Network-Evolutionary Computational Framew_1905.05918v1.txt",
+    "pdf_original": "A Neural Network-Evolutionary Computational Framew_1905.05918v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 6869,
+    "taille_txt_kb": 41.0,
+    "taille_pdf_kb": 2632.6,
+    "source": "cours"
+  },
+  "A Quick Introduction to Quantum Machine Learning f_2402.14694v1.txt": {
+    "filename": "A Quick Introduction to Quantum Machine Learning f_2402.14694v1.txt",
+    "pdf_original": "A Quick Introduction to Quantum Machine Learning f_2402.14694v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 9063,
+    "taille_txt_kb": 92.8,
+    "taille_pdf_kb": 1221.5,
+    "source": "cours"
+  },
+  "A Recurrent Probabilistic Neural Network with Dime_1911.06009v1.txt": {
+    "filename": "A Recurrent Probabilistic Neural Network with Dime_1911.06009v1.txt",
+    "pdf_original": "A Recurrent Probabilistic Neural Network with Dime_1911.06009v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 9086,
+    "taille_txt_kb": 56.4,
+    "taille_pdf_kb": 1276.9,
+    "source": "cours"
+  },
+  "A Review on Explainable Artificial Intelligence fo_2304.04780v1.txt": {
+    "filename": "A Review on Explainable Artificial Intelligence fo_2304.04780v1.txt",
+    "pdf_original": "A Review on Explainable Artificial Intelligence fo_2304.04780v1.pdf",
+    "langue": "en",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 14445,
+    "taille_txt_kb": 90.2,
+    "taille_pdf_kb": 759.2,
+    "source": "cours"
+  },
+  "A Secure Multi-Party Computation Protocol for Mali_0908.0994v1.txt": {
+    "filename": "A Secure Multi-Party Computation Protocol for Mali_0908.0994v1.txt",
+    "pdf_original": "A Secure Multi-Party Computation Protocol for Mali_0908.0994v1.pdf",
+    "langue": "en",
+    "theme": "Réseaux",
+    "nb_mots": 4780,
+    "taille_txt_kb": 27.1,
+    "taille_pdf_kb": 96.8,
+    "source": "cours"
+  },
+  "A Tutorial for Evaluating Cure Model Appropriatene_2605.04999v2.txt": {
+    "filename": "A Tutorial for Evaluating Cure Model Appropriatene_2605.04999v2.txt",
+    "pdf_original": "A Tutorial for Evaluating Cure Model Appropriatene_2605.04999v2.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 5975,
+    "taille_txt_kb": 37.7,
+    "taille_pdf_kb": 298.9,
+    "source": "cours"
+  },
+  "A Tutorial on Meta-Reinforcement Learning_2301.08028v4.txt": {
+    "filename": "A Tutorial on Meta-Reinforcement Learning_2301.08028v4.txt",
+    "pdf_original": "A Tutorial on Meta-Reinforcement Learning_2301.08028v4.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 46451,
+    "taille_txt_kb": 289.3,
+    "taille_pdf_kb": 3289.8,
+    "source": "cours"
+  },
+  "A novel datatype architecture support for programm_1402.0087v1.txt": {
+    "filename": "A novel datatype architecture support for programm_1402.0087v1.txt",
+    "pdf_original": "A novel datatype architecture support for programm_1402.0087v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 8281,
+    "taille_txt_kb": 52.0,
+    "taille_pdf_kb": 821.5,
+    "source": "cours"
+  },
+  "A review of clustering models in educational data_2301.03421v1.txt": {
+    "filename": "A review of clustering models in educational data_2301.03421v1.txt",
+    "pdf_original": "A review of clustering models in educational data_2301.03421v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 19817,
+    "taille_txt_kb": 121.6,
+    "taille_pdf_kb": 785.1,
+    "source": "cours"
+  },
+  "A survey study of success factors in data science_2201.06310v1.txt": {
+    "filename": "A survey study of success factors in data science_2201.06310v1.txt",
+    "pdf_original": "A survey study of success factors in data science_2201.06310v1.pdf",
+    "langue": "en",
+    "theme": "Data Science",
+    "nb_mots": 3640,
+    "taille_txt_kb": 38.5,
+    "taille_pdf_kb": 329.6,
+    "source": "cours"
+  },
+  "ALERT-Transformer Bridging Asynchronous and Synch_2402.01393v3.txt": {
+    "filename": "ALERT-Transformer Bridging Asynchronous and Synch_2402.01393v3.txt",
+    "pdf_original": "ALERT-Transformer Bridging Asynchronous and Synch_2402.01393v3.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 4702,
+    "taille_txt_kb": 53.7,
+    "taille_pdf_kb": 4178.8,
+    "source": "cours"
+  },
+  "Accelerating Training in Pommerman with Imitation_1911.04947v2.txt": {
+    "filename": "Accelerating Training in Pommerman with Imitation_1911.04947v2.txt",
+    "pdf_original": "Accelerating Training in Pommerman with Imitation_1911.04947v2.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 1424,
+    "taille_txt_kb": 29.3,
+    "taille_pdf_kb": 2223.2,
+    "source": "cours"
+  },
+  "Accessibility in Information Retrieval_2404.08628v1.txt": {
+    "filename": "Accessibility in Information Retrieval_2404.08628v1.txt",
+    "pdf_original": "Accessibility in Information Retrieval_2404.08628v1.pdf",
+    "langue": "en",
+    "theme": "Information Retrieval",
+    "nb_mots": 2826,
+    "taille_txt_kb": 20.2,
+    "taille_pdf_kb": 112.9,
+    "source": "cours"
+  },
+  "Active learning for data streams a survey_2302.08893v4.txt": {
+    "filename": "Active learning for data streams a survey_2302.08893v4.txt",
+    "pdf_original": "Active learning for data streams a survey_2302.08893v4.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 23936,
+    "taille_txt_kb": 169.9,
+    "taille_pdf_kb": 3319.0,
+    "source": "cours"
+  },
+  "Adaptation of TURN protocol to SIP protocol_1002.1178v1.txt": {
+    "filename": "Adaptation of TURN protocol to SIP protocol_1002.1178v1.txt",
+    "pdf_original": "Adaptation of TURN protocol to SIP protocol_1002.1178v1.pdf",
+    "langue": "en",
+    "theme": "Réseaux",
+    "nb_mots": 3029,
+    "taille_txt_kb": 17.3,
+    "taille_pdf_kb": 243.9,
+    "source": "cours"
+  },
+  "Adversarial Attacks to Latent Representations of D_2309.17401v5.txt": {
+    "filename": "Adversarial Attacks to Latent Representations of D_2309.17401v5.txt",
+    "pdf_original": "Adversarial Attacks to Latent Representations of D_2309.17401v5.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 8819,
+    "taille_txt_kb": 55.3,
+    "taille_pdf_kb": 2878.8,
+    "source": "cours"
+  },
+  "AeroGen Enhancing Remote Sensing Object Detection_2411.15497v3.txt": {
+    "filename": "AeroGen Enhancing Remote Sensing Object Detection_2411.15497v3.txt",
+    "pdf_original": "AeroGen Enhancing Remote Sensing Object Detection_2411.15497v3.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 3790,
+    "taille_txt_kb": 37.2,
+    "taille_pdf_kb": 1925.3,
+    "source": "cours"
+  },
+  "Ambitious Data Science Can Be Painless_1901.08705v1.txt": {
+    "filename": "Ambitious Data Science Can Be Painless_1901.08705v1.txt",
+    "pdf_original": "Ambitious Data Science Can Be Painless_1901.08705v1.pdf",
+    "langue": "en",
+    "theme": "Data Science",
+    "nb_mots": 7061,
+    "taille_txt_kb": 52.2,
+    "taille_pdf_kb": 539.4,
+    "source": "cours"
+  },
+  "An Application of Computable Distributions to the_1806.07966v2.txt": {
+    "filename": "An Application of Computable Distributions to the_1806.07966v2.txt",
+    "pdf_original": "An Application of Computable Distributions to the_1806.07966v2.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 15440,
+    "taille_txt_kb": 100.3,
+    "taille_pdf_kb": 489.7,
+    "source": "cours"
+  },
+  "An Automated Multiple-Choice Question Generation U_2103.14757v1.txt": {
+    "filename": "An Automated Multiple-Choice Question Generation U_2103.14757v1.txt",
+    "pdf_original": "An Automated Multiple-Choice Question Generation U_2103.14757v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 3374,
+    "taille_txt_kb": 20.6,
+    "taille_pdf_kb": 766.1,
+    "source": "cours"
+  },
+  "An ER-based Framework for Declarative Web Programm_1103.4133v2.txt": {
+    "filename": "An ER-based Framework for Declarative Web Programm_1103.4133v2.txt",
+    "pdf_original": "An ER-based Framework for Declarative Web Programm_1103.4133v2.pdf",
+    "langue": "en",
+    "theme": "Programmation",
+    "nb_mots": 8058,
+    "taille_txt_kb": 57.6,
+    "taille_pdf_kb": 547.1,
+    "source": "cours"
+  },
+  "An Integrated Approach for Energy Efficient Handov_2205.08641v1.txt": {
+    "filename": "An Integrated Approach for Energy Efficient Handov_2205.08641v1.txt",
+    "pdf_original": "An Integrated Approach for Energy Efficient Handov_2205.08641v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 10107,
+    "taille_txt_kb": 70.6,
+    "taille_pdf_kb": 1964.3,
+    "source": "cours"
+  },
+  "An Open Natural Language Processing Development Fr_2110.10780v3.txt": {
+    "filename": "An Open Natural Language Processing Development Fr_2110.10780v3.txt",
+    "pdf_original": "An Open Natural Language Processing Development Fr_2110.10780v3.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 7317,
+    "taille_txt_kb": 45.7,
+    "taille_pdf_kb": 857.4,
+    "source": "cours"
+  },
+  "An Optimistic Perspective on Offline Reinforcement_1907.04543v4.txt": {
+    "filename": "An Optimistic Perspective on Offline Reinforcement_1907.04543v4.txt",
+    "pdf_original": "An Optimistic Perspective on Offline Reinforcement_1907.04543v4.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 12658,
+    "taille_txt_kb": 80.3,
+    "taille_pdf_kb": 21105.7,
+    "source": "cours"
+  },
+  "Anderson Acceleration for Reinforcement Learning_1809.09501v1.txt": {
+    "filename": "Anderson Acceleration for Reinforcement Learning_1809.09501v1.txt",
+    "pdf_original": "Anderson Acceleration for Reinforcement Learning_1809.09501v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 2892,
+    "taille_txt_kb": 17.0,
+    "taille_pdf_kb": 406.2,
+    "source": "cours"
+  },
+  "Anomaly Detection on Attributed Networks via Contr_2103.00113v2.txt": {
+    "filename": "Anomaly Detection on Attributed Networks via Contr_2103.00113v2.txt",
+    "pdf_original": "Anomaly Detection on Attributed Networks via Contr_2103.00113v2.pdf",
+    "langue": "en",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 10477,
+    "taille_txt_kb": 75.3,
+    "taille_pdf_kb": 936.3,
+    "source": "cours"
+  },
+  "Apprendre à programmer avec Python 3.txt": {
+    "filename": "Apprendre à programmer avec Python 3.txt",
+    "pdf_original": "Apprendre à programmer avec Python 3.pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 163581,
+    "taille_txt_kb": 1041.5,
+    "taille_pdf_kb": 6015.5,
+    "source": "cours"
+  },
+  "Apprenez le C++ moderne.txt": {
+    "filename": "Apprenez le C++ moderne.txt",
+    "pdf_original": "Apprenez le C++ moderne.pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 123244,
+    "taille_txt_kb": 777.5,
+    "taille_pdf_kb": 4021.9,
+    "source": "cours"
+  },
+  "Architecture des ordinateurs.txt": {
+    "filename": "Architecture des ordinateurs.txt",
+    "pdf_original": "Architecture des ordinateurs.pdf",
+    "langue": "fr",
+    "theme": "Autre",
+    "nb_mots": 11576,
+    "taille_txt_kb": 121.5,
+    "taille_pdf_kb": 836.9,
+    "source": "cours"
+  },
+  "Architecture des systèmes informatiques.txt": {
+    "filename": "Architecture des systèmes informatiques.txt",
+    "pdf_original": "Architecture des systèmes informatiques.pdf",
+    "langue": "fr",
+    "theme": "Autre",
+    "nb_mots": 20468,
+    "taille_txt_kb": 125.1,
+    "taille_pdf_kb": 447.5,
+    "source": "cours"
+  },
+  "Are Compressed Language Models Less Subgroup Robus_2403.17811v1.txt": {
+    "filename": "Are Compressed Language Models Less Subgroup Robus_2403.17811v1.txt",
+    "pdf_original": "Are Compressed Language Models Less Subgroup Robus_2403.17811v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 2919,
+    "taille_txt_kb": 26.6,
+    "taille_pdf_kb": 363.4,
+    "source": "cours"
+  },
+  "Artificial Collective Intelligence Engineering a_2304.05147v1.txt": {
+    "filename": "Artificial Collective Intelligence Engineering a_2304.05147v1.txt",
+    "pdf_original": "Artificial Collective Intelligence Engineering a_2304.05147v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 3206,
+    "taille_txt_kb": 113.7,
+    "taille_pdf_kb": 1007.7,
+    "source": "cours"
+  },
+  "Artificial Intelligence Approaches for Predictive_2405.12785v1.txt": {
+    "filename": "Artificial Intelligence Approaches for Predictive_2405.12785v1.txt",
+    "pdf_original": "Artificial Intelligence Approaches for Predictive_2405.12785v1.pdf",
+    "langue": "en",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 29807,
+    "taille_txt_kb": 192.4,
+    "taille_pdf_kb": 2902.1,
+    "source": "cours"
+  },
+  "Artificial Intelligence Framework for Simulating C_1301.2158v1.txt": {
+    "filename": "Artificial Intelligence Framework for Simulating C_1301.2158v1.txt",
+    "pdf_original": "Artificial Intelligence Framework for Simulating C_1301.2158v1.pdf",
+    "langue": "en",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 8648,
+    "taille_txt_kb": 54.6,
+    "taille_pdf_kb": 815.7,
+    "source": "cours"
+  },
+  "Artificial Intelligence and Economic Theories_1703.06597v1.txt": {
+    "filename": "Artificial Intelligence and Economic Theories_1703.06597v1.txt",
+    "pdf_original": "Artificial Intelligence and Economic Theories_1703.06597v1.pdf",
+    "langue": "en",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 7844,
+    "taille_txt_kb": 46.9,
+    "taille_pdf_kb": 459.5,
+    "source": "cours"
+  },
+  "Atelier d'initiation à l'informatique.txt": {
+    "filename": "Atelier d'initiation à l'informatique.txt",
+    "pdf_original": "Atelier d'initiation à l'informatique.pdf",
+    "langue": "fr",
+    "theme": "Autre",
+    "nb_mots": 6082,
+    "taille_txt_kb": 37.6,
+    "taille_pdf_kb": 2749.6,
+    "source": "cours"
+  },
+  "Augmented Computational Design Methodical Applica_2310.09243v1.txt": {
+    "filename": "Augmented Computational Design Methodical Applica_2310.09243v1.txt",
+    "pdf_original": "Augmented Computational Design Methodical Applica_2310.09243v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 11193,
+    "taille_txt_kb": 80.9,
+    "taille_pdf_kb": 5101.0,
+    "source": "cours"
+  },
+  "Automatic Machine Learning by Pipeline Synthesis u_1905.10345v1.txt": {
+    "filename": "Automatic Machine Learning by Pipeline Synthesis u_1905.10345v1.txt",
+    "pdf_original": "Automatic Machine Learning by Pipeline Synthesis u_1905.10345v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 2955,
+    "taille_txt_kb": 19.7,
+    "taille_pdf_kb": 1016.2,
+    "source": "cours"
+  },
+  "Beyond Volume The Impact of Complex Healthcare Da_1706.01513v2.txt": {
+    "filename": "Beyond Volume The Impact of Complex Healthcare Da_1706.01513v2.txt",
+    "pdf_original": "Beyond Volume The Impact of Complex Healthcare Da_1706.01513v2.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 6948,
+    "taille_txt_kb": 53.7,
+    "taille_pdf_kb": 280.6,
+    "source": "cours"
+  },
+  "Bibliometric-enhanced Information Retrieval 2nd I_1501.02646v1.txt": {
+    "filename": "Bibliometric-enhanced Information Retrieval 2nd I_1501.02646v1.txt",
+    "pdf_original": "Bibliometric-enhanced Information Retrieval 2nd I_1501.02646v1.pdf",
+    "langue": "en",
+    "theme": "Information Retrieval",
+    "nb_mots": 1580,
+    "taille_txt_kb": 10.5,
+    "taille_pdf_kb": 144.9,
+    "source": "cours"
+  },
+  "Biologically inspired architectures for sample-eff_1911.11285v1.txt": {
+    "filename": "Biologically inspired architectures for sample-eff_1911.11285v1.txt",
+    "pdf_original": "Biologically inspired architectures for sample-eff_1911.11285v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 1551,
+    "taille_txt_kb": 24.1,
+    "taille_pdf_kb": 482.9,
+    "source": "cours"
+  },
+  "Brève histoire de l'informatique.txt": {
+    "filename": "Brève histoire de l'informatique.txt",
+    "pdf_original": "Brève histoire de l'informatique.pdf",
+    "langue": "fr",
+    "theme": "Autre",
+    "nb_mots": 3348,
+    "taille_txt_kb": 21.8,
+    "taille_pdf_kb": 740.3,
+    "source": "cours"
+  },
+  "Byzantine-Resilient High-Dimensional Federated Lea_2006.13041v2.txt": {
+    "filename": "Byzantine-Resilient High-Dimensional Federated Lea_2006.13041v2.txt",
+    "pdf_original": "Byzantine-Resilient High-Dimensional Federated Lea_2006.13041v2.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 16057,
+    "taille_txt_kb": 88.5,
+    "taille_pdf_kb": 916.1,
+    "source": "cours"
+  },
+  "Byzantine-Resilient SGD in High Dimensions on Hete_2005.07866v1.txt": {
+    "filename": "Byzantine-Resilient SGD in High Dimensions on Hete_2005.07866v1.txt",
+    "pdf_original": "Byzantine-Resilient SGD in High Dimensions on Hete_2005.07866v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 29235,
+    "taille_txt_kb": 162.4,
+    "taille_pdf_kb": 1310.8,
+    "source": "cours"
+  },
+  "Causal-Paced Deep Reinforcement Learning_2507.02910v1.txt": {
+    "filename": "Causal-Paced Deep Reinforcement Learning_2507.02910v1.txt",
+    "pdf_original": "Causal-Paced Deep Reinforcement Learning_2507.02910v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 4187,
+    "taille_txt_kb": 47.1,
+    "taille_pdf_kb": 723.9,
+    "source": "cours"
+  },
+  "Challenges Encountered in Turkish Natural Language_2101.11436v1.txt": {
+    "filename": "Challenges Encountered in Turkish Natural Language_2101.11436v1.txt",
+    "pdf_original": "Challenges Encountered in Turkish Natural Language_2101.11436v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 3983,
+    "taille_txt_kb": 24.6,
+    "taille_pdf_kb": 301.8,
+    "source": "cours"
+  },
+  "Changing Data Sources in the Age of Machine Learni_2306.04338v1.txt": {
+    "filename": "Changing Data Sources in the Age of Machine Learni_2306.04338v1.txt",
+    "pdf_original": "Changing Data Sources in the Age of Machine Learni_2306.04338v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 961,
+    "taille_txt_kb": 31.0,
+    "taille_pdf_kb": 148.8,
+    "source": "cours"
+  },
+  "Changing Neighbors k Secure Sum Protocol for Secur_1002.2409v1.txt": {
+    "filename": "Changing Neighbors k Secure Sum Protocol for Secur_1002.2409v1.txt",
+    "pdf_original": "Changing Neighbors k Secure Sum Protocol for Secur_1002.2409v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 2721,
+    "taille_txt_kb": 15.8,
+    "taille_pdf_kb": 835.2,
+    "source": "cours"
+  },
+  "ChatGPT, et après - Bilan et perspectives de l'intelligence artificielle.txt": {
+    "filename": "ChatGPT, et après - Bilan et perspectives de l'intelligence artificielle.txt",
+    "pdf_original": "ChatGPT, et après - Bilan et perspectives de l'intelligence artificielle.pdf",
+    "langue": "fr",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 126407,
+    "taille_txt_kb": 821.9,
+    "taille_pdf_kb": 4805.6,
+    "source": "cours"
+  },
+  "Classical and Quantum Random Walks to Identify Lea_2209.02005v1.txt": {
+    "filename": "Classical and Quantum Random Walks to Identify Lea_2209.02005v1.txt",
+    "pdf_original": "Classical and Quantum Random Walks to Identify Lea_2209.02005v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 3831,
+    "taille_txt_kb": 25.6,
+    "taille_pdf_kb": 869.3,
+    "source": "cours"
+  },
+  "Classifying Options for Deep Reinforcement Learnin_1604.08153v3.txt": {
+    "filename": "Classifying Options for Deep Reinforcement Learnin_1604.08153v3.txt",
+    "pdf_original": "Classifying Options for Deep Reinforcement Learnin_1604.08153v3.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 2768,
+    "taille_txt_kb": 26.6,
+    "taille_pdf_kb": 337.4,
+    "source": "cours"
+  },
+  "Communication and Randomness Lower Bounds for Secu_1512.07735v2.txt": {
+    "filename": "Communication and Randomness Lower Bounds for Secu_1512.07735v2.txt",
+    "pdf_original": "Communication and Randomness Lower Bounds for Secu_1512.07735v2.pdf",
+    "langue": "en",
+    "theme": "Réseaux",
+    "nb_mots": 23563,
+    "taille_txt_kb": 136.2,
+    "taille_pdf_kb": 750.6,
+    "source": "cours"
+  },
+  "Comparative Analysis of Data Preprocessing Methods_2402.14980v1.txt": {
+    "filename": "Comparative Analysis of Data Preprocessing Methods_2402.14980v1.txt",
+    "pdf_original": "Comparative Analysis of Data Preprocessing Methods_2402.14980v1.pdf",
+    "langue": "en",
+    "theme": "Data Science",
+    "nb_mots": 5302,
+    "taille_txt_kb": 42.4,
+    "taille_pdf_kb": 915.7,
+    "source": "cours"
+  },
+  "Comparative Analysis of Word Embeddings for Captur_2005.03812v1.txt": {
+    "filename": "Comparative Analysis of Word Embeddings for Captur_2005.03812v1.txt",
+    "pdf_original": "Comparative Analysis of Word Embeddings for Captur_2005.03812v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 5279,
+    "taille_txt_kb": 34.9,
+    "taille_pdf_kb": 1422.8,
+    "source": "cours"
+  },
+  "Compression The Fermi Paradox and Artificial Supe_2110.01835v1.txt": {
+    "filename": "Compression The Fermi Paradox and Artificial Supe_2110.01835v1.txt",
+    "pdf_original": "Compression The Fermi Paradox and Artificial Supe_2110.01835v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 1381,
+    "taille_txt_kb": 10.6,
+    "taille_pdf_kb": 61.4,
+    "source": "cours"
+  },
+  "Compression and Localization in Reinforcement Lear_1904.09489v1.txt": {
+    "filename": "Compression and Localization in Reinforcement Lear_1904.09489v1.txt",
+    "pdf_original": "Compression and Localization in Reinforcement Lear_1904.09489v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 855,
+    "taille_txt_kb": 20.2,
+    "taille_pdf_kb": 10165.2,
+    "source": "cours"
+  },
+  "Concolic Testing in Logic Programming_1507.05454v1.txt": {
+    "filename": "Concolic Testing in Logic Programming_1507.05454v1.txt",
+    "pdf_original": "Concolic Testing in Logic Programming_1507.05454v1.pdf",
+    "langue": "en",
+    "theme": "Programmation",
+    "nb_mots": 9549,
+    "taille_txt_kb": 57.7,
+    "taille_pdf_kb": 364.3,
+    "source": "cours"
+  },
+  "Constraints on dark energy from H II starburst gal_1110.5626v1.txt": {
+    "filename": "Constraints on dark energy from H II starburst gal_1110.5626v1.txt",
+    "pdf_original": "Constraints on dark energy from H II starburst gal_1110.5626v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 3897,
+    "taille_txt_kb": 21.3,
+    "taille_pdf_kb": 421.3,
+    "source": "cours"
+  },
+  "Continual Learning for Recurrent Neural Networks_2103.07492v4.txt": {
+    "filename": "Continual Learning for Recurrent Neural Networks_2103.07492v4.txt",
+    "pdf_original": "Continual Learning for Recurrent Neural Networks_2103.07492v4.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 13632,
+    "taille_txt_kb": 95.0,
+    "taille_pdf_kb": 1547.7,
+    "source": "cours"
+  },
+  "Corporate competition A self-organized network_1107.0539v1.txt": {
+    "filename": "Corporate competition A self-organized network_1107.0539v1.txt",
+    "pdf_original": "Corporate competition A self-organized network_1107.0539v1.pdf",
+    "langue": "en",
+    "theme": "Réseaux",
+    "nb_mots": 13582,
+    "taille_txt_kb": 83.8,
+    "taille_pdf_kb": 2451.4,
+    "source": "cours"
+  },
+  "Cours - Développement WEB.txt": {
+    "filename": "Cours - Développement WEB.txt",
+    "pdf_original": "Cours - Développement WEB.pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 34395,
+    "taille_txt_kb": 221.7,
+    "taille_pdf_kb": 2149.6,
+    "source": "cours"
+  },
+  "Cours PHP Accéléré.txt": {
+    "filename": "Cours PHP Accéléré.txt",
+    "pdf_original": "Cours PHP Accéléré.pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 23984,
+    "taille_txt_kb": 217.8,
+    "taille_pdf_kb": 839.7,
+    "source": "cours"
+  },
+  "Cours d'Initiation en Informatique.txt": {
+    "filename": "Cours d'Initiation en Informatique.txt",
+    "pdf_original": "Cours d'Initiation en Informatique.pdf",
+    "langue": "fr",
+    "theme": "Autre",
+    "nb_mots": 5215,
+    "taille_txt_kb": 33.9,
+    "taille_pdf_kb": 1000.6,
+    "source": "cours"
+  },
+  "Cours de Developpement Web.txt": {
+    "filename": "Cours de Developpement Web.txt",
+    "pdf_original": "Cours de Developpement Web.pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 24170,
+    "taille_txt_kb": 152.7,
+    "taille_pdf_kb": 2424.5,
+    "source": "cours"
+  },
+  "Cours de Python.txt": {
+    "filename": "Cours de Python.txt",
+    "pdf_original": "Cours de Python.pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 123887,
+    "taille_txt_kb": 820.1,
+    "taille_pdf_kb": 5405.7,
+    "source": "cours"
+  },
+  "CoursMachineLearningIA-DrSEBRI.txt": {
+    "filename": "CoursMachineLearningIA-DrSEBRI.txt",
+    "pdf_original": "CoursMachineLearningIA-DrSEBRI.pdf",
+    "langue": "fr",
+    "theme": "Autre",
+    "nb_mots": 3737,
+    "taille_txt_kb": 25.9,
+    "taille_pdf_kb": 1729.9,
+    "source": "cours"
+  },
+  "Creative Problem Solving in Artificially Intellige_2204.10358v1.txt": {
+    "filename": "Creative Problem Solving in Artificially Intellige_2204.10358v1.txt",
+    "pdf_original": "Creative Problem Solving in Artificially Intellige_2204.10358v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 24209,
+    "taille_txt_kb": 153.3,
+    "taille_pdf_kb": 2005.0,
+    "source": "cours"
+  },
+  "DESIRE-ME Domain-Enhanced Supervised Information_2403.13468v1.txt": {
+    "filename": "DESIRE-ME Domain-Enhanced Supervised Information_2403.13468v1.txt",
+    "pdf_original": "DESIRE-ME Domain-Enhanced Supervised Information_2403.13468v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 4980,
+    "taille_txt_kb": 37.9,
+    "taille_pdf_kb": 384.4,
+    "source": "cours"
+  },
+  "DOME Recommendations for supervised machine learn_2006.16189v4.txt": {
+    "filename": "DOME Recommendations for supervised machine learn_2006.16189v4.txt",
+    "pdf_original": "DOME Recommendations for supervised machine learn_2006.16189v4.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 7051,
+    "taille_txt_kb": 46.4,
+    "taille_pdf_kb": 667.8,
+    "source": "cours"
+  },
+  "DTN7 An Open-Source Disruption-tolerant Networkin_1908.10237v1.txt": {
+    "filename": "DTN7 An Open-Source Disruption-tolerant Networkin_1908.10237v1.txt",
+    "pdf_original": "DTN7 An Open-Source Disruption-tolerant Networkin_1908.10237v1.pdf",
+    "langue": "en",
+    "theme": "Réseaux",
+    "nb_mots": 4095,
+    "taille_txt_kb": 30.0,
+    "taille_pdf_kb": 482.7,
+    "source": "cours"
+  },
+  "Data Encoding for Byzantine-Resilient Distributed_1907.02664v2.txt": {
+    "filename": "Data Encoding for Byzantine-Resilient Distributed_1907.02664v2.txt",
+    "pdf_original": "Data Encoding for Byzantine-Resilient Distributed_1907.02664v2.pdf",
+    "langue": "en",
+    "theme": "Data Science",
+    "nb_mots": 21583,
+    "taille_txt_kb": 129.6,
+    "taille_pdf_kb": 1110.1,
+    "source": "cours"
+  },
+  "Data Science Methodologies Current Challenges and_2106.07287v2.txt": {
+    "filename": "Data Science Methodologies Current Challenges and_2106.07287v2.txt",
+    "pdf_original": "Data Science Methodologies Current Challenges and_2106.07287v2.pdf",
+    "langue": "en",
+    "theme": "Data Science",
+    "nb_mots": 9259,
+    "taille_txt_kb": 102.7,
+    "taille_pdf_kb": 4583.5,
+    "source": "cours"
+  },
+  "Data clustering a fundamental method in data scie_2412.18760v3.txt": {
+    "filename": "Data clustering a fundamental method in data scie_2412.18760v3.txt",
+    "pdf_original": "Data clustering a fundamental method in data scie_2412.18760v3.pdf",
+    "langue": "en",
+    "theme": "Data Science",
+    "nb_mots": 7052,
+    "taille_txt_kb": 69.7,
+    "taille_pdf_kb": 2427.3,
+    "source": "cours"
+  },
+  "Death and Suicide in Universal Artificial Intellig_1606.00652v1.txt": {
+    "filename": "Death and Suicide in Universal Artificial Intellig_1606.00652v1.txt",
+    "pdf_original": "Death and Suicide in Universal Artificial Intellig_1606.00652v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 4605,
+    "taille_txt_kb": 27.9,
+    "taille_pdf_kb": 195.2,
+    "source": "cours"
+  },
+  "Deep Learning Relevance Creating Relevant Informa_1606.07660v2.txt": {
+    "filename": "Deep Learning Relevance Creating Relevant Informa_1606.07660v2.txt",
+    "pdf_original": "Deep Learning Relevance Creating Relevant Informa_1606.07660v2.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 2726,
+    "taille_txt_kb": 20.7,
+    "taille_pdf_kb": 867.5,
+    "source": "cours"
+  },
+  "Directed Policy Gradient for Safe Reinforcement Le_1808.04096v1.txt": {
+    "filename": "Directed Policy Gradient for Safe Reinforcement Le_1808.04096v1.txt",
+    "pdf_original": "Directed Policy Gradient for Safe Reinforcement Le_1808.04096v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 3871,
+    "taille_txt_kb": 23.9,
+    "taille_pdf_kb": 472.3,
+    "source": "cours"
+  },
+  "Diversifying the Genomic Data Science Research Com_2201.08443v2.txt": {
+    "filename": "Diversifying the Genomic Data Science Research Com_2201.08443v2.txt",
+    "pdf_original": "Diversifying the Genomic Data Science Research Com_2201.08443v2.pdf",
+    "langue": "en",
+    "theme": "Data Science",
+    "nb_mots": 12595,
+    "taille_txt_kb": 84.5,
+    "taille_pdf_kb": 2526.6,
+    "source": "cours"
+  },
+  "Domain Adaptation for Enterprise Email Search_1906.07897v1.txt": {
+    "filename": "Domain Adaptation for Enterprise Email Search_1906.07897v1.txt",
+    "pdf_original": "Domain Adaptation for Enterprise Email Search_1906.07897v1.pdf",
+    "langue": "en",
+    "theme": "Information Retrieval",
+    "nb_mots": 1991,
+    "taille_txt_kb": 46.9,
+    "taille_pdf_kb": 981.5,
+    "source": "cours"
+  },
+  "Donner un sens à l'intelligence artificielle.txt": {
+    "filename": "Donner un sens à l'intelligence artificielle.txt",
+    "pdf_original": "Donner un sens à l'intelligence artificielle.pdf",
+    "langue": "fr",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 98640,
+    "taille_txt_kb": 647.6,
+    "taille_pdf_kb": 11869.0,
+    "source": "cours"
+  },
+  "Dual Accuracy-Quality-Driven Neural Network for Pr_2212.06370v4.txt": {
+    "filename": "Dual Accuracy-Quality-Driven Neural Network for Pr_2212.06370v4.txt",
+    "pdf_original": "Dual Accuracy-Quality-Driven Neural Network for Pr_2212.06370v4.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 7997,
+    "taille_txt_kb": 57.0,
+    "taille_pdf_kb": 6110.3,
+    "source": "cours"
+  },
+  "Dynamic Information Retrieval Theoretical Framewo_1601.04605v1.txt": {
+    "filename": "Dynamic Information Retrieval Theoretical Framewo_1601.04605v1.txt",
+    "pdf_original": "Dynamic Information Retrieval Theoretical Framewo_1601.04605v1.pdf",
+    "langue": "en",
+    "theme": "Information Retrieval",
+    "nb_mots": 7021,
+    "taille_txt_kb": 54.0,
+    "taille_pdf_kb": 1676.8,
+    "source": "cours"
+  },
+  "Développement Web - -Zone Grand Débutant-.txt": {
+    "filename": "Développement Web - -Zone Grand Débutant-.txt",
+    "pdf_original": "Développement Web - -Zone Grand Débutant-.pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 13001,
+    "taille_txt_kb": 80.2,
+    "taille_pdf_kb": 1048.0,
+    "source": "cours"
+  },
+  "Editorial Techniques and Methods for Astrophysica_1705.01483v1.txt": {
+    "filename": "Editorial Techniques and Methods for Astrophysica_1705.01483v1.txt",
+    "pdf_original": "Editorial Techniques and Methods for Astrophysica_1705.01483v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 995,
+    "taille_txt_kb": 6.1,
+    "taille_pdf_kb": 55.9,
+    "source": "cours"
+  },
+  "Editorial for the Bibliometric-enhanced Informatio_1404.7099v1.txt": {
+    "filename": "Editorial for the Bibliometric-enhanced Informatio_1404.7099v1.txt",
+    "pdf_original": "Editorial for the Bibliometric-enhanced Informatio_1404.7099v1.pdf",
+    "langue": "en",
+    "theme": "Information Retrieval",
+    "nb_mots": 1650,
+    "taille_txt_kb": 10.6,
+    "taille_pdf_kb": 96.0,
+    "source": "cours"
+  },
+  "Effective Analysis of C Programs by Rewriting Vari_1701.08114v1.txt": {
+    "filename": "Effective Analysis of C Programs by Rewriting Vari_1701.08114v1.txt",
+    "pdf_original": "Effective Analysis of C Programs by Rewriting Vari_1701.08114v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 8504,
+    "taille_txt_kb": 60.5,
+    "taille_pdf_kb": 259.4,
+    "source": "cours"
+  },
+  "Emotion in Reinforcement Learning Agents and Robot_1705.05172v1.txt": {
+    "filename": "Emotion in Reinforcement Learning Agents and Robot_1705.05172v1.txt",
+    "pdf_original": "Emotion in Reinforcement Learning Agents and Robot_1705.05172v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 12543,
+    "taille_txt_kb": 112.0,
+    "taille_pdf_kb": 880.6,
+    "source": "cours"
+  },
+  "Enabling Information Centric Networks through Oppo_1310.8258v1.txt": {
+    "filename": "Enabling Information Centric Networks through Oppo_1310.8258v1.txt",
+    "pdf_original": "Enabling Information Centric Networks through Oppo_1310.8258v1.pdf",
+    "langue": "en",
+    "theme": "Réseaux",
+    "nb_mots": 5073,
+    "taille_txt_kb": 36.0,
+    "taille_pdf_kb": 341.5,
+    "source": "cours"
+  },
+  "Evaluating Information Retrieval Systems for Kids_2005.12992v1.txt": {
+    "filename": "Evaluating Information Retrieval Systems for Kids_2005.12992v1.txt",
+    "pdf_original": "Evaluating Information Retrieval Systems for Kids_2005.12992v1.pdf",
+    "langue": "en",
+    "theme": "Information Retrieval",
+    "nb_mots": 520,
+    "taille_txt_kb": 10.9,
+    "taille_pdf_kb": 81.1,
+    "source": "cours"
+  },
+  "Explainable Information Retrieval in the Audit Dom_2507.03479v1.txt": {
+    "filename": "Explainable Information Retrieval in the Audit Dom_2507.03479v1.txt",
+    "pdf_original": "Explainable Information Retrieval in the Audit Dom_2507.03479v1.pdf",
+    "langue": "en",
+    "theme": "Information Retrieval",
+    "nb_mots": 666,
+    "taille_txt_kb": 24.0,
+    "taille_pdf_kb": 435.6,
+    "source": "cours"
+  },
+  "Exploring Hierarchy-Aware Inverse Reinforcement Le_1807.05037v1.txt": {
+    "filename": "Exploring Hierarchy-Aware Inverse Reinforcement Le_1807.05037v1.txt",
+    "pdf_original": "Exploring Hierarchy-Aware Inverse Reinforcement Le_1807.05037v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 2394,
+    "taille_txt_kb": 32.3,
+    "taille_pdf_kb": 830.6,
+    "source": "cours"
+  },
+  "Exploring the Landscape of Natural Language Proces_2307.10652v5.txt": {
+    "filename": "Exploring the Landscape of Natural Language Proces_2307.10652v5.txt",
+    "pdf_original": "Exploring the Landscape of Natural Language Proces_2307.10652v5.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 6012,
+    "taille_txt_kb": 66.1,
+    "taille_pdf_kb": 638.8,
+    "source": "cours"
+  },
+  "Flexible Accuracy for Differential Privacy_2110.09580v1.txt": {
+    "filename": "Flexible Accuracy for Differential Privacy_2110.09580v1.txt",
+    "pdf_original": "Flexible Accuracy for Differential Privacy_2110.09580v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 19174,
+    "taille_txt_kb": 107.4,
+    "taille_pdf_kb": 2175.9,
+    "source": "cours"
+  },
+  "Fourier Learning Machines Nonharmonic Fourier-Bas_2509.08759v3.txt": {
+    "filename": "Fourier Learning Machines Nonharmonic Fourier-Bas_2509.08759v3.txt",
+    "pdf_original": "Fourier Learning Machines Nonharmonic Fourier-Bas_2509.08759v3.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 13881,
+    "taille_txt_kb": 94.8,
+    "taille_pdf_kb": 7074.0,
+    "source": "cours"
+  },
+  "From Statistical Relational to Neurosymbolic Artif_2108.11451v4.txt": {
+    "filename": "From Statistical Relational to Neurosymbolic Artif_2108.11451v4.txt",
+    "pdf_original": "From Statistical Relational to Neurosymbolic Artif_2108.11451v4.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 21296,
+    "taille_txt_kb": 141.0,
+    "taille_pdf_kb": 1252.9,
+    "source": "cours"
+  },
+  "GREX-PLUS Science Book_2304.08104v2.txt": {
+    "filename": "GREX-PLUS Science Book_2304.08104v2.txt",
+    "pdf_original": "GREX-PLUS Science Book_2304.08104v2.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 41586,
+    "taille_txt_kb": 273.3,
+    "taille_pdf_kb": 19163.0,
+    "source": "cours"
+  },
+  "GUPPY Pythonic Quantum-Classical Programming_2510.12582v1.txt": {
+    "filename": "GUPPY Pythonic Quantum-Classical Programming_2510.12582v1.txt",
+    "pdf_original": "GUPPY Pythonic Quantum-Classical Programming_2510.12582v1.pdf",
+    "langue": "en",
+    "theme": "Programmation",
+    "nb_mots": 680,
+    "taille_txt_kb": 17.5,
+    "taille_pdf_kb": 442.7,
+    "source": "cours"
+  },
+  "Games for Artificial Intelligence Research A Revi_2304.13269v4.txt": {
+    "filename": "Games for Artificial Intelligence Research A Revi_2304.13269v4.txt",
+    "pdf_original": "Games for Artificial Intelligence Research A Revi_2304.13269v4.pdf",
+    "langue": "en",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 13257,
+    "taille_txt_kb": 104.8,
+    "taille_pdf_kb": 29526.4,
+    "source": "cours"
+  },
+  "Generalizing Machine Learning Evaluation through t_2404.12511v1.txt": {
+    "filename": "Generalizing Machine Learning Evaluation through t_2404.12511v1.txt",
+    "pdf_original": "Generalizing Machine Learning Evaluation through t_2404.12511v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 5095,
+    "taille_txt_kb": 34.0,
+    "taille_pdf_kb": 569.4,
+    "source": "cours"
+  },
+  "Generative AI for Software Metadata Overview of t_2311.03374v1.txt": {
+    "filename": "Generative AI for Software Metadata Overview of t_2311.03374v1.txt",
+    "pdf_original": "Generative AI for Software Metadata Overview of t_2311.03374v1.pdf",
+    "langue": "en",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 923,
+    "taille_txt_kb": 14.7,
+    "taille_pdf_kb": 738.1,
+    "source": "cours"
+  },
+  "Glossaire des termes Informatiques.txt": {
+    "filename": "Glossaire des termes Informatiques.txt",
+    "pdf_original": "Glossaire des termes Informatiques.pdf",
+    "langue": "fr",
+    "theme": "Autre",
+    "nb_mots": 32642,
+    "taille_txt_kb": 212.1,
+    "taille_pdf_kb": 562.6,
+    "source": "cours"
+  },
+  "Graph Embedded Intuitionistic Fuzzy Random Vector_2307.07881v2.txt": {
+    "filename": "Graph Embedded Intuitionistic Fuzzy Random Vector_2307.07881v2.txt",
+    "pdf_original": "Graph Embedded Intuitionistic Fuzzy Random Vector_2307.07881v2.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 7406,
+    "taille_txt_kb": 50.3,
+    "taille_pdf_kb": 231.7,
+    "source": "cours"
+  },
+  "Guide de Formation pour Informatique de base.txt": {
+    "filename": "Guide de Formation pour Informatique de base.txt",
+    "pdf_original": "Guide de Formation pour Informatique de base.pdf",
+    "langue": "fr",
+    "theme": "Autre",
+    "nb_mots": 17729,
+    "taille_txt_kb": 105.2,
+    "taille_pdf_kb": 2959.1,
+    "source": "cours"
+  },
+  "Hierarchical Attentional Hybrid Neural Networks fo_1901.06610v2.txt": {
+    "filename": "Hierarchical Attentional Hybrid Neural Networks fo_1901.06610v2.txt",
+    "pdf_original": "Hierarchical Attentional Hybrid Neural Networks fo_1901.06610v2.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 1857,
+    "taille_txt_kb": 13.2,
+    "taille_pdf_kb": 639.6,
+    "source": "cours"
+  },
+  "Horn Clauses as an Intermediate Representation for_1507.05762v1.txt": {
+    "filename": "Horn Clauses as an Intermediate Representation for_1507.05762v1.txt",
+    "pdf_original": "Horn Clauses as an Intermediate Representation for_1507.05762v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 5460,
+    "taille_txt_kb": 40.5,
+    "taille_pdf_kb": 249.4,
+    "source": "cours"
+  },
+  "Hyperlink communities in higher-order networks_2303.01385v3.txt": {
+    "filename": "Hyperlink communities in higher-order networks_2303.01385v3.txt",
+    "pdf_original": "Hyperlink communities in higher-order networks_2303.01385v3.pdf",
+    "langue": "en",
+    "theme": "Réseaux",
+    "nb_mots": 5865,
+    "taille_txt_kb": 41.6,
+    "taille_pdf_kb": 1727.0,
+    "source": "cours"
+  },
+  "IA - Notre Ambition pour la France.txt": {
+    "filename": "IA - Notre Ambition pour la France.txt",
+    "pdf_original": "IA - Notre Ambition pour la France.pdf",
+    "langue": "fr",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 52715,
+    "taille_txt_kb": 347.6,
+    "taille_pdf_kb": 4823.0,
+    "source": "cours"
+  },
+  "IA pour les enseignants - Un Manuel Ouvert.txt": {
+    "filename": "IA pour les enseignants - Un Manuel Ouvert.txt",
+    "pdf_original": "IA pour les enseignants - Un Manuel Ouvert.pdf",
+    "langue": "fr",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 55860,
+    "taille_txt_kb": 439.8,
+    "taille_pdf_kb": 28959.0,
+    "source": "cours"
+  },
+  "IVOA Recommendation Spectrum Data Model 11_1204.3055v1.txt": {
+    "filename": "IVOA Recommendation Spectrum Data Model 11_1204.3055v1.txt",
+    "pdf_original": "IVOA Recommendation Spectrum Data Model 11_1204.3055v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 17093,
+    "taille_txt_kb": 138.4,
+    "taille_pdf_kb": 445.0,
+    "source": "cours"
+  },
+  "Icon Based Information Retrieval and Disease Ident_1404.1664v1.txt": {
+    "filename": "Icon Based Information Retrieval and Disease Ident_1404.1664v1.txt",
+    "pdf_original": "Icon Based Information Retrieval and Disease Ident_1404.1664v1.pdf",
+    "langue": "en",
+    "theme": "Information Retrieval",
+    "nb_mots": 3181,
+    "taille_txt_kb": 18.8,
+    "taille_pdf_kb": 963.5,
+    "source": "cours"
+  },
+  "Image-based Natural Language Understanding Using 2_1810.10401v2.txt": {
+    "filename": "Image-based Natural Language Understanding Using 2_1810.10401v2.txt",
+    "pdf_original": "Image-based Natural Language Understanding Using 2_1810.10401v2.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 1444,
+    "taille_txt_kb": 28.9,
+    "taille_pdf_kb": 646.3,
+    "source": "cours"
+  },
+  "Imbalanced data preprocessing techniques utilizing_2111.14120v1.txt": {
+    "filename": "Imbalanced data preprocessing techniques utilizing_2111.14120v1.txt",
+    "pdf_original": "Imbalanced data preprocessing techniques utilizing_2111.14120v1.pdf",
+    "langue": "en",
+    "theme": "Data Science",
+    "nb_mots": 5648,
+    "taille_txt_kb": 143.8,
+    "taille_pdf_kb": 10203.8,
+    "source": "cours"
+  },
+  "Improving Generalization of Deep Neural Networks b_1812.10761v3.txt": {
+    "filename": "Improving Generalization of Deep Neural Networks b_1812.10761v3.txt",
+    "pdf_original": "Improving Generalization of Deep Neural Networks b_1812.10761v3.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 6967,
+    "taille_txt_kb": 63.1,
+    "taille_pdf_kb": 3443.9,
+    "source": "cours"
+  },
+  "Information-based Preprocessing of PLC Data for Au_2307.15404v2.txt": {
+    "filename": "Information-based Preprocessing of PLC Data for Au_2307.15404v2.txt",
+    "pdf_original": "Information-based Preprocessing of PLC Data for Au_2307.15404v2.pdf",
+    "langue": "en",
+    "theme": "Data Science",
+    "nb_mots": 4487,
+    "taille_txt_kb": 28.1,
+    "taille_pdf_kb": 904.6,
+    "source": "cours"
+  },
+  "Initiation à l'informatique - Niveau débutant.txt": {
+    "filename": "Initiation à l'informatique - Niveau débutant.txt",
+    "pdf_original": "Initiation à l'informatique - Niveau débutant.pdf",
+    "langue": "fr",
+    "theme": "Autre",
+    "nb_mots": 16729,
+    "taille_txt_kb": 103.5,
+    "taille_pdf_kb": 2823.7,
+    "source": "cours"
+  },
+  "Initiation à l'informatique.txt": {
+    "filename": "Initiation à l'informatique.txt",
+    "pdf_original": "Initiation à l'informatique.pdf",
+    "langue": "fr",
+    "theme": "Autre",
+    "nb_mots": 14587,
+    "taille_txt_kb": 85.7,
+    "taille_pdf_kb": 872.6,
+    "source": "cours"
+  },
+  "Initiation à la programmation (614-initiation-a-la-programmation-divers-auteurs).txt": {
+    "filename": "Initiation à la programmation (614-initiation-a-la-programmation-divers-auteurs).txt",
+    "pdf_original": "Initiation à la programmation (614-initiation-a-la-programmation-divers-auteurs).pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 20360,
+    "taille_txt_kb": 135.0,
+    "taille_pdf_kb": 1086.7,
+    "source": "cours"
+  },
+  "Initiation à la programmation.txt": {
+    "filename": "Initiation à la programmation.txt",
+    "pdf_original": "Initiation à la programmation.pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 2227,
+    "taille_txt_kb": 14.2,
+    "taille_pdf_kb": 431.4,
+    "source": "cours"
+  },
+  "Initiation à l’algorithmique.txt": {
+    "filename": "Initiation à l’algorithmique.txt",
+    "pdf_original": "Initiation à l’algorithmique.pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 66918,
+    "taille_txt_kb": 393.9,
+    "taille_pdf_kb": 2096.4,
+    "source": "cours"
+  },
+  "Integrating Preprocessing Methods and Convolutiona_2402.16221v1.txt": {
+    "filename": "Integrating Preprocessing Methods and Convolutiona_2402.16221v1.txt",
+    "pdf_original": "Integrating Preprocessing Methods and Convolutiona_2402.16221v1.pdf",
+    "langue": "en",
+    "theme": "Data Science",
+    "nb_mots": 2192,
+    "taille_txt_kb": 16.8,
+    "taille_pdf_kb": 751.2,
+    "source": "cours"
+  },
+  "Intelligence Artificielle - Guide de Survie.txt": {
+    "filename": "Intelligence Artificielle - Guide de Survie.txt",
+    "pdf_original": "Intelligence Artificielle - Guide de Survie.pdf",
+    "langue": "fr",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 34090,
+    "taille_txt_kb": 226.5,
+    "taille_pdf_kb": 4168.0,
+    "source": "cours"
+  },
+  "Intelligence Artificielle - Résolution de Problèmes.txt": {
+    "filename": "Intelligence Artificielle - Résolution de Problèmes.txt",
+    "pdf_original": "Intelligence Artificielle - Résolution de Problèmes.pdf",
+    "langue": "fr",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 10400,
+    "taille_txt_kb": 62.6,
+    "taille_pdf_kb": 2120.8,
+    "source": "cours"
+  },
+  "Intelligence Artificielle pour l'Ingénierie.txt": {
+    "filename": "Intelligence Artificielle pour l'Ingénierie.txt",
+    "pdf_original": "Intelligence Artificielle pour l'Ingénierie.pdf",
+    "langue": "fr",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 18174,
+    "taille_txt_kb": 109.5,
+    "taille_pdf_kb": 1827.9,
+    "source": "cours"
+  },
+  "Intelligence Artificielle.txt": {
+    "filename": "Intelligence Artificielle.txt",
+    "pdf_original": "Intelligence Artificielle.pdf",
+    "langue": "fr",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 22005,
+    "taille_txt_kb": 150.0,
+    "taille_pdf_kb": 4404.3,
+    "source": "cours"
+  },
+  "Intelligence artificielle et intuition.txt": {
+    "filename": "Intelligence artificielle et intuition.txt",
+    "pdf_original": "Intelligence artificielle et intuition.pdf",
+    "langue": "fr",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 168138,
+    "taille_txt_kb": 1052.8,
+    "taille_pdf_kb": 17535.3,
+    "source": "cours"
+  },
+  "Intelligent behavior depends on the ecological nic_2103.06769v1.txt": {
+    "filename": "Intelligent behavior depends on the ecological nic_2103.06769v1.txt",
+    "pdf_original": "Intelligent behavior depends on the ecological nic_2103.06769v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 4572,
+    "taille_txt_kb": 33.4,
+    "taille_pdf_kb": 359.1,
+    "source": "cours"
+  },
+  "Interactions with Generative Information Retrieval_2407.11605v1.txt": {
+    "filename": "Interactions with Generative Information Retrieval_2407.11605v1.txt",
+    "pdf_original": "Interactions with Generative Information Retrieval_2407.11605v1.pdf",
+    "langue": "en",
+    "theme": "Information Retrieval",
+    "nb_mots": 8576,
+    "taille_txt_kb": 65.1,
+    "taille_pdf_kb": 1644.0,
+    "source": "cours"
+  },
+  "Internet & Création.txt": {
+    "filename": "Internet & Création.txt",
+    "pdf_original": "Internet & Création.pdf",
+    "langue": "fr",
+    "theme": "Réseaux",
+    "nb_mots": 18025,
+    "taille_txt_kb": 185.1,
+    "taille_pdf_kb": 521.1,
+    "source": "cours"
+  },
+  "Introduction au Deep Learning (introduction-au-deep-learning-jeremie-bigot-4735).txt": {
+    "filename": "Introduction au Deep Learning (introduction-au-deep-learning-jeremie-bigot-4735).txt",
+    "pdf_original": "Introduction au Deep Learning (introduction-au-deep-learning-jeremie-bigot-4735).pdf",
+    "langue": "fr",
+    "theme": "Machine Learning",
+    "nb_mots": 987,
+    "taille_txt_kb": 13.3,
+    "taille_pdf_kb": 805.1,
+    "source": "cours"
+  },
+  "Introduction au Deep Learning.txt": {
+    "filename": "Introduction au Deep Learning.txt",
+    "pdf_original": "Introduction au Deep Learning.pdf",
+    "langue": "fr",
+    "theme": "Machine Learning",
+    "nb_mots": 4518,
+    "taille_txt_kb": 66.2,
+    "taille_pdf_kb": 967.6,
+    "source": "cours"
+  },
+  "Introduction au Machine Learning.txt": {
+    "filename": "Introduction au Machine Learning.txt",
+    "pdf_original": "Introduction au Machine Learning.pdf",
+    "langue": "fr",
+    "theme": "Machine Learning",
+    "nb_mots": 22530,
+    "taille_txt_kb": 328.9,
+    "taille_pdf_kb": 2340.5,
+    "source": "cours"
+  },
+  "Introduction to Machine Learning Class Notes 6757_0904.3664v1.txt": {
+    "filename": "Introduction to Machine Learning Class Notes 6757_0904.3664v1.txt",
+    "pdf_original": "Introduction to Machine Learning Class Notes 6757_0904.3664v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 32647,
+    "taille_txt_kb": 176.5,
+    "taille_pdf_kb": 683.6,
+    "source": "cours"
+  },
+  "Introduction à Java.txt": {
+    "filename": "Introduction à Java.txt",
+    "pdf_original": "Introduction à Java.pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 15661,
+    "taille_txt_kb": 163.0,
+    "taille_pdf_kb": 440.6,
+    "source": "cours"
+  },
+  "Introduction à l'apprentissage automatique.txt": {
+    "filename": "Introduction à l'apprentissage automatique.txt",
+    "pdf_original": "Introduction à l'apprentissage automatique.pdf",
+    "langue": "fr",
+    "theme": "Machine Learning",
+    "nb_mots": 27009,
+    "taille_txt_kb": 324.2,
+    "taille_pdf_kb": 3349.7,
+    "source": "cours"
+  },
+  "Introduction à l'informatique.txt": {
+    "filename": "Introduction à l'informatique.txt",
+    "pdf_original": "Introduction à l'informatique.pdf",
+    "langue": "fr",
+    "theme": "Autre",
+    "nb_mots": 26694,
+    "taille_txt_kb": 168.3,
+    "taille_pdf_kb": 615.7,
+    "source": "cours"
+  },
+  "Introduction à l'intelligence artificielle.txt": {
+    "filename": "Introduction à l'intelligence artificielle.txt",
+    "pdf_original": "Introduction à l'intelligence artificielle.pdf",
+    "langue": "fr",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 26940,
+    "taille_txt_kb": 161.0,
+    "taille_pdf_kb": 1065.4,
+    "source": "cours"
+  },
+  "Introduction à la programmation.txt": {
+    "filename": "Introduction à la programmation.txt",
+    "pdf_original": "Introduction à la programmation.pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 1122,
+    "taille_txt_kb": 7.7,
+    "taille_pdf_kb": 395.6,
+    "source": "cours"
+  },
+  "Introduction à l’Informatique. Licence 1.txt": {
+    "filename": "Introduction à l’Informatique. Licence 1.txt",
+    "pdf_original": "Introduction à l’Informatique. Licence 1.pdf",
+    "langue": "fr",
+    "theme": "Autre",
+    "nb_mots": 985,
+    "taille_txt_kb": 6.4,
+    "taille_pdf_kb": 750.5,
+    "source": "cours"
+  },
+  "Introduction à l’algorithmique et à la programmation.txt": {
+    "filename": "Introduction à l’algorithmique et à la programmation.txt",
+    "pdf_original": "Introduction à l’algorithmique et à la programmation.pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 1724,
+    "taille_txt_kb": 11.9,
+    "taille_pdf_kb": 156.8,
+    "source": "cours"
+  },
+  "Introduction à l’informatique (1024-introduction-a-linformatique-divers-auteurs).txt": {
+    "filename": "Introduction à l’informatique (1024-introduction-a-linformatique-divers-auteurs).txt",
+    "pdf_original": "Introduction à l’informatique (1024-introduction-a-linformatique-divers-auteurs).pdf",
+    "langue": "fr",
+    "theme": "Autre",
+    "nb_mots": 1872,
+    "taille_txt_kb": 12.9,
+    "taille_pdf_kb": 609.2,
+    "source": "cours"
+  },
+  "Introduction à l’informatique (1030-introduction-a-linformatique-hp-garnir-et-f-monjoie).txt": {
+    "filename": "Introduction à l’informatique (1030-introduction-a-linformatique-hp-garnir-et-f-monjoie).txt",
+    "pdf_original": "Introduction à l’informatique (1030-introduction-a-linformatique-hp-garnir-et-f-monjoie).pdf",
+    "langue": "fr",
+    "theme": "Autre",
+    "nb_mots": 57548,
+    "taille_txt_kb": 353.5,
+    "taille_pdf_kb": 5875.9,
+    "source": "cours"
+  },
+  "Introduction à l’informatique.txt": {
+    "filename": "Introduction à l’informatique.txt",
+    "pdf_original": "Introduction à l’informatique.pdf",
+    "langue": "fr",
+    "theme": "Autre",
+    "nb_mots": 7313,
+    "taille_txt_kb": 148.2,
+    "taille_pdf_kb": 2340.2,
+    "source": "cours"
+  },
+  "Jellyfish A Large Language Model for Data Preproc_2312.01678v6.txt": {
+    "filename": "Jellyfish A Large Language Model for Data Preproc_2312.01678v6.txt",
+    "pdf_original": "Jellyfish A Large Language Model for Data Preproc_2312.01678v6.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 15759,
+    "taille_txt_kb": 99.5,
+    "taille_pdf_kb": 736.9,
+    "source": "cours"
+  },
+  "Joint Modeling and Optimization of Search and Reco_1807.05631v1.txt": {
+    "filename": "Joint Modeling and Optimization of Search and Reco_1807.05631v1.txt",
+    "pdf_original": "Joint Modeling and Optimization of Search and Reco_1807.05631v1.pdf",
+    "langue": "en",
+    "theme": "Information Retrieval",
+    "nb_mots": 1355,
+    "taille_txt_kb": 27.4,
+    "taille_pdf_kb": 1187.0,
+    "source": "cours"
+  },
+  "L'IA - Kwa sa i lé - 10 réponses sur l'IA.txt": {
+    "filename": "L'IA - Kwa sa i lé - 10 réponses sur l'IA.txt",
+    "pdf_original": "L'IA - Kwa sa i lé - 10 réponses sur l'IA.pdf",
+    "langue": "fr",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 13210,
+    "taille_txt_kb": 91.0,
+    "taille_pdf_kb": 926.3,
+    "source": "cours"
+  },
+  "LSTM-Based Predictions for Proactive Information R_1606.06137v1.txt": {
+    "filename": "LSTM-Based Predictions for Proactive Information R_1606.06137v1.txt",
+    "pdf_original": "LSTM-Based Predictions for Proactive Information R_1606.06137v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 3234,
+    "taille_txt_kb": 26.0,
+    "taille_pdf_kb": 693.7,
+    "source": "cours"
+  },
+  "La programmation pour....txt": {
+    "filename": "La programmation pour....txt",
+    "pdf_original": "La programmation pour....pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 43400,
+    "taille_txt_kb": 353.2,
+    "taille_pdf_kb": 1971.3,
+    "source": "cours"
+  },
+  "Langages de programmation.txt": {
+    "filename": "Langages de programmation.txt",
+    "pdf_original": "Langages de programmation.pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 1876,
+    "taille_txt_kb": 12.6,
+    "taille_pdf_kb": 881.9,
+    "source": "cours"
+  },
+  "Large Language Models and Multimodal Retrieval for_2310.14025v1.txt": {
+    "filename": "Large Language Models and Multimodal Retrieval for_2310.14025v1.txt",
+    "pdf_original": "Large Language Models and Multimodal Retrieval for_2310.14025v1.pdf",
+    "langue": "en",
+    "theme": "Information Retrieval",
+    "nb_mots": 8025,
+    "taille_txt_kb": 78.2,
+    "taille_pdf_kb": 3306.1,
+    "source": "cours"
+  },
+  "Large Synoptic Survey Telescope Dark Energy Scien_1211.0310v1.txt": {
+    "filename": "Large Synoptic Survey Telescope Dark Energy Scien_1211.0310v1.txt",
+    "pdf_original": "Large Synoptic Survey Telescope Dark Energy Scien_1211.0310v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 58031,
+    "taille_txt_kb": 383.9,
+    "taille_pdf_kb": 4419.2,
+    "source": "cours"
+  },
+  "Le langage C (le-langage-c-anne-canteaut-4687).txt": {
+    "filename": "Le langage C (le-langage-c-anne-canteaut-4687).txt",
+    "pdf_original": "Le langage C (le-langage-c-anne-canteaut-4687).pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 29221,
+    "taille_txt_kb": 182.4,
+    "taille_pdf_kb": 428.1,
+    "source": "cours"
+  },
+  "Le langage C.txt": {
+    "filename": "Le langage C.txt",
+    "pdf_original": "Le langage C.pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 107721,
+    "taille_txt_kb": 642.4,
+    "taille_pdf_kb": 3046.2,
+    "source": "cours"
+  },
+  "Learn to Accumulate Evidence from All Training Sam_2306.11113v2.txt": {
+    "filename": "Learn to Accumulate Evidence from All Training Sam_2306.11113v2.txt",
+    "pdf_original": "Learn to Accumulate Evidence from All Training Sam_2306.11113v2.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 6568,
+    "taille_txt_kb": 75.6,
+    "taille_pdf_kb": 2478.8,
+    "source": "cours"
+  },
+  "Learning Active Subspaces and Discovering Importan_2307.05639v2.txt": {
+    "filename": "Learning Active Subspaces and Discovering Importan_2307.05639v2.txt",
+    "pdf_original": "Learning Active Subspaces and Discovering Importan_2307.05639v2.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 14732,
+    "taille_txt_kb": 90.0,
+    "taille_pdf_kb": 3208.5,
+    "source": "cours"
+  },
+  "Learning Curves for Decision Making in Supervised_2201.12150v2.txt": {
+    "filename": "Learning Curves for Decision Making in Supervised_2201.12150v2.txt",
+    "pdf_original": "Learning Curves for Decision Making in Supervised_2201.12150v2.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 24409,
+    "taille_txt_kb": 167.9,
+    "taille_pdf_kb": 2437.6,
+    "source": "cours"
+  },
+  "Learning Multimodal Transition Dynamics for Model-_1705.00470v2.txt": {
+    "filename": "Learning Multimodal Transition Dynamics for Model-_1705.00470v2.txt",
+    "pdf_original": "Learning Multimodal Transition Dynamics for Model-_1705.00470v2.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 5375,
+    "taille_txt_kb": 39.5,
+    "taille_pdf_kb": 624.2,
+    "source": "cours"
+  },
+  "Learning Neural Network Architectures using Backpr_1511.05497v2.txt": {
+    "filename": "Learning Neural Network Architectures using Backpr_1511.05497v2.txt",
+    "pdf_original": "Learning Neural Network Architectures using Backpr_1511.05497v2.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 2991,
+    "taille_txt_kb": 31.9,
+    "taille_pdf_kb": 296.4,
+    "source": "cours"
+  },
+  "Learning Representations from Dendrograms_1812.09225v4.txt": {
+    "filename": "Learning Representations from Dendrograms_1812.09225v4.txt",
+    "pdf_original": "Learning Representations from Dendrograms_1812.09225v4.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 3614,
+    "taille_txt_kb": 58.7,
+    "taille_pdf_kb": 418.4,
+    "source": "cours"
+  },
+  "Les bases de l'informatique et de la programmation.txt": {
+    "filename": "Les bases de l'informatique et de la programmation.txt",
+    "pdf_original": "Les bases de l'informatique et de la programmation.pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 190400,
+    "taille_txt_kb": 1280.3,
+    "taille_pdf_kb": 7784.9,
+    "source": "cours"
+  },
+  "Les bases de la programmation orientée objet avec Java.txt": {
+    "filename": "Les bases de la programmation orientée objet avec Java.txt",
+    "pdf_original": "Les bases de la programmation orientée objet avec Java.pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 12886,
+    "taille_txt_kb": 89.0,
+    "taille_pdf_kb": 744.3,
+    "source": "cours"
+  },
+  "Lexique informatique pour débutants.txt": {
+    "filename": "Lexique informatique pour débutants.txt",
+    "pdf_original": "Lexique informatique pour débutants.pdf",
+    "langue": "fr",
+    "theme": "Autre",
+    "nb_mots": 16869,
+    "taille_txt_kb": 105.1,
+    "taille_pdf_kb": 315.6,
+    "source": "cours"
+  },
+  "Linking Artificial Intelligence Principles_1812.04814v1.txt": {
+    "filename": "Linking Artificial Intelligence Principles_1812.04814v1.txt",
+    "pdf_original": "Linking Artificial Intelligence Principles_1812.04814v1.pdf",
+    "langue": "en",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 2564,
+    "taille_txt_kb": 16.6,
+    "taille_pdf_kb": 280.0,
+    "source": "cours"
+  },
+  "Lowering the learning curve for declarative progra_1511.00916v1.txt": {
+    "filename": "Lowering the learning curve for declarative progra_1511.00916v1.txt",
+    "pdf_original": "Lowering the learning curve for declarative progra_1511.00916v1.pdf",
+    "langue": "en",
+    "theme": "Programmation",
+    "nb_mots": 4689,
+    "taille_txt_kb": 31.5,
+    "taille_pdf_kb": 172.8,
+    "source": "cours"
+  },
+  "L’informatique pour débutants.txt": {
+    "filename": "L’informatique pour débutants.txt",
+    "pdf_original": "L’informatique pour débutants.pdf",
+    "langue": "fr",
+    "theme": "Autre",
+    "nb_mots": 1796,
+    "taille_txt_kb": 11.7,
+    "taille_pdf_kb": 666.5,
+    "source": "cours"
+  },
+  "L’intelligence artificielle et le Monde du Livre.txt": {
+    "filename": "L’intelligence artificielle et le Monde du Livre.txt",
+    "pdf_original": "L’intelligence artificielle et le Monde du Livre.pdf",
+    "langue": "fr",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 13616,
+    "taille_txt_kb": 88.8,
+    "taille_pdf_kb": 1504.1,
+    "source": "cours"
+  },
+  "MEMe An Accurate Maximum Entropy Method for Effic_1906.01101v1.txt": {
+    "filename": "MEMe An Accurate Maximum Entropy Method for Effic_1906.01101v1.txt",
+    "pdf_original": "MEMe An Accurate Maximum Entropy Method for Effic_1906.01101v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 2780,
+    "taille_txt_kb": 39.6,
+    "taille_pdf_kb": 431.3,
+    "source": "cours"
+  },
+  "MERL Multi-Head Reinforcement Learning_1909.11939v6.txt": {
+    "filename": "MERL Multi-Head Reinforcement Learning_1909.11939v6.txt",
+    "pdf_original": "MERL Multi-Head Reinforcement Learning_1909.11939v6.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 1795,
+    "taille_txt_kb": 29.6,
+    "taille_pdf_kb": 1579.4,
+    "source": "cours"
+  },
+  "Machine Learning.txt": {
+    "filename": "Machine Learning.txt",
+    "pdf_original": "Machine Learning.pdf",
+    "langue": "fr",
+    "theme": "Machine Learning",
+    "nb_mots": 12649,
+    "taille_txt_kb": 86.6,
+    "taille_pdf_kb": 1916.0,
+    "source": "cours"
+  },
+  "Maintenance of Structural Hole Spanners in Dynamic_2502.11396v1.txt": {
+    "filename": "Maintenance of Structural Hole Spanners in Dynamic_2502.11396v1.txt",
+    "pdf_original": "Maintenance of Structural Hole Spanners in Dynamic_2502.11396v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 2681,
+    "taille_txt_kb": 16.9,
+    "taille_pdf_kb": 4220.5,
+    "source": "cours"
+  },
+  "Match Your Words A Study of Lexical Matching in N_2112.05662v2.txt": {
+    "filename": "Match Your Words A Study of Lexical Matching in N_2112.05662v2.txt",
+    "pdf_original": "Match Your Words A Study of Lexical Matching in N_2112.05662v2.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 2551,
+    "taille_txt_kb": 16.8,
+    "taille_pdf_kb": 434.6,
+    "source": "cours"
+  },
+  "Memorization in Deep Neural Networks Does the Los_2107.09957v2.txt": {
+    "filename": "Memorization in Deep Neural Networks Does the Los_2107.09957v2.txt",
+    "pdf_original": "Memorization in Deep Neural Networks Does the Los_2107.09957v2.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 4202,
+    "taille_txt_kb": 28.4,
+    "taille_pdf_kb": 2370.4,
+    "source": "cours"
+  },
+  "Memory-Efficient Episodic Control Reinforcement Le_1911.09560v1.txt": {
+    "filename": "Memory-Efficient Episodic Control Reinforcement Le_1911.09560v1.txt",
+    "pdf_original": "Memory-Efficient Episodic Control Reinforcement Le_1911.09560v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 1402,
+    "taille_txt_kb": 23.5,
+    "taille_pdf_kb": 6334.9,
+    "source": "cours"
+  },
+  "Memristors -- from In-memory computing Deep Learn_2004.14942v1.txt": {
+    "filename": "Memristors -- from In-memory computing Deep Learn_2004.14942v1.txt",
+    "pdf_original": "Memristors -- from In-memory computing Deep Learn_2004.14942v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 15312,
+    "taille_txt_kb": 93.9,
+    "taille_pdf_kb": 2557.7,
+    "source": "cours"
+  },
+  "MerLin A Discovery Engine for Photonic and Hybrid_2602.11092v2.txt": {
+    "filename": "MerLin A Discovery Engine for Photonic and Hybrid_2602.11092v2.txt",
+    "pdf_original": "MerLin A Discovery Engine for Photonic and Hybrid_2602.11092v2.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 4710,
+    "taille_txt_kb": 41.0,
+    "taille_pdf_kb": 1809.5,
+    "source": "cours"
+  },
+  "Modular Belief Updates and Confusion about Measure_1407.7281v1.txt": {
+    "filename": "Modular Belief Updates and Confusion about Measure_1407.7281v1.txt",
+    "pdf_original": "Modular Belief Updates and Confusion about Measure_1407.7281v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 3135,
+    "taille_txt_kb": 18.4,
+    "taille_pdf_kb": 355.5,
+    "source": "cours"
+  },
+  "Modular Mechanistic Networks On Bridging Mechanis_1807.09844v2.txt": {
+    "filename": "Modular Mechanistic Networks On Bridging Mechanis_1807.09844v2.txt",
+    "pdf_original": "Modular Mechanistic Networks On Bridging Mechanis_1807.09844v2.pdf",
+    "langue": "en",
+    "theme": "Réseaux",
+    "nb_mots": 4484,
+    "taille_txt_kb": 42.8,
+    "taille_pdf_kb": 334.2,
+    "source": "cours"
+  },
+  "Module d’informatique Programmation et algorithmique.txt": {
+    "filename": "Module d’informatique Programmation et algorithmique.txt",
+    "pdf_original": "Module d’informatique Programmation et algorithmique.pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 7936,
+    "taille_txt_kb": 71.4,
+    "taille_pdf_kb": 1352.0,
+    "source": "cours"
+  },
+  "Monodense Deep Neural Model for Determining Item P_2603.29261v1.txt": {
+    "filename": "Monodense Deep Neural Model for Determining Item P_2603.29261v1.txt",
+    "pdf_original": "Monodense Deep Neural Model for Determining Item P_2603.29261v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 3322,
+    "taille_txt_kb": 23.6,
+    "taille_pdf_kb": 623.9,
+    "source": "cours"
+  },
+  "Multiple Criteria Decision-Making Preprocessing Us_1004.3258v1.txt": {
+    "filename": "Multiple Criteria Decision-Making Preprocessing Us_1004.3258v1.txt",
+    "pdf_original": "Multiple Criteria Decision-Making Preprocessing Us_1004.3258v1.pdf",
+    "langue": "en",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 5937,
+    "taille_txt_kb": 38.0,
+    "taille_pdf_kb": 406.9,
+    "source": "cours"
+  },
+  "Natural Language Processing for Requirements Trace_2405.10845v1.txt": {
+    "filename": "Natural Language Processing for Requirements Trace_2405.10845v1.txt",
+    "pdf_original": "Natural Language Processing for Requirements Trace_2405.10845v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 10072,
+    "taille_txt_kb": 71.9,
+    "taille_pdf_kb": 471.4,
+    "source": "cours"
+  },
+  "On Communication Protocols that Compute Almost Pri_1102.1443v3.txt": {
+    "filename": "On Communication Protocols that Compute Almost Pri_1102.1443v3.txt",
+    "pdf_original": "On Communication Protocols that Compute Almost Pri_1102.1443v3.pdf",
+    "langue": "en",
+    "theme": "Réseaux",
+    "nb_mots": 8858,
+    "taille_txt_kb": 48.5,
+    "taille_pdf_kb": 315.6,
+    "source": "cours"
+  },
+  "On the Implementation of the Probabilistic Logic P_1006.4442v1.txt": {
+    "filename": "On the Implementation of the Probabilistic Logic P_1006.4442v1.txt",
+    "pdf_original": "On the Implementation of the Probabilistic Logic P_1006.4442v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 9606,
+    "taille_txt_kb": 63.4,
+    "taille_pdf_kb": 566.4,
+    "source": "cours"
+  },
+  "On the approximation of rough functions with deep_1912.06732v2.txt": {
+    "filename": "On the approximation of rough functions with deep_1912.06732v2.txt",
+    "pdf_original": "On the approximation of rough functions with deep_1912.06732v2.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 16809,
+    "taille_txt_kb": 89.8,
+    "taille_pdf_kb": 6652.0,
+    "source": "cours"
+  },
+  "Online Information Retrieval Evaluation using the_2210.13202v1.txt": {
+    "filename": "Online Information Retrieval Evaluation using the_2210.13202v1.txt",
+    "pdf_original": "Online Information Retrieval Evaluation using the_2210.13202v1.pdf",
+    "langue": "en",
+    "theme": "Information Retrieval",
+    "nb_mots": 864,
+    "taille_txt_kb": 16.9,
+    "taille_pdf_kb": 942.4,
+    "source": "cours"
+  },
+  "Overcoming low-utility facets for complex answer r_1811.08772v1.txt": {
+    "filename": "Overcoming low-utility facets for complex answer r_1811.08772v1.txt",
+    "pdf_original": "Overcoming low-utility facets for complex answer r_1811.08772v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 7061,
+    "taille_txt_kb": 52.0,
+    "taille_pdf_kb": 864.4,
+    "source": "cours"
+  },
+  "POO et Java.txt": {
+    "filename": "POO et Java.txt",
+    "pdf_original": "POO et Java.pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 16127,
+    "taille_txt_kb": 111.4,
+    "taille_pdf_kb": 1121.2,
+    "source": "cours"
+  },
+  "Patterns of Multiplex Layer Entanglement across Re_1910.05300v1.txt": {
+    "filename": "Patterns of Multiplex Layer Entanglement across Re_1910.05300v1.txt",
+    "pdf_original": "Patterns of Multiplex Layer Entanglement across Re_1910.05300v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 2137,
+    "taille_txt_kb": 23.9,
+    "taille_pdf_kb": 2672.6,
+    "source": "cours"
+  },
+  "Pengines Web Logic Programming Made Easy_1405.3953v1.txt": {
+    "filename": "Pengines Web Logic Programming Made Easy_1405.3953v1.txt",
+    "pdf_original": "Pengines Web Logic Programming Made Easy_1405.3953v1.pdf",
+    "langue": "en",
+    "theme": "Programmation",
+    "nb_mots": 2154,
+    "taille_txt_kb": 26.4,
+    "taille_pdf_kb": 263.6,
+    "source": "cours"
+  },
+  "Performance Evaluation of Unicast and Broadcast Mo_1002.1691v1.txt": {
+    "filename": "Performance Evaluation of Unicast and Broadcast Mo_1002.1691v1.txt",
+    "pdf_original": "Performance Evaluation of Unicast and Broadcast Mo_1002.1691v1.pdf",
+    "langue": "en",
+    "theme": "Réseaux",
+    "nb_mots": 4843,
+    "taille_txt_kb": 29.1,
+    "taille_pdf_kb": 630.4,
+    "source": "cours"
+  },
+  "Perspectives on Surgical Data Science_1610.04276v1.txt": {
+    "filename": "Perspectives on Surgical Data Science_1610.04276v1.txt",
+    "pdf_original": "Perspectives on Surgical Data Science_1610.04276v1.pdf",
+    "langue": "en",
+    "theme": "Data Science",
+    "nb_mots": 1343,
+    "taille_txt_kb": 11.1,
+    "taille_pdf_kb": 64.7,
+    "source": "cours"
+  },
+  "Physics-Inspired Interpretability Of Machine Learn_2304.02381v2.txt": {
+    "filename": "Physics-Inspired Interpretability Of Machine Learn_2304.02381v2.txt",
+    "pdf_original": "Physics-Inspired Interpretability Of Machine Learn_2304.02381v2.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 1159,
+    "taille_txt_kb": 16.6,
+    "taille_pdf_kb": 265.2,
+    "source": "cours"
+  },
+  "Preprocessing Reward Functions for Interpretabilit_2203.13553v1.txt": {
+    "filename": "Preprocessing Reward Functions for Interpretabilit_2203.13553v1.txt",
+    "pdf_original": "Preprocessing Reward Functions for Interpretabilit_2203.13553v1.pdf",
+    "langue": "en",
+    "theme": "Data Science",
+    "nb_mots": 2509,
+    "taille_txt_kb": 38.7,
+    "taille_pdf_kb": 3072.9,
+    "source": "cours"
+  },
+  "Principes de programmation.txt": {
+    "filename": "Principes de programmation.txt",
+    "pdf_original": "Principes de programmation.pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 23594,
+    "taille_txt_kb": 151.8,
+    "taille_pdf_kb": 1062.3,
+    "source": "cours"
+  },
+  "Privacy-preserving machine learning for healthcare_2303.15563v1.txt": {
+    "filename": "Privacy-preserving machine learning for healthcare_2303.15563v1.txt",
+    "pdf_original": "Privacy-preserving machine learning for healthcare_2303.15563v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 5123,
+    "taille_txt_kb": 47.8,
+    "taille_pdf_kb": 209.3,
+    "source": "cours"
+  },
+  "Probabilistic Reasoning via Deep Learning Neural_1603.07704v2.txt": {
+    "filename": "Probabilistic Reasoning via Deep Learning Neural_1603.07704v2.txt",
+    "pdf_original": "Probabilistic Reasoning via Deep Learning Neural_1603.07704v2.pdf",
+    "langue": "en",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 5585,
+    "taille_txt_kb": 51.8,
+    "taille_pdf_kb": 951.9,
+    "source": "cours"
+  },
+  "Probability Judgement in Artificial Intelligence_1304.3429v1.txt": {
+    "filename": "Probability Judgement in Artificial Intelligence_1304.3429v1.txt",
+    "pdf_original": "Probability Judgement in Artificial Intelligence_1304.3429v1.pdf",
+    "langue": "en",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 3569,
+    "taille_txt_kb": 19.7,
+    "taille_pdf_kb": 370.8,
+    "source": "cours"
+  },
+  "Programmation avec Python - des jeux au Web.txt": {
+    "filename": "Programmation avec Python - des jeux au Web.txt",
+    "pdf_original": "Programmation avec Python - des jeux au Web.pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 81893,
+    "taille_txt_kb": 527.5,
+    "taille_pdf_kb": 2158.5,
+    "source": "cours"
+  },
+  "Programmation et Algorithmique.txt": {
+    "filename": "Programmation et Algorithmique.txt",
+    "pdf_original": "Programmation et Algorithmique.pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 35050,
+    "taille_txt_kb": 231.6,
+    "taille_pdf_kb": 638.9,
+    "source": "cours"
+  },
+  "Public Policymaking for International Agricultural_2111.07508v1.txt": {
+    "filename": "Public Policymaking for International Agricultural_2111.07508v1.txt",
+    "pdf_original": "Public Policymaking for International Agricultural_2111.07508v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 17794,
+    "taille_txt_kb": 107.0,
+    "taille_pdf_kb": 2055.6,
+    "source": "cours"
+  },
+  "Pulsar Science with the SKA Observatory_2512.16152v1.txt": {
+    "filename": "Pulsar Science with the SKA Observatory_2512.16152v1.txt",
+    "pdf_original": "Pulsar Science with the SKA Observatory_2512.16152v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 4501,
+    "taille_txt_kb": 35.1,
+    "taille_pdf_kb": 313.1,
+    "source": "cours"
+  },
+  "PyThaiNLP Thai Natural Language Processing in Pyt_2312.04649v1.txt": {
+    "filename": "PyThaiNLP Thai Natural Language Processing in Pyt_2312.04649v1.txt",
+    "pdf_original": "PyThaiNLP Thai Natural Language Processing in Pyt_2312.04649v1.pdf",
+    "langue": "en",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 3250,
+    "taille_txt_kb": 40.2,
+    "taille_pdf_kb": 516.1,
+    "source": "cours"
+  },
+  "Reinforcement Learning with Stepwise Fairness Cons_2211.03994v1.txt": {
+    "filename": "Reinforcement Learning with Stepwise Fairness Cons_2211.03994v1.txt",
+    "pdf_original": "Reinforcement Learning with Stepwise Fairness Cons_2211.03994v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 10364,
+    "taille_txt_kb": 59.5,
+    "taille_pdf_kb": 900.6,
+    "source": "cours"
+  },
+  "Robust principal graphs for data approximation_1603.06828v2.txt": {
+    "filename": "Robust principal graphs for data approximation_1603.06828v2.txt",
+    "pdf_original": "Robust principal graphs for data approximation_1603.06828v2.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 2860,
+    "taille_txt_kb": 27.7,
+    "taille_pdf_kb": 2928.7,
+    "source": "cours"
+  },
+  "Sample-Efficient Reinforcement Learning with Maxim_1911.09615v1.txt": {
+    "filename": "Sample-Efficient Reinforcement Learning with Maxim_1911.09615v1.txt",
+    "pdf_original": "Sample-Efficient Reinforcement Learning with Maxim_1911.09615v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 1396,
+    "taille_txt_kb": 24.2,
+    "taille_pdf_kb": 4821.0,
+    "source": "cours"
+  },
+  "Satisfactory Medical Consultation based on Termino_2503.17876v1.txt": {
+    "filename": "Satisfactory Medical Consultation based on Termino_2503.17876v1.txt",
+    "pdf_original": "Satisfactory Medical Consultation based on Termino_2503.17876v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 5051,
+    "taille_txt_kb": 37.6,
+    "taille_pdf_kb": 5705.7,
+    "source": "cours"
+  },
+  "Science with the X-ray Imaging and Spectroscopy Mi_2003.04962v1.txt": {
+    "filename": "Science with the X-ray Imaging and Spectroscopy Mi_2003.04962v1.txt",
+    "pdf_original": "Science with the X-ray Imaging and Spectroscopy Mi_2003.04962v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 21326,
+    "taille_txt_kb": 135.8,
+    "taille_pdf_kb": 17665.7,
+    "source": "cours"
+  },
+  "Semantic Edge Computing and Semantic Communication_2411.18199v3.txt": {
+    "filename": "Semantic Edge Computing and Semantic Communication_2411.18199v3.txt",
+    "pdf_original": "Semantic Edge Computing and Semantic Communication_2411.18199v3.pdf",
+    "langue": "en",
+    "theme": "Réseaux",
+    "nb_mots": 20882,
+    "taille_txt_kb": 138.9,
+    "taille_pdf_kb": 1272.2,
+    "source": "cours"
+  },
+  "Situated Data Situated Systems A Methodology to_2011.05911v1.txt": {
+    "filename": "Situated Data Situated Systems A Methodology to_2011.05911v1.txt",
+    "pdf_original": "Situated Data Situated Systems A Methodology to_2011.05911v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 6104,
+    "taille_txt_kb": 62.4,
+    "taille_pdf_kb": 158.8,
+    "source": "cours"
+  },
+  "Small Data Explainer -- The impact of small data m_2507.11773v1.txt": {
+    "filename": "Small Data Explainer -- The impact of small data m_2507.11773v1.txt",
+    "pdf_original": "Small Data Explainer -- The impact of small data m_2507.11773v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 11129,
+    "taille_txt_kb": 99.7,
+    "taille_pdf_kb": 384.4,
+    "source": "cours"
+  },
+  "Social Network Analysis From Graph Theory to Appl_2102.10014v1.txt": {
+    "filename": "Social Network Analysis From Graph Theory to Appl_2102.10014v1.txt",
+    "pdf_original": "Social Network Analysis From Graph Theory to Appl_2102.10014v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 389,
+    "taille_txt_kb": 13.1,
+    "taille_pdf_kb": 3756.6,
+    "source": "cours"
+  },
+  "SpeechPrompt Prompting Speech Language Models for_2408.13040v1.txt": {
+    "filename": "SpeechPrompt Prompting Speech Language Models for_2408.13040v1.txt",
+    "pdf_original": "SpeechPrompt Prompting Speech Language Models for_2408.13040v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 9801,
+    "taille_txt_kb": 76.5,
+    "taille_pdf_kb": 1284.2,
+    "source": "cours"
+  },
+  "Stabilizing Extreme Q-learning by Maclaurin Expans_2406.04896v2.txt": {
+    "filename": "Stabilizing Extreme Q-learning by Maclaurin Expans_2406.04896v2.txt",
+    "pdf_original": "Stabilizing Extreme Q-learning by Maclaurin Expans_2406.04896v2.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 5476,
+    "taille_txt_kb": 36.8,
+    "taille_pdf_kb": 1223.9,
+    "source": "cours"
+  },
+  "Study on the Helpfulness of Explainable Artificial_2410.11896v1.txt": {
+    "filename": "Study on the Helpfulness of Explainable Artificial_2410.11896v1.txt",
+    "pdf_original": "Study on the Helpfulness of Explainable Artificial_2410.11896v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 5915,
+    "taille_txt_kb": 42.9,
+    "taille_pdf_kb": 1345.5,
+    "source": "cours"
+  },
+  "Superbubbles as an Empirical Characteristic of Dir_2001.03409v1.txt": {
+    "filename": "Superbubbles as an Empirical Characteristic of Dir_2001.03409v1.txt",
+    "pdf_original": "Superbubbles as an Empirical Characteristic of Dir_2001.03409v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 5880,
+    "taille_txt_kb": 44.8,
+    "taille_pdf_kb": 352.0,
+    "source": "cours"
+  },
+  "TerraGen A Unified Multi-Task Layout Generation F_2510.21391v1.txt": {
+    "filename": "TerraGen A Unified Multi-Task Layout Generation F_2510.21391v1.txt",
+    "pdf_original": "TerraGen A Unified Multi-Task Layout Generation F_2510.21391v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 4100,
+    "taille_txt_kb": 48.2,
+    "taille_pdf_kb": 3968.4,
+    "source": "cours"
+  },
+  "The Artificial Scientist Logicist Emergentist a_2110.01831v1.txt": {
+    "filename": "The Artificial Scientist Logicist Emergentist a_2110.01831v1.txt",
+    "pdf_original": "The Artificial Scientist Logicist Emergentist a_2110.01831v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 3838,
+    "taille_txt_kb": 28.0,
+    "taille_pdf_kb": 123.6,
+    "source": "cours"
+  },
+  "The Deep Arbitrary Polynomial Chaos Neural Network_2306.14753v1.txt": {
+    "filename": "The Deep Arbitrary Polynomial Chaos Neural Network_2306.14753v1.txt",
+    "pdf_original": "The Deep Arbitrary Polynomial Chaos Neural Network_2306.14753v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 8349,
+    "taille_txt_kb": 99.2,
+    "taille_pdf_kb": 1630.7,
+    "source": "cours"
+  },
+  "The Modern Mathematics of Deep Learning_2105.04026v2.txt": {
+    "filename": "The Modern Mathematics of Deep Learning_2105.04026v2.txt",
+    "pdf_original": "The Modern Mathematics of Deep Learning_2105.04026v2.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 37072,
+    "taille_txt_kb": 237.0,
+    "taille_pdf_kb": 3427.3,
+    "source": "cours"
+  },
+  "The Retrieval Effectiveness of Web Search Engines_1511.05800v1.txt": {
+    "filename": "The Retrieval Effectiveness of Web Search Engines_1511.05800v1.txt",
+    "pdf_original": "The Retrieval Effectiveness of Web Search Engines_1511.05800v1.pdf",
+    "langue": "en",
+    "theme": "Programmation",
+    "nb_mots": 8143,
+    "taille_txt_kb": 48.6,
+    "taille_pdf_kb": 1008.7,
+    "source": "cours"
+  },
+  "The distance backbone of complex networks_2103.04668v2.txt": {
+    "filename": "The distance backbone of complex networks_2103.04668v2.txt",
+    "pdf_original": "The distance backbone of complex networks_2103.04668v2.pdf",
+    "langue": "en",
+    "theme": "Réseaux",
+    "nb_mots": 7928,
+    "taille_txt_kb": 103.2,
+    "taille_pdf_kb": 8183.7,
+    "source": "cours"
+  },
+  "This Reads Like That Deep Learning for Interpreta_2310.17010v1.txt": {
+    "filename": "This Reads Like That Deep Learning for Interpreta_2310.17010v1.txt",
+    "pdf_original": "This Reads Like That Deep Learning for Interpreta_2310.17010v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 2673,
+    "taille_txt_kb": 34.9,
+    "taille_pdf_kb": 4201.8,
+    "source": "cours"
+  },
+  "Time Adaptive Reinforcement Learning_2004.08600v1.txt": {
+    "filename": "Time Adaptive Reinforcement Learning_2004.08600v1.txt",
+    "pdf_original": "Time Adaptive Reinforcement Learning_2004.08600v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 3207,
+    "taille_txt_kb": 31.9,
+    "taille_pdf_kb": 854.6,
+    "source": "cours"
+  },
+  "Towards Dropout Training for Convolutional Neural_1512.00242v1.txt": {
+    "filename": "Towards Dropout Training for Convolutional Neural_1512.00242v1.txt",
+    "pdf_original": "Towards Dropout Training for Convolutional Neural_1512.00242v1.pdf",
+    "langue": "en",
+    "theme": "Machine Learning",
+    "nb_mots": 7235,
+    "taille_txt_kb": 45.4,
+    "taille_pdf_kb": 801.6,
+    "source": "cours"
+  },
+  "Towards Proactive Information Retrieval in Noisy T_2210.09877v1.txt": {
+    "filename": "Towards Proactive Information Retrieval in Noisy T_2210.09877v1.txt",
+    "pdf_original": "Towards Proactive Information Retrieval in Noisy T_2210.09877v1.pdf",
+    "langue": "en",
+    "theme": "Information Retrieval",
+    "nb_mots": 1609,
+    "taille_txt_kb": 29.6,
+    "taille_pdf_kb": 1331.9,
+    "source": "cours"
+  },
+  "Towards the Study of Morphological Processing of t_2006.16212v1.txt": {
+    "filename": "Towards the Study of Morphological Processing of t_2006.16212v1.txt",
+    "pdf_original": "Towards the Study of Morphological Processing of t_2006.16212v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 1655,
+    "taille_txt_kb": 13.0,
+    "taille_pdf_kb": 62.6,
+    "source": "cours"
+  },
+  "Transformations of Logic Programs on Infinite List_1007.4157v1.txt": {
+    "filename": "Transformations of Logic Programs on Infinite List_1007.4157v1.txt",
+    "pdf_original": "Transformations of Logic Programs on Infinite List_1007.4157v1.pdf",
+    "langue": "en",
+    "theme": "Programmation",
+    "nb_mots": 15955,
+    "taille_txt_kb": 83.8,
+    "taille_pdf_kb": 406.5,
+    "source": "cours"
+  },
+  "Un zeste de Python.txt": {
+    "filename": "Un zeste de Python.txt",
+    "pdf_original": "Un zeste de Python.pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 113499,
+    "taille_txt_kb": 681.8,
+    "taille_pdf_kb": 3478.0,
+    "source": "cours"
+  },
+  "Unsupervised Representation Learning with Minimax_1904.13223v3.txt": {
+    "filename": "Unsupervised Representation Learning with Minimax_1904.13223v3.txt",
+    "pdf_original": "Unsupervised Representation Learning with Minimax_1904.13223v3.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 6491,
+    "taille_txt_kb": 76.3,
+    "taille_pdf_kb": 1045.7,
+    "source": "cours"
+  },
+  "Value Bonuses using Ensemble Errors for Exploratio_2602.12375v1.txt": {
+    "filename": "Value Bonuses using Ensemble Errors for Exploratio_2602.12375v1.txt",
+    "pdf_original": "Value Bonuses using Ensemble Errors for Exploratio_2602.12375v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 6194,
+    "taille_txt_kb": 63.6,
+    "taille_pdf_kb": 3805.4,
+    "source": "cours"
+  },
+  "Vision Based Game Development Using Human Computer_1002.2191v1.txt": {
+    "filename": "Vision Based Game Development Using Human Computer_1002.2191v1.txt",
+    "pdf_original": "Vision Based Game Development Using Human Computer_1002.2191v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 3829,
+    "taille_txt_kb": 21.8,
+    "taille_pdf_kb": 660.9,
+    "source": "cours"
+  },
+  "Watershed of Artificial Intelligence Human Intell_2104.13155v2.txt": {
+    "filename": "Watershed of Artificial Intelligence Human Intell_2104.13155v2.txt",
+    "pdf_original": "Watershed of Artificial Intelligence Human Intell_2104.13155v2.pdf",
+    "langue": "en",
+    "theme": "Intelligence Artificielle",
+    "nb_mots": 6884,
+    "taille_txt_kb": 43.5,
+    "taille_pdf_kb": 365.6,
+    "source": "cours"
+  },
+  "Web Development Essentials (030).txt": {
+    "filename": "Web Development Essentials (030).txt",
+    "pdf_original": "Web Development Essentials (030).pdf",
+    "langue": "fr",
+    "theme": "Programmation",
+    "nb_mots": 75779,
+    "taille_txt_kb": 505.1,
+    "taille_pdf_kb": 1746.8,
+    "source": "cours"
+  },
+  "What Does Information Science Offer for Data Scien_2506.03165v1.txt": {
+    "filename": "What Does Information Science Offer for Data Scien_2506.03165v1.txt",
+    "pdf_original": "What Does Information Science Offer for Data Scien_2506.03165v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 9345,
+    "taille_txt_kb": 58.8,
+    "taille_pdf_kb": 315.4,
+    "source": "cours"
+  },
+  "Why Data Science Projects Fail_2308.04896v1.txt": {
+    "filename": "Why Data Science Projects Fail_2308.04896v1.txt",
+    "pdf_original": "Why Data Science Projects Fail_2308.04896v1.pdf",
+    "langue": "en",
+    "theme": "Data Science",
+    "nb_mots": 4736,
+    "taille_txt_kb": 33.9,
+    "taille_pdf_kb": 363.2,
+    "source": "cours"
+  },
+  "Will it Blend Composing Value Functions in Reinfo_1807.04439v1.txt": {
+    "filename": "Will it Blend Composing Value Functions in Reinfo_1807.04439v1.txt",
+    "pdf_original": "Will it Blend Composing Value Functions in Reinfo_1807.04439v1.pdf",
+    "langue": "en",
+    "theme": "Autre",
+    "nb_mots": 2013,
+    "taille_txt_kb": 25.4,
+    "taille_pdf_kb": 2484.0,
+    "source": "cours"
+  },
+  "ePython An implementation of Python for the many-_2010.14827v1.txt": {
+    "filename": "ePython An implementation of Python for the many-_2010.14827v1.txt",
+    "pdf_original": "ePython An implementation of Python for the many-_2010.14827v1.pdf",
+    "langue": "en",
+    "theme": "Programmation",
+    "nb_mots": 5696,
+    "taille_txt_kb": 38.8,
+    "taille_pdf_kb": 155.4,
+    "source": "cours"
+  }
+}

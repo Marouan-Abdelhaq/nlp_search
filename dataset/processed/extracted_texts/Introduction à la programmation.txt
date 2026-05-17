@@ -1,0 +1,318 @@
+Introduction à la programmation
+• Présenter l'activité de programmation
+• Introduire et justifier la notion d'algorithme
+• Donner quelques principes méthodologiques
+– Diviser pour régner
+• Donner quelques repères fondamentaux
+– Complexité d'un algorithme
+– Langages
+La programmation
+Vous savez compter !
+L'ordinateur aussi...
+• Votre programme s'exécute, mais...
+– Connaissez-vous les mécanismes utilisés ?
+– Etes vous sûr que le résultat soit juste ?
+– Combien de temps devrez vous attendre la fin du calcul ?
+– Y a-t-il un moyen pour obtenir le résultat plus vite ?
+» Indépendamment de la machine, du compilateur...
+• Un ordinateur ne s'utilise pas comme un boulier !
+=> Connaître des algorithmes
+=> Apprendre à les construire, les améliorer...
+La programmation
+La programmation
+Problème Programme
+• Question à résoudre par une solution • Ensemble de données
+informatique
+• Ensemble de résultats
+• Instance d'un problème = entrée
+= solution informatique au problème
+nécessaire pour calculer une solution du
+problème • Description d' un ensemble d'actions
+• Exécution dans un certain ordre
+La programmation
+Critères de qualité des programmes
+• Lisibles
+• Fiables
+• Maintenables
+• Réutilisables
+• Portables
+• Corrects (preuve)
+• Efficaces (complexité)
+• Contraintes "économiques" :
+– Exécution la plus courte possible
+– Espace mémoire nécessaire le plus petit possible...
+La programmation
+Raisons d'être des méthodes de
+programmation
+• Augmentation de la taille et de la complexité des logiciels
+– Travail en équipe
+– Capacité de l'être humain à s'occuper de problèmes simultanément
+( 5 à 9 problèmes)
+• Nécessité de construire des programmes corrects, vérifiables
+et modifiables
+– Conséquences humaines, économiques... de plus en plus coûteuses
+=> Méthodologie de conception des programmes
+– Garder la maîtrise de la conception du logiciel
+– Canaliser la créativité
+La programmation
+Principes méthodologiques
+• Abstraire
+– Retarder le plus longtemps possible l'instant du codage
+• Décomposer
+– "...diviser chacune des difficultés que j'examinerais en autant de
+parties qu'il se pourrait et qu'il serait requis pour les mieux
+résoudre." Descartes
+• Combiner
+– Résoudre le problème par combinaison d'abstractions
+• Mais aussi :
+– Vérifier, modulaire, réutiliser...
+La programmation
+Notion d'énoncé (du problème)
+• Souvent le problème est "mal posé"...
+7 1 3 1 5
+– Rechercher l'indice du plus petit élément d'une suite
+1 2 3 4 5
+=> Spécifier = produire un énoncé
+• Énoncé = texte où sont définies sans ambiguïté :
+– L'entrée (données du problème)
+?
+– La sortie (résultats recherchés)
+– Les relations (éventuelles) entre les données et les résultats
+• Que dois-je obtenir ?
+– Soit I l'ensemble des indices des éléments égaux au minimum
+d'une suite. Déterminer le plus petit élément de I.
+2
+La programmation
+Notion d'algorithme
+Résolution Codage
+Enoncé Algorithme Programme
+= Description d'un processus de résolution d'un problème
+bien défini
+= Succession d'actions qui, agissant sur un ensemble de
+ressources (entrée), fourniront la solution (sortie) au
+problème
+• Comment faire pour l'obtenir ?
+La programmation
+Faire la différence entre les contraintes
+Pseudo code
+propres à un langage et les difficultés
+inhérentes à un problème donné
+#include <stdio.h>
+lire (n)
+‹ main () {
+pour i 0 à n
+int n, i;
+si (i mod 2) # 0
+scanf ("%d", &n);
+alors afficher(i)
+for (i=0; i<=n; i++) {
+if (i%2) {
+printf ("%d\n", i);
+}
+Plus abstrait, plus lisible, plus concis...
+}
+}
+Met en avant l'essence de l'algorithme
+La programmation
+Complexité d'un algorithme
+• Caractériser un algorithme
+– Indépendamment de la machine, du compilateur...
+– Complexité
+» Taille du problème : n
+» Nombre d'opérations significatives : T(n)
+» Taille mémoire nécessaire : M(n)
+• Au mieux, au pire, en moyenne
+• Notations asymptotiques
+– f(n) = O(g(n)) : borne asymptotique supérieure
+W
+– f(n) = (g(n)) : borne asymptotique inférieure
+Q
+– f(n) = (g(n)) : borne approchée asymptotique
+La programmation
+Comparaison de temps d'exécution
+6
+• 10 opérations par seconde
+• N = nombre de données à traiter
+• C = complexité de l'algorithme de traitement
+N x C 1 log n n nlg n 2 3 n
+2 2 n n 2
+2 <1 m s 6,6 m s 0,1ms 0,66ms 10ms 1s 4.10 16 a
+10
+m m
+3 <1 s 9,9 s 1ms 9,9ms 1s 16,6ms ?
+10
+m m
+4 <1 s 13,3 s 10ms 0.13s 1,5mn 11,5j ?
+10
+m m
+5 <1 s 16,6 s 0,1s 1,66s 2,7h 31,7a ?
+10
+m m
+6 <1 s 19,9 s 1s 19,9s 11,5j 31700a ?
+10
+La programmation
+L'algorithmique
+• Permis de conduire informatique
+• Produit de matrices carrées n x n
+– Nombre de multiplications
+c = ∑ a ×b
+3
+– Algorithme classique : T(n) = O (n ) i, j ik kj
+k=1,n
+» Trop d'opérations
+– Meilleure borne inférieure connue : T (n) = W (n 2 )
+– Algorithme de Strassen : T(n) = Q (n lg 7 ) = O(n 2,81 )
+2,376
+– Meilleur algorithme connu : T (n) = O(n )
+• Programme
+– Algorithme destiné à la machine
+La programmation
+Conception d'un programme
+Spécification Résolution Codage
+Problème Enoncé Algorithme Programme
+Ne pas se laisser aveugler par l'objectif final :
+le codage !
+La programmation
+Programmer, c'est communiquer
+• Avec la machine
+• Avec soi même
+Désignations évocatrices
+• Avec les autres
+Algorithmes en pseudo-code
+concis et clairs
+Programmes indentés
+et commentés
+La programmation
+Cycle de vie d'un programme (1)
+Analyse + spécification
+Maintenance
+Conception Un processus itératif
+Vérification
+Codification
+• Analyse + spécification
+– Définir clairement le problème
+– Recenser les données
+– Dégager les grandes fonctionnalités
+• Conception
+– Organiser les données
+– Concevoir l'algorithme en pseudo-code
+• Codification
+– Traduire l'algorithme dans un langage de programmation
+La programmation
+Cycle de vie d'un programme (2)
+Analyse + spécification
+Maintenance
+Conception Un processus itératif
+Vérification
+Codification
+• 4. Vérification (test & mise au point)
+– Utiliser le programme avec des entrées spécifiques
+– Utiliser un outil de mise au point
+• 5. Maintenance
+– Adapter le programme existant pour de nouvelles fonctionnalités
+et/ou pour corriger les erreurs
+• Une documentation doit être associée à chaque étape
+La programmation
+Généalogie partielle des langages de
+programmation
+• Plus de 4000 langages
+FORTRAN
+ALGOL 60 LISP
+COBOL
+BASIC
+ML
+PL/1 C SIMULA 67
+PASCAL
+SMALLTALK
+PROLOG ADA
+C++
+MODULA-2
+JAVA
+La programmation
+Le choix d'un langage n'est
+pas neutre
+LISP
+JAVA
+Y-a-t-il un langage universel ?
+C++
+L'assembleur
+C
+PASCAL
+• Un langage facilite la résolution de classes de problème
+– C : systèmes d'exploitation (Unix)...
+– C++ : applications de grande taille...
+– JAVA : applications de grande taille...
+– LISP : prototypage, systèmes experts...
+La programmation
+Paradigmes des langages
+de haut niveau (1)
+• Désigner
+– Expliciter une entité, en la nommant et en lui associant une
+définition au moins intuitive
+• Typer
+– Connaître précisément les propriétés pertinentes d’une entité
+• Paramétrer
+– Traiter un problème plus général que le problème posé
+– Améliorer la résistance de la solution aux changements
+– Réutiliser
+La programmation
+Paradigmes des langages
+de haut niveau (2)
+• Sérialiser
+– Construire des séquences d'actions
+• Décomposer par cas
+– Découper le domaine des données initiales
+• Itérer
+– Introduire un sous problème intermédiaire paramétré
+Réduire la complexité d'un problème
+La programmation
+Langage compilé
+Assembleur
+Editeur de liens
+Compilateur
+Chargeur
+0x8048470 pushl %ebp
+0x8048471 movl %esp,%ebp
+0x8048473 pushl $0x80484dc
+0x8048478 call 0x80483bc <printf>
+0x8048480 addl $0x4,%esp
+0x8048481 leave
+0x8048481 ret
+Programme source Programme cible Code machine
+$ emacs monProg.c
+$ gcc monProg.c -o monProg
+$ ./monProg
+La programmation
+Compilation
+position := initiale + vitesse * 60
+1)
+• Analyse lexicale
+2) :=
+• Analyse syntaxique
+position +
+• Analyse sémantique
+initiale
+• Génération de code
+*
+• Optimisation vitesse 60
+3) empiler adresse de position
+empiler valeur de initiale
+empiler valeur de vitesse
+empiler 60
+*
++
+:=
+La programmation
+Langage interprété
+Interpréteur
+0x8048470 pushl %ebp
+0x8048471 movl %esp,%ebp
+0x8048473 pushl $0x80484dc
+0x8048478 call 0x80483bc <printf>
+0x8048480 addl $0x4,%esp
+0x8048481 leave
+0x8048481 ret
+Programme source Code machine
+• emacs monProg.l
+• lisp monProg.l
+La programmation

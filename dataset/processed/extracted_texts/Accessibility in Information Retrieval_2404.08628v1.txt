@@ -1,0 +1,329 @@
+4202
+rpA
+21
+]RI.sc[
+1v82680.4042:viXra
+Accessibility in Information Retrieval
+Leif Azzopardi1 and Vishwa Vinay2
+1 Dept.of Computing Science,
+Universityof Glasgow,
+Glasgow UK,
+leif@dcs.gla.ac.uk,
+2 Microsoft Research Cambridge
+Cambridge, UK
+vvinay@microsoft.com
+Abstract. This paper introduces the concept of accessibility from the
+field of transportation planning and adopts it within the context of In-
+formation Retrieval(IR).Ananalogy isdrawnbetweenthefields,which
+motivates the development of document accessibility measures for IR
+systems. Considering the accessibility of documents within a collection
+given an IR System provides a different perspective on theanalysis and
+evaluation of such systems which could be used to inform the design,
+tuningand management of current and futureIR systems.
+Keywords: Fairness, Bias, Equality, Accessibility, Retrievability
+1 Introduction
+InformationRetrievalistheareathatdealswiththestorage,organization,man-
+agement and retrieval of information, where the goal of continual research in
+the field is to find better methods of doing the same. In pursuit of this better-
+mentevaluationhasbeeninstrumentalinthedevelopmentofIRSystems.While
+evaluationhas typicallyfocusedonthe effectiveness[14],orthe efficiency [16]of
+the IR system, these are only two ways in which to assess the quality of an IR
+system. In this paper, we introduce a complementary view to evaluation which
+provides a higher level view of the IR system by focusing on the accessibility an
+IR system provides to the documents in a collection.
+Accessibility is an abstract concept coined almost 50 years ago in the land
+use andtransportationplanning field [10], whereit wasdefined asa measureof
+potential opportunities for interaction with resources like employment, school-
+ing, shopping, dining, etc. Measuring the accessibility in this context enabled
+many studies (e.g. [10][12][15][7]) to be performed which examined, for exam-
+ple, how changes in the levels of accessibility to such opportunities affected the
+urban area (in terms of economic impact, social changes and so forth). The re-
+sultsofsuchstudiesprovidevaluableinformationtotransportationplannersand
+city designers in the development of land use and transportation systems. Be-
+fore this, planners and designers would focus on measures which were based on
+the effectiveness and efficiency of the transportationsystem (such as, the travel
+time between particular locations). However, accessibility provided a different
+perspective, and while related to effectiveness and efficiency, it takes a more
+abstracted or high level view on the evaluation of transportation systems, con-
+sidering more generalconcerns relating to access, instead of focusing on specific
+instances.
+Their definition of accessibility3 considers the accessibility of opportunities
+atlocationsinaphysicalspace(suchasacity).Thetransportationsystemisthe
+means by which opportunities are made accessible (i.e., the road network and
+the bus, cycle path and a bicycle, etc). In this context, the main consideration
+in the design and management of the transportation system is to look beyond
+efficiencyandeffectivenessandtoconsidertheaccessibilityofopportunitiesgiven
+a certain distance or the generalized cost the user is willing to incur to reach
+these opportunities and the desirability of these opportunities.
+In the context of Information Retrieval, an analogy of accessibility can be
+made as follows. Instead of an actual physical space, in IR, we are predomi-
+nately concerned with accessing information within a collection of documents
+(i.e., informationspace),andinsteadofa transportationsystem, wehaveanIn-
+formation Access System (i.e., a means by which we can access the information
+in the collection, like a query mechanism, a browsing mechanism, etc). The ac-
+cessibilityofadocumentisindicativeofthelikelihoodoropportunityofitbeing
+retrieved by the user in this information space given such a mechanism. For ex-
+ample, in a hyper-linkedcollection exposed by a browsing-basedsystem, a page
+with no incoming or outgoinglinks will haveno accessibility.Conversely,a page
+withthousandsofincominglinkswouldbeveryaccessible.Here,weconsiderthe
+accessibilityofdocumentsgivenanIRsystem,wheredocumentsareaccessedby
+queryingthesystem.Eachqueryprovidesadifferentorderinginwhichtoaccess
+the documents in the information space. Much like a particular bus taking a
+pre-defined route through a city. However, unlike in the physical space, in the
+information space, there is no constraint imposed by the user’s current location
+(i.e., at a particular document) because the IR system facilitates access to the
+collectionregardlessoflocation.TheIRsystemislikebeing atabusstopwhere
+every possible bus route is available, (i.e., the universe of all possible queries),
+and we can select any route desired, at any time. While this makes every docu-
+ment potentially accessible, the choice of route and distance the user is willing
+to travel will affect just how accessible documents are in the information space.
+3 Accessibility is also a key concept in other areas but defined differently. For in-
+stance, the disability rights movement advocates equal access to social, political,
+and economic life which includes not only physical access but access to the same
+tools,services,organizationsandfacilities.AnotherexampleistheWorldWideWeb
+Consortium(W3C)’sWebAccessibilityInitiative(WAI),whichisaimedtoimprove
+theaccessibility oftheWorldWideWebforpeopleusingawiderangeofuseragent
+devices, not just standard web browsers. However, accessibility in these contexts
+concentrateson thephysicalaspects of accessing theinformation, and evenextends
+to issues regarding usability and mobility.
+In this paper, our main contribution is the introduction of the concept of
+accessibility and the proposal of how to measure accessibility in this context.
+To do so, we first describe the related research in Section 2 and draw upon
+the extensive body of work in transportation planning and land use to provide
+the basis in developing measures of accessibility for IR system. Then in Section
+3, we propose two IR based accessibility measures that are analogous to those
+in the field of transportation. The introduction of accessibility presents many
+different possibilities and challenges which can not be fully addressed here, so
+we summarize this initial contribution in Section 4.
+2 Related Work
+InHansen’sseminalpaper[10]onmeasuringaccessibilityintransportationplan-
+ning and land use, he defines how accessibility could be measured:
+a measurement of the spatial distribution of activities about a point ad-
+justed for the ability and the desire of people or firms to overcome spatial
+separation. More specifically, the formulation states that the accessibility at
+point 1 to a particular typeof activity at area 2 (say employment) is directly
+proportionaltothesizeoftheactivityatarea2(numberofjobs)andinversely
+proportional to some function of the distance separating point 1 from area 2.
+The total accessibility to employment at point 1 is the summation of the ac-
+cessibility to each of the individual areas around point 1. Therefore, as more
+and more jobs are located nearer to point 1, the accessibility to employment
+at point 1 will increase.
+Key to this definition is the notion that as opportunities become further
+awaythe lessaccessiblethey become, andthat by consideringallpossibilities to
+opportunities subject to the cost function based on the distance apart,provides
+a measure of accessibility. Essentially, this measure quantifies the potential of
+opportunities for interaction [10].InthecontextofIR,the opportunitiesarethe
+documents in the information space, and we wish to capture the potential of
+documents for retrieval.
+2.1 Measures of Accessibility in Transportation Planning
+There are numerous measures of accessibility that have been proposed in the
+field of Transportation Planning; the simplest and most popular measures are
+the Cumulative Opportunity Measures and Gravity Based Measures.
+Cumulative Opportunity Measures also known as Isochrone measures count
+the number of opportunities that can be reached within a given travel time,
+distance,orgeneralizedcost[15].Anexampleapplicationofthemeasureis“the
+total number of dining opportunities within 400 metres”. The advantage of this
+measure is that it is intuitive and easy to compute. However, the measure is
+sensitive to the size ofthe range(aroundthe point ofinterest)to be considered,
+and the representation of the opportunities.
+First derived by [10], Gravity Based Measures provide a general method for
+measuringaccessibility,whichiswidely used.Theydifferfromcumulativebased
+measures in that they include a cost function within the calculation. Generally,
+thecostfunctiontakestheformofanegativeexponentialfunction(asdescribed
+by [10], above), such that opportunities that are further away will have a lower
+impactonthefinalaccessibilityvalue.By“further”,itismeantintermsoftime,
+distance or generalized cost.
+While more sophisticated measures have been developed, such as Utility
+Based Measures [12]andActivity Based Measures [7],weshallonlybe consider-
+ing the former two methods in this work as they are the most widely used and
+acceptedmeasuresintransportationandplanning.Thus,it seems reasonableto
+use these as a starting point to determine if they can be useful and informative
+in IR, before developing more sophisticated measures.
+2.2 Accessibility in Information Retrieval
+AccessibilityissuesinIRhavefocusedonrestrictions(physicalandvirtual)toin-
+dexorretrieveinformation,whetherthisisbecauseofaphysicalimpairment[8],
+restrictedaccessdue to securityclearance[11],orthe inabilityto crawlportions
+of the web [4]. In each case, documents are inaccessible to the user or the sys-
+tem because of some physical or virtual limitation. For instance, in the latter
+case, the inability to crawl a web site means that certain documents are not
+indexed by the IR system, and therefore are not accessible to the user via the
+IR system. Recently, it was posited that the “searchability”of a web site would
+be affected by how easily pages can be crawled and how well the search engine
+matches and ranks them [13]. Searchability and accessibility are therefore very
+similar concepts. However, we are concerned with the influence of the IR sys-
+temonaccessingdocuments.Others(e.g.[9][5])haveconsideredhowdocuments
+are accessed from the index in the retrieval process to facilitate more efficient
+retrieval by considering processor, disk and memory constraints. For instance
+“access-ordered indices” [9] are where the documents which are more likely to
+be returned at higher ranks are placed before those that are not likely to be
+returned at higher ranks. Another example, is the caching of queries [3], in web
+searchengines, where results pages are cached in response to popular queries in
+order to facilitate efficient access.
+In essence, IR is all about accessing information, and how the information
+is accessed. Our work is focused on measuring the accessibility of documents
+in the collection given the IR system used to access these documents. This is
+different from past work, in that we are specifically examining the influence
+of the IR system to restrict or promote access to the information within the
+collectionasopposedtootherrestrictions.Thispaperhopestoestablishtheidea
+of accessibilityas anintegralconceptin the field by highlighting its potential in
+the practicaltaskofdeveloping,building,andoptimizing IRSystems,aswellas
+diagnostics and evaluation.
+3 Measuring Document Accessibility
+GivenacollectionD,anIRsystemacceptsauserqueryqandreturnsaranking
+ofdocumentsR ,whicharedeemedtoberelevanttoqfromwithinDbytheIR
+q
+system. We can consider the accessibility of a document as a system dependent
+factor that measures how retrievable it is, with respect to the collection D and
+the ranking function used by the IR system. Using the analogy of transporta-
+tion, entering a query is like to choosing a particular bus, where the order of
+documents returnedarelike the orderofdestinations reachedforthat givenbus
+route. Opportunities to interact with resources while traveling along the route
+are reflected by going through the documents returned in the ranking R . The
+q
+accessibility of the resources (i.e., documents) is dependant on the willingness
+of the user to travel a certain distance along the route (i.e., traverse down the
+rankedlist)andallthequeriesthatusersarelikelytotravelalong.So,byadapt-
+ing the measures from transportation planning, we propose a general measure
+of the accessibility of a document, as:
+A(d)= Xo
+q
+·f(c
+dq
+,θ) (1)
+q∈Q
+whereo denotesthelikelihoodofexpressingqueryqfromtheuniverseofqueries
+q
+Q and f(c ,θ) is a generalized utility/cost function where c is the distance
+dq dq
+associated with accessing d through q which is defined by the rank of the doc-
+ument, and θ is a parameter or set of parameters given the specific type of
+measure.
+A cumulative based measure can then be defined as follows: θ = c, where c
+denotes the maximum rank that a user is willing to proceed down the ranked
+list. The function f(c ,c) returns a value of 1 if c ≤ c (with the top-most
+dq dq
+position considered as rank 1), and 0 otherwise. So, if returning a document
+in response to a given query has a distance greater than c associated with it,
+thenitisconsideredunaccessible(forthisquery).Foranotherqueryhowever,the
+documentmaybeaccessiblebecausethecostofaccessingitiswithinthedistance
+c.Alternatively,thedocumentcouldbeconsideredaccessibleforthesamequery
+but to a user who has a higher cost threshold. Since all the documents within
+the cutoff defined by c are equally weighted, this type of measure emphasizes
+the number of times the document can be retrieved within that cutoff over the
+set Q.
+Agravitybasedmeasurecanalsobedefinedbysettingthefunctiontoreflect
+the effort of going further down the ranked list, such that the further down the
+ranking the less accessible a document becomes. There are numerous ways in
+which such a function could be determined. Here, we adopt the function sug-
+gested in [10], where the accessibility of the document is inversely proportional
+to the rank of the document, such that:
+1
+f(c ,β)= (2)
+dq (c )β
+dq
+where, the set of parameters θ includes β which is a dampening factor that
+adjusts how accessible the document is in the ranking. Interestingly, if the β
+parameter is set to one, then accessibility of the document for the given query
+is equivalent to the reciprocal rank of the document, which is related to the
+(expected) search length [6]. When there is only one relevant document, the
+expected search length is equivalent to the reciprocal rank of the document.
+Intuitively, the expected search length (ESL) and accessibility of documents is
+related,because the expected searchlength correspondsto how many irrelevant
+documents have to be examined in order to find the relevant documents. The
+expected search length to a particular document is proportional to the accessi-
+bilityofthedocumentforagivenquery.However,whattheaccessibilitymeasure
+captures is more general, i.e., how retrievable the document is given all possi-
+ble/likely queries regardless of relevancy, but this link to ESL and reciprocal
+rankappearsto providea connectionbetweenaccessibilityandeffectiveness.As
+we have previously mentioned this direction is left for future work.
+Given either measure, A(d) provides an indication of the opportunity of
+retrieving d. This value can be obtained for each document d ∈ D so that we
+can compare whether there is more opportunity to retrieve one document over
+another. Using this measure to compare groups of documents has potential to
+aid in the design, management and tuning of retrieval systems in a number of
+ways. Imagine that for a given collection of documents and a given IR system,
+theaverageA(d)ofasetofdocumentsisextremelyhigh,whileforanothersetof
+documentstheaverageA(d)isverylow.Perhaps,the firstsetofdocumentswas
+agroupofsiteentrypages,andoursystemhasa priortowardssuchpages,thus
+we would expect these pages to have a higher A(d). In this case, it is desirable
+that these documents are so accessible. On the other hand, if the set of highly
+accessible pages was composed of spam pages, because these pages have used
+“tricks”to artificially inflate the number ofqueries forwhich they areretrieved,
+then this is not desirable and the system needs to be adjusted. Alternatively,
+if there is a set of documents which are virtually inaccessible in the collection,
+then it is a management decision to decide whether these documents should be
+included in the index or not.
+At a higher level, the measure A(d) motivates questions regarding how ac-
+cessible documents in the collection should be, and whether we are interested
+in trying to “hide” or “promote” certain documents within the collection. Or
+whether we should adopt an approach that ensures access to the information is
+free from bias, i.e. “universal access”4 so that any document is as accessible as
+any other document in the collection. This provides a novelframeworkfor mea-
+suringdocument accessibility,whichenables the considerationof suchquestions
+and issues.
+4 Aspreviouslymentioned,thedisabilityrightsmovementadvocatesequalaccessand
+terms this notion as universal access.
+4 Conclusion and Future Work
+The main contribution of this paper is the introduction of the concept of ac-
+cessibility and quantifying the accessibility of documents in the collection given
+a particular IR system. Measures of accessibility are not performance measures
+like effectiveness or efficiency, but instead are measures of the potential of doc-
+uments for retrieval (a.k.a., their retrievability [2]). This abstraction provides a
+novel way to quantify and detect different levels of accessibility within the col-
+lection imposed by the IR system. For a system administrator, this could prove
+to be very useful in designing, managing and tuning the IR system (see [1] for
+empirical examples).
+Thisworkrepresentstheinitialsteptowardsformalizingaccessibilityandde-
+velopingaccessibilitymeasuresfor informationspaces,in IRandmore generally
+for any Information Access system. However, there are many open problems,
+challengesandissueswhichhavearisenasaresultofthiswork.Furtherresearch
+needs to be conducted in two main directions:
+1. the calibration, computation and estimation of document accessibility mea-
+sures, and
+2. the application of document accessibility measures.
+Acknowledgements The authors would like to thank Stephen Robertson, Keith
+van Rijsbergen and Murat Yakici for their helpful and insightful comments and
+suggestions.
+References
+1. L.AzzopardiandV.Vinay. Documentaccessibility:Evaluatingtheaccessafforded
+to a document by the retrieval system. In Workshop on Novel Methodologies for
+Evaluation in Information Retrieval, pages 52–60, March 2008.
+2. L.AzzopardiandV.Vinay. Retrievability:anevaluationmeasureforhigherorder
+informationaccesstasks. InProceedings ofthe 17th ACM Conference on Informa-
+tion and Knowledge Management, CIKM ’08, page 561–570, 2008.
+3. R. Baeza-Yates, A. Gionis, F. Junqueira, V. Murdock, V. Plachouras, and F. Sil-
+vestri. The impact of caching on search engines. In Proceedings of the 30th ACM
+SIGIR conference, pages 183–190, 2007.
+4. P. Bailey, N. Craswell, and D. Hawking. Chart of darkness: Mapping a large
+intranet. Technical report, CSIRO Mathematical and Information Sciences, 2000.
+5. S. Buttcher and C. L. A. Clarke. A document-centric approach to static index
+pruning in text retrieval systems. In Proceedings of the 15th ACM Conference on
+Information and Knowledge Management, 2006.
+6. W. S. Cooper. Expected search length: A single measure of retrieval effectiveness
+basedonweakorderingactionofretrievalsystems.JournaloftheAmericanSociety
+for Information Science, 19(1):30–41, 1968.
+7. X. Dong, M. E. Ben-Akiva, J. L. Bowman, and J. L. Walker. Moving from trip-
+basedtoactivity-basedmeasuresofaccessibility. Transportation research. Part A,
+Policy and practice, 40(2):163–180, 2006.
+8. I.Fajardo, J. J.Canas, L.Salmeron,andJ.Abascal. Improvingdeafusers’acces-
+sibilityinhypertextinformationretrieval:aregraphicalinterfacesusefulforthem?
+Behaviour and Information Technology, 25(6):455–467(13), 2006.
+9. S. Garcia, H. E. Williams, and A. Cannane. Access-ordered indexes. In Twenty-
+SevethAustralasianComputerScienceConference(ACSC2004),pages7–14,2004.
+10. W. Hansen. How accessibility shape land use. Journal of the American Institute
+of Planners, 25(2):73–76, 1959.
+11. D.Hawking. Challenges in enterprisesearch. InADC ’04: Proceedings of the 15th
+Australasian database conference, pages15–24, Darlinghurst,Australia, Australia,
+2004. Australian Computer Society, Inc.
+12. H. Neuburger. User benefit in the evaluation of transport and land use plans.
+Journal of Transport Economics and Policy, 5:52–75, 1971.
+13. T. Upstill, N. Craswell, and D. Hawking. Buying bestsellers online: A case study
+in search & searchability. In 7th Australasian Document Computing Symposium,
+Sydney,Australia, 2002.
+14. C.J.vanRijsbergen. InformationRetrieval. Butterworths,London,secondedition
+edition, 1979.
+15. M. Wachs and T. G. Kumagai. Physiscal accessibility as a social indicator. So-
+cioeconomic Planning Science, 7:327–456, 1973.
+16. I. H. Witten, A. Moffat, and B. T. C. Managing Gigabytes: Compressing and
+Indexing Documents and Images. Morgan Kaufmann Publishing, San Franciso,
+second edition edition, 1999.

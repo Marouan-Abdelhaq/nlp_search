@@ -1,0 +1,3642 @@
+Licence S.T.S - Semestre 1
+Initiation (cid:224) la programmation
+annØe universitaire 2013-2014
+Licence Creative Commons (cid:0)(cid:1)(cid:5)(cid:2)
+2
+Introduction
+[...] l’informatique est la discipline qui s’applique (cid:224) Øtudier et (cid:224) dØ(cid:28)nir des opØrations, et
+oø l’on opŁre des transformations sur des combinaisons de symboles trŁs gØnØraux reprØsen-
+tant diverses informations en de nouvelles combinaisons de symboles, elles-mŒmes porteuses
+d’informations.
+G. Ifrah, Histoire Universelle des Chi(cid:27)res, coll. Bouquins, t. II, p. 725.
+Ce document est le support du cours d’initiation (cid:224) la programmation (InitProg) proposØ au
+semestre 1 de la premiŁre annØe de licence Sciences et Technologies de l’universitØ de Lille 1,
+dans les parcours MASS, MIMP, PC, PEIP et SPI.
+Les Øtudiants peuvent poursuivre l’Øtude de la programmation dans les deux cours
+(cid:21) Algorithmes et Programmation ImpØrative 1 (API1), proposØ au semestre 2 de premiŁre
+annØe dans les pro(cid:28)ls MASS, MIMP, PEIP et SPI;
+(cid:21) etAlgorithmesetProgrammationImpØrative2(API2),proposØausemestre3endeuxiŁme
+annØedelicencedanslesmentionsGØniecivil,GØniemØca,Informatique,Maths,MØcanique
+et MASS.
+La programmation
+Unalgorithmeestladescriptiond’unencha(cid:238)nementdecalculsetdet(cid:226)chesØlØmentairesenvue
+de la rØalisation d’un traitement automatique de donnØes. Ces donnØes doivent Œtre reprØsentØes
+pardesstructuresappropriØes.L’algorithmepeutensuiteŒtrecodØdansunlangagedeprogram-
+mation pour donner un programme. La programmation regroupe ces activitØs : algorithmique,
+structuration de donnØes et codage, les deux premiŁres Øtant certainement les plus importantes.
+Contrairement (cid:224) ce que pourrait croire un novice, la t(cid:226)che principale de la conception d’un
+programme n’est pas l’Øcriture de celui-ci dans un langage informatique donnØ.
+La rØalisation d’un programme se dØcompose en e(cid:27)et en plusieurs phases. De maniŁre sim-
+pli(cid:28)Øe, on prØsente ainsi la genŁse d’un programme :
+1. Øtablissement d’un cahier des charges : le problŁme posØ;
+2. analyseduproblŁmeetdØcompositiondecelui-ciensous-problŁmesplusoumoinsindØpen-
+dants et plus simples (cid:224) rØsoudre;
+3. choix de structures de donnØes pour reprØsenter les objets du problŁme;
+4. mise en (cid:247)uvre des di(cid:27)Ørents algorithmes (cid:224) utiliser pour rØsoudre les sous-problŁmes;
+5. codage des algorithmes et crØation du programme dans un langage de programmation
+donnØ;
+6. tests (et corrections) et validation auprŁs des utilisateurs.
+Bien souvent, dans la pratique, ces Øtapes ne sont pas aussi nettement dØcoupØes. Les quatre
+premiŁres sont certainement les plus importantes et on peut remarquer qu’elles sont indØpen-
+dantes du langage de programmation choisi, qui n’intervient normalement qu’(cid:224) la cinquiŁme
+3
+4
+Øtape. La derniŁre Øtape est, elle aussi, trŁs importante et ce serait une grave erreur de penser
+qu’elle ne fait pas partie du cycle de crØation d’un programme.
+Pour un dØbutant en informatique, Øtudiant de surcro(cid:238)t, le cahier des charges consistera
+souvent en un ØnoncØ d’exercice ou de problŁme proposØ par un enseignant. Une premiŁre t(cid:226)che,
+etelleestsouventplusdi(cid:30)cilequ’onnelecroit,seradecomprendrecetØnoncØ!Ilfaudraensuite
+rØ(cid:29)Øchir (cid:224) la rØsolution de ce problŁme et, ensuite seulement, le coder dans un langage. On peut
+doncleconstater,unebonnepartiedutravaildoitsefaireavecuncrayonetunpapier!Uneerreur
+(mØthodologique) des dØbutants est souvent, une fois l’ØnoncØ lu (ou plus souvent simplement
+survolØ), de se ruer sur leur clavier et de commencer (cid:224) taper dessus (on ne sait d’ailleurs trop
+quoi) et seulement alors de commencer (cid:224) rØ(cid:29)Øchir (cid:224) la rØsolution du problŁme.
+Objectif du cours
+Il s’agit de poser les notions de base en programmation impØrative.
+(cid:21) Expressions et instructions.
+(cid:21) Constantes et variables, a(cid:27)ectation. Variables locales.
+(cid:21) Types de donnØes simples : nombres entiers ou non entiers, boolØens, caractŁres et cha(cid:238)nes
+de caractŁres.
+(cid:21) Expressions et instructions conditionnelles.
+(cid:21) RØpØtition conditionnelle d’intructions (boucle tant que). RØpØtition non conditionnelle
+d’instructions (boucle pour).
+(cid:21) Fonctions et procØdures. ParamŁtres formels, paramŁtres e(cid:27)ectifs.
+Dans les deux cours qui suivent (API1 et API2) sont abordØes les notions
+(cid:21) tableaux;
+(cid:21) enregistrements;
+(cid:21) (cid:28)chiers;
+(cid:21) rØcursivitØ;
+(cid:21) structures de donnØes dynamiques;
+(cid:21) programmation modulaire;
+(cid:21) algorithmes de recherche et de tri;
+(cid:21) complexitØ des algorithmes.
+Le choix du langage
+Il existe de trŁs nombreux langages impØratifs : C, Pascal, Ada, Python, Caml...
+Pendant quelques annØes nous avons utilisØ le langage Pascal. Mais l’expØrience a montrØ
+que la lourdeur de la syntaxe de ce langage, ainsi que certaines de ses ambigu(cid:239)tØs, prØsentaient
+de rØelles di(cid:30)cultØs pour des Øtudiants dØbutant en programmation. Ce langage nØcessitant
+une phase d’Ødition, puis une phase de compilation avant toute exØcution, il devient trŁs vite
+fastidieux de tester la moindre idØe d’algorithme. Pour ces raisons nous avons dØcidØ de changer
+de langage.
+Nous nous sommes alors tournØs vers Caml. MŒme si (cid:224) la base ce langage est avant tout un
+langagefonctionnel,ilo(cid:27)reaussilapossibilitØdeprogrammerdansunstyleimpØratif.Ildispose
+de plusieurs modes d’exØcution :
+(cid:21) un mode interactif
+1
+(cid:21) un mode compilØ qui permet de produire des exØcutables autonomes.
+1. enrØalitØ,ilexistedeuxmodescompilØs:unecompilationencode-octetquidoitensuiteŒtreinterprØtØpar
+unemachinevirtuelle:etunecompilationencodenatifpourunearchitecturedonnØe.
+5
+Danslecoursd’InitProg,lemodeinteractifestleseulmodeabordØ.Lacompilationpourproduire
+des programmes exØcutables autonomes sera abordØe dans le cours d’API1.
+CamlestunlangagefonctionneldanslequellesfonctionssontdesvaleursdumŒmeordreque
+touteautrevaleur.Enparticulier,unefonctionpeutproduireuneautrefonction.Parexemple,la
+fonction plus dØ(cid:28)nieci-dessous estunefonctionquipermetd’additionner deuxnombres entiers.
+# let plus a b = a + b ;;
+val plus : int -> int -> int = <fun>
+On peut le vØri(cid:28)er en appliquant la fonction plus aux deux entier 2 et 5.
+# plus 2 5 ;;
+- : int = 7
+Mais on peut aussi appliquer cette fonction (cid:224) un seul entier, et la valeur produite par cette
+application donne une fonction qui, comme le montre le type indiquØ par l’interprŁte du langage
+est une fonction qui (cid:224) un entier associe un autre entier.
+# let plus2 = plus 2 ;;
+val plus2 : int -> int = <fun>
+L’application de la fonction plus2 (cid:224) un entier donne cet entier augmentØ de 2.
+# plus2 5 ;;
+- : int = 7
+MathØmatiquement parlant, la fonction plus est donc une fonction dont l’ensemble de dØpart
+est l’ensemble des entiers Z et celui d’arrivØe est l’ensemble des fonctions de Z dans Z.
+plus :Z(cid:0)!(Z!Z):
+Une autre fa(cid:231)on de considØrer la fonction qui (cid:224) deux entiers associe la somme de ces deux
+entiers consiste (cid:224) la dØ(cid:28)nir comme une fonction dont l’ensemble de dØpart est l’ensemble des
+couples d’entiers Z(cid:2)Z est celui d’arrivØe est Z.
+add :Z(cid:2)Z(cid:0)!Z:
+Lesdeuxfonctionsplusetaddsontd’unecertainemaniŁredeuxfacettesdelamŒmefonction:
+on dit que la premiŁre en est la version curry(cid:28)Øe et la seconde la version dØcurry(cid:28)Øe.
+En Caml, on peut Øcrire trŁs simplement la forme dØcurry(cid:28)Øe.
+# let add (a,b) = a + b ;;
+val add : int * int -> int = <fun>
+L’application de cette fonction (cid:224) deux entiers donne le rØsultat attendu.
+# add (2,5) ;;
+- : int = 7
+Mais l’application (cid:224) un seul entier n’est plus possible
+# add (2) ;;
+This expression has type int but is here used with type int * int
+puisque l’interprŁte du langage attend qu’un couple d’entiers soit fourni (cid:224) la fonction add.
+En programmation, il est frØquent d’avoir (cid:224) dØ(cid:28)nir des fonctions ou procØdures (cid:224) deux
+(ou plus) paramŁtres. Dans la plupart des langages de programmation (C, Ada, Pascal...),
+6
+lorsqu’une telle fonction a ØtØ dØ(cid:28)nie, il n’est pas possible de l’appliquer avec un nombre d’argu-
+mentsinfØrieuraunombredeparamŁtresprØcisØdanssadØ(cid:28)nition.Nousavonsdoncchoisi,pour
+ce cours d’InitProg, de programmer toutes les fonctions ou procØdures (cid:224) plusieurs paramŁtres
+2
+que nous rencontrerons sous leur forme dØcurry(cid:28)Øe . Cela a le double avantage
+(cid:21) d’Œtre syntaxiquement proche de ce qui se fait dans d’autres langages de programmation;
+(cid:21) de ne pas permettre l’application partielle d’une fonction qui fournirait des valeurs fonc-
+tionnelles qui pourrait dØsorienter le programmeur dØbutant.
+Organisation du polycopiØ
+Ce polycopiØ est dØcoupØ de maniŁre assez classique en introduction (que vous lisez actuelle-
+ment), chapitres, annexes, et diverses tables (des (cid:28)gures, des matiŁres, ...).
+Leschapitresrecouvrentlesobjectifsduprogrammed’InitProg.Ilssonttoussuivisdequelques
+exercices. Durant les sØances hebdomadaires, les enseignants pourront complØter la liste de ces
+exercices par d’autres.
+UneannexeimportanteestcelleprØsentantlesfonctionsdumoduleCartes.CemoduledØ(cid:28)nit
+unenvironnementdetravailquipermetdedØplacerdescartessituØessurquatretasd’untasvers
+un autre. Cet environnement est utilisØ durant les premiŁres semaines du cours pour introduire
+progressivement les di(cid:27)Ørentes structures de contr(cid:244)le en programmation impØrative, ainsi que
+les notions de fonctions et procØdures. Le report en annexe de la prØsentation de ce module est
+dØlibØrØ a(cid:28)n de distinguer les objectifs du cours (prØsentØs dans les divers chapitres) des moyens
+pour les atteindre.
+Ce polycopiØ ne contient pas les sujets de TP qui seront proposØs au fur et (cid:224) mesure par
+l’intermØdiaire du semainier du portail des UE d’informatique (http://www.fil.univ-lille1.
+fr/portail/ls1/initprog/) ou du site du cours sur Moodle (http://moodle.univ-lille1.
+fr/). Bien entendu, les TP font partie intØgrante du cours et sont indispensables (cid:224) une bonne
+comprØhension de ce cours.
+Conventions utilisØes dans le polycopiØ
+Les algorithmes de rØsolution de problŁme sont dØcrits en (cid:19)pseudo-code(cid:20) sous la forme
+Algorithme 0.1 Calcul de n!
+EntrØe : un entier n(cid:21)0
+Sortie : n!
+f 1
+pour i allant de 1 (cid:224) n faire
+f f (cid:2)i
+(cid:28)n pour
+renvoyer f
+La traduction d’un algorithme en Caml, ainsi que les programmes sont prØsentØs sous la
+forme
+let fact (n) =
+let f = ref 1
+2. Les Øtudiants qui poursuivront leurs Øtudes en informatique dØcouvriront dans un cours de 3Łme annØe
+consacrØ(cid:224)laprogrammationfonctionnellelesavantagesdesfonctionscurry(cid:28)Øes.
+7
+in
+for i = 1 to n do
+f := !f * i
+done;
+!f
+En(cid:28)n, les dialogues avec l’interprŁte du langage sont dØcrits sous la forme
+# let a = 5 ;;
+val a : int = 5
+# fact (5) ;;
+- : int = 120
+Lorsqu’une nouvelle structure syntaxique du langage est prØsentØe pour la premiŁre fois, elle
+l’est sous la forme
+Syntaxe : DØclaration d’une variable
+(cid:7) (cid:4)
+let <identificateur > = <expression>
+(cid:6) (cid:5)
+Le site du cours
+Le site du cours se trouve (cid:224) l’adresse :
+http://www.fil.univ-lille1.fr/portail/ls1/initprog
+.
+Vous pouvez y accØder (cid:224) l’aide de votre (cid:19)tØlØphone ØlØgant(cid:20) (smartphone pour les anglo-
+phones) gr(cid:226)ce au QR-code de la (cid:28)gure 1.
+Figure 1 (cid:21) QR-code du site du cours
+8
+(cid:201)quipe pØdagogique 2013-2014
+PierreAllegraud,FabriceAubert,AlexandreBilger,JulienBosman,Fran(cid:231)oisDervaux,Alexan-
+dre Feugas, Michel Fryziel, Sophie Jacquin, Laetitia Jourdan, CØline Kuttler, Jean-Luc Levaire,
+Didier Mailliet, Nour-Eddine Oussous, Yosra Rekik, Romain Rouvoy, Mikaºl Salson, Alexandre
+Sedoglavic, Bayrem Tounsi, Cristian Versari, Christophe Vroland, (cid:201)ric Wegrzynowski, LØopold
+Weinberg, Hassina Zeghlache.
+Licence Creative Commons (cid:0)(cid:1)(cid:5)(cid:2)
+Ce polycopiØ est soumis (cid:224) la licence Creative Commons Attribution Pas d’Utilisa-
+tion Commerciale Partage (cid:224) l’Identique 3.0 France (http://creativecommons.org/
+licenses/by-nc-sa/3.0/fr/).
+Chapitre 1
+Expressions et instructions
+1.1 Expressions
+Une expression est une maniŁre de reprØsenter un calcul. Par exemple, l’aire d’un disque de
+rayon r est donnØe par l’expression :
+(cid:25)r2
+Cette expression est composØe de plusieurs sous-expressions. Certaines sous-expressions ne
+peuventplusŒtredØcomposØes,ellessontatomiques.Ils’agitsoitdeconstantes,soitdevariables,
+soit de fonctions ou d’opØrateurs.
+*.
+pi **
+r 2.
+Dans les formules les grandeurs possŁdent ce que les physiciens appellent des dimensions, en
+informatique on parle plut(cid:244)t de types.
+Lorsqu’on Øcrit de maniŁre traditionnelle une expression, un certain nombre de conventions
+d’Øcriturenouspermetd’omettrecertainssignesd’opØrations.Ici,parexemple,lessignesdemul-
+tiplicationssontimplicites.Lorsqu’onsouhaitetraduirecetteexpressiondemaniŁreinformatique,
+il faudra savoir que des rØgles strictes devront Œtre appliquØes, l’ensemble de ces rŁgles forme la
+syntaxe du langage, et il faudra absolument les respecter pour espØrer obtenir un rØsultat.
+1.2 Le logiciel Objective Caml
+Le langage informatique que nous utiliserons pour ce cours est Caml. On peut utiliser ce
+langage dans di(cid:27)Ørents modes.
+(cid:21) EnmodeinterprØtØ :danscemodeleprogrammeurdialogue(enCaml)avecuninterprŁte
+dulangage.PlusprØcisØment,ilrØdigedesphrasesqu’ilcommunique(cid:224)l’interprŁte,etcelui-
+ci vØri(cid:28)e qu’elles sont bien rØdigØes et donne en retour une rØponse au programmeur. Le
+mode interprØtØ permet au programmeur d’Øvaluer immØdiatement et pas (cid:224) pas ses idØes.
+9
+10 CHAPITRE 1. EXPRESSIONS ET INSTRUCTIONS
+(cid:21) EnmodecompilØ :danscemode,leprogrammeurrØdige(avecunØditeurdetextes)l’intØ-
+gralitØ de son programme, puis le soumet (cid:224) un compilateur du langage dont le r(cid:244)le est de
+produireunprogrammeexØcutable.SileprogrammeestcorrectementrØdigØ(aucuneerreur
+desyntaxe,cohØrencedestypesdanslesexpressions,...),ilneresteplusauprogrammeur
+qu’(cid:224) lancer l’exØcution de son programme et vØri(cid:28)er la conformitØ de cette exØcution au
+cahier des charges initial.
+Dans le cours d’InitProg, nous n’utiliserons que le mode interprØtØ. La compilation sera abordØe
+dans le cours API1 au semestre suivant.
+CamlestunlangagedØveloppØparl’INRIA(InstitutNationaldeRechercheenInformatique
+et Automatique) que l’on peut tØlØcharger (cid:224) l’adresse http://caml.inria.fr/. On en trouve
+di(cid:27)Ørentes implantations et celle que nous utiliserons est Objective Caml. Objective Caml
+est un logiciel libre qui peut Œtre tØlØchargØ depuis l’adresse prØcØdente ainsi que le manuel
+1
+d’utilisation . Il en existe des versions pour les plateformes les plus courantes : Linux, Microsoft
+Windows, MacOS X. Dans ce polycopiØ, ainsi que dans les salles de TP, nous utiliserons une
+version pour Linux.
+Pour dØbuter une session de dialogue avec l’interprŁte d’Objective Caml, on tape la com-
+mande ocaml dans un terminal.
+> ocaml
+Objective Caml version 3.10.2
+#
+Le symbole diŁse (#) est l’invite de l’interprŁte : c’est le signe qu’il est prŒt (cid:224) vous Øcouter et (cid:224)
+exØcuter la commande que vous lui donnerez.
+Avant de dØcouvrir les premiŁres expressions et instructions du langage Caml, voyons celle
+2
+qui permet de quitter l’interprŁte. C’est la directive #quit.
+# #quit ;;
+>
+1.3 PremiŁres expressions en Caml
+1.3.1 Expressions numØriques
+La syntaxe des expressions numØriques est trŁs proche de la notation mathØmatique usuelle.
+Ci-dessous, l’expression en Caml pour l’expression
+4(cid:2)((cid:0)3+5)
+; (1.1)
+2
+accompagnØe de la rØponse fournie par l’interprŁte.
+# (4 * (-3 + 5)) / 2 ;;
+- : int = 4
+Analysons ce point de dialogue avec l’interprŁte.
+1. Il existe aussi un excellent ouvrage d’introduction : DØveloppement d’applications avec Objective Caml
+(cf[EC00])
+2. EnCaml,lesdirectivesnesontpas(cid:224)proprementparlerdesexpressionsouinstructions.Cesontplut(cid:244)tdes
+commandesquimodi(cid:28)entlecomportementdel’interprŁte.LesdirectivesdØbutenttoutesparlesymbolediŁse.
+1.3. PREMI¨RES EXPRESSIONS EN CAML 11
+1. Tout d’abord l’expression (4 * (-3 + 5)) / 2. Elle est trŁs proche de la notation math-
+Ømatique usuelle, les nombres sont notØs comme d’habitude, l’addition et la division aussi,
+la multiplication est notØe *, et on utilise des parenthŁses pour marquer ici la prioritØ de
+certaines opØrations sur d’autres.
+2. L’expression est terminØe par un double point-virgule (;;). C’est une situation gØnØrale
+dans tout dialogue avec l’interprŁte, le double point-virgule marque la (cid:28)n d’une phrase
+que l’on souhaite communiquer (cid:224) l’Øvaluation. Ce marqueur mis, il ne reste plus qu’(cid:224) le
+faire suivre d’un (cid:19)retour-chariot(cid:20) (touche Entrée du clavier) pour soumettre la phrase (cid:224)
+l’interprŁte.
+3
+3. Si l’expression ne contient aucune erreur de syntaxe, et est typable , alors l’interprŁte
+procŁde (cid:224) son Øvaluation et en donne le rØsultat. Dans le cas prØsent, l’expression est
+parfaitement bien formØe (aucune erreur de syntaxe), elle est correcte du point de vue des
+types mis en jeux, et l’interprŁte nous indique que cette expression a une valeur de type
+numØrique entier (int) et que sa valeur est l’entier 4.
+PrØcisonstout desuite qu’uneexpression nedoitpas nØcessairementŒtre Øcritesur uneseule
+ligne.OnpeutØcrireuneexpressionsurautantdelignesquel’onveut.C’estlemarqueurde(cid:28)n;;
+qui indique (cid:224) l’interprŁte que la rØdaction de l’expression est achevØe. Voici la mŒme expression
+rØdigØe sur plusieurs lignes.
+# (
+4
+*
+(
+-3
++
+5
+)
+)
+/
+2
+;;
+- : int = 4
+L’opØrationdedivisionsurlesnombresentiersfournitlequotientdansladivisioneuclidienne.
+Par exemple 7=3 vaut 2 et non pas environ 2:3333. Le reste de la divition est obtenu avec
+l’opØrateur mod.
+# 7 / 3 ;;
+- : int = 2
+# 7 mod 3 ;;
+- : int = 1
+# 3 * 2 + 1 ;;
+- : int = 7
+Bienentendu,onpeutcalculerdesnombresnonentiersquenousnommeronsnombres(cid:29)ottants
+ou simplement (cid:29)ottants4 . En Caml, ces nombres sont tous marquØs d’un sØparateur dØcimal, le
+point, qu’ils soient ou non dotØs de chi(cid:27)res aprŁs la virgule.
+3. CettenotiondetypageseraabordØepetit(cid:224)petitdanscecoursetlessuivants.
+4. CesnombrescorrespondentapproximativementauxnombresdØcimaux.
+12 CHAPITRE 1. EXPRESSIONS ET INSTRUCTIONS
+# 2. ;;
+- : float = 2.
+# 2.333 ;;
+- : float = 2.333
+Comme on peut le voir sur ces deux exemples, le type de ces nombres est float, pour nombre (cid:224)
+(cid:19)virgule (cid:29)ottante(cid:20).
+EnCaml,ilfautdistinguerlesopØrateursarithmØtiquesportantsurdesnombresentiers,
+de ceux portant sur des nombres non entiers. Les opØrateurs pour les quatre opØrations usuelles
+(addition, soustraction, multiplication et division) portant sur les nombres de type float sont
+identiques (cid:224) ceux portant sur les nombres entiers, mais suivis d’un point. Voici l’expression
+arithmØtique (1.1) ci-dessus, ØvaluØe avec des nombres de type float.
+# (4. *. (-. 3. +. 5.)) /. 2. ;;
+- : float = 4.
+Caml refuse systØmatiquement toute expression numØrique oø sont mØlangØes des nombres
+de nature di(cid:27)Ørentes.
+# 1 + 2. ;;
+This expression has type float but is here used with type int
+# 1 +. 2. ;;
+This expression has type int but is here used with type float
+Les deux fonctions int_of_float et float_of_int assurent la conversion d’un nombre d’un
+type (cid:224) l’autre.
+# int_of_float (-2.7) ;;
+- : int = -2
+# int_of_float (2.7) ;;
+- : int = 2
+# float_of_int (2);;
+- : float = 2.
+# 1 + int_of_float (2.) ;;
+- : int = 3
+# 1. +. float_of_int (2) ;;
+- : float = 3.
+Il existe de trŁs nombreuses autres fonctions. En voici quelques unes :
+1. sur les entiers : abs (valeur absolue d’un nombre entier).
+2. sur les non entiers : abs_float (valeur absolue d’un (cid:29)ottant), sqrt (racine carrØe d’un
+(cid:29)ottant), exp (exponentielle de base e), log (logarithme nØpØrien), cos, sin, tan, et bien
+d’autres encore.
+1.3.2 Expressions boolØennes
+En programmation, les expressions boolØennes sont nØcessaires pour e(cid:27)ectuer des calculs ou
+exØcuterdesinstructionsdØpendantdelarØalisationounondecertainesconditions(cfchapitres
+2 et 3).
+Les boolØens forment un ensemble (cid:224) deux valeurs seulement, dØsignØes en Caml par true
+(vrai) et false (faux). Le type des boolØens est dØsignØ par bool.
+Les expressions boolØennes sont les expressions qui ont pour valeur l’un des deux boolØens.
+Elles apparaissent naturellement dans les comparaisons.
+1.3. PREMI¨RES EXPRESSIONS EN CAML 13
+# true ;;
+- : bool = true
+# false ;;
+- : bool = false
+# 1 = 5-4 ;;
+- : bool = true
+# 1 < 5-4 ;;
+- : bool = false
+# 1 >= 5-4 ;;
+- : bool = true
+Les opØrateurs logiques usuels sont && (et), || (ou) et not (nØgation).
+# (1 = 1) && (1 = 0) ;;
+- : bool = false
+# (1 = 1) || (1 = 0) ;;
+- : bool = true
+# not (1 = 0) ;;
+- : bool = true
+Lechapitre2donneplusdeprØcisionssurlesopØrateurslogiquesetlesexpressionsboolØennes,
+ainsi que sur les expressions et instructions boolØennes.
+1.3.3 CaractŁres et cha(cid:238)nes de caractŁres
+Les caractŁres forment un type nommØ char en Caml qui comprend 256 valeurs. Parmi ces
+valeurs on trouve toutes les lettres de l’alphabet latin dans leur version minuscule et majuscule,
+ainsi que les dix chi(cid:27)res, et des symboles de ponctuation.
+Une expression littØrale de type char est obtenue en pla(cid:231)ant le caractŁre voulu entre apos-
+trophes.
+# ’A’;;
+- : char = ’A’
+# ’a’;;
+- : char = ’a’
+# ’1’;;
+- : char = ’1’
+# ’?’;;
+- : char = ’?’
+Les cha(cid:238)nes de caractŁres sont des suites (cid:28)nies de caractŁres placØs les uns (cid:224) la suite des
+autres. Elles peuvent ne contenir aucun caractŁre : cha(cid:238)ne vide, et elles peuvent en contenir
+jusqu’(cid:224)224(cid:0)6,soitplusde16millionsdecaractŁres.EnCaml,ellessontmisesentreguillemets
+et leur type est dØsignØ par string.
+# "Aa1?" ;;
+- : string = "Aa1?"
+# "";;
+- : string = ""
+L’opØrateur de concatØnation qui construit une cha(cid:238)ne en mettant bout (cid:224) bout deux cha(cid:238)nes
+est dØsignØ par ^.
+14 CHAPITRE 1. EXPRESSIONS ET INSTRUCTIONS
+# "InitProg"^" c’est vachement bien !";;
+- : string = "InitProg c’est vachement bien !"
+Le chapitre 7 est consacrØ (cid:224) une prØsentation plus dØtaillØe des caractŁres et cha(cid:238)nes de
+caractŁres.
+1.4 Instructions
+En Caml, une instruction est une expression dont la valeur est de type unit5 . Ce type
+ne contient qu’une seule valeur notØe (). Par consØquent, cela signi(cid:28)e que toute instruction a
+pour valeur (), que cette valeur est connue avant mŒme que l’expression ne soit ØvaluØe, et
+donc que ce qui importe n’est pas tant la valeur de l’instruction, que l’e(cid:27)et de bord qu’elle
+produit. Et d’ailleurs, plut(cid:244)t que de parler d’Øvaluation de l’expression, on dit plut(cid:244)t exØcution
+de l’instruction.
+Lese(cid:27)etsdebord produitsparl’exØcutiond’uneinstructionpeuventŒtredeplusieursnatures:
+(cid:21) modi(cid:28)cation de la valeur de l’environnement courant de travail, par exemple en modi(cid:28)ant
+la valeur d’une variable mutable (cf chapitre 4);
+(cid:21) communicationduprogrammeaveclemondeextØrieur,parexempleparlectureouØcriture
+d’une valeur.
+Voici la plus simple (et la plus inutile) des instructions.
+# () ;;
+- : unit = ()
+L’exØcution de cette instruction ne provoque aucun e(cid:27)et de bord (ni modi(cid:28)cation de variable, ni
+lecture, ni Øcriture). Seule sa valeur est fournie par l’interprŁte.
+1.4.1 Instructions d’impression
+Plus intØressantes sont les instructions pour imprimer ou Øcrire des valeurs. Elles se dis-
+tinguentselonletypedesvaleurs(cid:224)imprimer.EnvoiciquatreillustrØeschacuneparunexemple.
+# print_int (8) ;;
+8- : unit = ()
+# print_float (8.) ;;
+8.- : unit = ()
+# print_string ("8") ;;
+8- : unit = ()
+# print_char (’8’) ;;
+8- : unit = ()
+Il faut bien comprendre la rØponse de l’interprŁte (cid:224) l’exØcution de ces instructions d’impres-
+sion. Dans chacun des cas, on peut voir l’impression de la valeur donnØes (cid:224) ces instructions,
+immØdiatement suivie par la valeur de l’instruction qui est immuablement - : unit = ().
+OnpourraitprØfØrerqu’unsautdelignedistinguelavaleurimprimØedelavaleurdel’instruc-
+tion. La fonction print_endline e(cid:27)ectue un saut de ligne immØdiatement aprŁs avoir imprimØ
+ce qu’on lui demande. Mais cette fonction ne permet l’impression que des cha(cid:238)nes de caractŁres.
+5. CettedØ(cid:28)nitionn’estpastout(cid:224)faitexacte,maisnousnousencontenteronspourlecoursdecesemestre.
+Nousverronsdanslecoursquisuitqu’ilexistedesinstructionsdontlavaleurestd’unautretype.
+1.4. INSTRUCTIONS 15
+# print_endline ("Timoleon apprend a programmer en Caml") ;;
+Timoleon apprend a programmer en Caml
+- : unit = ()
+Une autre instruction provoque des sauts de ligne : l’instruction print_newline ().
+# print_newline () ;;
+- : unit = ()
+Comme on peut le voir sur cet exemple, cette instruction ne prend aucun paramŁtre. Elle se
+contente d’imprimer un saut de ligne, et si rien auparavant n’a ØtØ imprimØ, comme c’est le cas
+ici,onobtientunelignevide.CetteinstructionsuitengØnØrald’autresinstructionsd’impression,
+et nØcessite d’exØcuter une sØquence d’instructions. Cette notion de sØquence d’instructions est
+prØsentØe dans la section 1.4.3.
+1.4.2 Instructions du module Cartes
+Le module Cartes est une extension du langage Caml qui permet de manipuler des tas de
+cartes (cid:224) jouer. Ce module est prØsentØ dans l’annexe A.
+Deux instructions y sont dØ(cid:28)nies :
+1. l’instruction init_tas(n,s) qui initialise le tas numØro n avec une pile de cartes dØcrite
+par la cha(cid:238)ne de caractŁres s;
+2. et l’instruction deplacer_sommet(n,p) qui dØplace une carte du tas numØro n vers le tas
+numØro p.
+6
+Parexemple,ensupposantqu’initialementaucuntasnecontiennedecartes,alorsledialogue
+qui suit donne le tas tel qu’on peut le voir sur la (cid:28)gure 1.1.
+# init_tas (1,"TCP") ;;
+- : unit = ()
+Comme on peut le constater sur la (cid:28)gure 1.1, l’e(cid:27)et de bord provoquØ par cette instruction est
+une initialisation du tas numØro 1 avec trois cartes de couleurs successives |, ~ et (cid:127).
+En poursuivant le dialogue avec l’interprŁte, on dØplace la carte au sommet du tas numØro 1
+vers le tas numØro 2 et la situation atteinte est celle montrØe sur la (cid:28)gure 1.2.
+# deplacer_sommet (1,2) ;;
+- : unit = ()
+L’e(cid:27)etdeborddel’instructiondeplacer_sommet (1,2)estlatransformationdel’Øtatdescartes.
+1.4.3 SØquence d’instructions
+Supposons qu’initialement seul le premier tas de cartes n’est pas vide, et que ce tas contient
+troiscartesdecouleur|,~,(cid:127)danscetordredebasenhaut(cf(cid:28)gure1.1).Supposonsquenous
+voulions vider le tas 1 en pla(cid:231)ant une carte sur chacun des trois autres tas (cf 1.3).
+Cela peut se faire simplement en dØpla(cid:231)ant une (cid:224) une les cartes du tas 1 vers les autres tas
+comme le montre l’algorithme 1.1.
+En Caml, cet algorithme se traduit simplement par trois instructions deplacer_sommet.
+Si on utilise la boucle de dialogue avec l’interprŁte du langage, on atteint la situation voulue
+avec le dialogue :
+6. CedialoguesupposeaussiquelemoduleCartessoitprØalablementchargØ.
+16 CHAPITRE 1. EXPRESSIONS ET INSTRUCTIONS
+Figure 1.1 (cid:21) Le tas 1 aprŁs l’instruction init_tas (1,"TCP")
+Algorithme 1.1 Mettre les trois cartes du tas 1 vers les tas 2, 3 et 4
+1: deplacer le sommet du tas 1 vers le tas 2
+2: deplacer le sommet du tas 1 vers le tas 3
+3: deplacer le sommet du tas 1 vers le tas 4
+# deplacer_sommet(1,2);;
+- : unit = ()
+# deplacer_sommet(1,3);;
+- : unit = ()
+# deplacer_sommet(1,4);;
+- : unit = ()
+Dans ce dialogue, chacune des trois instructions est donnØe (cid:224) exØcuter les unes aprŁs les autres,
+etl’interprŁtedonnelerØsultatdesontravailaprŁschacuned’elles(lamention- : unit = ()).
+On peut aussi regrouper ces trois instructions en une seule :
+# deplacer_sommet(1,2);
+deplacer_sommet(1,3);
+deplacer_sommet(1,4);;
+- : unit = ()
+L’usagedu simplepoint-virgulepoursØparer lesinstructionspermet delestransmettre (cid:224)l’inter-
+prŁte en une seule fois, et celui-ci ne donne qu’une seule rØponse. En un seul ordre, nous avons
+commandØ l’exØcution de trois instructions.
+CetteconstructionesttrŁsfrØquenteenprogrammationimpØrative,etonlanommesØquence
+d’instructions. En Caml, une sØquence d’instructions s’obtient en sØparant les instructions par
+un simple point-virgule. Dans une sØquence d’instructions, le nombre d’instructions n’est pas
+1.4. INSTRUCTIONS 17
+Figure 1.2 (cid:21) Situation obtenue aprŁs l’instruction deplacer_sommet (1,2)
+limitØ.
+(cid:7) Syntaxe : SØquence d’instructions (cid:4)
+<instruction
+1
+>;
+<instruction
+2
+>;
+:::
+<instruction >
+(cid:6) n (cid:5)
+Lorsqu’unesØquenced’instructionsestexØcutØe,touteslesinstructionsquilacomposentsont
+exØcutØes les unes aprŁs les autres dans l’ordre de leur apparition dans la sØquence. La valeur
+fournie d’une sØquence est la valeur de la derniŁre instruction, c’est-(cid:224)-dire () en gØnØral.
+Voiciunautreexempled’utilisationdelasØquenced’instructionspourproduireunea(cid:30)chage
+d’une ligne composØe de plusieurs ØlØments de types distincts.
+# print_string ("(4 * (-3 + 5)) / 2 = ");
+print_int ((4 * (-3 + 5)) / 2) ;
+print_newline () ;;
+(4 * (-3 + 5)) / 2 = 4
+- : unit = ()
+7
+On verra qu’il est parfois nØcessaire de parenthØser une sØquence d’instructions pour Øviter
+certaines ambiguitØs (cf page 28). En Caml cela peut se faire avec des parenthŁses ouvrante et
+fermante,oubienaveclesdeuxmots-clØsdulangagebeginetend.DanslasuitenousdØsignerons
+par bloc d’instructions toute sØquence placØe entre ces deux mots.
+7. ParparenthØser,ilfautentendrelefaitdeplaceruneexpressionentreunsymboled’ouvertureetunsymbole
+de fermeture, symboles qui peuvent Œtre e(cid:27)ectivement une parenthŁse ouvrante (() et une parenthŁse fermante
+()),outoutautrecoupledesymbolesconvenuscomme{et},oubien[et],oubienencorebeginetend.
+18 CHAPITRE 1. EXPRESSIONS ET INSTRUCTIONS
+Figure 1.3 (cid:21) Situation (cid:28)nale souhaitØe
+(cid:7) Syntaxe : Bloc d’instructions (cid:4)
+begin
+(* sequence d’instructions *)
+end
+(cid:6) (cid:5)
+CeparenthØsagen’aquepourseulevocation(cid:224)ØviterdesambiguitØssyntaxiques,etnechange
+rien (cid:224) l’exØcution de la sØquence qu’il contient.
+# begin
+print_string ("(4 * (-3 + 5)) / 2 = ");
+print_int ((4 * (-3 + 5)) / 2) ;
+print_newline ()
+end ;;
+(4 * (-3 + 5)) / 2 = 4
+- : unit = ()
+1.5. EXERCICES 19
+1.5 Exercices
+1.5.1 Expressions numØriques
+Exercice 1-1
+(cid:201)valuations d’expressions arithmØtiques
+Pour chacune des expressions arithmØtiques qui suivent, Øvaluez-les avec Objective Caml
+en arithmØtique sur les entiers (int) et en arithmØtique sur les (cid:29)ottants (float).
+1. (3+4)(cid:2)5.
+2. 3+(4(cid:2)5).
+3. 3+4(cid:2)5.
+4. 125(cid:2)(12(cid:0) 204).
+6
+5. 125(cid:2)(12(cid:0) 204).
+5
+Pour la derniŁre expression, expliquez la di(cid:27)Ørence sensible entre la valeur obtenue en arith-
+mØtique entiŁre, et celle en arithmØtique (cid:29)ottante.
+1.5.2 Instructions
+Exercice 1-2
+Impressions de valeurs
+Question 1 Utilisez l’une des instructions print_... pour imprimer la valeur des expressions de
+l’exercice
+Question 2 (cid:201)crivezuneinstructionquiimprimeuneexpressionarithmØtique,puislesigne=,puis
+la valeur de l’expression arithmØtique et en(cid:28)n un passage (cid:224) la ligne. Voici un exemple, dans lequel
+l’instruction a ØtØ e(cid:27)acØe.
+# (* instruction effacee *)
+(3+4)*5 = 35
+- : unit = ()
+Trouvez une sØquence d’instructions qui rØalise cela, puis cherchez une seule instruction.
+20 CHAPITRE 1. EXPRESSIONS ET INSTRUCTIONS
+Chapitre 2
+Conditions, expressions et
+instructions conditionnelles
+2.1 Le problŁme
+(cid:21) (cid:201)tat initial : Tas 1 un trŁ(cid:29)e ou un pique les autres tas vides.
+(cid:21) (cid:201)tat(cid:28)nal:tas1et4videsetletas2contientletrŁ(cid:29)eourien,etletas3contientlepique
+ou rien.
+2.1.1 Algorithme
+La rØsolution du problŁme nØcessite une Øtude de cas :
+Algorithme 2.1 Solution du problŁme
+si la carte au sommet du tas 1 est un trŁ(cid:29)e alors
+mettre la carte sur le tas 2
+sinon
+mettre la carte sur le tas 3
+(cid:28)n si
+2.2 Expressions boolØennes
+2.2.1 BoolØens
+On appelle boolØen1 l’une des deux valeurs de vØritØ vrai ou faux. On dØsigne en abrØgØ ces
+deux valeurs par les deux lettres V et F.
+Une expression boolØenne est une expression qui prend une valeur boolØenne, autrement dit
+l’une ou l’autre des deux valeurs V ou F.
+Les expressions boolØennes servent (cid:224) exprimer des conditions. Elles peuvent Œtre
+(cid:21) simples
+(cid:21) ou composØes
+1. dunomdumathØmaticienanglaisduXIXŁmesiŁcleGeorgeBoole.
+21
+22CHAPITRE2. CONDITIONS,EXPRESSIONSETINSTRUCTIONSCONDITIONNELLES
+2.2.2 Expressions simples
+Les expressions boolØennes simples
+"la carte au sommet du tas 1 est un trŁ(cid:29)e"
+2.2.3 Expressions composØes
+L’opØrateur ou
+L’expressionE ="lacarteausommetdutas1estuntrŁ(cid:29)eouuncarreau" peutsedØcomposer
+en deux expressions simples
+1. E ="la carte au sommet du tas 1 est un trŁ(cid:29)e",
+1
+2. E ="la carte au sommet du tas 1 est un carreau"
+2
+le lien les unissant Øtant le connecteur ou opØrateur logique ou
+E =E ou E
+1 2
+L’expression E est donc composØe.
+L’expression E ne prend la valeur V que si au moins l’une des deux expressions E , E est
+1 2
+vraie.
+On rØsume cette dØ(cid:28)nition de l’opØrateur ou par la table de vØritØ reprØsentØe par le tableau
+2.1
+E E E ou E
+1 2 1 2
+V V V
+V F V
+F V V
+F F F
+Table 2.1 (cid:21) Table de vØritØ de l’opØrateur ou
+L’opØrateur et
+L’expressionE ="la carte au sommet du tas 1 est un trŁ(cid:29)e et sa valeur est supØrieure (cid:224) celle
+de la carte situØe au sommet du tas 2" peut se dØcomposer en deux expressions simples
+1. E ="la carte au sommet du tas 1 est un trŁ(cid:29)e",
+1
+2. E ="la carte au sommet du tas 1 a une valeur supØrieure ou Øgale (cid:224) celle du tas 2"
+2
+le lien les unissant Øtant le connecteur ou opØrateur logique et
+E =E et E
+1 2
+L’expression E est donc composØe.
+L’expression E ne prend la valeur V que si les deux expressions E , E sont vraies.
+1 2
+On rØsume cette dØ(cid:28)nition de l’opØrateur et par la table de vØritØ reprØsentØe par le tableau
+2.2.
+2.2. EXPRESSIONS BOOL(cid:201)ENNES 23
+E E E et E
+1 2 1 2
+V V V
+V F F
+F V F
+F F F
+Table 2.2 (cid:21) Table de vØritØ de l’opØrateur et
+L’opØrateur non
+L’expression E ="la carte au sommet du tas 1 n’est pas un trŁ(cid:29)e" peut se dØcomposer en
+une expressions plus simple
+1. E ="la carte au sommet du tas 1 est un trŁ(cid:29)e",
+1
+que l’on nie.
+E =non(E )
+1
+L’expression E est donc composØe.
+La valeur de l’expression E est opposØe (cid:224) celle de E .
+1
+OnrØsumecettedØ(cid:28)nitiondel’opØrateurnonparlatabledevØritØreprØsentØeparletableau
+2.3.
+E non(E )
+1 1
+V F
+F V
+Table 2.3 (cid:21) Table de vØritØ de l’opØrateur non
+2.2.4 PropriØtØs des opØrateurs
+a, b et c sont trois expressions boolØennes.
+Double nØgation non(non(a))=a
+(cid:201)lØment neutre du ou a ou F =a
+(cid:201)lØment neutre du et a et V =a
+(cid:201)lØment absorbant du ou a ou V =V
+(cid:201)lØment absorbant du et a et F =F
+Idempotence du ou a ou a=a
+Idempotence du et a et a=a
+Tautologie a ou non(a)=V
+Contradiction a et non(a)=F
+CommutativitØ du ou a ou b=b ou a
+CommutativitØ du et a et b=b et a
+AssociativitØ du ou (a ou b) ou c=a ou (b ou c)
+AssociativitØ du et (a et b) et c=a et (b et c)
+DistributivitØ du et par rapport au ou a et (b ou c)=(a et b) ou (a et c)
+DistributivitØ du ou par rapport au et a ou (b et c)=(a ou b) et (a ou c)
+Loi de Morgan (1) non(a ou b)=non(a) et non(b)
+Loi de Morgan (2) non(a et b)=non(a) ou non(b)
+24CHAPITRE2. CONDITIONS,EXPRESSIONSETINSTRUCTIONSCONDITIONNELLES
+2.3 En Caml
+2.3.1 BoolØens
+En Caml, les deux valeurs boolØennes dØ(cid:28)nissent le type bool.
+vrai true
+faux false
+Table 2.4 (cid:21) BoolØens en Caml
+2.3.2 Expressions boolØennes
+Les expressions boolØennes simples peuvent s’exprimer en Caml par
+(cid:21) des valeurs littØrales true ou false,
+(cid:21) une variable boolØenne (voir plus tard),
+(cid:21) une expression dØcrivant une relation,
+(cid:21) un appel (cid:224) une fonction (cid:224) valeurs boolØennes.
+Figure 2.1 (cid:21) Un Øtat des tas de cartes
+Exemple 1 :
+Tous les exemples donnØs par la suite s’appuient sur une con(cid:28)guration des tas donnØe (cid:224) la (cid:28)gure
+2.1.
+2.3. EN CAML 25
+# true ;;
+- : bool = true
+# false ;;
+- : bool = false
+# tas_vide(1);;
+- : bool = true
+# tas_non_vide(1);;
+- : bool = false
+# couleur_sommet(2) = PIQUE;;
+- : bool = false
+# couleur_sommet(2) = CARREAU;;
+- : bool = true
+# sommet_trefle(3);;
+- : bool = true
+Les expressions composØes se traduisent avec les opØrateurs logiques &&, || et not.
+OpØrateur logique et ou non
+En Caml && || not
+Table 2.5 (cid:21) OpØrateurs logiques en Caml
+Exemple 2 :
+# true && true;;
+- : bool = true
+# true && false;;
+- : bool = false
+# true || false;;
+- : bool = true
+# false || false;;
+- : bool = false
+# not (true);;
+- : bool = false
+# not (false);;
+- : bool = true
+# sommet_carreau(2) && sommet_trefle(3) ;;
+- : bool = true
+# sommet_carreau(2) && not (sommet_coeur(3)) ;;
+- : bool = true
+# tas_non_vide(1) || sommet_coeur(4);;
+- : bool = true
+2.3.3 Attention!
+Les opØrateurs && et || n’agissent que sur des boolØens!
+26CHAPITRE2. CONDITIONS,EXPRESSIONSETINSTRUCTIONSCONDITIONNELLES
+On pourrait Œtre tentØ, pour exprimer que la carte au sommet du tas 1 est un trŁ(cid:29)e ou un
+carreau, d’Øcrire
+couleur_sommet(1) = TREFLE || CARREAU,
+maiscelaestincorrectcarTREFLEetCARREAUnesontpasdesboolØens,maisdescouleurs.Ilfaut
+donc Øcrire
+couleur_sommet(1) = TREFLE || couleur_sommet(1) = CARREAU
+mŒme si cela semble bien lourd.
+2.3.4 Remarque sur les opØrateurs && et ||
+En logique boolØenne, les opØrateurs et et ou sont commutatifs
+a et b = b et a
+a ou b = b ou a
+En Caml, ces opØrateurs ne sont pas commutatifs : les arguments sont ØvaluØs sØquentielle-
+ment de gauche (cid:224) droite.
+Exemple 3 :
+En Caml, les expressions
+tas_non_vide(1) && sommet_trefle(1)
+et sommet_trefle(1) && tas_non_vide(1)
+ne sont pas Øquivalentes :
+(cid:21) l’Øvaluation de la premiŁre expression ne dØclenche jamais d’exception, car si le tas 1 est
+vide, sommet_trefle(1) n’est pas ØvaluØ, puisque la valeur de l’expression complŁte est
+alors dØterminØe
+# tas_non_vide(1) && sommet_trefle(1);;
+- : bool = false
+(cid:21) en revanche l’Øvaluation de la seconde expression dØclenche une exception si le tas 1 est
+vide
+# sommet_trefle(1) && tas_non_vide(1) ;;
+Exception: LesExceptions.Tas_Vide 1.
+2.4 Expressions conditionnelles
+LesexpressionsconditionnellessontdesexpressionsquidØterminentl’expression(cid:224)Øvalueren
+fonction de la validitØ d’une condition.
+(cid:7) Syntaxe : Expression conditionnelle (cid:4)
+if <condition> then
+<expression >
+1
+else
+<expression >
+(cid:6) 2 (cid:5)
+Exemple 4 :
+Dans le contexte indiquØ par la (cid:28)gure 2.1, on a
+2.5. INSTRUCTIONS CONDITIONNELLES 27
+# if sommet_carreau(2) then
+0
+else
+1 ;;
+- : int = 0
+# if sommet_trefle(2) then
+0
+else
+1 ;;
+- : int = 1
+2.5 Instructions conditionnelles
+Lesinstructionsconditionnellessontdesexpressionsconditionnellesdontlavaleurestdutype
+unit. On les utilise pour agir en fonction d’un contexte.
+Instruction conditionnelle complŁte
+L’instruction conditionnelle complŁte (ou alternative) permet de mener une action si une
+condition est satisfaite, et une autre dans le cas contraire.
+(cid:7) Syntaxe : Instruction conditionnelle complŁte (cid:4)
+if <condition> then
+(* bloc d’instructions *)
+else
+(* bloc d’instructions *)
+(cid:6) (cid:5)
+Exemple 5 :
+Traduction en Caml de l’algorithme dØcrit (cid:224) la section 2.1.1.
+if sommet_trefle(1) then begin
+deplacer_sommet(1,2)
+end else begin
+deplacer_sommet(1,3)
+end
+La condition est ici exprimØe par l’expression boolØenne (simple) sommet_trefle(1), le pre-
+mier bloc d’instructions (celui qui suit le mot rØservØ then) est
+begin
+deplacer_sommet(1,2)
+end
+et le second bloc (qui suit le mot rØservØ else)
+begin
+deplacer_sommet(1,3)
+end
+28CHAPITRE2. CONDITIONS,EXPRESSIONSETINSTRUCTIONSCONDITIONNELLES
+Notez qu’il n’y a pas de; aprŁs le end qui prØcŁde le else. En revanche, si cette instruction con-
+ditionnelleestsuivied’uneautre,ilfaudraajouterun;aprŁsleenddusecondbloc(end {if};).
+Instruction conditionnelle simple Il arrive qu’une action ait besoin d’Œtre menØe si une
+condition est satisfaite, mais qu’aucune ne soit nØcessaire sinon. C’est alors une instruction
+conditionnelle simple. En Caml, elle s’Øcrit sans la partie else.
+(cid:7) Syntaxe : Instruction conditionnelle simple (cid:4)
+if <condition> then
+(* bloc d’instructions *)
+(cid:6) (cid:5)
+Exemple 6 :
+DØplacer la carte situØe au sommet du tas 1 si c’est un trŁ(cid:29)e sinon ne rien faire.
+if sommet_trefle(1) then begin
+deplacer_sommet(1,2)
+end
+2.5.1 Remarque sur le parenthØsage
+LasyntaxedonnØeci-dessuspourl’instructionconditionnellementionnequaprŁslethenetle
+else doivent (cid:28)gurer des blocs d’instructions, c’est-(cid:224)-dire des sØquences parenthØsØes par begin
+et end.
+En rØalitØ, il n’est pas nØcessaire de mettre le parenthØsage lorsque la sØquence ne comprend
+qu’une seule instruction (comme pour les expressions conditionnelles). Ainsi on peut Øcrire
+if sommet_trefle(1) then
+deplacer_sommet(1,2)
+else
+deplacer_sommet(1,3)
+Enrevanche,dŁsquelasØquencecomprendplusieursinstructions,leparenthØsagedevient
+nØcessaire dans la partie else pour une instruction conditionnelle complŁte, et dans la partie
+then pour une instruction conditionnelle simple.
+En e(cid:27)et, l’instruction
+if sommet_trefle(1) then begin
+deplacer_sommet(1,2);
+deplacer_sommet(2,3)
+end
+ne peut pas Œtre remplacØe par
+if sommet_trefle(1) then
+deplacer_sommet(1,2);
+deplacer_sommet(2,3)
+qui est une sØquence de deux instructions :
+1. une instruction conditionnelle simple,
+2. suivie d’une instruction de dØplacement non soumise (cid:224) condition.
+2.6. M(cid:201)THODOLOGIE 29
+2.6 MØthodologie
+Voici quelques principes mØthodologiques concernant la conception d’instructions condition-
+nelles.
+1. (cid:201)tude des cas intervenant dans le problŁme
+(cid:21) commencer par distinguer les di(cid:27)Ørents cas,
+(cid:21) vØri(cid:28)er que ces cas sont bien exhaustifs (on n’oublie aucune situation)
+(cid:21) vØri(cid:28)er que ces cas ne sont pas redondants (cas exclusifs)
+(cid:21) donner un exemple de comportement attendu de l’instruction pour chacun des cas
+2. Pour chacun des cas
+(cid:21) Øtablir un test (expression boolØenne) permettant de distinguer le cas
+(cid:21) dØterminer la sØquence d’instructions (cid:224) exØcuter dans ce cas
+3. Construireunjeudetestsquipermetdes’assurerdelavaliditØduprogramme:cejeudoit
+comprendre au moins un test pour chacun des cas envisagØs.
+Exemple
+ConsidØrons une situation initiale oø les tas numØrotØs de 1 (cid:224) 3 contiennent un nombre
+quelconque non nul de cartes, et le tas 4 est vide.
+init_tas(1,"(T+K+C+P)[T+K+C+P]");
+init_tas(2,"(T+K+C+P)[T+K+C+P]");
+init_tas(3,"(T+K+C+P)[T+K+C+P]");
+init_tas(4,"");
+L’objectif(cid:224)atteindreestdedØplacerlacartedeplusgrandevaleurausommetd’undestroistas
+vers le tas 4.
+RØsoudre ce problŁme revient (cid:224) repØrer quel tas possŁde en son sommet la carte de plus
+grande valeur.
+(cid:201)tude des cas Il y a Øvidemment trois possibilitØs : c’est le tas 1 ou le tas 2 ou le tas 3.
+Comment les distinguer?
+(cid:21) c’est le tas 1, si la carte au sommet du tas 1 est supØrieure ou Øgale (cid:224) celle du tas 2, et
+est supØrieure ou Øgale (cid:224) celle du tas 3.
+(cid:21) c’est le tas 2, si la carte au sommet du tas 2 est supØrieure ou Øgale (cid:224) celle du tas 1, et
+est supØrieure ou Øgale (cid:224) celle du tas 3.
+(cid:21) c’est le tas 3, si la carte au sommet du tas 3 est supØrieure ou Øgale (cid:224) celle du tas 1, et
+est supØrieure ou Øgale (cid:224) celle du tas 2.
+Autrement dit c’est le tas i si la condition superieur(i,j) && superieur(i,k) (dans
+laquellej etk dØsignentlesdeuxnumØrosdetasautresquei)estsatisfaite.Lesconditions
+distinguant les trois cas ne sont pas exclusives (penser aux cas d’ØgalitØ).
+30CHAPITRE2. CONDITIONS,EXPRESSIONSETINSTRUCTIONSCONDITIONNELLES
+2.7 Exercices
+Exercice 2-1
+En utilisant les tables de vØritØ, prouvez quelques propriØtØs des opØrateurs logiques et, ou et
+non.
+Exercice 2-2 Ou exclusif
+SiaetbsontdeuxexpressionsboolØennes,leou-exclusif decesdeuxexpressions,notØa(cid:8)b,est
+une nouvelle expression boolØenne qui est vraie si et seulement si une seule des deux expressions
+a ou b est vraie. La table de vØritØ du ou-exclusif est donnØe
+a b a(cid:8)b
+V V F
+V F V
+F V V
+F F F
+Table 2.6 (cid:21) Table de vØritØ de l’opØrateur ou-exclusif
+(cid:201)crivez l’expression a(cid:8)b (cid:224) l’aide des opØrateurs et, ou et non.
+Exercice 2-3
+Question 1 Exprimez le fait que [a;b] et [c;d] sont des intervalles disjoints, attention au cas des
+intervalles vides, par exemple si a=15 et b=(cid:0)5.
+Question 2 Exprimez le fait que [a;b] et [c;d] sont des intervalles qui se recouvrent partiellement de
+deux maniŁres :
+1. en utilisant la solution de la question prØcØdente (c’est trŁs simple).
+2. directement (c’est compliquØ!).
+Exercice 2-4 ØgalitØ et valeur boolØenne
+Question 1 Soit a une expression boolØenne. RØaliser la table de vØritØ des expressions :
+1. a=V
+2. a=F
+Exercice 2-5
+Question 1
+(cid:201)crivez l’instruction ci-dessous sans utiliser l’opØrateur non ni d’opØrateurs de comparaison.
+si non a alors
+instr1
+sinon
+instr2
+(cid:28)n si
+Question 2
+(cid:201)crivezl’instructionci(cid:21)dessoussansutiliserl’opØrateuret
+2.7. EXERCICES 31
+si aetb alors
+instr1
+(cid:28)n si
+Question 3
+(cid:201)crivezl’instructionci(cid:21)dessoussansutiliserl’opØrateurou
+si aoub alors
+instr1
+(cid:28)n si
+Exercice 2-6
+Expliquez pourquoi le programme
+if superieur(1,2) && superieur(1,3) then begin
+deplacer_sommet(1,4)
+end;
+if superieur(2,1) && superieur(2,3) then begin
+deplacer_sommet(2,4)
+end;
+if superieur(3,1) && superieur(3,2) then begin
+deplacer_sommet(3,4)
+end ;;
+n’est pas correct pour le problŁme posØ dans la section 2.6
+Exercice 2-7
+Reprenez le problŁme de la section 2.6 en admettant qu’un ou plusieurs des trois premiers tas
+peut Œtre vide. Si les trois tas sont vides, on ne dØplace aucune carte.
+32CHAPITRE2. CONDITIONS,EXPRESSIONSETINSTRUCTIONSCONDITIONNELLES
+Chapitre 3
+Instructions conditionnellement
+rØpØtØes
+3.1 Un problŁme
+(cid:21) (cid:201)tat initial : Tas 1 un nombre quelconque de cartes, les autres tas vides.
+(cid:21) (cid:201)tat (cid:28)nal : tas 1, 3 et 4 vides, le tas 2 contient toutes les cartes du tas 1 initial
+3.2 Algorithme
+La rØsolution du problŁme nØcessite de dØplacer (une (cid:224) une) toutes les cartes du tas 1 vers le
+tas 2. Ce qu’on peut dØcrire par
+Algorithme 3.1 Solution du problŁme
+tant que le tas 1 n’est pas vide faire
+dØplacer la carte au sommet du tas 1 vers le tas 2
+(cid:28)n tant que
+3.3 Sortie d’une boucle tant que
+Une boucle tant que se termine lorsque sa condition n’est plus satisfaite. Par consØquent (cid:224)
+la sortie de la boucle, on est assurØ que la condition est fausse
+tant que condition faire
+actions
+(cid:28)n tant que
+{condition est fausse}
+3.4 La boucle tant que en Caml
+Comme bien des langages de programmation, Caml permet d’Øcrire des instructions con-
+ditionnellement rØpØtØes. La syntaxe de l’instruction tant que est dØcrite de maniŁre gØnØrale
+ci-dessous.
+33
+34 CHAPITRE 3. INSTRUCTIONS CONDITIONNELLEMENT R(cid:201)P(cid:201)T(cid:201)ES
+(cid:7) Syntaxe : Boucle tant que (cid:4)
+while <condition> do
+(* sequence d’instructions *)
+done
+(cid:6) (cid:5)
+Exemple traduction en Caml de l’algorithme dØcrit (cid:224) la section 3.2.
+while tas_non_vide(1) do
+deplacer_sommet(1,2)
+done
+Lorsqu’elle sera ØxØcutØe, cette instruction testera si le tas 1 est non vide. Si ce n’est pas le
+cas (c’est-(cid:224)-dire si le tas 1 est vide) alors l’instruction est terminØe, sinon (si le tas 1 n’est pas
+vide), une carte sera dØplacØe du tas numØro 1 vers le tas numØro 2. Ce dØplacement e(cid:27)ectuØ, la
+vacuitØ du tas numØro 1 sera (cid:224) nouveau testØe, et selon le cas l’instruction est terminØe ou un
+dØplacement est e(cid:27)ectuØ. Et on poursuit ainsi tant que le tas 1 n’est pas vide.
+3.5 MØthodologie
+La conception d’une boucle tant que nØcessite plusieurs points d’attention :
+(cid:21) la situation avant d’entrer dans la boucle (prØ-condition) est(cid:21)elle celle souhaitØe?
+Par exemple, l’instruction qui suit peut Œtre source d’erreur.
+while sommet_trefle(1) do
+deplacer_sommet(1,2)
+done
+En e(cid:27)et, la condition du tant que porte sur la couleur de la carte au sommet du tas 1.
+Pourcelaonutiliselafonctionsommet_trefle.MaispourŒtreutilisØe,celle-ciestnØcessite
+que le tas numØro 1 ne soit pas vide.
+(cid:21) la situation (cid:224) la sortie de la boucle (post-condition) est(cid:21)elle bien celle souhaitØe?
+(cid:21) la boucle ne risque(cid:21)t(cid:21)elle pas d’Œtre in(cid:28)nie (problŁme de l’arrŒt)?
+Par exemple, l’instruction qui peut conduire (cid:224) une rØpØtition in(cid:28)nie de dØplacement d’une
+carte du tas 1 vers le tas 2, puis d’un retour de la carte dØplacØe vers son tas d’origine. En
+e(cid:27)etsiletas1n’estpasvideaumomentd’exØcutercetteinstruction,laconditiondutant
+que est satisfaite et l’action est exØcutØe, action qui aboutit (cid:224) la mŒme situation que celle
+de dØpart : le tas 1 ne sera jamais vide.
+while tas_non_vide(1) do
+deplacer_sommet(1,2);
+deplacer_sommet(2,1)
+done
+3.6. EXERCICES 35
+3.6 Exercices
+Exercice 3-1
+DØcrivez les relations satisfaites entre a, b et c (cid:224) l’issue des boucles qui suivent
+1. tant que a=b faire
+actions
+(cid:28)n tant que
+2. tant que a(cid:20)b faire
+actions
+(cid:28)n tant que
+3. tant que (a6=b) ou (a>c) faire
+actions
+(cid:28)n tant que
+Exercice 3-2
+Les exercices de manipulation de cartes.
+36 CHAPITRE 3. INSTRUCTIONS CONDITIONNELLEMENT R(cid:201)P(cid:201)T(cid:201)ES
+Chapitre 4
+Constantes, variables
+4.1 Types de donnØes
+En programmation, les donnØes manipulØes peuvent Œtre de natures di(cid:27)Ørentes : nombres
+entiers, nombres rØels, cha(cid:238)nes de caractŁres, boolØens, .... Ces di(cid:27)Ørentes natures de donnØes
+sont appelØes types de donnØes.
+Le langage Caml dispose d’un certain nombre de types prØdØ(cid:28)nis.
+4.1.1 Les boolØens
+Le type bool est le type des expressions boolØennes permettant d’Øcrire les conditions des
+instructions if et while. Les donnØes de ce type ne peuvent prendre que deux valeurs.
+Nom : bool
+Ensemble des valeurs : true, false
+LittØraux : true et false
+OpØrateurs : &&, ||, not
+Exemple 1 :
+# true;;
+- : bool = true
+# not(true);;
+- : bool = false
+# true || false;;
+- : bool = true
+4.1.2 Les nombres entiers
+Le type int est le type des expressions numØriques entiŁres.
+Nom : int
+37
+38 CHAPITRE 4. CONSTANTES, VARIABLES
+Ensemble des valeurs : letypeintestlimitØauxentiersappartenant(cid:224)unintervalle[[e ;e ]],
+min max
+et il y a donc un plus petit et un plus grand entier. Cet intervalle dØpend de l’architecture
+du processeur de l’ordinateur utilisØ. Sur des architectures 32 bits, on a
+[[e ;e ]]=[[(cid:0)230;230(cid:0)1]]=[[(cid:0)1073741824;1073741823]]:
+min max
+Sur des architectures 64 bits, on a
+[[e ;e ]]=[[(cid:0)262;262(cid:0)1]]=[[(cid:0)4611686018427387904;4611686018427387903]]:
+min max
+LittØraux : les entiers dans leur forme Øcrite usuelle. Par exemple : 24.
+Constantes prØdØ(cid:28)nies : lesconstantesmin_intetmax_intdonnentlesvaleursdupluspetit
+(e ) et du plus grand (e ) entier.
+min max
+OpØrateurs arithmØtiques : +, -, *, /, mod
+OpØrateurs de comparaison : =, <>, <, <=, >, >=
+Remarque :LescalculsarithmØtiquessurlesnombresdetypeints’e(cid:27)ectuemoduloe (cid:0)
+max
+e +1.
+min
+Exemple 2 :
+La session ci-dessous est e(cid:27)ectuØe sur une machine 32 bits.
+# (1+2)*3;;
+- : int = 9
+# 9 / 2;;
+- : int = 4
+# 9 mod 5;;
+- : int = 4
+# max_int;;
+- : int = 1073741823
+# min_int;;
+- : int = -1073741824
+# max_int + 1;;
+- : int = -1073741824
+# min_int - 1;;
+- : int = 1073741823
+4.1.3 Les nombres (cid:29)ottants
+Nom : float
+4.1.4 Types dØ(cid:28)nis par le module Cartes
+Le module Cartes dØ(cid:28)nit deux types couleur et numero_tas1 .
+Nom : couleur
+Ensemble des valeurs : LesdonnØesdecetypenepeuventprendrequequatrevaleursnotØes:
+CARREAU, TREFLE, PIQUE et COEUR.
+Nom : numero_tas
+Ensemble des valeurs : Les donnØes de ce type ne peuvent prendre que quatre valeurs : 1,
+2, 3 et 4.
+1. LenomcompletdecestypesestenfaitCartes:couleuretCartes:numero_tas.Dansletextedupolynous
+n’employonsquelanotationraccourcie.
+4.2. VARIABLES 39
+4.2 Variables
+4.2.1 Notion de variable
+Les variables servent (cid:224) nommer des valeurs.
+Elles sont caractØrisØes par leur nom ou identi(cid:28)cateur, leur type et leur valeur.
+4.2.2 DØclaration simple de variables
+La dØclaration des variables se fait (cid:224) l’aide du mot rØservØ (ou mot-clØ) let.
+(cid:7) Syntaxe : DØclaration d’une variable (cid:4)
+let <identificateur > = <expression>
+(cid:6) (cid:5)
+oø <identificateur> est le nom de la variable, et <expression> l’expression qui dØ(cid:28)nit sa
+valeur.
+Exemple 3 :
+Voici la dØclaration d’une variable nommØe a, de type int et de valeur 12.
+# let a = 12;;
+val a : int = 12
+# a;;
+- : int = 12
+# 2 * a;;
+- : int = 24
+L’expression qui dØ(cid:28)nit la valeur d’une variable peut faire rØfØrence (cid:224) d’autres variables (cid:224)
+condition que celles-ci aient ØtØ prØalablement dØclarØes.
+Exemple 4 :
+(cid:192) la suite de la dØclaration de la variable a qui prØcŁde, on peut dØclarer une nouvelle variable
+b comme ci-dessous
+# let b = 2*a + 1;;
+val b : int = 25
+4.2.3 Identi(cid:28)cateurs de variables
+Les variables sont nommØes par un identi(cid:28)cateur. En Caml, les identi(cid:28)cateurs de variables
+doiventobligatoirementcommencerparunelettreminusculeouunblancsoulignØ(_)etpeuvent
+ŒtrecomplØtØsparn’importequellequantitØdelettresminusculesoumajusculesnonaccentuØes,
+ou chi(cid:27)res, ou blancs soulignØs.
+Exemple 5 :
+Le tableau ci-dessous montre quelques exemples d’identi(cid:28)cateurs de variables corrects et incor-
+rects.
+Identi(cid:28)cateurs corrects Identi(cid:28)cateurs incorrects
+a A
+a1 1a
+a_b a-b
+_a -a
+deplacer_sommet deplacer-sommet
+40 CHAPITRE 4. CONSTANTES, VARIABLES
+En plus de ces rŁgles, certains mots ne peuvent pas Œtre utilisØs comme identi(cid:28)cateurs : ce
+sont les mots rØservØs ou mots-clØs du langage (cf annexe C.2).
+4.2.4 Environnement
+L’ensemble des variables dØ(cid:28)nies dans un contexte de calcul s’appelle un environnement.
+Lorsqu’on dØclare une variable, on augmente l’environnement courant de cette nouvelle vari-
+able. Ainsi si dans un certain environnement E on dØclare la variable
+0
+# let a = 12 ;;
+val a : int = 12
+l’environnement qui suit cette dØclaration est augmentØ d’une variable nommØe a et de valeur
+12, et l’environnement est maintenant
+E =<a;12>:E :
+1 0
+AprŁs la dØclaration
+# let b = 5 ;;
+val b : int = 5
+l’environnement est
+E =<b;5>:E =<b;5>:<a;12>:E :
+2 1 0
+On voit donc que la dØclaration de variables peut augmenter l’environnement. Mais rien ne
+peut faire diminuer l’environnement : une variable dØclarØe le reste pour toute la durØe de la
+session.
+4.2.5 (cid:201)valuation d’une expression
+Lorsqu’une expression contient une ou plusieurs variables, pour chacune de ces variables on
+cherche dans l’environnement courant la variable de mŒme nom la plus rØcemment dØclarØe, et
+on la remplace par la valeur correpondante.
+Par exemple dans l’environnement E 2 prØcØdemment dØcrit, l’expression a*b est transformØe
+en 12*5 qui (cid:28)nalement donne la valeur 60.
+a(cid:3)b)12(cid:3)5)60:
+4.2.6 Masquage d’une variable
+Nous l’avons vu un environnement ne peut qu’augmenter. Que se passe-t-il lorsque nous
+dØclarons une variable dont le nom est identique (cid:224) celui d’une variable dØj(cid:224) dØclarØe? Que se
+passe-t-il si on dØclare une nouvelle variable nommØe a dans l’environnement E 2 ?
+Et bien, rien de neuf. Une nouvelle variable est ajoutØe (cid:224) l’environnement. Par exemple, si
+dans l’environnement E on fait la dØclaration
+2
+# let a = 9 ;;
+val a : int = 9
+l’environnement devient
+E =<a;9>:E =<a;9>:<b;5>:<a;12>:E :
+3 2 0
+4.2. VARIABLES 41
+On constate que l’environnement E 3 contient deux variables de mŒme nom a : l’une valant 12
+qui dans le temps a ØtØ la premiŁre (cid:224) Œtre dØclarØe, l’autre valant 9 qui est la plus rØcente.
+Quelleestalorslavaleurdel’expressiona*bdansl’environnementE
+3
+?Dansl’expression,on
+remplacelavariablebparsavaleur5,maisqu’enest-ilpoura?9ou12?LarŁgled’Øvaluationdit
+de choisir la valeur de la variable la plus rØcemment dØclarØe, autrement dit 9. Par consØquent,
+dans l’environnement E 3 l’expression a*b vaut 45.
+a(cid:3)b)9(cid:3)5)45:
+Dans l’environnement E 3 , toute rØfØrence (cid:224) la variable a est une rØfØrence (cid:224) la variable
+<a;9>. L’autre variable <a;12> est masquØe par <a;9>.
+4.2.7 DØclaration simultanØe de variables
+PlusieursvariablespeuventŒtredØ(cid:28)niessimultanØmentdanslamŒmephraseletenutilisant
+le mot clØ and.
+(cid:7) Syntaxe : DØclaration simultanØe de plusieurs variables (cid:4)
+let <identificateur 1 > = <expression 1 >
+and <identificateur 2 > = <expression 2 >
+...
+(cid:6) and <identificateur n > = <expression n > (cid:5)
+Les expressions <expressioni> sont alors toutes ØvaluØes dans l’environnement dans lequel
+la phrase de dØclaration est exprimØe.
+Exemple 6 :
+# let a = 1
+and b = 2;;
+val a : int = 1
+val b : int = 2
+# a + b ;;
+- : int = 3
+La dØclaration simultanØe de plusieurs variables n’est pas Øquivalente (cid:224) la dØclaration
+sØquentielle.Parexemple,onpeuttout(cid:224)faite(cid:27)ectuerlesdeuxdØclarationssuccessivessuivantes
+# let c = 1. ;;
+val c : float = 1.
+# let d = c +. 2. ;;
+val d : float = 3.
+mais il n’est pas possible de demander la dØclaration simultanØe qui suit si aucune dØclaration
+prØalable d’une variable e de type float n’a ØtØ faite.
+# let e = 1.
+and f = e +. 2. ;;
+Unbound value e
+En e(cid:27)et dans l’environnement d’Øvaluation de cette dØclaration, la variable e n’existe pas, et il
+n’est donc pas possible d’Øvaluer l’expression e +. 2..
+Mais si une dØclaration prØalable a ØtØ faite il n’y a aucun problŁme
+42 CHAPITRE 4. CONSTANTES, VARIABLES
+# let e = -3.;;
+val e : float = -3.
+# let e = 1.
+and f = e +. 2. ;;
+val e : float = 1.
+val f : float = -1.
+(cid:192) noter que dans l’environnement obtenu aprŁs ces dØclarations, la variable e vaut 1., et f vaut
+-1., autrement dit f a ØtØ calculØe avec la valeur de e dans l’environnement prØcØdent.
+4.2.8 Variables locales (cid:224) une expression
+Nous l’avons vu, l’environnement courant des variables dØclarØes ne peut que cro(cid:238)tre. Cela
+peut poser deux problŁmes :
+(cid:21) un accroissement inutile de l’environnement avec des variables qui ne servent pas, et qui
+peut provoquer un encombrement, voire une saturation de la mØmoire;
+(cid:21) un masquage de certaines variables lorsqu’on utilise un mŒme nom.
+Bien souvent, on Øprouve le besoin de dØclarer une variable pour faciliter l’Øcriture d’une
+expression et/ou optimiser son Øvaluation.
+Par exemple, si nous souhaitons calculer l’expression
+p
+p 1+ a2+b2
+a2+b2(cid:2) p
+2+ a2+b2
+on pourrait Øcrire (en supposant que dans l’environnement courant il y ait deux variables a et b
+de valeurs (cid:29)ottantes)
+sqrt(a**2. +. b**2.) *.
+(1. +. sqrt(a**2. +. b**2.)) /.
+(2. +. sqrt(a**2. +. b**2.))
+maiscelan’estØvidemmentpassatisfaisantparcequed’unepartl’expressionn’estpasfacilement
+p
+lisible,etd’autrepartdanssonØvaluation,lasous-expression a2+b2 vaŒtrecalculØetroisfois.
+Pour mener des calculs, il arrive souvent que, pour ne pas noyer le propos par de longues
+formules, on utilise des notations pour les simpli(cid:28)er. On (cid:19)pose(cid:20) que tel symbole vaut tempor-
+rairement telle valeur, et ensuite on utilise ce symbole en lieu et place de celle-ci.
+p
+Sur notre exemple cela pourrait donner : soit (cid:11)= a2+b2 dans l’expression
+1+(cid:11)
+(cid:11)(cid:2)
+2+(cid:11)
+dont une traduction possible en Objective Caml est
+let alpha = sqrt(a**2. +. b**2.)
+alpha *. (1. +. alpha) /. (2. +. alpha)
+Cette fa(cid:231)on de mener le calcul remØdie aux deux dØfauts signalØs ci-dessus :
+(cid:21) le code est beaucoup plus lisible;
+p
+(cid:21) lasous-expression a2+b2 n’estcalculØequ’uneseulefois,etdoncongaganeene(cid:30)cacitØ.
+4.2. VARIABLES 43
+Cependant,enprocØdantdelasorteonaintroduitdansl’environnementcourantunenouvelle
+variable dont l’intØrŒt est limitØ au seul calcul de notre expression. Par la suite la variable (cid:11) ne
+sera probablement plus utilisØe mais persistera dans l’environnement : c’est une pollution.
+Il existe une solution pour Øviter la pollution de l’environnement par des variables d’intØrŒt
+temporaire : c’est la notion de variable locale (cid:224) une expression.
+Ce qui manque dans notre exemple c’est la traduction de posons (cid:11) = ::: dans l’expres-
+sion ...Il ne faut pas dØclarer une variable, puis calculer une expression, mais dØclarer une
+variable (cid:224) utiliser dans une expression. En Objective Caml, cela se traduit avec la forme
+let ... in .... Notre exemple devient alors
+let alpha = sqrt(a**2. +. b**2.)
+in
+alpha *. (1. +. alpha) /. (2. +. alpha)
+Avec une telle dØclaration, la variable alpha ne vient s’ajouter (cid:224) l’environnement courant
+que pour la durØe de l’Øvaluation de l’expression qui suit. Sit(cid:244)t cette Øvaluation terminØe, elle
+est supprimØe, et n’existe donc pas dans l’environnement courant (cid:224) l’issue du calcul. Il n’y a
+aucune di(cid:27)Ørence entre l’environnement avant et aprŁs Øvaluation. Le problŁme de pollution
+d’environnement est rØglØ.
+La syntaxe gØnØrale de dØclaration de variables locales est donnØe ci-dessous.
+(cid:7) Syntaxe : DØclaration de variables locales (cid:224) une expression (cid:4)
+let <identificateur 1 > = <expression 1 >
+and <identificateur 2 > = <expression 2 >
+...
+in
+<expression>
+(cid:6) (cid:5)
+Les variables non locales dØclarØes par une simple forme let sont appelØes variables globales
+par opposition (cid:224) locales.
+4.2.9 Remarque sur la forme let
+En Objective Caml, la forme let ... n’est pas une expression et a fortiori n’est pas une
+instruction.
+UtilisØe dans une sØquence d’instructions elle ne donne pas l’e(cid:27)et auquel on pourrait penser.
+Dans la sØquence qui suit
+# let a = 1 ;
+a + 1;;
+Warning S: this expression should have type unit.
+Unbound value a
+onconstateunavertissementsurlefaitquelapremiŁrepartien’apasletypeunit,etunmessage
+d’erreur qui montre que dans l’environnement courant la variable a n’est liØe (cid:224) aucune valeur, et
+ceci malgrØ la forme la dØclaration qui prØcŁde.
+UtilisØe dans une expression conditionnelle, elle provoque un message d’erreur de syntaxe.
+# if true then begin
+let a = 1;
+print_string ("Fini")
+end ;;
+44 CHAPITRE 4. CONSTANTES, VARIABLES
+Syntax error
+De mŒme dans les instructions rØpØtØes (boucle while ou for).
+En conclusion, une dØclaration globale de variable ne peut Œtre encapsulØe dans une
+sØquence d’instructions, dans une expression conditionnelle ou dans une boucle.
+Enrevanche,laformelet ... in ...estuneexpression.(cid:192)cetitreellepeutŒtreencapsulØe.
+# let a = 1 in print_int a ;
+print_newline () ;;
+1
+- : unit = ()
+# if true then begin
+let a = 1 in
+print_int (a+1)
+end ;;
+2- : unit = ()
+4.3 Variables mutables
+4.3.1 Motivation
+Un problŁme
+(cid:21) (cid:201)tat initial : Tas 1 un nombre quelconque de cartes, les autres tas vides.
+(cid:21) (cid:201)tat (cid:28)nal : peu importe
+(cid:21) But : a(cid:30)cher le nombre de cartes situØes initialement sur le tas 1.
+Algorithme
+Une solution du problŁme consiste (cid:224) dØplacer (une (cid:224) une) toutes les cartes du tas 1 vers un
+autre tas (le tas 2 par exemple), et (cid:224) compter chaque dØplacement e(cid:27)ectuØ.
+Algorithme 4.1 Compter les cartes du tas 1
+mise (cid:224) zØro du compteur
+tant que les tas 1 n’est pas vide faire
+dØplacer une carte du tas 1 vers le tas 2
+ajouter 1 au compteur
+(cid:28)n tant que
+Comme on peut le voir, dans cet algorithme la valeur du compteur Øvolue durant son exØcu-
+tion.
+UnevariabledontlavaleurpeutØvoluerdurantl’exØcutiond’unprogrammeestappelØevari-
+ablemutable.Paropposition,nousnommeronsparfoislesvariablesnonmutablesdesconstantes.
+4.3.2 DØclaration d’une variable mutable
+LadØclarationd’unevariablemutableestanalogue(cid:224)celledetoutevariable,sicen’estl’emploi
+du mot-clØ ref.
+4.3. VARIABLES MUTABLES 45
+(cid:7) Syntaxe : DØclaration d’une variable mutable (cid:4)
+let <identificateur > = ref <expression>
+(cid:6) (cid:5)
+Exemple 7 :
+DØclaration d’une variable mutable compteur initialisØe (cid:224) 0.
+# let compteur = ref 0 ;;
+val compteur : int ref = {contents = 0}
+Comme on peut le voir, cette variable n’est pas de type int, mais de type int ref. Et sa valeur
+est {contents = 0}.
+# compteur ;;
+- : int ref = {contents = 0}
+Comme compteur n’est pas de type int, on ne peut pas l’utiliser tel quel dans le contexte
+d’une expression oø on attend un int.
+# compteur + 1;;
+This expression has type int ref but is here used with type
+4.3.3 RØfØrence (cid:224) la valeur d’une variable mutable
+Pour faire rØfØrence (cid:224) la valeur d’une variable mutable dans une expression, on utilise le
+prØ(cid:28)xe ! devant le nom de la variable.
+Exemple 8 :
+# !compteur ;;
+- : int = 0
+# !compteur + 1;;
+- : int = 1
+# !compteur;;
+- : int = 0
+Notez qu’aprŁs l’Øvaluation de la deuxiŁme expression, la variable compteur a gardØ la valeur 0.
+Pour modi(cid:28)er la valeur d’une variable mutable, il faut utiliser l’instruction d’a(cid:27)ectation.
+4.3.4 A(cid:27)ectation
+L’a(cid:27)ectation est une instruction qui permet de changer la valeur d’une variable mutable.
+La syntaxe de cette instruction est
+(cid:7) Syntaxe : A(cid:27)ectation d’une valeur (cid:224) une variable mutable (cid:4)
+<identificateur > := <expression>
+(cid:6) (cid:5)
+Lesymbole:=signi(cid:28)equelavaleurv del’expression<expression>esta(cid:27)ectØe(cid:224)lavariable
+dØsignØeparl’identi(cid:28)cateur<identificateur >.AprŁsl’exØcutiondecetteinstructionlavariable
+<identificateur > vaut v.
+Comme toute instruction, le rØsultat d’une a(cid:27)ectation est la valeur () de type unit.
+46 CHAPITRE 4. CONSTANTES, VARIABLES
+Exemples :
+1. Pour mettre (cid:224) zØro la variable compteur prØcØdemment dØclarØe
+(* compteur =xxx *)
+compteur := 0 ;
+(* compteur =0 *)
+2. ajouter 1 au compteur
+(* compteur =n *)
+compteur := !compteur + 1 ;
+(* compteur =n+1 *)
+Remarques :
+1. Attention(cid:224)nepasconfondrelesymbole:=utilisØenCamlpourl’instructiond’a(cid:27)ectation,
+avec le symbole = utilisØ comme opØrateur de comparaison, ainsi que dans la dØclaration
+de variables.
+2. En programmation, on est souvent amener (cid:224) utiliser des instructions du type
+a := !a + 1
+qui augmentent de 1 la valeur d’une variable (mutable). Cette opØration s’appelle incrØ-
+mentation et on dit qu’on incrØmente une variable.
+La dØcrØmentation est la diminution de la valeur d’une variable.
+a := !a - 1
+3. On peut penser que le code suivant est Øquivalent (cid:224) une incrØmentation.
+let a = a+1
+Il n’en est rien du tout! Il s’agit d’une dØclaration d’une nouvelle variable a qui vient
+masquer la prØcØdente. De plus, on ne peut pas utiliser cette forme let dans une boucle.
+Par exemple, on peut Øcrire
+# let a = ref 0 ;;
+val a : int ref = {contents = 0}
+# while !a < 5 do
+a := !a + 1;
+print_int !a;
+print_newline ()
+done ;;
+1
+2
+3
+4
+5
+- : unit = ()
+mais on ne peut pas Øcrire
+4.4. AFFICHER DES DONN(cid:201)ES 47
+# let a = 0 ;;
+val a : int ref = {contents = 0}
+# while a < 5 do
+let a = a + 1;
+print_int (a);
+print_newline () )
+done ;;
+Syntax error
+4. L’a(cid:27)ectation est une opØration autorisØe sur les variables mutables uniquement. Elle ne
+l’est pas sur les variables non mutables (ou constantes).
+# let a = 1 ;;
+val a : int = 1
+# a := 2;;
+This expression has type int but is here used with type ’a ref
+4.4 A(cid:30)cher des donnØes
+En Caml, lorsqu’on veut a(cid:30)cher des donnØes, on utilise les instructions print_int pour les
+entiers, print_float pour les (cid:29)ottants.
+Exemple 9 :
+# print_int(1234);;
+1234- : unit = ()
+# let a = 1234;;
+val a : int = 1234
+# print_int(a*2);;
+2468- : unit = ()
+# print_int(1234.);;
+This expression has type float but is here used with type int
+# print_float(1234.);;
+1234.- : unit = ()
+Comme on peut le voir ces instructions impriment la valeur du paramŁtre sans passer (cid:224) la
+ligne. Cela peut poser problŁme lorsqu’on veut a(cid:30)cher deux nombres successifs.
+Exemple 10 :
+# begin
+print_int(1);
+print_int(2)
+end ;;
+12- : unit = ()
+L’instruction sans paramŁtre print_newline provoque un passage (cid:224) la ligne.
+Exemple 11 :
+48 CHAPITRE 4. CONSTANTES, VARIABLES
+# begin
+print_int(1);
+print_newline();
+print_int(2);
+print_newline()
+end ;;
+1
+2
+- : unit = ()
+L’instruction print_string imprime une cha(cid:238)ne de caractŁres.
+Exemple 12 :
+# let a = 12
+and b = 21
+in
+begin
+print_int(a);
+print_string(" + ");
+print_int(b);
+print_string(" = ");
+print_int(a+b);
+print_newline()
+end ;;
+12 + 21 = 33
+- : unit = ()
+4.5 Le programme solution du problŁme 4.3.1
+(* compter le nombre de cartes sur le tas 1 *)
+let cpt = ref 0
+in
+begin
+init_tas(1,"[T]");
+init_tas(2,"");
+init_tas(3,"");
+init_tas(4,"");
+while tas_non_vide(1) do
+deplacersommet(1,2);
+cpt := !cpt + 1
+done;
+print_string("Nombre de cartes initialement sur le tas 1 : ");
+print_int(!cpt);
+print_newline()
+end
+4.6. EXERCICES 49
+4.6 Exercices
+Exercice 4-1 DØclarations de variables
+DØcrivez les valeurs des variables dØclarØes (cid:224) l’issue des deux sessions suivantes :
+let a = 1 ;; let a = 1 ;;
+let a = 2 ;; let a = 2
+let b = 2*a + 1 ;; and b = 2*a + 1 ;;
+Exercice 4-2 (cid:201)change de variables
+Donnez une sØquence d’instructions qui Øchange les valeurs de deux variables mutables de
+type int.
+Exercice 4-3 Calcul de la valeur d’une fonction polynomiale
+Soit f(x)=x4(cid:0)3x3(cid:0)2x2+x+1.
+RØalisez un programme qui a(cid:30)che la valeur de f(x) lorsque x = 13. Concevez votre pro-
+gramme pour qu’il soit facile de le modi(cid:28)er pour le calcul de f(x) pour d’autres valeurs de
+x.
+Cette derniŁre solution suit le schØma de Horner d’Øvaluation d’un polyn(cid:244)me.
+Exercice 4-4 Avec les cartes
+RØalisez des programmes qui, (cid:224) partir de la situation initiale
+Situation initiale :
+Tas 1 : "[K+T+P+C]" Tas 2 : ""
+Tas 3 : "" Tas 4 : ""
+1. calcule le nombre de trŁ(cid:29)es,
+2. calcule le nombre de cartes de couleur noire,
+3. rØpartit Øquitablement les cartes rouges sur les tas 3 et 4, et les cartes noires sur les tas 1
+et 2.
+50 CHAPITRE 4. CONSTANTES, VARIABLES
+Chapitre 5
+La boucle pour
+5.1 La boucle Pour
+On peut calculer la somme des entiers de 1 (cid:224) n (cid:224) l’aide d’une structure itØrative tant que et
+de deux variables, i pour ØnumØrer les entiers successifs de 1 (cid:224) n, et S pour les cumuler.
+Algorithme 5.1 Calcul de la somme des n premiers nombres entiers.
+EntrØe : n un entier positif ou nul
+Sortie : s=
+Pn
+k
+k=1
+initialiser S (cid:224) 0
+initialiser i (cid:224) 1
+{on a bien S =
+Pi(cid:0)1
+k}
+k=1
+tant que i(cid:20)n faire
+ajouter i (cid:224) S
+incrØmenter i
+{notons qu’on a toujours S =
+Pi(cid:0)1
+k}
+k=1
+(cid:28)n tant que
+{la mŒme ØgalitØ est satisfaite avec i=n+1}
+renvoyer s
+Compte tenu de la condition, il est possible de dire avant l’exØcution de cet algorithme que
+la sØquence d’instructions contenue dans la boucle tant que sera e(cid:27)ectuØe n fois.
+De maniŁre plus gØnØrale, si un algorithme s’Øcrit de cette fa(cid:231)on
+initialiser i (cid:224) a
+tant que i(cid:20)b faire
+sØquence d’instructions ne modi(cid:28)ant pas i
+incrØmenter i
+(cid:28)n tant que
+et que la sØquence d’instructions prØcØdant l’incrØmentation de la variable i ne modi(cid:28)e pas la
+valeur de cette variable, alors le nombre de fois que la sØquence d’instructions sera exØcutØe est
+Øgal (cid:224) b(cid:0)a+1.
+51
+52 CHAPITRE 5. LA BOUCLE POUR
+De telles itØrations dont le nombre d’Øtapes est dØterminØe par une variable qui parcourt
+l’ensemble des valeurs comprises entre deux bornes est appelØe une boucle pour, et la variable i
+est appelØe indice de la boucle.
+OnpeutrØØcrirelecalculdelasommedesentierscomprisentre1etnenutilisantuneboucle
+pour.
+Algorithme 5.2 Calcul de la somme des n premiers nombres entiers avec une boucle pour
+EntrØe : n un entier positif ou nul
+Sortie : s=
+Pn
+k
+k=1
+initialiser S (cid:224) 0
+pour i variant de 1 (cid:224) n faire
+ajouter i (cid:224) S
+{on a S =
+Pi
+k}
+k=1
+(cid:28)n pour
+renvoyer s
+5.2 La boucle Pour en Caml
+5.2.1 Syntaxe de la boucle pour
+Toute sØquence de deux instructions de la forme
+let i = ref a
+in
+while !i <= b do
+(* sequence d’instructions *)
+i := !i + 1
+done
+peut Œtre remplacØe par une boucle pour
+(cid:7) Syntaxe : Boucle pour (cid:4)
+for i = a to b do
+(* sequence d’instructions *)
+done
+(cid:6) (cid:5)
+Exemple 1 :
+Calcul de la somme des entiers de 1 (cid:224) 100
+# let s = ref 0
+in
+for i = 1 to 100 do
+s := !s + i
+done;
+!s ;;
+- : int = 5050
+5.2. LA BOUCLE POUR EN CAML 53
+5.2.2 Remarque sur l’indice de boucle
+L’indice d’une boucle for en Caml est une variable locale (cid:224) la boucle qui n’a pas besoin
+1
+d’ŒtredØclarØe .Cettevariablen’estdØ(cid:28)niequedansl’environnementdelaboucle.Ellen’existe
+pas dans l’environnement englobant.
+# for i = 1 to 5 do
+print_int(i);
+print_newline()
+done;
+print_int(i);;
+Unbound value i
+De plus, ce n’est pas une variable mutable, et on ne peut donc pas modi(cid:28)er la valeur de cet
+indice dans la sØquence d’instructions du corps de la boucle.
+5.2.3 Boucle pour (cid:224) indice dØcroissant
+Toute sØquence de deux instructions de la forme
+let i = ref a
+in
+while !i >= b do
+(* sequence d’instructions *)
+i := !i - 1
+done
+peut Œtre remplacØe par une boucle pour
+Syntaxe : Boucle pour (cid:224) indice dØcroissant
+(cid:7) (cid:4)
+for i = a downto b do
+(* sequence d’instructions *)
+done
+(cid:6) (cid:5)
+Exemple 2 :
+Calcul de la somme des entiers de 1 (cid:224) 100
+# let s = ref 0
+in
+for i = 100 downto 1 do
+s := !s + i
+done;
+!s ;;
+- : int = 5050
+1. Cen’estpaslecasdanstousleslangagesdeprogrammation,commeparexempleCouPascal
+54 CHAPITRE 5. LA BOUCLE POUR
+5.3 Suites rØcurrentes
+Soit(u n ) n2N unesuitedenombresrØelsdØ(cid:28)nieparsonpremiertermeu 0 =a(a2R)etpour
+tout n(cid:21)0 une relation de rØcurrence de la forme
+u =f(u )
+n+1 n
+oø f est une fonction rØelle d’une variable rØelle.
+Par exemple, on peut considØrer la suite de rØels dØ(cid:28)nie par
+u = 1
+0
+u 1
+u = n +
+n+1 2 u
+n
+on a ici a=1 et f(x)= x + 1
+2 x
+5.3.1 Calcul du terme d’indice n
+On veut calculer le terme u lorsqu’est donnØ l’indice n.
+n
+Algorithme 5.3 Calcul du terme d’indice n d’une suite rØcurrente
+EntrØe : n un nombre rØel, a un rØel et f :R!R une fonction.
+Sortie : le terme u de la suite
+n
+u a
+0
+pour i variant de 1 (cid:224) n faire
+u f(u )
+i i(cid:0)1
+(cid:28)n pour
+renvoyer u
+n
+Pour rØaliser cet algorithme en Caml, il su(cid:30)t d’utiliser une seule variable pour mØmoriser
+les valeurs successives des termes de la suite.
+(* on suppose declarees ici trois variables
+- a de type float
+- f de type float(cid:0)>float
+- n de type int
+*)
+let u = ref a
+in
+begin
+for i = 1 to n do
+u := f(!u)
+done;
+!u
+end
+5.3.2 Calcul et a(cid:30)chage des termes d’indice 0 (cid:224) n
+On veut a(cid:30)cher la valeur de tous les termes de la suite (u ) dont les indices sont compris
+n
+entre 0 et n.
+5.3. SUITES R(cid:201)CURRENTES 55
+Il su(cid:30)t de calculer successivement chaque terme de la suite et a(cid:30)cher immØdiatement sa
+valeur.
+(* on suppose declarees ici trois variables
+- a de type float
+- f de type float(cid:0)>float
+- n de type int
+*)
+let u = ref a
+in
+begin
+print_float(!u);
+print_newline();
+for i = 1 to n do
+u := f(!u);
+print_float(!u);
+print_newline()
+done
+end
+5.3.3 Calcul du premier terme satisfaisant une condition
+OnpeutaussivouloirchercherlepremiertermedelasuitequisatisfaituneconditiondonnØe.
+CetteconditionpeutportersurlederniertermecalculØ,oubiensurplusieurstermesdØj(cid:224)calculØs.
+Algorithme 5.4 Calcul du premier terme satisfaisant une condition
+u a
+tant que u ne satisfait pas la condition voulue faire
+on calcule le terme suivant u f(u)
+(cid:28)n tant que
+renvoyer u
+Remarque : si aucun terme de la suite ne satisfait la condition donnØe, la boucle est in(cid:28)nie
+(le programme ne s’arrŒte pas). Aussi avant de concevoir de tels programmes est-il important de
+s’assurer qu’au moins un terme de la suite vØri(cid:28)e la condition.
+5.3.4 Autres suites rØcurrentes
+Suites rØcurrentes d’ordre plus ØlevØ
+ordre 2 : la suite de Fibonacci dØ(cid:28)nie par ses deux premiers termes et une relation de rØcur-
+rence d’ordre 2
+u = 0
+0
+u = 1
+1
+u = u +u 8n2N
+n+2 n+1 n
+Facile (cid:224) programmer.
+56 CHAPITRE 5. LA BOUCLE POUR
+ordre total : la suite des nombres de Catalan dØ(cid:28)nie par son premier terme et une relation
+de rØcurrence s’appuyant sur tous les termes qui prØcŁdent
+u = 1
+0
+n
+X
+u = u u 8n2N
+n+1 k n(cid:0)k
+k=0
+Di(cid:30)cile (cid:224) programmer sans tableaux (cf cours d’API1).
+5.4. EXERCICES 57
+5.4 Exercices
+Exercice 5-1 downto n’est pas indispensable
+Question 1 (cid:192) l’aide d’une boucle (cid:224) indices croissant, rØØcrivez l’instruction qui suit de sorte que
+l’a(cid:30)chage soit identique.
+for i = n downto 1 do
+print_int(i);
+print_newline()
+done
+Question 2 En supposant que l’instruction action(i) accomplisse une certaine t(cid:226)che qui dØpend
+de i, comment rØØrire l’instruction
+for i = b downto a do
+action(i)
+done
+avec une boucle (cid:224) indices croissant?
+Exercice 5-2 Tables de multiplication
+RØalisez un programme qui a(cid:30)che une table de multiplication par un nombre donnØ. Une
+trace d’exØcution du programme demandØ est donnØe ci-dessous pour la table par 7 :
+1 x 7 = 7
+2 x 7 = 14
+3 x 7 = 21
+...
+10 x 7 = 70
+Exercice 5-3 Calcul de puissances
+RØalisez un programme qui calcule la valeur de l’entier an pour deux entiers a et n.
+Exercice 5-4 Calcul de factorielles
+RØalisez un programme qui calcule l’entier n!, n Øtant donnØ.
+Exercice 5-5
+Boucles imbriquØes pour stars acadØmiques
+Question 1
+RØalisez un programme qui a(cid:30)che (cid:224) l’Øcran une ligne de n Øtoiles, l’entier n Øtant donnØ.
+L’a(cid:30)chage du programme demandØ est donnØ ci-dessous pour n=5 :
+*****
+Question 2 RØalisez un programme qui a(cid:30)che (cid:224) l’Øcran un carrØ de n(cid:2)n Øtoiles, l’entier n Øtant
+donnØ.
+L’a(cid:30)chage du programme demandØ est donnØ ci-dessous pour n=5 :
+58 CHAPITRE 5. LA BOUCLE POUR
+*****
+*****
+*****
+*****
+*****
+Question 3 RØalisezunprogrammequia(cid:30)che(cid:224)l’Øcranuntriangle(isocŁle)dehauteurn,l’entier
+n Øtant donnØ.
+L’a(cid:30)chage du programme demandØ est donnØ ci-dessous pour n=5 :
+*
+**
+***
+****
+*****
+Question 4 RØalisez un programme qui a(cid:30)che (cid:224) l’Øcran un triangle (isocŁle) de hauteur n pointe
+en bas, l’entier n Øtant donnØ.
+Une trace d’exØcution du programme demandØ est donnØe ci-dessous :
+*****
+****
+***
+**
+*
+Exercice 5-6 Calcul de la suite de Heron
+La suite de Heron est la suite rØcurrente de nombres rØels dØ(cid:28)nie par
+u = a
+0
+u B
+u = n +
+n+1 2 2u
+n
+oø a et B sont deux rØels positifs.
+Question 1 Programmez le calcul du terme d’indice n de cette suite avec a=1 et B =2.
+Question 2 Modi(cid:28)ez votre programme pour qu’(cid:224) l’exØcution on obtienne un a(cid:30)chage de tous les
+termes demandØs, (cid:224) raison d’un par ligne.
+Par exemple, l’a(cid:30)chage produit aura la forme qui suit pour a=1, B =2 et n=5.
+u(1) = 1.5
+u(2) = 1.41666666667
+u(3) = 1.41421568627
+u(4) = 1.41421356237
+u(5) = 1.41421356237
+Question 3 Utilisez votre programme pour di(cid:27)Ørentes valeurs de a et B.
+5.4. EXERCICES 59
+Exercice 5-7 Suite de Fibonacci
+Question 1 Programmez le calcul des premiers termes de la suite de Fibonacci. Fa(cid:238)tes le en utilisant
+le type int, puis le type float. Calculez les termes jusqu’(cid:224) l’indice 50. Comparez les rØsultats selon le
+type utilisØ.
+Question2 Cettesuiteestcroissanteettendvers+1lorsquentendvers+1.(cid:201)crivezunefonction
+qui calcule l’indice du premier terme supØrieur ou Øgal (cid:224) un rØel positif s passØ en paramŁtre.
+60 CHAPITRE 5. LA BOUCLE POUR
+Chapitre 6
+Les fonctions
+6.1 Les fonctions
+Nous avons dØj(cid:224) rencontrØ et utilisØ plusieurs fonctions : tas_non_vide, couleur_sommet,
+superieur du module Cartes, ainsi que not, et bien d’autres encore.
+Le but de ce chapitre est de voir comment crØer nos propres fonctions.
+Une fonction permet d’abstraire et de nommer un calcul ou une expression. Une fois dØ(cid:28)nie,
+une fonction peut Œtre utilisØe pour produire de nouvelles expressions du langage.
+Contrairement aux instructions, un appel (cid:224) une fonction ne doit pas modi(cid:28)er l’Øtat courant
+de l’environnement.
+6.1.1 SpØci(cid:28)cation d’une fonction
+SpØci(cid:28)er une fonction, c’est
+(cid:21) choisir un identi(cid:28)cateur pour la nommer;
+(cid:21) prØciser le nombre et le type de ses paramŁtres, et les nommer;
+(cid:21) indiquerlesconditionsd’utilisation(CU)quedoiventvØri(cid:28)erlesparamŁtreslorsd’unappel
+(cid:224) la fonction;
+(cid:21) indiquer le type de la valeur qu’elle renvoie;
+(cid:21) et indiquer quelle est la relation entre la valeur renvoyØe et les paramŁtres qui lui sont
+passØs.
+Exemple 1 :
+LafonctionprØdØ(cid:28)niedonnantlanØgationd’unboolØenenCamlestunefonctionnommØenot,
+qui opŁre sur un paramŁtre de type bool, dont la valeur renvoyØe est aussi de type bool et pour
+laquelle il n’y a aucune contrainte d’utilisation. Nous rØsumons tout cela par la notation :
+not : bool (cid:0)! bool
+:
+a 7(cid:0)! :a
+Exemple 2 :
+Un autre exemple est la fonction du module Cartes qui permet de comparer les hauteurs des
+cartes situØes au sommet de deux tas. Cette fonction est nommØe superieur, elle prend deux
+paramŁtres de type Cartes:numero_tas, et renvoie une valeur de type bool. Elle possŁde aussi
+61
+62 CHAPITRE 6. LES FONCTIONS
+une contrainte d’utilisation qui exige qu’aucun des deux tas passØs en paramŁtre ne soit vide.
+Tout cela est rØsumØ par la notation :
+superieur : numero_tas(cid:2)numero_tas (cid:0)! bool
+8
+vrai si la carte au sommet du tas n
+>><
+a une valeur strictement plus
+n;p 7(cid:0)!
+grande que celle du tas p
+>>:
+faux sinon
+CU : les tas n et p ne doivent pas Œtre vides.
+6.1.2 DØclaration d’une fonction en Caml
+Contrairement(cid:224)d’autreslangagestelsqueC,AdaouPascal,enCamliln’estpasnØcessaire
+d’apprendredenouvelleformesyntaxiquepourdØclarerunenouvellefonction.OnutiliselamŒme
+forme let que pour la dØclaration des variables.
+Syntaxe : DØclaration d’une fonction
+(cid:7) (cid:4)
+let <nom> (<liste parametres>) =
+(* expression simple ou sequence d’instructions
+definissant la fonction *)
+(cid:6) (cid:5)
+Exemple 3 :
+Soit (cid:224) Øcrire le prØdicat rouge dont la spØci(cid:28)cation est
+rouge : numero_tas (cid:0)! bool
+8
+vrai si la carte au sommet du tas n
+<
+n 7(cid:0)! est rouge
+: faux sinon
+CU : le tas n ne doit pas Œtre vide.
+Le code en Caml pour cette fonction s’Øcrit tout simplement
+let rouge(n) =
+sommet_coeur(n) || sommet_carreau(n)
+Comme on peut le constater, en Caml il n’est pas nØcessaire au programmeur de prØciser
+le type des paramŁtres et celui de la valeur renvoyØe, contrairement au cas de langages comme
+C, Ada ou Pascal. C’est le langage qui (cid:19)calcule(cid:20) ces types. On peut le voir dans la rØponse
+fournie par l’interprŁte lorsque le code de la fonction rouge lui est fourni.
+# let rouge(n) =
+sommet_coeur(n) || sommet_carreau(n) ;;
+val rouge : Cartes.numero_tas -> bool = <fun>
+6.1. LES FONCTIONS 63
+6.1.3 Variables locales
+CertainesfonctionsnØcessitentdesvariablesquileursontproprespourØcrirel’algorithmequi
+les rØalise. Ces variables sont appelØes des variables locales.
+Exemple 4 :
+La fonction factorielle
+factorielle : int (cid:0)! int
+n 7(cid:0)! n!
+CU : n(cid:21)0
+peut s’Øcrire en Caml
+let factorielle(n) =
+let f = ref 1
+in
+for i=1 to n do
+f := !f*i
+done;
+!f
+Onvoitparl’utilisationdelaformelet ... in ...l’utilisationd’unevariablelocalepourcoder
+cette fonction.
+Une fonction peut utiliser toute variable globale, (cid:224) condition qu’elle soit dØclarØe avant la
+fonction.
+Exemple 5 :
+Le code
+let un = 1
+let plus_un(n) =
+n + un
+dØ(cid:28)nit une constante entiŁre qui vaut 1 et la fonction
+plus_un : int (cid:0)! int
+:
+n 7(cid:0)! n+1
+L’expressiondØ(cid:28)nissantcettefonctionutiliselaconstanteprØalablementdØ(cid:28)nieunetsecomporte
+comme on peut s’y attendre.
+# plus_un(0);;
+- : int = 1
+Mais si on redØ(cid:28)nit la constante sans redØ(cid:28)nir la fonction, c’est toujours l’ancienne valeur de
+la constante qui est prise en compte.
+# let un = 2;;
+val un : int = 2
+# plus_un(0);;
+- : int = 1
+64 CHAPITRE 6. LES FONCTIONS
+6.1.4 Fonctions (cid:224) plusieurs paramŁtres
+Comme la fonction superieur, une fonction peut avoir plus d’un paramŁtre. Ces paramŁtres
+peuvent Œtre de types identiques ou non.
+Exemple 6 :
+La fonction puissance qui (cid:224) partir de deux entiers a et n renvoie l’entier an
+puissance1 : int(cid:2)int (cid:0)! int
+a;n 7(cid:0)! an
+CU : n(cid:21)0
+peut s’Øcrire en Caml avec le code
+let puissance1(a,n) =
+let p=ref 1
+in
+for i=1 to n do
+p := !p*a
+done;
+!p
+Exemple 7 :
+Reprenons la fonction puissance pour des nombres rØels.
+puissance2 : float(cid:2)int (cid:0)! float
+a;n 7(cid:0)! an
+CU : n(cid:21)0
+Elle peut s’Øcrire en Caml avec le code
+let puissance2(a,n) =
+let p=ref 1.
+in
+for i=1 to n do
+p := !p*.a
+done;
+!p
+Un appel (cid:224) une fonction (cid:224) plusieurs paramŁtres doit se faire avec le bon nombre et le bon
+type des paramŁtres. Ainsi, dans l’exemple
+# puissance1(2,10);;
+- : int = 1024
+# puissance2(2.,10);;
+- : float = 1024.
+les deux appels de fonction sont corrects car e(cid:27)ectuØs avec le bon nombre et les bons types de
+paramŁtres. Mais dans l’exemple
+# puissance1(2);;
+This expression has type int but is here used with type int * int
+6.1. LES FONCTIONS 65
+l’interprŁte signale une erreur dans l’appel (cid:224) la fonction puissance1 parce qu’un seul entier a
+ØtØ passØ en paramŁtre au lieu des deux attendus, et dans l’exemple
+# puissance2(2,10);;
+This expression has type int * int but is here used with type float * int
+ilsignaleuneerreurparcequ’aulieuducouple(rØel,entier)attenduparlafonctionpuissance2,
+un couple (entier, entier) lui a ØtØ passØ.
+6.1.5 Fonctions sans paramŁtre
+Il est possible de dØ(cid:28)nir des fonctions sans paramŁtre. Le type de dØpart est alors le type
+unit.
+Exemple 8 :
+C’est le cas de la procØdure prØdØ(cid:28)nie print_newline.
+Exemple 9 :
+La fonction sans paramŁtre constante Øgale (cid:224) 1
+un : unit (cid:0)! int
+() 7(cid:0)! 1
+se code en Caml
+let un() = 1
+et tout appel (cid:224) cette fonction produit l’entier 1.
+# un();;
+- : int = 1
+On peut rØaliser des fonctions sans paramŁtre non constantes.
+Exemple 10 :
+Comme son nom l’indique, la fonction
+valeur_de_x : unit (cid:0)! type de x
+() 7(cid:0)! valeur de x
+renvoie la valeur de la variable mutable x. En voici le code
+let valeur_de_x() = !x
+Il est bien entendu prØalablement nØcessaire d’avoir dØclarØ une variable mutable x.
+# let valeur_de_x() = !x;;
+Unbound value x
+Si la variable x est dØclarØe alors le type de la valeur renvoyØe par la fonction valeur_de_x est
+le mŒme que celui de x.
+# let x = ref 1;;
+val x : int ref = {contents = 1}
+# let valeurdex() = !x;;
+val valeur_de_x : unit -> int = <fun>
+66 CHAPITRE 6. LES FONCTIONS
+# valeur_de_x();;
+- : int = 1
+# x := 2;;
+- : unit = ()
+# valeur_de_x();;
+- : int = 2
+On peut rØaliser des fonctions sans paramŁtres un peu plus intØressantes.
+Exemple 11 :
+Supposons que nous voulions programmer une fonction qui simule le lancer d’une piŁce de mon-
+naie. Cette fonction doit donner le rØsultat "PILE" ou "FACE" de maniŁre alØatoire.
+pile_ou_face : unit (cid:0)! string
+:
+() 7(cid:0)! PILE ou FACE
+On peut la programmer en utilisant la fonction prØdØ(cid:28)nie
+Random:int : int (cid:0)! int
+n 7(cid:0)! p
+CU : n>0
+oø p est un entier au hasard compris entre 0 inclus et n exclu.
+La fonction pile_ou_face se code alors en faisant un appel (cid:224) Random.int(2) qui produira
+soit l’entier 0, soit l’entier 1, et en prenant la convention que si c’est 0 alors elle renvoie la valeur
+"PILE" et si c’est 1 elle renvoie la valeur "FACE".
+let pile_ou_face() =
+if Random.int(2) = 0 then
+"PILE"
+else
+"FACE"
+Voici une sØrie de quelques appels successifs (cid:224) cette fonction.
+# pile_ou_face();;
+- : string = "PILE"
+# pile_ou_face();;
+- : string = "FACE"
+# pile_ou_face();;
+- : string = "FACE"
+# pile_ou_face();;
+- : string = "PILE"
+6.1.6 IntØrŒt des fonctions
+(cid:21) re(cid:29)et de l’analyse du problŁme
+(cid:21) modularitØ
+(cid:21) lisibilitØ des programmes
+(cid:21) factorisation du code
+6.2. PROC(cid:201)DURES 67
+6.2 ProcØdures
+NousavonsdØj(cid:224)rencontrØetutilisØplusieursprocØdures:init_tasetdeplacer_sommetdu
+module Cartes.
+UneprocØdure permetdecrØerunenouvelleaction,ouencored’abstraire etnommer unesuite
+d’instructions. Une fois dØ(cid:28)nie, une procØdure peut Œtre utilisØe comme une nouvelle instruction
+du langage.
+Comme toute instruction, un appel (cid:224) une procØdure modi(cid:28)e l’Øtat courant de l’environ-
+nement : c’est un e(cid:27)et de bord.
+6.2.1 SpØci(cid:28)cation d’une procØdure
+SpØci(cid:28)er une procØdure, c’est
+(cid:21) choisir un identi(cid:28)cateur pour la nommer;
+(cid:21) prØciser le nombre de paramŁtres, leur type, et les nommer;
+(cid:21) indiquerlesconditionsd’utilisation(CU)quedoiventvØri(cid:28)erlesparamŁtreslorsd’unappel
+(cid:224) la procØdure;
+(cid:21) et indiquer l’action de la procØdure sur l’environnement (e(cid:27)et de bord).
+Par exemple, la procØdure du module Cartes permettant de dØplacer une carte d’un tas vers
+un autre se nomme deplacer_sommet, possŁde deux paramŁtres de type numero_tas dØsignant
+les tas de dØpart et d’arrivØe, possŁde une contrainte d’utilisation qui est que le tas de dØpart ne
+doitpasŒtrevide,etsonactionmodi(cid:28)elestasdecartesendØpla(cid:231)antunecartedutasdedØpart
+vers le tas d’arrivØe. Nous rØsumons tout cela par la notation :
+deplacer_sommet : numero_tas(cid:2)numero_tas (cid:0)! unit
+depart;arrivee 7(cid:0)! ()
+Action : dØplace une carte du tas depart vers le tas arrivee
+CU : le tas depart ne doit pas Œtre vide
+6.2.2 DØclaration d’une procØdure en Caml
+En Caml, une procØdure est une fonction dont le rØsultat est de type unit. La seule valeur
+renvoyØe par cette fonction est donc l’unique valeur du type unit (cid:224) savoir ().
+Les procØdures se dØclarent donc de la mŒme fa(cid:231)on que les fonctions.
+Exemple 12 :
+let tout_mettre_sur_tas1 () =
+(* vider le tas 2 sur le tas 1 *)
+while tas_non_vide(2) do
+deplacer_sommet(2,1)
+done;
+(* vider le tas 3 sur le tas 1 *)
+while tas_non_vide(3) do
+deplacer_sommet(3,1)
+done;
+(* vider le tas 4 sur le tas 1 *)
+while tas_non_vide(4) do
+deplacer_sommet(4,1)
+done
+68 CHAPITRE 6. LES FONCTIONS
+Exemple 13 :
+let vider_tas(depart,arrivee) =
+while tas_non_vide(depart) do
+deplacer_sommet(depart,arrivee)
+done
+Cette procØdure a pour nom vider_tas et possŁde deux paramŁtres (depart et arrivee)
+quali(cid:28)Øs de formels, car lors de la conception (ou Øcriture) de cette procØdure, ces paramŁtres
+n’ontaucunevaleur.Ilsservent(cid:224)nommer les(futures)valeursquiserontpassØeslorsd’unappel
+(cid:224) la procØdure.
+6.2.3 Appel (cid:224) une procØdure
+Un appel (cid:224) une procØdure est une instruction. Le rØsultat de son exØcution est une modi(cid:28)ca-
+tion de l’Øtat courant de l’environnement ou un a(cid:30)chage de donnØes.
+6.2.4 IntØrŒt des procØdures
+(cid:21) re(cid:29)et de l’analyse du problŁme;
+(cid:21) modularitØ;
+(cid:21) lisibilitØ des programmes;
+(cid:21) factorisation du code.
+6.2.5 MØthodologie
+SPECIFIER, SPECIFIER, SPECIFIER
+6.3. EXERCICES 69
+6.3 Exercices
+6.3.1 Fonctions
+Exercice 6-1
+Question 1 Donnez les spØci(cid:28)cations des fonctions et procØdures du module Cartes.
+Question 2 (cid:201)crivez la fonction sommet_trefle (cid:224) l’aide de la fonction couleur_sommet.
+Exercice 6-2
+RØalisez et testez une fonction tas_tous_vides qui renvoie un boolØen indiquant si tous les tas
+sont vides.
+Exercice 6-3
+Question 1 RØalisez une fonction tas_max qui donne le numØro du tas dont le sommet a la carte de
+valeur la plus ØlevØe, parmi les deux tas passØs en paramŁtres. Ne pas oublier les CU.
+Question2 RØalisezunefonctiontas_max3analogue(cid:224)laprØcØdentepourtroistaspassØsenparamŁtres.
+Question 3 MŒme chose pour quatre tas! (paramŁtres ou non?)
+Exercice 6-4 Ou exclusif
+RØalisez une fonction qui renvoie le ou-exclusif des deux boolØens passØs en paramŁtres.
+Exercice 6-5 DivisibilitØ
+RØalisez le prØdicat
+est_divisible_par : int;int (cid:0)! bool
+(cid:26)
+vrai si n est divisible par p
+n;p 7(cid:0)!
+faux sinon
+CU : p6=0
+Exercice 6-6 AnnØes bissextiles
+Une annØe bissextile est une annØe qui comprend 366 jours au lieu des 365 pour les annØes
+ordinaires.
+Depuis l’instauration du calendrier grØgorien, sont bissextiles, les annØes :
+(cid:21) divisibles par 4 mais non divisibles par 100
+(cid:21) ou bien divisibles par 400.
+RØalisez la fonction spØci(cid:28)Øe ci-dessous
+est_bissextile : int (cid:0)! bool
+(cid:26)
+vrai si annee est bissextile
+annee 7(cid:0)!
+faux sinon
+Exercice 6-7 Le plus grand
+Question 1 RØalisez une fonction qui renvoie le plus grand des deux entiers passØs en paramŁtres.
+Question 2 RØalisez de deux fa(cid:231)ons une fonction qui renvoie le plus grand des trois entiers passØs
+en paramŁtres
+1. en utilisant dØ(cid:28)nie dans la question prØcØdente;
+70 CHAPITRE 6. LES FONCTIONS
+2. puis sans utiliser cette fonction.
+Exercice 6-8 Coe(cid:30)cients binomiaux
+(cid:201)tant donnØs deux entiers 0(cid:20)p(cid:20)n, on dØ(cid:28)nit le coe(cid:30)cient binomial par
+(cid:18) (cid:19)
+n n!
+= :
+p (n(cid:0)p)!p!
+RØalisez de deux fa(cid:231)ons la fonction qui (cid:224) deux entiers associe le coe(cid:30)cient binomial
+(cid:0)n(cid:1)
+p
+1. une premiŁre fa(cid:231)on utilisant la fonction factorielle;
+2. une seconde fa(cid:231)on exploitant la simpli(cid:28)cation
+(cid:18) (cid:19)
+n n(cid:2)(n(cid:0)1)(cid:2):::(cid:2)(n(cid:0)p+1)
+= :
+p p(cid:2)(p(cid:0)1)(cid:2):::(cid:2)1
+Exercice 6-9 Fonction polynomiale
+RØalisezunefonctionquipermetdecalculerlesvaleursdelafonctionrØelledevariablerØelle
+f(x)=3x4(cid:0)x2+2x+1:
+Exercice 6-10 Plancher et plafond d’un nombre rØel
+On appelle plancher d’un nombre rØel le plus grand nombre entier infØrieur ou Øgal (cid:224) x. On
+le note bxc. Ce nombre est aussi appelØ partie entiŁre de x.
+On appelle plafond d’un nombre rØel le plus petit nombre entier supØrieur ou Øgal (cid:224) x. On le
+note dxe.
+Ces deux nombres co(cid:239)ncident lorsque x est un nombre entier.
+p
+b 2c = 1
+p
+d 2e = 2
+p
+b(cid:0) 2c = (cid:0)2
+p
+d(cid:0) 2e = (cid:0)1
+Question 1 RØalisez une fonction nommØe plancher qui calcule le plancher du nombre rØel x passØ
+en paramŁtre1. Il est conseillØ de se concentrer d’abord sur le cas des rØels positifs ou nuls, puis de
+gØnØraliser.
+Question 2 De mŒme, rØalisez une fonction nommØe plafond pour le plafond dun rØel.
+Exercice 6-11 simulation d’un dØ
+RØalisez une fonction qui simule un dØ. Cette fonction renvoie au hasard un entier compris entre
+1 et 6.
+Exercice 6-12 Tas ordonnØ?
+RØaliser et tester un prØdicat tas1_ordonne qui renvoie vrai si le tas numØro 1 est rangØ dans
+l’ordre croissant. Le tas vide est ordonnØ, les tas d’une cartes le sont aussi. Un tas est ordonnØ
+lorsque toute carte du tas est supØrieure au sens large (cid:224) toutes celles qu’elle surmonte. (comme
+pour l’exercice prØcØdent plusieurs versions sont possibles).
+1. CettefonctionestprØdØ(cid:28)niedansl’unitØmathetsenommefloor.
+6.3. EXERCICES 71
+6.3.2 ProcØdures
+Exercice 6-13
+(cid:201)crire l’entŒte de la procØdure deplacer_sommet du module Cartes. (Le type qui dØ(cid:28)nit les
+couleurs se nomme couleurs, et celui qui dØ(cid:28)nit les tas se nomme numero_tas.)
+Exercice 6-14
+Expliquez la condition d’utilisation de la procØdure ViderTas.
+Exercice 6-15
+Question 1 Reprendre la procØdure tout_mettre_sur_tas1 en utilisant la procØdure vider_tas. (at-
+tention (cid:224) l’ordre des dØclarations de ces procØdures)
+Question 2 Faire une version paramØtrØe par le numØro du tas sur lequel on veut tout mettre.
+Exercice 6-16
+Les exercices de manipulation de cartes.
+Exercice 6-17 Tables de multiplication
+SpØci(cid:28)ez et rØalisez une procØdure qui a(cid:30)che la table de multiplication par un entier donnØ en
+paramŁtre.
+72 CHAPITRE 6. LES FONCTIONS
+Chapitre 7
+CaractŁres et cha(cid:238)nes de caractŁres
+7.1 Les caractŁres
+7.1.1 DØ(cid:28)nition
+Les caractŁres sont un ensemble de symboles comprenant les 26 lettres de l’alphabet latin en
+versionsminusculesetmajuscules,les10chi(cid:27)resde0(cid:224)9,lesdi(cid:27)Ørentssymbolesdeponctuation,
+l’espace, et bien d’autres symboles encore. Ils sont au nombre de 256 au total.
+En Caml, ils forment le type de donnØes char.
+Il est possible de dØclarer des constantes de type char.
+Exemple 1 :
+# let espace = ’ ’;;
+val espace : char = ’ ’
+Les constantes littØrales de type char sont dØsignØes entre deux apostrophes.
+On peut aussi dØclarer des variables mutables de type char.
+Exemple 2 :
+# let c = ref ’a’;;
+val c : char ref = {contents = ’a’}
+Il est possible d’Øcrire une donnØe de ce type avec la procØdure print_char.
+Exemple 3 :
+# print_char(!c);;
+a- : unit = ()
+73
+74 CHAPITRE 7. CARACT¨RES ET CHA˛NES DE CARACT¨RES
+7.1.2 Fonctions int_of_char et char_of_int
+Les caractŁres sont numØrotØs de 0 (cid:224) 255.
+Exemple 4 :
+Par exemple, le caractŁre ESPACE porte le numØro 32, le caractŁre A porte le numØro 64 et le
+caractŁre a porte le numØro 97.
+1
+La (cid:28)gure 7.1 donne pour les 128 premiers caractŁres leur numØro associØ (code ASCII ).
+NUL 0 ESP 32 @ 64 ‘ 96
+SOH 1 ! 33 A 65 a 97
+STX 2 " 34 B 66 b 98
+ETX 3 # 35 C 67 c 99
+EOT 4 $ 36 D 68 d 100
+ENQ 5 % 37 E 69 e 101
+ACK 6 & 38 F 70 f 102
+BEL 7 ’ 39 G 71 g 103
+BS 8 ( 40 H 72 h 104
+HT 9 ) 41 I 73 i 105
+LF 10 * 42 J 74 j 106
+VT 11 + 43 K 75 k 107
+FF 12 , 44 L 76 l 108
+CR 13 - 45 M 77 m 109
+SO 14 . 46 N 78 n 110
+SI 15 / 47 O 79 o 111
+DLE 16 0 48 P 80 p 112
+DC1 17 1 49 Q 81 q 113
+DC2 18 2 50 R 82 r 114
+DC3 19 3 51 S 83 s 115
+DC4 20 4 52 T 84 t 116
+NAK 21 5 53 U 85 u 117
+SYN 22 6 54 V 86 v 118
+ETB 23 7 55 W 87 w 119
+CAN 24 8 56 X 88 x 120
+EM 25 9 57 Y 89 y 121
+SUB 26 : 58 Z 90 z 122
+ESC 27 ; 59 [ 91 { 123
+FS 28 < 60 \ 92 | 124
+GS 29 = 61 ] 93 } 125
+RS 30 > 62 ^ 94 ~ 126
+US 31 ? 63 _ 95 DEL 127
+Figure 7.1 (cid:21) Table des 128 premiers caractŁres (code ASCII)
+La fonction int_of_char donne le code du caractŁre passØ en paramŁtre.
+Exemple 5 :
+1. ASCII=AmericanStandardCodeforInformationInterchange
+7.2. LES CHA˛NES DE CARACT¨RES 75
+# int_of_char(’ ’);;
+- : int = 32
+# int_of_char(’A’);;
+- : int = 65
+# int_of_char(’a’);;
+- : int = 97
+Inversement,lafonctionchar_of_intdonnelecaractŁreassociØ(cid:224)l’entierpassØenparamŁtre
+qui doit Œtre compris entre 0 et 255.
+Exemple 6 :
+# for i=65 to 70 do
+print_char (char_of_int(i))
+done;;
+ABCDEF- : unit = ()
+7.1.3 Comparaison de caractŁres
+Les opØrateurs =, <, <=, > et >= permettent de comparer deux caractŁres.
+Si c1 et c2 sont deux expressions de type CHAR, alors
+1. c1 = c2 est vrai si et seulement si les deux caractŁres c1 et c2 sont Øgaux;
+2. c1 < c2estvraisietseulementsilenumØroducaractŁrec1eststrictementpluspetitque
+celui de c2;
+3. c1 <= c2 est vrai si et seulement si le numØro du caractŁre c1 est infØrieur ou Øgal (cid:224) celui
+de c2;
+4. etc ...
+7.2 Les cha(cid:238)nes de caractŁres
+7.2.1 DØ(cid:28)nition
+Les cha(cid:238)nes de caractŁres sont des sØquences (cid:28)nies de caractŁres. Le nombre de caractŁres
+composant une cha(cid:238)ne de caractŁres est la longueur de cette cha(cid:238)ne. Par la suite nous noterons
+jsj=longueur de s:
+Une cha(cid:238)ne de longueur nulle ne comprend aucun caractŁre : c’est la cha(cid:238)ne vide.
+En Caml, les cha(cid:238)nes de caractŁres forment le type string et leur longueur est limitØe (cid:224)
+224(cid:0)6=16777210 caractŁres.
+Il est possible de dØclarer des variables de type string.
+Exemple 7 :
+# let chaine1 = "TIMO"
+and chaine2 = "LEON";;
+val chaine1 : string = "TIMO"
+val chaine2 : string = "LEON"
+76 CHAPITRE 7. CARACT¨RES ET CHA˛NES DE CARACT¨RES
+Les constantes littØrales de type string sont dØsignØes entre deux guillemets.
+Il est possible d’Øcrire une donnØe de ce type au moyen des procØdures print_string et
+print_endline.
+Exemple 8 :
+# begin
+print_string("Bonjour, je m’appelle ");
+print_string(chaine1);
+print_endline(chaine2);
+print_endline("Et vous, comment vous appelez-vous ?")
+end;;
+Bonjour, je m’appelle TIMOLEON
+Et vous, comment vous appelez-vous ?
+- : unit = ()
+Une cha(cid:238)ne de 1 caractŁre n’est pas un caractŁre. Et en particulier on ne peut a(cid:27)ecter
+une valeur de type char (cid:224) une variable mutable de type string.
+# let s = ref "" ;;
+val s : string ref = {contents = ""}
+# s := ’a’;;
+This expression has type char but is here used with type string
+# s := "a" ;;
+- : unit = ()
+# s;;
+- : string ref = {contents = "a"}
+7.2.2 Notation indicielle
+Une cha(cid:238)ne de caractŁres est, par dØ(cid:28)nition, composØe de caractŁres. Ces caractŁres sont
+numØrotØs dans l’ordre (cid:224) partir de 0, et ces numØros sont appelØs indices. Le premier caractŁre
+a pour indice 0, le second a pour indice 1, etc ...Le dernier caractŁre a pour indice jsj(cid:0)1.
+On accŁde au caractŁre d’indice i d’une cha(cid:238)ne s avec la notation indicielle pointØe :
+(cid:7) Syntaxe : AccŁs au i-Łme caractŁre d’une cha(cid:238)ne s (cid:4)
+s.[i]
+(cid:6) (cid:5)
+Si s est une cha(cid:238)ne, alors s:[i] est un caractŁre.
+Exemple 9 :
+# chaine1.[0];;
+- : char = ’T’
+# chaine1.[1];;
+- : char = ’I’
+# chaine1.[2];;
+- : char = ’M’
+# chaine1.[3];;
+- : char = ’O’
+7.2. LES CHA˛NES DE CARACT¨RES 77
+Les cha(cid:238)nes de caractŁres sont des structures de donnØes mutables. On peut modi(cid:28)er un
+caractŁre d’une cha(cid:238)ne de caractŁres (cid:224) l’aide de la notation indicielle. Pour modi(cid:28)er le caractŁre
+d’indice i d’une cha(cid:238)ne s, on utilise la (cid:29)Łche <-.
+(cid:7) Syntaxe : Modi(cid:28)er la valeur du i-Łme caractŁre d’une cha(cid:238)ne s (cid:4)
+s.[i] <- (* une expression de type char *)
+(cid:6) (cid:5)
+Exemple 10 :
+# let c = "TiMOLEON";;
+val c : string = "TiMOLEON"
+# c.[1] <- ’I’;;
+- : unit = ()
+# c ;;
+- : string = "TIMOLEON"
+L’accŁs(cid:224)uncaractŁred’unecha(cid:238)nesn’estpossiblequesil’indiceiestcomprisentre0et
+jsj(cid:0)1.Toutetentatived’accŁs (cid:224)uncaractŁred’indicesituØendehorsdecetintervalledØclenche
+l’exception Invalid_argument "index out of bounds".
+# let chaine1 = "TIMO";;
+val chaine1 : string = "TIMO"
+# chaine1.[-1];;
+Exception: Invalid_argument "index out of bounds".
+# chaine1.[4];;
+Exception: Invalid_argument "index out of bounds".
+Et voici le code d’une procØdure Øquivalente (cid:224) la procØdure prØdØ(cid:28)nie print_string.
+(* ecrire_chaine(s) ecrit a l’ecran la chaine s
+cette procedure est equivalente a print_string(s) *)
+let ecrire_chaine(s) =
+for i=0 to String.length(s)-1 do
+print_char(s.[i])
+done
+7.2.3 ConcatØnation
+La concatØnation de deux cha(cid:238)nes de caractŁres s et s est l’opØration consistant (cid:224) mettre
+1 2
+bout (cid:224) bout ces deux cha(cid:238)nes. La cha(cid:238)ne ainsi obtenue est appelØe concatØnØe de s et s .
+1 2
+En Caml, c’est l’opØrateur ^ qui permet d’exprimer la concatØnation de deux cha(cid:238)nes de
+caractŁres.
+Exemple 11 :
+# chaine1^chaine2;;
+- : string = "TIMOLEON"
+La longueur de la cha(cid:238)ne de caractŁres s 1^s
+2
+est Øgale (cid:224) la somme des longueurs de chacune
+des deux cha(cid:238)nes
+js ^s j=js j+js j:
+1 2 1 2
+78 CHAPITRE 7. CARACT¨RES ET CHA˛NES DE CARACT¨RES
+7.2.4 Comparaison de cha(cid:238)nes
+Les opØrateurs =, <, <=, > et >= permettent de comparer deux cha(cid:238)nes de caractŁres.
+Si s1 et s2 sont deux expressions de type STRING, alors
+1. s1 = s2 est vrai si et seulement si les deux cha(cid:238)nes de caractŁres s1 et s2 sont Øgales;
+2. s1 < s2 est vrai si et seulement si la cha(cid:238)ne de caractŁre s1 vient strictement avant s2
+dans l’ordre lexicographique;
+3. s1 <= s2 est vrai si et seulement si la cha(cid:238)ne de caractŁre s1 vient avant s2 dans l’ordre
+lexicographique ou est Øgale (cid:224) s2;
+4. etc ...
+7.3 Quelques fonctions prØdØ(cid:28)nies sur les cha(cid:238)nes
+Hormis la premiŁre, les fonctions prØsentØes ici ne sont pas (cid:224) conna(cid:238)tre par c(cid:247)ur.
+Le fonctions prØdØ(cid:28)nies sur les cha(cid:238)nes de caractŁres font toutes partie du module String.
+Leur nom est donc prØ(cid:28)xØ par le mot String (avec un S majuscule).
+Longueur d’une cha(cid:238)ne
+String:length : string (cid:0)! int
+:
+s 7(cid:0)! String:length(s)=jsj
+Exemple 12 :
+# String.length("TIMOLEON");;
+- : int = 8
+# String.length("");;
+- : int = 0
+CrØation d’une cha(cid:238)ne d’une taille donnØe
+String:create : int (cid:0)! string
+n 7(cid:0)! String:create(n) ;
+CU : n(cid:21)0
+oø String.create(n) est une nouvelle cha(cid:238)ne de n caractŁres non spØci(cid:28)Øs.
+Exemple 13 :
+# String.create(10);;
+- : string = "<\135\236\183\024\017/\008\000\000"
+Copie d’une cha(cid:238)ne
+String:copy : string (cid:0)! string
+;
+s 7(cid:0)! String:copy(s)
+oø String.copy(s) est une nouvelle cha(cid:238)ne copie de la cha(cid:238)ne s, c’est(cid:21)(cid:224)(cid:21)dire une cha(cid:238)ne
+Øgale (cid:224) s.
+Exemple 14 :
+7.3. QUELQUES FONCTIONS PR(cid:201)D(cid:201)FINIES SUR LES CHA˛NES 79
+# let s1 = "tIMOLEON" ;;
+val s1 : string = "tIMOLEON"
+# let s2 = String.copy (s1) ;;
+val s2 : string = "tIMOLEON"
+# s1 = s2 ;;
+- : bool = true
+# s1.[0] <- ’T’ ;;
+- : unit = ()
+# s1 ;;
+- : string = "TIMOLEON"
+# s2 ;;
+- : string = "tIMOLEON"
+En Objective Caml il n’y a pas de fonction string_of_char qui transforme un caractŁre
+en la cha(cid:238)ne constituØe de ce seul caractŁre. C’est un excellent exercice que de rØaliser cette
+fonction avec les fonctions prØsentØes dans ce chapitre (cf exercice 7-3).
+80 CHAPITRE 7. CARACT¨RES ET CHA˛NES DE CARACT¨RES
+7.4 Exercices
+Exercice 7-1
+SurlemodŁledelaprocØdureecrire_chaine,rØalisezuneprocØdurenommØeecrire_vertical
+qui Øcrit verticalement la cha(cid:238)ne passØe en paramŁtre. Par exemple, pour la cha(cid:238)ne vertical la
+procØdure Øcrira (cid:224) l’Øcran
+v
+e
+r
+t
+i
+c
+a
+l
+Exercice 7-2
+SurlemodŁledelaprocØdureecrire_chaine,rØalisezuneprocØdurenommØeecrire_chaine_a_l_envers
+quiØcrit(cid:224)l’enverslacha(cid:238)nepassØeenparamŁtre.Parexemple,pourlacha(cid:238)nerepuslaprocØdure
+Øcrira (cid:224) l’Øcran super
+Exercice 7-3 string_of_char
+RØalisez la fonction
+string_of_char : char (cid:0)! string
+c 7(cid:0)! s
+oø s est la cha(cid:238)ne constituØe du seul caractŁre passØ en paramŁtre.
+Par exemple on doit avoir
+# string_of_char(’a’) ;;
+- : string = "a"
+# string_of_char(’1’) ;;
+- : string = "1"
+# string_of_char(’+’) ;;
+- : string = "+"
+Exercice 7-4 string_of_int
+RØalisez la fonction
+string_of_int : int (cid:0)! string
+n 7(cid:0)! s
+oø s est la cha(cid:238)ne de caractŁre constituØe des chi(cid:27)res de l’Øcriture dØcimale de n.
+Par exemple on doit avoir
+# string_of_int(123) ;;
+- : string = "123"
+# string_of_int(-12) ;;
+- : string = "-12"
+7.4. EXERCICES 81
+Exercice 7-5 Sous-cha(cid:238)nes
+Une sous-cha(cid:238)ne d’une cha(cid:238)ne de caractŁres s est une cha(cid:238)ne composØe de caractŁres consØ-
+cutifs de s. Elles peuvent Œtre caractØrisØes par l’indice de dØbut et leur longueur.
+Voici par exemple quelques sous-cha(cid:238)nes pour la cha(cid:238)ne s=TIMOLEON :
+Sous-cha(cid:238)ne dØbut longueur
+T 0 1
+IMO 1 3
+LEON 4 4
+TIMOLEON 0 8
+RØalisez la fonction
+sous_chaine : string(cid:2)int(cid:2)int (cid:0)! string
+s;deb;long 7(cid:0)! s:[deb::deb+long(cid:0)1]
+CU : 0(cid:20)deb<jsj et 0(cid:20)long <jsj+1(cid:0)deb
+oø s:[deb::deb+long(cid:0)1] dØsigne la sous-cha(cid:238)ne de s dØbutant (cid:224) l’indice deb et de longueur long,
+donc terminant (cid:224) l’indice deb+long(cid:0)1.
+Exemple 15 :
+# sous_chaine("TIMOLEON",0,1);;
+- : string = "T"
+# sous_chaine("TIMOLEON",1,3);;
+- : string = "IMO"
+# sous_chaine("TIMOLEON",4,4);;
+- : string = "LEON"
+# sous_chaine("TIMOLEON",0,8);;
+- : string = "TIMOLEON"
+Exercice 7-6 Miroir
+Lacha(cid:238)nemiroir d’unecha(cid:238)nesestlacha(cid:238)nedontlescaractŁressuccessifssontceuxdelacha(cid:238)ne
+s dans l’ordre inverse. Par exemple, la cha(cid:238)ne miroir de TIMOLEON est NOELOMIT.
+RØalisez la fonction
+miroir : string (cid:0)! string
+:
+s 7(cid:0)! miroir(s)
+Exercice 7-7 Palindromes
+Un palindrome est un mot qui se lit de la mŒme fa(cid:231)on de gauche (cid:224) droite et de droite (cid:224)
+gauche. ICI, ETE, ELLE et RADAR sont des palindromes.
+RØalisez un prØdicat qui est vrai si et seulement si la cha(cid:238)ne passØe en paramŁtre est un
+palindrome.
+Exercice 7-8 Initialisations de tas de cartes
+Les descriptions des tas de cartes sont des cha(cid:238)nes de caractŁres.
+Question 1 Initialisez le tas 1 avec une description de tas donnØe par l’utilisateur.
+Question 2 Initialisez le tas 1 avec des trŁ(cid:29)es dont le nombre est donnØ par l’utilisateur.
+Question 3 MŒme question mais chaque carte Øtant de couleur quelconque.
+82 CHAPITRE 7. CARACT¨RES ET CHA˛NES DE CARACT¨RES
+Exercice 7-9 Initiale et autres
+Question1 RØalisezunefonctioninitialequidonnelecaractŁreinitial(c’est-(cid:224)-direlepremier)d’une
+cha(cid:238)ne de caractŁres. Cette fonction a-t-elle des contraintes d’utilisation?
+Question 2 RØalisez une fonction finale qui donne le caractŁre (cid:28)nal (c’est-(cid:224)-dire le dernier) d’une
+cha(cid:238)ne de caractŁres. Cette fonction a-t-elle des contraintes d’utilisation?
+Question 3 RØalisez une fonction sauf_initiale qui donne la cha(cid:238)ne passØe en paramŁtre sans son
+initiale. Cette fonction a-t-elle des contraintes d’utilisation?
+Exercice 7-10 PrØ(cid:28)xe
+Unecha(cid:238)nedecaractŁress estunprØ(cid:28)xe d’uneautres silacha(cid:238)nes estledØbutdelacha(cid:238)ne
+1 2 1
+s 2 . (cid:192) titre d’exemple, les prØ(cid:28)xes de ’TIMOLEON’ sont ”, ’T’, ’TI’, ’TIM’, ’TIMO’,’TIMOL’,
+’TIMOLE’, ’TIMOLEO’ et ’TIMOLEON’.
+RØalisez de deux fa(cid:231)ons di(cid:27)Ørentes une fonction qui teste si une cha(cid:238)ne (premier paramŁtre
+de la fonction) est un prØ(cid:28)xe d’une autre (second paramŁtre de la fonction).
+Exercice 7-11
+RØalisez une fonction qui retourne le plus petit (aus sens de l’ordre dØ(cid:28)ni dans la section 7.1.3)
+caractŁre de la cha(cid:238)ne de caractŁres passØe en paramŁtre.
+Annexe A
+Les cartes
+A.1 PrØsentation
+LemoduleCarteso(cid:27)reuneextensiondulangageCamla(cid:28)nd’ØcriredesprogrammesdestinØs
+(cid:224) un robot manipulateur de cartes.
+Le domaine de travail du robot est constituØ de tas, numØrotØs 1,2,3,4, sur lesquels sont
+empilØes des cartes (cid:224) jouer. Ces cartes ont les couleurs habituelles (|, }, ~ et (cid:127)) et les valeurs
+habituelles(parordrecroissant:as,deux,trois,...,dix,valet,dame,roi).Lescartesproviennent
+de plusieurs jeux, il est donc possible de trouver plusieurs exemplaires d’une mŒme carte.
+Chacun des quatre tas peut contenir un nombre quelconque de cartes, y compris aucune.
+A.2 Utilisation du module Cartes
+Le module Cartes est un module spØci(cid:28)quement dØveloppØ (cid:224) l’universitØ de Lille 1 pour
+l’enseignement d’InitProg. Ce module n’est donc pas livrØ avec les distributions d’Objective
+Caml, et il est nØcessaire de l’installer sØparØment. Nous supposons ici que cette installation est
+faite.
+Pour utiliser ce module, plusieurs possibilitØs existent :
+1. depuis un interprŁte, invoquer la directive #load
+# #load "Cartes.cma" ;;
+Chargement des images. Patientez quelques instants.
+....................................................
+#
+2. en lan(cid:231)ant un interprŁte, ajouter le module sur la ligne de commande
+$ ocaml Cartes.cma
+Chargement des images. Patientez quelques instants.
+....................................................
+Objective Caml version 3.10.0
+#
+3. en lan(cid:231)ant l’interprŁte dØdiØ au module
+83
+84 ANNEXE A. LES CARTES
+$ ocamlcartes
+Chargement des images. Patientez quelques instants.
+....................................................
+Objective Caml version 3.10.0
+Camlcartes
+FIL IEEA univ. Lille 1 (2009)
+pour obtenir de l’aide : aide_moi () ;;
+#
+Dans tous les cas, une fenŒtre graphique s’ouvre.
+Les noms des di(cid:27)Ørentes variables, fonctions et procØdures dØclarØes dans ce module doivent
+normalement Œtre prØ(cid:28)xØs par le nom du module. Par exemple, l’instruction init_tas pour
+initialiseruntas(cfci-dessous)doitŒtreinvoquØeparlenomCartes.init_tas.Poursedispenser
+deprØ(cid:28)xersystØmatiquementtouslesnomsparceluidumodule,ilsu(cid:30)td’exØcuterlacommande
+# open Cartes;;
+#
+Ceci accompli, on peut faire rØfØrence (cid:224) tous les ØlØments dØclarØs dans le module en utilisant
+leur nom non prØ(cid:28)xØ par celui du module.
+# init_tas (1,"T") ;;
+- : unit = ()
+Dans toute la suite, nous supposerons que l’instruction open Cartes a ØtØ exØcutØe.
+A.3 Le langage du module Cartes
+A.3.1 Description de tas
+Une fois le module Cartes chargØ, la fenŒtre graphique montre quatre tas de cartes. Ces tas,
+numØrotØsde1(cid:224)4degauche(cid:224)droite,contiennentdescartesennombrequelconqueschoisiesau
+hasard.LesproblŁmesquenoustraiteronsnØcessitentdepouvoirimposercertainescon(cid:28)gurations
+de l’Øtat de ces quatre tas.
+A(cid:28)n de dØcrire en dØbut de programme, la con(cid:28)guration initiale des tas de cartes, le module
+1
+Cartes o(cid:27)re une procØdure init_tas .
+(cid:7) Syntaxe : (cid:4)
+init_tas(n,s)
+(cid:6) (cid:5)
+oø n est le numØro du tas dØcrit, et s est une cha(cid:238)ne de description du tas.
+En Caml, les cha(cid:238)nes sont dØlimitØes par des guillemets " (cf chapitre 7).
+La cha(cid:238)ne de description, lue de gauche (cid:224) droite, indique les cartes d’un tas du bas vers le
+haut avec les conventions suivantes :
+(cid:21) Les lettres T, K, C, P reprØsentent respectivement : |, },~, (cid:127);
+(cid:21) Si A et B sont des cha(cid:238)nes de description, la cha(cid:238)ne AB est aussi une cha(cid:238)ne de description
+qui reprØsente les cartes de A surmontØes de celles de B.
+1. init_tas est une fonction dont le rØsultat est l’unique valeur du type unit, c’est ce qu’on appelera une
+procØdure.LeparamŁtredelaprocØdureinit_tas,estunØlØmentduproduitcartØsiendel’ensembledesentiers
+parl’ensembledescha(cid:238)nesint(cid:3)string!unit.
+A.3. LE LANGAGE DU MODULE CARTES 85
+(cid:21) SiAetB sontdescha(cid:238)nesdedescription,lacha(cid:238)neA+B estaussiunecha(cid:238)nededescription
+qui reprØsente un choix entre les cartes de A ou celles de B;
+(cid:21) Si A est une cha(cid:238)ne de description, [A] reprØsente la rØpØtition des cartes de A un nombre
+quelconque (dØ(cid:28)ni de maniŁre alØatoire) de fois (y compris zØro).
+(cid:21) Les parenthŁses sont autorisØes pour Øviter les ambigu(cid:239)tØs.
+Exemple 1 :
+1. init_tas(1,"") dØclare le tas numØro 1 vide.
+2. l’instruction init_tas(2,"TCK") dØcrit le tas numØro 2 contenant de bas en haut un |,
+un ~ et un }.
+3. l’instruction init_tas(3,"T+P") dØcrit le tas numØro 3 contenant une carte qui est soit
+un | soit un (cid:127).
+4. init_tas(4,"[T+P]")dØcritletasnumØro4contenantunnombrequelconque,nondØter-
+minØ, de cartes de couleur | ou (cid:127).
+5. l’instructioninit_tas(1,"T+[P]CC")dØcritletasnumØro1contenantsoituneseulecarte
+de couleur |, soit un nombre quelconque de (cid:127) surmontØ de deux ~.
+6. l’instruction init_tas(1,"(T+[P])CC") dØcrit le tas numØro 1 contenant soit trois cartes
+un | surmontØ de deux ~, soit un nombre quelconque de (cid:127) surmontØ de deux ~. (cid:192) noter
+qu’uneautrefa(cid:231)ondedØcrirelamŒmeinitialisationestd’utiliserlacha(cid:238)ne"TCC + [P]CC".
+Une instance possible de l’Øtat des quatre tas aprŁs exØcutions des instructions numØrotØes
+1, 2, 3 et 5 est donnØe par la partie gauche de la (cid:28)gure A.1 page 86.
+Remarque : Tout programme de rØsolution d’un problŁme sur les cartes doit dØbuter par
+une initialisation des quatre tas (cid:224) l’aide de l’instruction init_tas. Une fois cette initialisation
+e(cid:27)ectuØe, cette instruction n’est plus utilisØe. Il s’en suit qu’aprŁs l’Øtape d’initialisation, le
+nombre de cartes globalement prØsentes sur les quatre tas ne varie pas.
+A.3.2 Action
+La seule action permettant de modi(cid:28)er l’Øtat des tas est le dØplacement de la carte situØe
+au sommet d’un tas vers le sommet d’un autre tas. Cette action est donnØe par un appel (cid:224) la
+2
+procØdure deplacer_sommet paramØtrØe par un couple :
+(cid:7) Syntaxe : (cid:4)
+deplacer_sommet(n,p)
+(cid:6) (cid:5)
+oø n est le numØro du tas duquel on prend une carte, et p est celui du tas sur lequel on la pose.
+Exemple 2 :
+L’instruction deplacer_sommet(2,4) a pour e(cid:27)et de dØplacer la carte au sommet du tas 2 pour
+la poser au sommet du tas 4. AppliquØe (cid:224) l’Øtat des tas dØcrits par la partie gauche de la (cid:28)gure
+A.1, cette instruction transforme les tas 2 et 4 comme le montre la partie droite.
+CU : Il n’est pas permis de dØplacer une carte situØe sur un tas vide. Toute tentative d’action
+deplacer_sommet(n,p) dØclenche l’exception Tas_Vide si le tas n est vide.
+2. dontletypeestint(cid:3)int!unit.
+86 ANNEXE A. LES CARTES
+(a) 1 (b) 2
+Figure A.1 (cid:21) Transformation des tas par dØplacement d’une carte
+A.3.3 Tests sur les tas
+Certains traitements nØcessitent des tests. Pour cela on dispose de fonctions.
+Test de vacuitØ
+3
+Pour tester si un tas est vide, on fera appel (cid:224) la fonction
+(cid:7) Syntaxe : (cid:4)
+tas_vide(n)
+(cid:6) (cid:5)
+qui donne la valeur vrai (true en anglais, et en Caml) si le tas numØro n est vide, faux (false
+en anglais et en Caml) dans le cas contraire.
+On peut faire le test contraire en faisant appel (cid:224) la fonction
+(cid:7) Syntaxe : (cid:4)
+tas_non_vide(n)
+(cid:6) (cid:5)
+Test sur la couleur
+LesquatrecouleurssontdØcritesdanslemoduleCartesparlesquatreidenti(cid:28)cateurs(prØ(cid:28)xØs
+par le nom du module Cartes) :
+Cartes.TREFLE, Cartes.CARREAU, Cartes.COEUR, Cartes.PIQUE.
+Si la commande open Cartes a ØtØ exØcutØe, on peut se dispenser de prØ(cid:28)xer les noms des
+couleurs dans l’Øcriture des programmes.
+IlestimportantdedØsignerlescouleursparcesidenti(cid:28)cateursenlettresMAJUSCULES.
+4
+Il est possible de conna(cid:238)tre la couleur au sommet d’un tas en faisant appel (cid:224) la fonction
+(cid:7) Syntaxe : (cid:4)
+couleur_sommet(n)
+(cid:6) (cid:5)
+3. dontletypeestint!bool.
+4. dontletypeestint!couleur.
+A.3. LE LANGAGE DU MODULE CARTES 87
+qui donne la couleur de la carte situØe au sommet du tas numØro n.
+Exemple 3 :
+if couleur_sommet(2)=PIQUE then ...
+CU : Il est normalement dØnuØ de sens de tester la couleur de la carte situØe au sommet d’un
+tas vide. Toute tentative d’appel (cid:224) couleur_sommet(n) dØclenche l’exception Tas_Vide si le tas
+n est vide.
+5
+Quatre autres fonctions permettent aussi de tester la couleur du sommet d’un tas
+Syntaxe :
+(cid:7) (cid:4)
+sommet_trefle(n)
+sommet_carreau(n)
+sommet_coeur(n)
+sommet_pique(n)
+(cid:6) (cid:5)
+quidonnentlavaleurvraisilesommetdutasnestun|(},~,(cid:127))etfauxdanslecascontraire.
+Elles sont soumises (cid:224) la mŒme contrainte d’utilisation que la fonction couleur_sommet, et
+dØclenchent la mŒme exception en cas de non respect de cette contrainte.
+A.3.4 Comparaison des valeurs
+Une fonction permet de comparer les valeurs des cartes au sommet de deux tas :
+Syntaxe :
+(cid:7) (cid:4)
+superieur(n,p)
+(cid:6) (cid:5)
+quidonnelavaleurvraisilacarteausommetdutasnumØronaunevaleursupØrieureouØgale
+(cid:224) celle du tas numØro p, et la valeur faux dans le cas contraire.
+CU : On ne peut comparer les cartes situØes au sommet de deux tas que s’ils ne sont pas vides.
+Tout appel (cid:224) superieur(n,p) dØclenche l’exception Tas_Vide si l’un des tas n ou p est vide.
+A.3.5 Contr(cid:244)le de l’a(cid:30)chage
+Modes d’a(cid:30)chage
+(cid:192) l’exØcution, l’a(cid:30)chage peut se faire de trois fa(cid:231)ons :
+1. mode graphique : Dans ce mode, on visualise l’Øvolution des tas de cartes dans une
+fenŒtre graphique. C’est le mode par dØfaut.
+2. mode texte : Dans ce mode, on visualise l’Øvolution des tas de cartes dans le terminal oø
+s’exØcuteleprogramme.Voiciunexempled’a(cid:30)chagetextuelproduitparl’exØcutiond’une
+instruction :
+5. dontletypeestint!unit.
+88 ANNEXE A. LES CARTES
+# deplacer_sommet(4,1) ;;
+deplacer_sommet(4,1);;
+(* ._____. *)
+(* | 3P | *)
+(* ._____. *)
+(* | 10P | *)
+(* ._____. *)
+(* | vP | *)
+(* ._____. *)
+(* | 5P | *)
+(* ._____. ._____. *)
+(* | 5T | | 4P | *)
+(* ._____. ._____. ._____. ._____. *)
+(* | 7P | | 6T | | 6K | | dP | *)
+(*____________________________________________*)
+- : unit = ()
+3. mode texte et graphique : Dans ce mode, on visualise l’Øvolution des tas de cartes (cid:224) la
+fois dans le terminal et dans une fenŒtre graphique.
+Le mode d’a(cid:30)chage par dØfaut est le mode graphique. L’instruction
+affichage_en_mode_texte ()
+permet de passer en mode texte. L’instruction
+affichage_en_mode_graphique ()
+permet de passer en mode graphique. Et l’instruction
+affichage_en_mode_texte_et_graphique ()
+6
+permet de combiner les deux modes texte et graphique .
+Remarque: Lemodetextepermetdeconserverunetracedel’exØcutiond’unprogrammedans
+un (cid:28)chier texte. Par exemple, si un (cid:28)chier nommØ exo.ml contient un programme de rØsolution
+d’un problŁme sur les cartes, et s’il contient une instruction demandant un a(cid:30)chage textuel,
+alors dans un terminal la commande
+$ ocamlcartes exo.ml > exo.result
+produit un (cid:28)chier texte nommØ exo.result contenant toutes les instructions exØcutØes suivies
+de l’Øtat des tas de cartes qu’elles transforment.
+Vitesse d’exØcution
+Un dØlai est imposØ entre l’exØcution des instructions de manipulation des tas. Le temps
+d’attente peut Œtre ajustØ en fonction des besoins. Le module fournit deux ØlØments permettant
+7 8
+de consulter (quel_delai) et de modi(cid:28)er (fixer_delai) cette temporisation.
+Pour augmenter la vitesse d’exØcution, il su(cid:30)t de diminuer la valeur rØelle.
+6. CestroisprocØduressontdetypeunit!unit
+7. dontletypeestunit!float
+8. dontletypeestfloat!unit
+A.3. LE LANGAGE DU MODULE CARTES 89
+fixer_delai(0.1)
+L’instruction prØcØdente permet de (cid:28)xer la durØe de l’attente (cid:224) un dixiŁme de seconde.
+Pause
+9
+L’instruction pause permet de faire une pause durant l’exØcution d’un programme. Elle
+s’utilise en communiquant un message en paramŁtre, message qui sera imprimØ dans le terminal
+lors de la pause. La pause s’arrŒte dŁs l’appui sur la touche EntrØe.
+pause ("un petit repose bien merite")
+A.3.6 RØparer l’automate
+Lorsqu’une contrainte d’utilisation n’est pas respectØe, par exemple lorqu’on veut dØplacer
+une carte situØe sur un tas vide, une exception est dØclenchØe, et la fenŒtre graphique appara(cid:238)t
+barrØe de deux lignes rouges qui indique que l’automate est (cid:19)cassØ(cid:20). (cid:192) partir de ce moment
+plus aucune action sur l’automate n’est possible.
+La session quisuit suppose que la situationactuelle est cellemontrØe(cid:224) la (cid:28)gure A.1,et mon-
+treledØclenchementdel’exceptionLesExceptions.Tas_Vide 1dß(cid:224)latentativededØplacerune
+cartedepuisletas1quiestvide,puisledØclenchementdel’exceptionLesExceptions.AutomateCasse
+qui montre l’impossibilitØ d’agir sur l’environnement des tas puisque l’automate a ØtØ cassØ par
+la commande prØcØdente.
+# deplacer_sommet(1,2) ;;
+Exception: LesExceptions.Tas_Vide 1.
+# deplacer_sommet(2,3);;
+Exception: LesExceptions.AutomateCasse.
+Plusrienn’estpossibleavantl’exØcutiondel’instructionAdmin.repare ().Cetteinstruction
+permet de (cid:19)rØparer(cid:20) l’automate (les lignes rouges de la fenŒtre graphique disparaissent), et de
+poursuivre les actions sur les tas de cartes.
+# Admin.repare ();;
+- : unit = ()
+# deplacer_sommet(2,3) ;;
+- : unit = ()
+A.3.7 Obtenir de l’aide
+Pourobtenirunaide-mØmoiredesprincipalesfonctionsetinstructionsdumoduleCartes,on
+fait appel (cid:224) la fonction aide_moi.
+# aide_moi () ;;
+Les principaux elements du Module Cartes
+----------------------------------------
+* init_tas : numero_tas * string -> unit
+init_tas(num_tas,chaine) : initialise le tas numero num_tas
+avec la description donnee par chaine.
+...
+9. dontletypeeststring!unit
+90 ANNEXE A. LES CARTES
+A.4 Exercices
+Ils sont classØs en facile , moyen et di(cid:30)cile (les premiers sont trŁs faciles).
+A.4.1 Descriptions de tas
+Exercice A-1
+Pour chacune des descriptions qui suivent, donnez l’instruction d’initialisation du tas qui con-
+vient :
+(cid:21) le tas 1 contient une carte de couleur |;
+(cid:21) le tas 1 contient une carte de couleur | ou (cid:127);
+(cid:21) le tas 1 contient une carte de couleur quelconque;
+(cid:21) le tas 1 contient deux cartes de couleur ~;
+(cid:21) le tas 1 contient une carte de couleur ~ surmontØe d’un };
+(cid:21) le tas 1 contient un nombre quelconque de (cid:127);
+(cid:21) le tas 1 contient un nombre quelconque de (cid:127) ou bien un nombre quelconque de ~;
+(cid:21) le tas 1 contient un nombre quelconque de cartes de couleur (cid:127) ou ~;
+(cid:21) le tas 1 contient un nombre quelconque de cartes de couleur quelconque;
+(cid:21) le tas 1 contient au moins un carreau;
+(cid:21) le tas 1 contient un | surmontØ soit d’un nombre quelconque de ~, soit d’un nombre
+quelconque non nul de (cid:127);
+(cid:21) le tas 1 contient un nombre pair de ~;
+(cid:21) le tas 1 contient un nombre impair de ~;
+(cid:21) le tas 1 contient un nombre pair de | ou un nombre multiple de 3 de (cid:127);
+(cid:21) lesdeuxcartesextrŒmesdutas1(laplusbasseetlaplushaute)sontdes|,entrelesdeux
+il y a un nombre quelconque de successions de deux cartes de couleur }~.
+A.4. EXERCICES 91
+A.4.2 SØquence
+Dans tous les exercices qui suivent, l’ØnoncØ dØcrit une situation initiale des quatre tas de
+cartes (dans la syntaxe du module Cartes), et la situation (cid:28)nale (cid:224) atteindre.
+Exercice A-2
+Situation initiale :
+Tas 1 : "TT" Tas 2 : ""
+Tas 3 : "" Tas 4 : ""
+Situation (cid:28)nale :
+Tas 1 : "" Tas 2 : "TT"
+Tas 3 : "" Tas 4 : ""
+Exercice A-3
+Situation initiale :
+Tas 1 : "TK" Tas 2 : ""
+Tas 3 : "" Tas 4 : ""
+Situation (cid:28)nale :
+Tas 1 : "KT" Tas 2 : ""
+Tas 3 : "" Tas 4 : ""
+Exercice A-4
+Situation initiale :
+Tas 1 : "TKTK" Tas 2 : ""
+Tas 3 : "" Tas 4 : ""
+Situation (cid:28)nale :
+Tas 1 : "KKTT" Tas 2 : ""
+Tas 3 : "" Tas 4 : ""
+Exercice A-5
+Situation initiale :
+Tas 1 : "TKCP" Tas 2 : ""
+Tas 3 : "" Tas 4 : ""
+Situation (cid:28)nale :
+Tas 1 : "PCKT" Tas 2 : ""
+Tas 3 : "" Tas 4 : ""
+A.4.3 Conditionnelle
+Exercice A-6
+Situation initiale :
+Tas 1 : "T+P" Tas 2 : ""
+Tas 3 : "" Tas 4 : ""
+Situation (cid:28)nale :
+Tas 1 : "" Tas 2 : "[T]"
+Tas 3 : "[P]" Tas 4 : ""
+Exercice A-7
+92 ANNEXE A. LES CARTES
+Situation initiale :
+Tas 1 : "(T+K+C+P)(T+K+C+P)" Tas 2 : ""
+Tas 3 : "" Tas 4 : ""
+Situation (cid:28)nale :
+Tas 1 : "" Tas 2 : ""
+Tas 3 : "(T+K+C+P)(T+K+C+P)"" Tas 4 : ""
+le symbole " signi(cid:28)ant que les cartes sont dans l’ordre croissant (i.e. la carte du dessous a une
+valeur infØrieure ou Øgale (cid:224) celle du dessus).
+Exercice A-8
+Situation initiale :
+Tas 1 : "T+K+C+P" Tas 2 : ""
+Tas 3 : "" Tas 4 : ""
+Situation (cid:28)nale :
+Tas 1 : "[T]" Tas 2 : "[K]"
+Tas 3 : "[C]" Tas 4 : "[P]"
+Exercice A-9
+Situation initiale :
+Tas 1 : "(T+K+C+P)(T+K+C+P)" Tas 2 : ""
+Tas 3 : "" Tas 4 : ""
+Situation (cid:28)nale :
+Tas 1 : "[K+C]" Tas 2 : "[T+P]"
+Tas 3 : "" Tas 4 : ""
+A.4. EXERCICES 93
+A.4.4 ItØration
+Exercice A-10
+Situation initiale :
+Tas 1 : "[T]" Tas 2 : ""
+Tas 3 : "" Tas 4 : ""
+Situation (cid:28)nale :
+Tas 1 : "" Tas 2 : "[T]"
+Tas 3 : "" Tas 4 : ""
+Exercice A-11
+Situation initiale :
+Tas 1 : "[K+C][T+P]" Tas 2 : ""
+Tas 3 : "" Tas 4 : ""
+Situation (cid:28)nale :
+Tas 1 : "[T+P][K+C]" Tas 2 : ""
+Tas 3 : "" Tas 4 : ""
+Exercice A-12
+Situation initiale :
+Tas 1 : "[K]" Tas 2 : "[T]"
+Tas 3 : "" Tas 4 : ""
+Situation (cid:28)nale :
+Tas 1 : "[K]" Tas 2 : ""
+Tas 3 : "[KT]" Tas 4 : ""
+ou bien :
+Tas 1 : "" Tas 2 : "[T]"
+Tas 3 : "[KT]" Tas 4 : ""
+Exercice A-13
+Situation initiale :
+Tas 1 : "[T]" Tas 2 : ""
+Tas 3 : "" Tas 4 : ""
+Situation (cid:28)nale :
+Tas 1 : "" Tas 2 : "[T]"
+Tas 3 : "[T]" Tas 4 : ""
+le nombre de cartes des deux tas 2 et 3 di(cid:27)Ørant d’au plus 1 dans la situation (cid:28)nale.
+Exercice A-14
+Situation initiale :
+Tas 1 : "[T]" Tas 2 : "[K]"
+Tas 3 : "[P]" Tas 4 : ""
+Situation (cid:28)nale :
+Tas 1 : "" Tas 2 : "[T]"
+Tas 3 : "[K]" Tas 4 : "[P]"
+En faire deux versions, la seconde utilisant une procØdure vider_tas(depart,arrivee) qui
+vide le tas depart sur le tas arrivee.
+94 ANNEXE A. LES CARTES
+Exercice A-15
+Situation initiale :
+Tas 1 : "[T]" Tas 2 : "[K]"
+Tas 3 : "[C]" Tas 4 : "[P]"
+Situation (cid:28)nale :
+Tas 1 : "[P]" Tas 2 : "[T]"
+Tas 3 : "[K]" Tas 4 : "[C]"
+Exercice A-16
+Situation initiale :
+Tas 1 : "[T][K][C][P]" Tas 2 : ""
+Tas 3 : "" Tas 4 : ""
+Situation (cid:28)nale :
+Tas 1 : "[P][C][K][T]" Tas 2 : ""
+Tas 3 : "" Tas 4 : ""
+Exercice A-17
+Situation initiale :
+Tas 1 : "[T]" Tas 2 : "[K]"
+Tas 3 : "[P]" Tas 4 : ""
+Situation (cid:28)nale :
+Tas 1 : "" Tas 2 : ""
+Tas 3 : "" Tas 4 : "[TKP][XY][Z]"
+oø X et Y dØsignent les deux couleurs restantes lorsque l’une des couleurs manque, et Z dØsigne
+la couleur restante lorsque X ou Y manque.
+Exercice A-18
+Situation initiale :
+Tas 1 : "[T+K+C+P]" Tas 2 : ""
+Tas 3 : "" Tas 4 : ""
+Situation (cid:28)nale :
+Tas 1 : "[T]" Tas 2 : "[K]"
+Tas 3 : "[C]" Tas 4 : "[P]"
+Exercice A-19
+Situation initiale :
+Tas 1 : "T[T]" Tas 2 : ""
+Tas 3 : "" Tas 4 : ""
+Situation (cid:28)nale :
+Tas 1 : "" Tas 2 : "T"(cid:0)
+Tas 3 : "[T]" Tas 4 : ""
+le symbole (cid:0) indique que la carte est de valeur minimale.
+Exercice A-20
+Situation initiale :
+Tas 1 : "[T]" Tas 2 : ""
+Tas 3 : "" Tas 4 : ""
+Situation (cid:28)nale :
+Tas 1 : "" Tas 2 : "[T]"
+Tas 3 : "" Tas 4 : ""
+le symbole " signi(cid:28)ant que les cartes sont rangØes par ordre croissant de valeurs de bas en haut.
+Exercice A-21
+A.4. EXERCICES 95
+Situation initiale :
+Tas 1 : "[T+K]" Tas 2 : ""
+Tas 3 : "" Tas 4 : ""
+Situation (cid:28)nale :
+Tas 1 : "[X][Y]" Tas 2 : ""
+Tas 3 : "" Tas 4 : ""
+Le symbole X dØsigne la couleur (| ou }) la plus nombreuse, l’autre couleur Øtant dØsignØe par
+Y.
+Exercice A-22
+Situation initiale :
+Tas 1 : "K[T]" Tas 2 : ""
+Tas 3 : "" Tas 4 : ""
+Situation (cid:28)nale :
+Tas 1 : "[T+K]" Tas 2 : "[T+K]"
+Tas 3 : "[T+K]" Tas 4 : "[T+K]"
+les trŁ(cid:29)es Øtant Øquitablement rØpartis sur les quatre tas, l’unique carreau se trouvant n’importe
+oø.
+Remarque : ce problŁme est infaisable sans le carreau.
+Exercice A-23
+Situation initiale :
+Tas 1 : "[T]" Tas 2 : "[K]"
+Tas 3 : "[C]" Tas 4 : "[P]"
+Situation (cid:28)nale :
+Tas 1 : "[T]"" Tas 2 : "[K]""
+Tas 3 : "[C]"" Tas 4 : "[P]""
+le symbole " signi(cid:28)ant que les cartes sont rangØes par ordre croissant de valeurs de bas en haut.
+A.4.5 Fonctions et procØdures
+Exercice A-24
+Soit la fonction dØ(cid:28)nie en Caml par
+let meme_couleur (couleur, tas) =
+couleur = couleur_sommet(tas) ;;
+Question 1 QuelproblŁmeposecettefonctionsilorsd’unappelletastaspassØenparamŁtreest
+vide?
+Question 2 Comment modi(cid:28)er la fonction meme_couleur pour qu’elle renvoie la valeur faux si le
+tas tas est vide.
+Exercice A-25 (cid:201)galitØ de deux cartes
+Question 1 (cid:201)crivez une fonction qui teste l’ØgalitØ de la valeur de deux cartes situØes au sommet
+de deux tas que l’on supposera non vide.
+Question 2 Puis Øcrivez une fonction qui teste l’ØgalitØ de deux cartes (valeur et couleur) situØes
+au sommet de deux tas supposØs non vides.
+Exercice A-26 Inverser l’ordre des cartes d’un tas
+Il s’agit d’Øcrire une procØdure inverser_tas1 pour inverser l’ordre des tas du tas 1. Par
+96 ANNEXE A. LES CARTES
+exemple, si on a Tas 1:"TCCPK" alors aprŁs exØcution de l’instruction inverser_tas1 (), on
+doit avoir Tas 1:"KPCCT".
+Question 1 Fa(cid:238)tes-le avec l’hypothŁse que les autres tas sont vides.
+Question 2 RØaliser la procØdure sans supposer que les autres tas sont vides.
+Annexe B
+Le module Camlgraph
+B.1 PrØsentation
+Le module Camlgraph est une adaptation du module graphics livrØ avec toutes les distri-
+butions de Objective Caml. Il reprend les mŒmes fonctions avec les mŒmes noms. La seule
+di(cid:27)Ørence rØside dans le fait que toutes les fonctions y sont dØcurry(cid:28)Øes.
+Cemodulepermetdedessinerdespoints,dessegments,despolygones,descercles,deremplir
+certaines zones dans une fenŒtre graphique. Cette fenŒtre graphique peut Œtre considØrØe comme
+un tableau de points repØrØs par leurs coordonnØes (cf (cid:28)gure B.1). Ces coordonnØes sont des
+nombresentiers.SeulslespointsdontlesdeuxcoordonnØessontpositivesounullesetinfØrieures
+(cid:224) la largeur et (cid:224) la hauteur de la fenŒtre sont visibles.
+Figure B.1 (cid:21) SystŁme de coordonnØes du module Camlgraph
+Leprogrammeci-dessousillustreuneutilisationdecemodule.SonexØcutionproduitl’image
+prØsentØe sur la (cid:28)gure B.2.
+97
+98 ANNEXE B. LE MODULE CAMLGRAPH
+(* auteur : EW *)
+(* date : mai 2009 *)
+(* objet : dessin de cercles *)
+(* concentriques de *)
+(* couleurs aleatoires *)
+(* utilise le module Camlgraph *)
+open Camlgraph ;;
+let largeur = 600 (* largeur de la fenetre graphique *)
+and hauteur = 400 (* hauteur de la fenetre graphique *) ;;
+let n = (hauteur - 20) / 2 (* le nombre de cercles a dessiner *)
+and cx = largeur / 2 (* abscisse du centre des cercles *)
+and cy = hauteur / 2 (* ordonnee du centre des cercles *);;
+begin
+Random.init (int_of_float (Unix.time()));
+open_graph (" "^string_of_int(largeur)^"x"^string_of_int(hauteur)) ;
+set_window_title ("Cercles") ;
+for i = 1 to n do
+set_color (rgb(Random.int(256),Random.int(256),Random.int(256)));
+draw_circle (cx,cy,i)
+done;
+print_endline "appuyez sur une touche pour terminer";
+ignore(read_key ()) ;
+close_graph ()
+end
+B.2 Module Camlgraph
+Author(s) : FIL
+B.2.1 Gestion des fenŒtres graphiques
+val open_graph : string -> unit
+open_graph (s) ouvre une fenŒtre graphique dont les dimensions sont indiquØes par la
+cha(cid:238)ne s Pour une ouverture de la fenŒtre sur l’Øcran par dØfaut, la cha(cid:238)ne doit
+commencer par un espace.
+val close_graph : unit -> unit
+close_graph () ferme de la fenŒtre graphique.
+val set_window_title : string -> unit
+set_window_title (s) donne un titre (cid:224) la fenŒtre graphique.
+B.2. MODULE CAMLGRAPH 99
+Figure B.2 (cid:21) Figure produite en utilisant le module Camlgraph
+val resize_window : int * int -> unit
+resize_window (w,h) redimensionne la fenŒtre graphique w = largeur, h = hauteur.
+val clear_graph : unit -> unit
+clear_graph () e(cid:27)ace le contenu de la fenŒtre graphique.
+val size_x : unit -> int
+size_x () donne la largeur de la fenŒtre graphique.
+val size_y : unit -> int
+size_y () donne la hauteur de la fenŒtre graphique.
+B.2.2 Gestion des couleurs
+type color = Graphics.color
+reprØsentation des couleurs
+val rgb : int * int * int -> color
+rgb (r,g,b) donne une couleur (cid:224) partir de ses trois composantes rouge, vert, bleu.
+val set_color : color -> unit
+set_color (x) (cid:28)xe la couleur courante.
+val background : color
+couleur courante de l’arriŁre plan.
+100 ANNEXE B. LE MODULE CAMLGRAPH
+val foreground : color
+couleur courante de l’avant plan.
+Couleurs prØdØ(cid:28)nies
+val black : color
+val white : color
+val red : color
+val green : color
+val blue : color
+val yellow : color
+val cyan : color
+val magenta : color
+B.2.3 Point et dessin de lignes
+.
+val plot : int * int -> unit
+plot (x,y) dessine un point de coordonnØes (x,y).
+val point_color : int * int -> color
+point_color (x,y) donne la couleur du point de coordonnØes (x,y).
+val moveto : int * int -> unit
+moveto (x,y) positionne le crayon au point de coordonnØes (x,y).
+val rmoveto : int * int -> unit
+rmoveto (x,y) translate le crayon selon le vecteur de coordonnØes (x,y).
+val current_x : unit -> int
+current_x () donne l’abscisse de la position courante du crayon.
+val current_y : unit -> int
+current_y () donne l’ordonnØe de la position courante du crayon.
+val current_point : unit -> int * int
+current_point () donne les coordonnØes de la position courante du crayon.
+val lineto : int * int -> unit
+lineto (x,y) trace un segment depuis la positon courante jusqu’au point de coordonnØes
+(x,y).
+val rlineto : int * int -> unit
+rlineto (x,y) trace un segment depuis la positon courante selon le vecteur de
+coordonnØes (x,y).
+val curveto : (int * int) * (int * int) * (int * int) -> unit
+B.2. MODULE CAMLGRAPH 101
+curveto (b,c,d) trace une courbe de Bezier du point courant jusqu’au point d avec les
+points b et c pour points de contr(cid:244)le.
+val draw_rect : int * int * int * int -> unit
+draw_rect (x1,y1,x2,y2) dessine un rectangle dont le coin infØrieur gauche a pour
+coordonnØes (x1,y1) et le point supØrieur droit (x2,y2).
+val draw_arc : int * int * int * int * int * int -> unit
+draw_arc (x,y,rx,ry,a1,a2) dessine un arc d’ellipse de centre (x,y), de rayon
+horizontal rx, de rayon vertical ry, entre les angles a1 et a2.
+val draw_ellipse : int * int * int * int -> unit
+draw_ellipse (x,y,rx,ry) dessine une ellipse de centre (x,y), de rayon horizontal rx,
+de rayon vertical ry.
+val draw_circle : int * int * int -> unit
+draw_circle (x,y,r) dessine un cercle de centre (x,y), de rayon r.
+val set_line_width : int -> unit
+set_line_width (n) (cid:28)xe l’Øpaisseur des traits
+B.2.4 Texte
+val draw_char : char -> unit
+draw_char (c) dessine le caractŁre c (cid:224) la position courante.
+val draw_string : string -> unit
+draw_string (s) dessine la cha(cid:238)ne de caractŁres s (cid:224) la position courante.
+val set_font : string -> unit
+set_font (s) (cid:28)xe la police pour dessiner les textes.
+val set_text_size : int -> unit
+set_text_size (n) (cid:28)xe la taille des caractŁres pour dessiner les textes.
+val text_size : string -> int * int
+text_size (s) donne les dimensions du texte s s’il Øtait dessinØ avec les police et taille
+courantes.
+B.2.5 Remplissage
+val fill_rect : int * int * int * int -> unit
+fill_rect (x,y,w,h) remplit le rectangle dont le coin infØrieur gauche a pour
+coordonnØes (x,y), de largeur w et de hauteur w, avec la couleur courante
+val fill_arc : int * int * int * int * int * int -> unit
+102 ANNEXE B. LE MODULE CAMLGRAPH
+fill_arc (x,y,rx,ry,a1,a2) remplit l’arc d’ellipse dont le centre a pour coordonnØes
+(x,y), de rayon horizontal rx et de rayon vertical ry, entre les angles a1 et a2, avec la
+couleur courante
+val fill_ellipse : int * int * int * int -> unit
+fill_ellipse (x,y,rx,ry) remplit l’ellipse dont le centre a pour coordonnØes (x,y), de
+rayon horizontal rx et de rayon vertical ry, avec la couleur courante
+val fill_circle : int * int * int -> unit
+fill_circle (x,y,r) remplit le cercle dont le centre a pour coordonnØes (x,y), de
+rayon r, avec la couleur courante
+Annexe C
+(cid:201)lØments du langage ØtudiØs dans ce
+cours
+C.1 Syntaxe
+C.1.1 Commentaires
+(cid:7) Syntaxe : Commentaires en Caml (cid:4)
+(* ceci est un commentaire *)
+(cid:6) (cid:5)
+C.1.2 Expressions et instructions
+(cid:7) Syntaxe : SØquence d’instructions (cid:4)
+<instruction
+1
+>;
+<instruction
+2
+>;
+:::
+<instruction >
+(cid:6) n (cid:5)
+(cid:7) Syntaxe : Bloc d’instructions (cid:4)
+begin
+(* sequence d’instructions *)
+end
+(cid:6) (cid:5)
+C.1.3 Expressions conditionnelles
+(cid:7) Syntaxe : Expression conditionnelle (cid:4)
+if <condition> then
+<expression >
+1
+else
+<expression >
+(cid:6) 2 (cid:5)
+103
+104 ANNEXE C. (cid:201)L(cid:201)MENTS DU LANGAGE (cid:201)TUDI(cid:201)S DANS CE COURS
+C.1.4 Instructions conditionnelles
+(cid:7) Syntaxe : Instruction conditionnelle complŁte (cid:4)
+if <condition> then
+(* bloc d’instructions *)
+else
+(* bloc d’instructions *)
+(cid:6) (cid:5)
+(cid:7) Syntaxe : Instruction conditionnelle simple (cid:4)
+if <condition> then
+(* bloc d’instructions *)
+(cid:6) (cid:5)
+C.1.5 Instructions conditionnellement rØpØtØes
+(cid:7) Syntaxe : Boucle tant que (cid:4)
+while <condition> do
+(* sequence d’instructions *)
+done
+(cid:6) (cid:5)
+C.1.6 Constantes, variables
+(cid:7) Syntaxe : DØclaration d’une variable (cid:4)
+let <identificateur > = <expression>
+(cid:6) (cid:5)
+(cid:7) Syntaxe : DØclaration simultanØe de plusieurs variables (cid:4)
+let <identificateur 1 > = <expression 1 >
+and <identificateur 2 > = <expression 2 >
+...
+(cid:6) and <identificateur n > = <expression n > (cid:5)
+(cid:7) Syntaxe : DØclaration de variables locales (cid:224) une expression (cid:4)
+let <identificateur 1 > = <expression 1 >
+and <identificateur 2 > = <expression 2 >
+...
+in
+<expression>
+(cid:6) (cid:5)
+(cid:7) Syntaxe : DØclaration d’une variable mutable (cid:4)
+let <identificateur > = ref <expression>
+(cid:6) (cid:5)
+(cid:7) Syntaxe : A(cid:27)ectation d’une valeur (cid:224) une variable mutable (cid:4)
+<identificateur > := <expression>
+(cid:6) (cid:5)
+C.2. MOTS-CL(cid:201)S DU LANGAGE 105
+C.1.7 La boucle pour
+(cid:7) Syntaxe : Boucle pour (cid:4)
+for i = a to b do
+(* sequence d’instructions *)
+done
+(cid:6) (cid:5)
+(cid:7) Syntaxe : Boucle pour (cid:224) indice dØcroissant (cid:4)
+for i = a downto b do
+(* sequence d’instructions *)
+done
+(cid:6) (cid:5)
+C.1.8 Les fonctions
+(cid:7) Syntaxe : DØclaration d’une fonction (cid:4)
+let <nom> (<liste parametres>) =
+(* expression simple ou sequence d’instructions
+definissant la fonction *)
+(cid:6) (cid:5)
+C.1.9 CaractŁres et cha(cid:238)nes de caractŁres
+(cid:7) Syntaxe : AccŁs au i-Łme caractŁre d’une cha(cid:238)ne s (cid:4)
+s.[i]
+(cid:6) (cid:5)
+(cid:7) Syntaxe : Modi(cid:28)er la valeur du i-Łme caractŁre d’une cha(cid:238)ne s (cid:4)
+s.[i] <- (* une expression de type char *)
+(cid:6) (cid:5)
+C.2 Mots-clØs du langage
+Liste des mots-clØs (ou encore mots rØservØs) du langage rencontrØs dans ce cours.
+and,begin,do,done,downto,else,end,false,for,if,in,let,open,ref,then,to,true,
+while.
+Rappel Les mots-clØs du langage ne peuvent pas servir d’identi(cid:28)cateurs de variables.
+C.3 Fonctions prØdØ(cid:28)nies du langage
+C.3.1 Fonctions de conversion
+(cid:21) int_of_float : float ! int
+int_of_float x convertit le (cid:29)ottant x en un entier.
+106 ANNEXE C. (cid:201)L(cid:201)MENTS DU LANGAGE (cid:201)TUDI(cid:201)S DANS CE COURS
+(cid:21) float_of_int : int ! float
+float_of_int n convertit l’entier n en un (cid:29)ottant.
+(cid:21) int_of_char : char ! int
+int_of_char x convertit le caractŁre c en un entier (son code ASCII).
+(cid:21) char_of_int : int ! char
+char_of_int n convertit l’entier n en le caractŁre de code n.
+DØclenche l’exception Invalid_argument "char_of_int" si n n’est pas un entier compris
+entre 0 et 255.
+(cid:21) int_of_string : string ! int
+int_of_string s convertit la cha(cid:238)ne s en un entier.
+DØclenche l’exception Failure "int_of_string" si s n’est pas l’Øcriture d’un entier.
+(cid:21) string_of_int : int ! string
+string_of_int n convertit l’entier n en une cha(cid:238)ne de caractŁres : son Øcriture dØcimale.
+(cid:21) float_of_string : string ! float
+float_of_string s convertit la cha(cid:238)ne s en un (cid:29)ottant.
+DØclenche l’exception Failure "float_of_string" si s n’est pas l’Øcriture d’un (cid:29)ottant.
+(cid:21) string_of_float : float ! string
+string_of_float x convertit le (cid:29)ottant x en une cha(cid:238)ne de caractŁres : son Øcriture dØci-
+male.
+C.3.2 Impressions
+(cid:21) print_int : int ! unit
+print_int n imprime l’entier n.
+(cid:21) print_float : float ! unit
+print_float x imprime le (cid:29)ottant f.
+(cid:21) print_char : char ! unit
+print_char c imprime le caractŁre c.
+(cid:21) print_string : string ! unit
+print_string s imprime la cha(cid:238)ne de caractŁres s.
+(cid:21) print_endline : string ! unit
+print_endline s imprime la cha(cid:238)ne de caractŁres s et passe (cid:224) la ligne.
+(cid:21) print_newline : unit ! unit
+print_newline () imprime un passage (cid:224) la ligne.
+C.3.3 Du module String
+(cid:21) String.length : string ! int
+String.length s donne la longueur de la cha(cid:238)ne s.
+(cid:21) String.create : int ! string
+String.create n crØe une nouvelle cha(cid:238)ne de longueur n.
+(cid:21) String.copy : string ! string
+String.copy s crØe une copie de la cha(cid:238)ne s.
+C.4 Directives
+#quit : pour quitter l’interprŁte.
+#use <nom fichier> : pour charger un (cid:28)chier contenant des dØclarations et expressions (cid:224)
+Øvaluer.
+Annexe D
+Messages d’erreurs de l’interprŁte
+du langage
+Syntax error message d’erreur lorsqu’une phrase (expression ou dØclaration) est malformØe.
+# 1 + ;;
+Syntax error
+# let = 3+1 ;;
+Syntax error
+This expression has type ...but is here used with type ... messaged’erreurlorsqu’une
+expression n’est pas typable par inadØquation des types de certaines sous-expressions.
+# 1 + 2. ;;
+This expression has type float but is here used with type int
+# print_string (1);;
+This expression has type int but is here used with type string
+Unbound value ... message d’erreur lorsque dans l’Øvaluation d’une expression une variable
+non prØalablement dØclarØe intervient.
+# a + 1;;
+Unbound value a
+Unbound constructor ... messaged’erreurlorsquedansuneexpressionintervientunconstruc-
+teurnondØclarØ.EnCaml,lesconstructeurssontdØsignØspardesidenti(cid:28)cateursdØbutant
+par une lettre majuscule.
+# init_tas(2,TT);;
+Unbound constructor TT
+# let a = 1 in a*a + A ;;
+Unbound constructor A
+This function is applied to too many arguments, maybe you forgot a ‘;’ messaged’er-
+reur lorsqu’on prØcise d’avantange de paramŁtres qu’il n’est nØcessaire.
+# let f(x) = x + 1;;
+val f : int -> int = <fun>
+# f(1)(2);;
+This function is applied to too many arguments, maybe you forgot a ‘;’
+107
+108 ANNEXE D. MESSAGES D’ERREURS DE L’INTERPR¨TE DU LANGAGE
+This expression is not a function, it cannot be applied messaged’erreurlorsqu’onessaie
+d’utiliser une valeur comme une fonction...
+# let a = 3 ;;
+val a : int = 3
+# a(4);;
+This expression is not a function, it cannot be applied
+Bibliographie
+[EC00] Bruno Pagano Emmanuel Chailloux, Pascal Manoury. DØveloppement d’applications
+avec Objective Caml. O’Reilly, 2000. Disponible en ligne (cid:224) l’adresse http://www.pps.
+jussieu.fr/Livres/ora/DA-OCAML/.
+109
+110 BIBLIOGRAPHIE
+Liste des algorithmes
+0.1 Calcul de n! . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+1.1 Mettre les trois cartes du tas 1 vers les tas 2, 3 et 4 . . . . . . . . . . . . . . . . . 16
+2.1 Solution du problŁme. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
+3.1 Solution du problŁme. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
+4.1 Compter les cartes du tas 1 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 44
+5.1 Calcul de la somme des n premiers nombres entiers. . . . . . . . . . . . . . . . . 51
+5.2 Calcul de la somme des n premiers nombres entiers avec une boucle pour . . . . 52
+5.3 Calcul du terme d’indice n d’une suite rØcurrente . . . . . . . . . . . . . . . . . . 54
+5.4 Calcul du premier terme satisfaisant une condition . . . . . . . . . . . . . . . . . 55
+111
+112 LISTE DES ALGORITHMES
+Table des (cid:28)gures
+1 QR-code du site du cours . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+1.1 Le tas 1 aprŁs l’instruction init_tas (1,"TCP") . . . . . . . . . . . . . . . . . . 16
+1.2 Situation obtenue aprŁs l’instruction deplacer_sommet (1,2). . . . . . . . . . . 17
+1.3 Situation (cid:28)nale souhaitØe . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+2.1 Un Øtat des tas de cartes. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 24
+7.1 Table des 128 premiers caractŁres (code ASCII) . . . . . . . . . . . . . . . . . . . 74
+A.1 Transformation des tas par dØplacement d’une carte . . . . . . . . . . . . . . . . 86
+B.1 SystŁme de coordonnØes du module Camlgraph . . . . . . . . . . . . . . . . . . . 97
+B.2 Figure produite en utilisant le module Camlgraph . . . . . . . . . . . . . . . . . . 99
+113
+114 TABLE DES FIGURES
+Table des matiŁres
+1 Expressions et instructions 9
+1.1 Expressions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+1.2 Le logiciel Objective Caml . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+1.3 PremiŁres expressions en Caml . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+1.3.1 Expressions numØriques . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+1.3.2 Expressions boolØennes . . . . . . . . . . . . . . . . . . . . . . . . . . . . 12
+1.3.3 CaractŁres et cha(cid:238)nes de caractŁres . . . . . . . . . . . . . . . . . . . . . . 13
+1.4 Instructions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+1.4.1 Instructions d’impression . . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+1.4.2 Instructions du module Cartes . . . . . . . . . . . . . . . . . . . . . . . . 15
+1.4.3 SØquence d’instructions . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15
+1.5 Exercices . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+1.5.1 Expressions numØriques . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+1.5.2 Instructions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+2 Conditions, expressions et instructions conditionnelles 21
+2.1 Le problŁme . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
+2.1.1 Algorithme . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
+2.2 Expressions boolØennes. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
+2.2.1 BoolØens. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
+2.2.2 Expressions simples . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+2.2.3 Expressions composØes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+2.2.4 PropriØtØs des opØrateurs . . . . . . . . . . . . . . . . . . . . . . . . . . . 23
+2.3 En Caml . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 24
+2.3.1 BoolØens. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 24
+2.3.2 Expressions boolØennes . . . . . . . . . . . . . . . . . . . . . . . . . . . . 24
+2.3.3 Attention!. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+2.3.4 Remarque sur les opØrateurs && et || . . . . . . . . . . . . . . . . . . . . 26
+2.4 Expressions conditionnelles . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 26
+2.5 Instructions conditionnelles . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 27
+2.5.1 Remarque sur le parenthØsage . . . . . . . . . . . . . . . . . . . . . . . . . 28
+2.6 MØthodologie . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
+2.7 Exercices . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
+115
+116 TABLE DES MATI¨RES
+3 Instructions conditionnellement rØpØtØes 33
+3.1 Un problŁme . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
+3.2 Algorithme . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
+3.3 Sortie d’une boucle tant que . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
+3.4 La boucle tant que en Caml . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
+3.5 MØthodologie . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 34
+3.6 Exercices . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 35
+4 Constantes, variables 37
+4.1 Types de donnØes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 37
+4.1.1 Les boolØens . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 37
+4.1.2 Les nombres entiers . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 37
+4.1.3 Les nombres (cid:29)ottants . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 38
+4.1.4 Types dØ(cid:28)nis par le module Cartes . . . . . . . . . . . . . . . . . . . . . 38
+4.2 Variables . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 39
+4.2.1 Notion de variable . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 39
+4.2.2 DØclaration simple de variables . . . . . . . . . . . . . . . . . . . . . . . . 39
+4.2.3 Identi(cid:28)cateurs de variables . . . . . . . . . . . . . . . . . . . . . . . . . . 39
+4.2.4 Environnement . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 40
+4.2.5 (cid:201)valuation d’une expression . . . . . . . . . . . . . . . . . . . . . . . . . . 40
+4.2.6 Masquage d’une variable . . . . . . . . . . . . . . . . . . . . . . . . . . . . 40
+4.2.7 DØclaration simultanØe de variables . . . . . . . . . . . . . . . . . . . . . . 41
+4.2.8 Variables locales (cid:224) une expression. . . . . . . . . . . . . . . . . . . . . . . 42
+4.2.9 Remarque sur la forme let . . . . . . . . . . . . . . . . . . . . . . . . . . 43
+4.3 Variables mutables . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 44
+4.3.1 Motivation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 44
+4.3.2 DØclaration d’une variable mutable . . . . . . . . . . . . . . . . . . . . . . 44
+4.3.3 RØfØrence (cid:224) la valeur d’une variable mutable . . . . . . . . . . . . . . . . 45
+4.3.4 A(cid:27)ectation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 45
+4.4 A(cid:30)cher des donnØes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 47
+4.5 Le programme solution du problŁme 4.3.1 . . . . . . . . . . . . . . . . . . . . . . 48
+4.6 Exercices . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 49
+5 La boucle pour 51
+5.1 La boucle Pour . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 51
+5.2 La boucle Pour en Caml . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 52
+5.2.1 Syntaxe de la boucle pour . . . . . . . . . . . . . . . . . . . . . . . . . . . 52
+5.2.2 Remarque sur l’indice de boucle . . . . . . . . . . . . . . . . . . . . . . . 53
+5.2.3 Boucle pour (cid:224) indice dØcroissant . . . . . . . . . . . . . . . . . . . . . . . 53
+5.3 Suites rØcurrentes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 54
+5.3.1 Calcul du terme d’indice n . . . . . . . . . . . . . . . . . . . . . . . . . . 54
+5.3.2 Calcul et a(cid:30)chage des termes d’indice 0 (cid:224) n . . . . . . . . . . . . . . . . . 54
+5.3.3 Calcul du premier terme satisfaisant une condition . . . . . . . . . . . . . 55
+5.3.4 Autres suites rØcurrentes. . . . . . . . . . . . . . . . . . . . . . . . . . . . 55
+5.4 Exercices . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 57
+TABLE DES MATI¨RES 117
+6 Les fonctions 61
+6.1 Les fonctions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 61
+6.1.1 SpØci(cid:28)cation d’une fonction . . . . . . . . . . . . . . . . . . . . . . . . . . 61
+6.1.2 DØclaration d’une fonction en Caml . . . . . . . . . . . . . . . . . . . . . 62
+6.1.3 Variables locales . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 63
+6.1.4 Fonctions (cid:224) plusieurs paramŁtres . . . . . . . . . . . . . . . . . . . . . . . 64
+6.1.5 Fonctions sans paramŁtre . . . . . . . . . . . . . . . . . . . . . . . . . . . 65
+6.1.6 IntØrŒt des fonctions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 66
+6.2 ProcØdures . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 67
+6.2.1 SpØci(cid:28)cation d’une procØdure . . . . . . . . . . . . . . . . . . . . . . . . . 67
+6.2.2 DØclaration d’une procØdure en Caml . . . . . . . . . . . . . . . . . . . . 67
+6.2.3 Appel (cid:224) une procØdure . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 68
+6.2.4 IntØrŒt des procØdures . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 68
+6.2.5 MØthodologie . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 68
+6.3 Exercices . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 69
+6.3.1 Fonctions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 69
+6.3.2 ProcØdures . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 71
+7 CaractŁres et cha(cid:238)nes de caractŁres 73
+7.1 Les caractŁres . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 73
+7.1.1 DØ(cid:28)nition . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 73
+7.1.2 Fonctions int_of_char et char_of_int . . . . . . . . . . . . . . . . . . . 74
+7.1.3 Comparaison de caractŁres . . . . . . . . . . . . . . . . . . . . . . . . . . 75
+7.2 Les cha(cid:238)nes de caractŁres. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 75
+7.2.1 DØ(cid:28)nition . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 75
+7.2.2 Notation indicielle . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 76
+7.2.3 ConcatØnation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 77
+7.2.4 Comparaison de cha(cid:238)nes . . . . . . . . . . . . . . . . . . . . . . . . . . . . 78
+7.3 Quelques fonctions prØdØ(cid:28)nies sur les cha(cid:238)nes . . . . . . . . . . . . . . . . . . . . 78
+7.4 Exercices . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 80
+A Les cartes 83
+A.1 PrØsentation. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 83
+A.2 Utilisation du module Cartes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 83
+A.3 Le langage du module Cartes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 84
+A.3.1 Description de tas . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 84
+A.3.2 Action . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 85
+A.3.3 Tests sur les tas . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 86
+A.3.4 Comparaison des valeurs . . . . . . . . . . . . . . . . . . . . . . . . . . . . 87
+A.3.5 Contr(cid:244)le de l’a(cid:30)chage . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 87
+A.3.6 RØparer l’automate . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 89
+A.3.7 Obtenir de l’aide . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 89
+A.4 Exercices . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 90
+A.4.1 Descriptions de tas . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 90
+A.4.2 SØquence . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 91
+A.4.3 Conditionnelle . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 91
+A.4.4 ItØration . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 93
+A.4.5 Fonctions et procØdures . . . . . . . . . . . . . . . . . . . . . . . . . . . . 95
+118 TABLE DES MATI¨RES
+B Le module Camlgraph 97
+B.1 PrØsentation. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 97
+B.2 Module Camlgraph . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 98
+B.2.1 Gestion des fenŒtres graphiques . . . . . . . . . . . . . . . . . . . . . . . . 98
+B.2.2 Gestion des couleurs . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 99
+B.2.3 Point et dessin de lignes . . . . . . . . . . . . . . . . . . . . . . . . . . . . 100
+B.2.4 Texte . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 101
+B.2.5 Remplissage . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 101
+C (cid:201)lØments du langage ØtudiØs dans ce cours 103
+C.1 Syntaxe . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 103
+C.1.1 Commentaires . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 103
+C.1.2 Expressions et instructions . . . . . . . . . . . . . . . . . . . . . . . . . . 103
+C.1.3 Expressions conditionnelles . . . . . . . . . . . . . . . . . . . . . . . . . . 103
+C.1.4 Instructions conditionnelles . . . . . . . . . . . . . . . . . . . . . . . . . . 104
+C.1.5 Instructions conditionnellement rØpØtØes . . . . . . . . . . . . . . . . . . . 104
+C.1.6 Constantes, variables . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 104
+C.1.7 La boucle pour . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 105
+C.1.8 Les fonctions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 105
+C.1.9 CaractŁres et cha(cid:238)nes de caractŁres . . . . . . . . . . . . . . . . . . . . . . 105
+C.2 Mots-clØs du langage . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 105
+C.3 Fonctions prØdØ(cid:28)nies du langage . . . . . . . . . . . . . . . . . . . . . . . . . . . 105
+C.3.1 Fonctions de conversion . . . . . . . . . . . . . . . . . . . . . . . . . . . . 105
+C.3.2 Impressions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 106
+C.3.3 Du module String . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 106
+C.4 Directives . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 106
+D Messages d’erreurs de l’interprŁte du langage 107
+(versiondu12septembre2013.)
+(coßtapproximatifdupoly:3,50euros)

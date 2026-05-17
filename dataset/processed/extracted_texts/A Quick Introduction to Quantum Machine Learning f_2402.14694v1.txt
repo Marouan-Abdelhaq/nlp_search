@@ -1,0 +1,2252 @@
+A Quick Introduction to Quantum Machine Learning
+for Non-Practitioners
+Dominic Byrne*, Matthew G. Cook*, and Ethan N. Evans*†
+NavalSurfaceWarfareCenterPanamaCityDivision
+Abstract
+Quantum computing has quickly become a highly active research area, and quantum machine
+learninghasemergedasapotentialmanifestationofclassicalmachinelearningonquantumhardware.
+The widespread successes of classical machine learning in classification problems are extremely
+attractive,howevertheycomeatthecostofanexponentialgrowthofparametersinmodernnetwork
+architectures(e.g. GPT).Apossiblebenefitinaddressingsuchproblemswithquantumnetworksisan
+increasedexpressibilityofquantumbitsoverclassicalbits,whichthroughquantummachinelearning
+leadstoanincreasedexpressibilityofaquantumneuron.
+Quantumcomputingisfoundedonthepremiseofusingparticlesthataregovernedbyquantum
+mechanics for the purposes of computation by leveraging key aspects such as superposition and
+entanglement. These properties have theoretical advantage in representing and manipulating infor-
+mation. Namely superposition allows for a fundamental bit of information to encode a continuous
+spectrum,whileentanglementallowsnon-localeffectstomanipulateencodedinformation. Circuitsof
+quantumgatesareusedtoperformquantumcomputations,andwhenparameterized,canbeoptimized,
+or trained, using traditional methods in optimization. This leads to a quantum machine learning
+framework where classical information embedded in quantum bits can take advantage of quantum
+phenomenaandincreasedexpressibilityforapotentialreductioninnetworksizeandtrainingtimeon
+quantumhardware.
+Thismanuscriptservesasintroductorymaterialforresearchersthatarenewtotheareasofquantum
+mechanics and machine learning, in order to decrease the timeframe needed for developing new
+expertise. The notion of a Turing machine is used as a foundation and motivation for creating
+computersoutofquantumhardware. Next,basicprinciplesandnotationofquantummechanicsare
+introduced,includingsuperposition,phasespaceontheBlochsphere,andentanglementofmultiple
+quantumbits. Abasicreviewofclassicaldigitallogicisusedtoproposenotionsofquantumgates
+that may leverage these key properties by a universal set of quantum gates. Next, we introduce
+classicaldeeplearningconceptssuchastheartificialneuralnetwork,thegradientdescentalgorithm
+and its stochastic generalization, and the standard backpropagation approach to training a neural
+network. Theseareusedasafoundationforintroducingtrainablequantumcircuitsasneuralnetworks,
+includingaderivationoftheanalogousgradientdescentapproachanditsgeneralizationsandmethods
+ofencodingclassicalinformationinaquantumcircuit. Finally,thesearetopicsarecombinedinan
+*Authorscontributedequally. Namesappearinalphabeticalorder.
+† CorrespondingAuthor. Email: ethan.n.evans.civ@us.navy.mil
+1
+4202
+beF
+22
+]hp-tnauq[
+1v49641.2042:viXra
+illustrativeexampleproblemthathighlightsapotentialadvantageofquantumneuralnetworks. The
+accompanyingappendicesoffergreaterdetailofvariousderivationsthatareprovidedthroughoutthe
+manuscript.
+1 Why Quantum Computing
+Thenotionofauniversalcomputerwasfirstcharacterizedbythe description oftheTuringmachine[1]
+based on an infinitely long tape, or computation register, which through the machine could be used to
+encode any algorithm. These notions, along with the advent of the transistor, eventually led to the von
+Neumann architecture of computing we have today, where a central processing unit (CPU) performs
+sequential operations on an encoded stream of information, and separately stores this information in a
+memory register. With the trend of increasing transistor density per unit area, eventually a limit could
+be perceived. In addition, the polynomial time computational complexity constraint of this computing
+architecture, as suggested by the Church-Turing thesis, made the quest for alternative architectures
+inevitable[2].
+TheideaofleveragingquantumphysicstoperformcomputationswasfirstsuggestedbyFeynman,and
+isby nomeansthe onlyalternative tothevon Neumannarchitecture(see [3,4,5]), howeverits appealis
+basedontheabilitytoleverageattractivepropertiessuchassuperpositionandentanglement,whichallow
+forauniqueframework. Herein,onemustcarefullyconstructalgorithmswhichyieldachoreographyof
+operations that use sequential constructive and destructive interference to promote the correct solution
+inprobabilitywhileeffectivelycancellingouttheprobabilityofincorrectsolutions,allwithouta-priori
+knowledgeofthe correctsolution. Inprinciple, thisapproachpromisesanexponentialspeedup overthe
+vonNeumannarchitecture[6].
+Thenoveltyanduniquechallengesofleveragingquantumphysicsforcomputinghasledtonotjustone,
+butnumerouscomputing architecturesexploredbya growing contingentofcompaniesand organizations,
+each seeking to establish their approach as the dominant approach, and to be the first to demonstrate
+quantum supremacy on a large-scale device. Among these are: a) using superconducting qubits (often
+referred to as SQUIDs) by IBM, Google, USTC, and Rigetti, b) trapped ions by IonQ and others, c)
+photonicsbyXanaduandothers,andtrappedRydbergatomsbyQuEraandothers. Beyondthesehardware
+implementations,areseveralotherfloatingnotions,suchasbuildingquantumcomputingonqudits(d-level
+quantum bits, e.g. ternary quantum bit) as opposed to the binary quantum bit (qubit) [7], as well as
+abandoningthediscreteframeworkaltogetherandinsteadbuildingcomputingonacontinuumquantum
+state[8,9].
+Outsidethegoalofuniversalquantumcomputingarealsospecificquantumrealizationsforspecific
+applications,asinthecaseofquantumannealing[10,11]foroptimizationproblems,andquantummachine
+learning[2,12]forlearningproblems. Therapidandheavyinvestmentinquantumcomputinghasledtoa
+so-calledraceforquantumsupremacyinwhichproponentssuggestitcanbeachievedassoonastheearly
+2030s[13],yetthereremainsubstantialhurdlesbeforethisdreammayberealized.
+2 Quantum Computing Overview
+2.1 Quantum Physics - Notation and Introduction
+Quantum computing relies on the manipulation and measurement of quantum phenomena in order to
+process information. The behavior of quantum phenomena is described by quantum physics, so an
+understandingofquantumcomputingnecessitatesa basicunderstandingofquantumphysics. Quantum
+2
+physicsintroducesmathnotation,knownasDiracnotation,whichisoftenquiteforeigntootherdisciplines
+yetsimplifiesthe introductionofmainconceptsand carriesoverto quantumcomputing. Diracnotation
+utilizeslinearalgebra,probabilityandstatistics,aswellasnotationalconventionsusedinphysics.
+Linear algebra is used in Dirac notation to describe quantum states as vectors, and to describe the
+physicalprocessesthatcanimpartchangetoaquantumstateasmatrices1,whichinquantumliterature
+arereferredtoasoperators. Operators‘operate’onthesequantumstatestogivesomenewquantumstate.
+Acolumnvectorisbyconventionusedtorepresentsomephysicalquantumstate,forexamplewhether
+an electron is in the spin up state or spin down state or a photon is in the horizontal or vertical linear
+polarizationstate. Avectorstateψ (thevariableψ isoftenusedinliteraturetodescribeagenericquantum
+state,usuallycalleda‘wavefunction’)withtwoquantitieswouldnormallybewrittenas:
+(cid:20) (cid:21)
+a
+⃗
+ψ = . (1)
+b
+InDiracnotation,thevectorstateψ wouldbewrittenas:
+(cid:20) (cid:21)
+a
+|ψ⟩ = , (2)
+b
+where|·⟩istherightsideofabracket⟨·|·⟩andiscalleda“ket”vector. Thecomplexconjugatetranspose
+ofavectorstateisalsowidelyused,andiswrittenas:
+ψ ⃗∗T = [a∗ b∗] = ψ ⃗†, (3)
+where∗isthecomplexconjugate, ·T isthetranspose, andthedagger·† isshorthandnotationin quantum
+physicsfortheconjugatetranspose. InDiracnotation,thecomplexconjugatetransposedofavectorstate
+ψ iswrittenas:
+⟨ψ| = [a∗ b∗], (4)
+where ⟨·| is the left side of the bracket ⟨·|·⟩ and is called a “bra” vector. A bra and a ket written next to
+eachotherinafullbracketdenotesaninnerproductbetweenthetwovectorstates:
+(cid:20) (cid:21)
+⟨ψ |ψ ⟩ = ψ ⃗ † ·ψ ⃗ = [a∗ b∗]· a 2 = a∗a +b∗b . (5)
+1 2 1 2 1 1 b 1 2 1 2
+2
+Unitaryoperators,representedbymatrices,areusedtochangethequantumstate. Forexample,somestate
+ψ canbemodifiedtoanotherstate,ψ aftertheapplicationofanoperatorU ˆ (thehatˆ·symbolisoften
+i i+1
+usedtodenoteanoperator,thoughitisnotalwaysused). Operatorsareusuallygivencapitallettersfor
+variablenames,andaunitaryoperatorisaspecialtypeofoperatorthatsatisfiestheproperty:
+U
+ˆ
+U
+ˆ†
+= U
+ˆ†U ˆ
+= I
+ˆ
+, (6)
+ˆ
+whereI istheidentityoperatorandcorrespondstoimpartingnochangetoaquantumstate. Theactionof
+anoperator,representedasamatrix,iswrittenas:
+(cid:20) (cid:21)(cid:20) (cid:21) (cid:20) (cid:21) (cid:20) (cid:21)
+u u a u a +u b a
+|ψ ⟩ = U ˆ |ψ ⟩ = 11 12 i = 11 i 12 i = i+1 . (7)
+i+1 i u u b u a +u b b
+21 22 i 21 i 22 i i+1
+1
+Inthemoregeneralsetting,anoperatorcanactonaninfinitevectorspace,butthisbriefintroductionlimitsvectorstofinite
+dimensionalvectorspaceswhereoperatorsaresimplydescribedbystandardmatrices
+3
+Onecansimilarlyapplycomplexconjugatesandtransposestoanoperator,
+(cid:20) (cid:21)
+u∗ u∗
+U ˆ† = 11 21 , (8)
+u∗ u∗
+12 22
+andthedaggerofanoperatoristypicallyappliedtobravectorstoupdatethem:
+(cid:20) (cid:21)
+u∗ u∗
+⟨ψ | = ⟨ψ |U ˆ† = [a∗ b∗] 11 21 = [a∗u∗ +b∗u∗ a∗u∗ +b∗u∗ ] = [a∗ b∗ ]. (9)
+i+1 i i i u∗ u∗ i 11 i 12 i 21 i 22 i+1 i+1
+12 22
+Some operators are used to represent measurable properties of quantum systems and are called
+‘observables’or‘observableoperators’. Theseoperatorssatisfyaslightlyweakerrequirementofbeing
+Hermitian. Hermitianoperatorsaredefinedbysatisfyingthefollowingrelation:
+A
+ˆ
+= A
+ˆ†.
+(10)
+AnimportantpropertyofHermitianoperatorsisthatonecaneasilyshowthattheyhaveallrealeigenvalues
+despite having potentially all complex entries. Furthermore, Hermitian operators typically represent
+‘measurable’ operators, and in such cases their eigenvalues correspond to familiar quantities such as
+position,momentum,energy,etc.,whichalsomustbereal-valued.
+Theaveragevalueofallpossibleoutcomes,basedontheprobabilityofeachoutcome,isreferredtoas
+theexpectation value(orexpected value)ofthatobservablewithrespectto thatquantumstate. InDirac
+notation,theexpectationvalueisexpressedas:
+ˆ
+⟨ψ|A|ψ⟩, (11)
+ˆ
+whereAissomeobservable(whichwerepresentherebyamatrix),and|ψ⟩isthequantumstatejustbefore
+thestateismeasured. Theexpectationvaluedescribestheaveragemeasurementoutcome,sodespitethe
+discretevaluesofsinglemeasurements,anexpectationvaluecan(andusuallywill)giveanon-discrete
+value thatdoes notcorrespond toa singlepossiblemeasurement outcome. Thepossible discrete-valued
+ˆ
+outcomesofeachmeasurementaregivenbytheeigenvaluesofobservableA.
+Performing the calculation above will yield the average of the possible outcomes weighted by the
+probabilityofeachoutcomeoccurring. Expectationvaluescanalsobeestimatedempiricallybyperforming
+repeated measurements and averaging the results. The probability will be inherent in the empirical
+histogram of each of the possible outcomes, and if measured an infinite number of times would result in
+theexactexpectationvalue. Sinceinfinitemeasurementsarenotpracticallyfeasible,anestimateforthe
+expectationvaluecanbeobtainedbyafinitenumberofmeasurementsandisoftentreatedastheempirical
+expectation.
+Anotherimportantcalculationinquantumphysicsistheprobabilityofsomegeneralquantumstate|ψ⟩
+beinginthespecified,knownstate|ϕ⟩. Thisiscalculatedbythemagnitudesquaredoftheinnerproduct
+between|ψ⟩and|ϕ⟩,whichinDiracnotationisrepresentedas:
+|⟨ϕ|ψ⟩|2 = (⟨ϕ|ψ⟩)†⟨ϕ|ψ⟩ = ⟨ψ|ϕ⟩⟨ϕ|ψ⟩ (12)
+The inner product ⟨ϕ|ψ⟩ is the projection of the state |ψ⟩ onto the desired measurement state |ϕ⟩. The
+innerproductdescribesthe‘amountofoverlap’duetotheprojection,andiscalledtheamplitudeofthe
+probability or the ‘probability amplitude’. The square of the magnitude of the probability amplitude
+(which can also be computed by multiplication of the inner product with its complex conjugate), gives a
+realvaluethatcorrespondstotheprobabilityoffindingthestate|ψ⟩inthestate|ϕ⟩whenmeasured.
+4
+Inquantumcomputing,mostcalculationsareperformedinthecomputationalbasisformedbythezero
+state|0⟩andtheonestate|1⟩where:
+(cid:20) (cid:21) (cid:20) (cid:21)
+1 0
+|0⟩ = and |1⟩ = . (13)
+0 1
+Thesestatesareunitvectorsbecausetheyhaveanorm(ormagnitude,computedastheinnerproductofa
+statewithitself)ofone:
+⟨0|0⟩ = 1 and ⟨1|1⟩ = 1. (14)
+Theyarealsoorthogonaltoeachother,meaninginnerproductswitheachotheryieldzero:
+⟨0|1⟩ = 0 and ⟨1|0⟩ = 0. (15)
+Finally,thebasisis‘complete’,meaningthatanyarbitraryvectorcanbewrittenasalinearcombinationof
+thesetwobasiselements:
+(cid:20) (cid:21) (cid:20) (cid:21) (cid:20) (cid:21)
+a 1 0
+|ψ⟩ = = a +b (16)
+b 0 1
+Together,thesethreepropertiesdescribethebasisasbeingacompleteorthonormalbasis.
+So far these states seem similar to the binary zeros and ones that are used to represent values in
+classicalcomputing,howeverquantummechanicsoffersmorepossiblestates,whichquantumcomputing
+seekstoutilize. While
+(cid:20) (cid:21) (cid:20) (cid:21)
+1 0
+|ψ⟩ = and |ψ⟩ = (17)
+0 1
+wouldbetheonlypossiblestatesinaclassicalcomputingscheme,thestate
+(cid:20) (cid:21)
+1
+|ψ⟩ = (18)
+1
+isalegitimate,thoughunnormalized,stateinquantummechanics. Normalizationfactorsneedtobeadded
+toensurestateprobabilitiessumtounity,whichwillbeelucidatedbyanexample. First,theimportanceof
+(cid:20) (cid:21)
+1
+this state being allowed should be highlighted. The state |ψ⟩ = is a linear combination of the zero
+1
+stateandtheonestate:
+(cid:20) (cid:21) (cid:20) (cid:21) (cid:20) (cid:21)
+1 1 0
+|ψ⟩ = = + = |0⟩+|1⟩, (19)
+1 0 1
+andrepresentssomequantumstateatacertainpointortimebeforemeasurement. Thefactthatmultiple
+possible states are present simultaneously is called superposition, and is a property unique to quantum
+mechanics. Thissuperpositionofstatesisitselfaquantumstate;operationsandgatesappliedtothestate
+|ψ⟩ are applied in their normal manner and act on both parts of the state present in the superposition
+statesimultaneously. Thiskeyquantumphenomenonleadstoalargercomputationalspacethatquantum
+computing seeks to leverage; the classical binary representation is replaced with a continuous space of
+possiblesuperpositionstates.
+However, once a measurement is made only one of the possible measurable values remains, which
+waspredictedwithsomeprobability. Sobeforemeasurement,bothquantumstatesexistsimultaneously
+inthequantumsuperpositionstate,butuponmeasurementthisquantumstate“collapses”,andonlyone
+basisstateisobservedwhiletheinformation fortheotherstateislost. Thisprobabilityismathematically
+determinedbythecomplexcoefficientsthatmultiplyeachbasiselement,whicharealsousedtonormalize
+thequantumstate.
+5
+Now to show why those coefficients are needed, a counter example is presented. Starting with the
+unnormalizedsuperpositionstate(withoutcoefficients)introducedearlier:
+(cid:20) (cid:21) (cid:20) (cid:21) (cid:20) (cid:21)
+1 0 1
+|ψ⟩ = |0⟩+|1⟩ = + = . (20)
+0 1 1
+Ifwetakeitsnorm
+(cid:20) (cid:21)
+1
+⟨ψ|ψ⟩ = [1∗ 1∗] = 2, (21)
+1
+weobtainavalueof2. Theissuewiththisbecomesapparentwhenthemagnitudeoftheinnerproductis
+squared:
+|⟨ψ|ψ⟩|2 = (⟨ψ|ψ⟩)†⟨ψ|ψ⟩ = ⟨ψ|ψ⟩⟨ψ|ψ⟩ = 2·2 = 4 (22)
+As described earlier, the magnitude of the inner product of two states squared gives the probability
+thatonestatewillbeintheotherstatewhenmeasured. Ifthesameoperationisperformedonastatewith
+itself, it yields the probability of the state being in its own state, which must yield a probability of 1 or
+100%. Withoutanynormalizationcoefficients,thiscalculationgivesaprobabilityof4,or400%,whichis
+anonsensicalandnonphysicalresult. Therefore,aconditionisimposedthatthemagnitudeofthenormof
+astatesquaredmustalwaysgiveaprobabilityofonetoensurethephysicsremainsconsistentandlogical:
+|⟨ψ|ψ⟩|2 ≡ 1 (23)
+Thisconditionalsoimpliesthat
+|⟨ψ|ψ⟩|2 = (⟨ψ|ψ⟩)†⟨ψ|ψ⟩ = ⟨ψ|ψ⟩⟨ψ|ψ⟩ = (|⟨ψ|ψ⟩|2 = (⟨ψ|ψ⟩)†⟨ψ|ψ⟩ = ⟨ψ|ψ⟩⟨ψ|ψ⟩)2 ≡ 1,
+and
+⟨ψ|ψ⟩ ≡ 1. (24)
+Coefficients are added to a state to ensure this condition remains true. This is often referred to as
+normalization. Fortheabovesuperpositionstate:
+(cid:20) (cid:21) (cid:20) (cid:21) (cid:20) (cid:21)
+a 1 0
+|ψ⟩ = = a|0⟩+b|1⟩ = a +b , (25)
+b 0 1
+thisconditiongivesconstraintsonaandb:
+(cid:20) (cid:21)
+a
+⟨ψ|ψ⟩ = [a∗ b∗] = a∗a+b∗b = 1. (26)
+b
+Thecoefficientsaandbarealsousedtodescribetheprobabilityofmeasuringthestateassociatedwith
+√
+(cid:112)
+thatcoefficient. Forexample,sayastate|ψ⟩hascoefficientsa = 1/ 3andb = 2/3:
+1 (cid:114) 2 1 (cid:20) 1 (cid:21) (cid:114) 2 (cid:20) 0 (cid:21) (cid:34) √ 1 (cid:35)
+3
+|ψ⟩ = √ |0⟩+ |1⟩ = √ + = (cid:113) . (27)
+3 3 3 0 3 1 2
+3
+Tocalculatetheprobabilityofmeasuringthezerostatefromthissuperpositionstate,takethesquare
+ofthemagnitudeoftheinnerproductofthisstatewiththezerostate:
+(cid:34) 1 (cid:114) 2 (cid:35) (cid:20) 1 (cid:21) (cid:34) √ 1 (cid:35)
+|⟨0|ψ⟩|2 = √ [1 0] (cid:113) 3
+3 3 0 2
+3
+(28)
+(cid:34) 1 (cid:114) 2 (cid:35) (cid:20) 1 0 (cid:21) (cid:34) √ 1 3 (cid:35) (cid:34) 1 (cid:114) 2 (cid:35) (cid:20) √ 1 (cid:21) 1
+= √ (cid:113) = √ 3 =
+3 3 0 0 2 3 3 0 3
+3
+6
+This means there is a 1/3 probability of measuring the eigenvalue associated with the “zero” state.
+Performing a similar calculation for the one state yields 2/3, meaning there is a 2/3 probability of
+measuringtheeigenvalueassociatedwiththeonestate.
+Itisalsoimportanttonotethatthemagnitudesquaredofaandbgivestherespectiveprobabilitiesof
+eachstate’seigenvaluesbeingmeasured:
+a∗a = 1 and b∗b = 2. (29)
+3 3
+This can be seen clearly by doing the probability calculations for measuring the zero state and the one
+statewithagenericstate|ψ⟩ = a|0⟩+b|1⟩whereaandbareleftasvariables.
+Zerostate:
+(cid:20) (cid:21) (cid:20) (cid:21)
+1 a
+|⟨0|ψ⟩|2 = [a∗ b∗] [1 0]
+0 b
+(30)
+(cid:20) (cid:21)(cid:20) (cid:21) (cid:20) (cid:21)
+1 0 a a
+= [a∗ b∗] = [a∗ b∗] = a∗a
+0 0 b 0
+Onestate:
+(cid:20) (cid:21) (cid:20) (cid:21)
+0 a
+|⟨1|ψ⟩|2 = [a∗ b∗] [0 1]
+1 b
+(31)
+(cid:20) (cid:21)(cid:20) (cid:21) (cid:20) (cid:21)
+0 0 a 0
+= [a∗ b∗] = [a∗ b∗] = b∗b
+0 1 b b
+Forfurtherreading,seereferences[14,15,16,17,18].
+2.2 Superposition and Entanglement
+The two fundamental properties of quantum physics that are leveraged by quantum computing are
+superpositionandentanglement. Whenoperatingwithqubits,oftentimesthepertinentphysicalproperty
+being leveraged for quantum computing is known as the spin state. Let |s⟩ represent the spin state of a
+2-stateparticle(i.e. spin-upandspin-down). Thensuperpositionissimplyanexpressionofthespinstate
+intermsofitsbasiselements
+|s⟩ = α|up⟩+β|down⟩, (32)
+whereα,β ∈ Carecomplexnumberssuchthatthestateisnormalized,i.e. |α|2+|β|2 = 1,|up⟩represents
+theparticlebeingspin-up,and|down⟩representstheparticlebeingspin-down. Atagiventime,theparticle
+isinalinearcombinationofitstwobasisstates,whichisalsoreferredtoasbeinginasuperpositionofits
+basisstates,asdescribedearlier. Uponmeasurement,thesuperpositioncollapsestoasinglestateoutcome,
+whichisoftenreferredtoas‘wavefunctioncollapse’.
+Whilethisnotionisquitesimplefromtheperspectiveoflinearalgebra,itisfarmoreinterestingfrom
+the perspective of probability theory. As explored earlier, these complex coefficients of superposition
+arecloselyrelatedtotherespectiveprobabilitiesofeachoutcome. Forthisreason,oftentimestheyare
+referred to as probability amplitudes. The association to probabilities in the classical sense comes by
+squaringtheseamplitudes,namely
+P(|up⟩) = |α|2, P(|down⟩) = |β|2. (33)
+Thus,ifforthemoment, wetaketheseamplitudestobepurelyreal,assignthe|up⟩statetobea2-vector
+of unit length pointing in a positive-z direction, and assign the |down⟩ state to be a 2- vector of unit
+7
+length pointing in a negative-z direction, then superposition describes a 2D circle of unit length since
+we require |α|2 + |β|2 = 1. The vector orthogonal to the z-axis in this circle corresponds to a state
+|s⟩ = √ 1 |up⟩ + √ 1 |down⟩, where each outcome has equal probability, and this direction is assigned
+2 2
+positive-x. Now, returning to the more general case of complex probability amplitudes, the imaginary
+direction creates a new y axis, and our 2D circular representation becomes a 3D sphere of unit length.
+ThisrepresentationiscalledtheBlochsphererepresentation,andisdepictedinfig.1.
+Figure 1: Bloch sphere representation of a qubit. This figure originated from
+https://demonstrations.wolfram.com/QubitsOnThePoincareBlochSphere/
+The property of entanglement is more complex, but also emerges mathematically in a deceptively
+simpleform. Essentially,ifonehastwo2-statespinparticles
+|s ⟩ = √ 1 |up⟩+ √ 1 |down⟩ |s ⟩ = √ 1 |down⟩+ √ 1 |up⟩ (34)
+1 2
+2 2 2 2
+andcanexpresstheircombinedstate|s , s ⟩as
+1 2
+1 1
+|s , s ⟩ = √ |up, down⟩+ √ |down, up⟩, (35)
+1 2
+2 2
+thenthetwoparticlesaresaidtobeinastateofmaximalentanglement. Thatis,sincethetotaltwo-particle
+stateismerelyexpressedbythesetwotwo-particlebasisstates,theirstatesarecoupledinsuchawaythat
+ifoneweretomeasurethestateofoneoftheparticles(sayintheupstate),thentheywouldhavecomplete
+informationofthestateoftheother(whichmustbeinthedownstate). Wesaytheparticlesaremaximally
+entangledwheneachoutcomehasequalprobability(50%forthisexample). Foratwoqubitsystem,there
+are four such maximally entangled states, known as Bell states. Since the act of measurement of one
+particlegivescompleteinformationoftheother,entanglementisanon-localphenomenon,sothatvirtually
+allmanipulations (i.e. throughcomputing) ofthestateof oneofthe particleshassomeeffect ontheother
+particle,regardlessofhowseparatedthetwoparticlesare.
+It is however not the case that all multi-particle systems are entangled. If one can separate the total
+systemstate into productsofsubsystem states,thenthe stateisnotentangled. Thiscanbe depictedinthe
+followingway. Saywehavethetwo-particlesystemstate:
+|s , s ⟩ = α|up, down⟩+β|up, up⟩, (36)
+1 2
+8
+Thissystemisnotinanentangledstatebecauseitcanbeexpressedasaproductofsubsystemstatesas:
+(cid:0) (cid:1)
+|s , s ⟩ = |up⟩ α|down⟩+β|up⟩ , (37)
+1 2
+Thus, if we were to measure the first particle, which must be in an up state, we would not gain any
+informationaboutthestateofthesecondparticle,whichcouldstillbeeitherintheuporthedownstate.
+2.3 Fundamentals of Classical Computing
+Inclassicalcomputing,weconstructeverycomputationfromafundamentalsetofbuildingblocks: logical
+gates. Thesegatesact onpairsofbits byconditionallyflipping,summing, orotherwisemanipulatingthe
+bit pair to yield a single output bit. A simple example is the AND gate shown in fig. 2 The AND gate
+returns1ifbothAandBare1,andreturns0otherwise,whichisanalogoustomultiplyingtheinputs. The
+oppositeof theANDgate istheNAND(NOTAND) gate,which returns 1if bothAand Bare0, and0
+otherwise. In contrast, the OR gate returns 1 if either A or B is 1, and 0 otherwise, which is analogous
+to addition. The NOR (NOT OR) gate is its opposite, returning 1 if either A or B is 0, and 1 otherwise.
+Another important gate is the XOR gate, which returns 1 if A and B are different, and 0 if they are the
+same,analogoustoanequality test. Itsopposite, theXNORgate,returns0ifAand Baredifferent,and
+returns1iftheyarethesame.
+Figure2: TheANDgate
+These 6 gates may be applied in a sequence, referred to as a circuit, to create complex networks of
+logical operations that in turn may be used to construct any algorithm or set of operations. Connecting
+back to the ideas of Turing, these logical gate building blocks form a universal computer, and are the
+foundationof modern digitalcomputing. Aninterestingthing tonoteis that manyofthese gatescanbe
+created by circuits of a different gate. For example, as depicted in fig. 3, one can construct an OR gate
+from a circuit of only NAND gates. Actually, one can construct any gate with a circuit of only NAND
+gates. Similarly,onecanconstructanygatewithacircuitofonlyNORgates. Werefertoeachofthese
+individuallyastheirownuniversalgatebasisset. Thisisanimportantnotionthatwillbeexploredshortly.
+9
+Figure3: TheORgateasacircuitofonlyNANDgates.
+2.4 Fundamentals of Quantum Computing
+Similartothenotionofaclassicalgate,themainthreadofquantumcomputingresearchseekstocompose
+quantum computers out of similarly defined logic gates and circuits of logic gates in order to rebuild
+the classical computing architecture we are familiar with today from the groundup, and thus produce
+a universal computer out of quantum components. Instead of acting on bits, these components act on
+quantumbits,orqubits,whicharebinaryrepresentationsofquantumstatesina2-statesystem.
+Consider again the spin state of an electron. This state can either be spin-up or spin-down. We
+previouslyusedtheketnotationtodescribethisasthe|up⟩stateandthe|down⟩state,butequivalently,one
+canwritethem,respectively,as|0⟩and|1⟩,sothatwehaveencodedthetwopossiblespinstateoutcomes
+intoabinaryrepresentation. Theseencodedbinaryrepresentationsbothsimplifyournotation,butalso
+generalizeto caseswhere theprimary leveragedproperty isnot spin,but someother 2-stateproperty (e.g.
+theexcited/groundstateofaRydbergatom).
+Thefundamentaldifferenceinhowthisbinarystatebehavesisagainthenotionofsuperposition. When
+eachqubitisobserved(measured),itmustbeeitherinthe|0⟩orthe|1⟩state,howeverduringthesequence
+ofgateoperations,itisdescribedbyasuperpositionstate
+|s⟩ = α|0⟩+β|1⟩. (38)
+Thus, similarly, our quantum logic gates must be able to act not only on binary states, but also on any
+superpositionofbinarystates. Sincewealwaysdescribestateswithrespecttothisbasis,itisconvenient
+towritethestatevectoronlyintermsoftheprobabilityamplitudesα andβ as
+(cid:20) (cid:21)
+α
+|s⟩ = , (39)
+β
+whereby conventionthe topentry corresponds tothe amplitudeofthe |0⟩basisstate andthe bottomentry
+correspondstotheamplitudeofthe|1⟩basisstate.
+Anothercomplicationarisesfromthetime-reversibilityofquantummechanics. Thisrequirementstates
+thatonemustbeabletorunanysequenceofoperationseitherforwardsorbackwards. Mathematically,this
+meansthateverygateoperationmustbeone-to-one,thatis,anoperationonsomeuniqueinputproduces
+someuniqueoutput. Thuseachquantumgateoperationmustbeinvertible. Thisisnottrueofclassical
+gates; a variety of different inputs can produce the same output, and furthermore, the size of the input
+space and the size of the output space need not match. This can be clearly seen in the AND logic gate
+diagram. Twoinputsproduceasingleoutput,andtheoutputisnotuniquetothesetofinputs(e.g. there
+are several input pairs that produce 0). Thus, since we have a binary representation, and our input and
+10
+output sizes must match, it is natural to describe quantum gate operations on single qubits using 2x2
+matrices,andquantumgateoperationsonpairsofqubitsusing4x4matrices.
+Finally, operations must preserve the normalization of the quantum state. As was explained earlier,
+quantumstates, andthusgatesthat operateonquantum states,mustpreserveprobability. Mathematically,
+this means that for an operator A ˆ acting on a state |ψ⟩ as A ˆ |ψ⟩ = |ψ′⟩, the new state |ψ′⟩ must satisfy
+|ψ′|2 = 1. Inthecontextofoperatortheory,thisrequirementimpliesthatgateoperationsmustbeunitary
+andthussatisfy
+A
+ˆ
+A
+ˆ†
+= A
+ˆ
+A
+ˆ−1
+= I
+ˆ
+. (40)
+Since we regard quantum gates as square matrices, we thus require unitary matrices. Notice that this
+condition is stronger than the invertibility condition, and that any unitary operator is also invertible.
+As such, typically these two requirements are just expressed as a single unitary requirement, despite
+originatingfromdifferentfundamentalconcepts.
+2.5 Single-Qubit Gates
+Buildingon thisintuition, wecan nowattempt tocreatequantum interpretationsofclassical logicgates,
+nowrepresentedasunitarymatrices. ThefirstgatewewillattempttoreproduceistheNOTgate. Assume
+wehavethegeneralsingle-qubitstateasbefore
+(cid:20) (cid:21)
+α
+|s⟩ = , |α|2 +|β|2 = 1. (41)
+β
+ˆ
+Now, the NOT gate, often denoted as an operator by X, should transform a |0⟩ state to a |1⟩ state and
+vice-versa,sothattheamplitudesareflipped
+(cid:20) (cid:21) (cid:20) (cid:21)
+α β
+ˆ
+X = . (42)
+β α
+ˆ
+ItmaybestraightforwardtoseethattheonlymatrixrepresentationofX thatsatisfiesthisis
+(cid:20) (cid:21)
+0 1
+ˆ
+X = , (43)
+1 0
+whichisindeedthequantumNOTgateforasinglequbit.
+Beforewe move forwardwith two-qubitgates, it isinteresting tonotethat whilethe onlynontrivial
+single classical bit gate is the NOT gate, this is not the case for qubits. There are many non-trivial
+single-qubitgates, buttwoimportant single-qubitgatesare theZ gateandthe Hadamardgate. Thesingle
+qubitZgateisgivenby
+(cid:20) (cid:21)
+1 0
+ˆ
+Z = . (44)
+0 −1
+Thisgatesimplyflipsthesignoftheamplitudeofthe|1⟩statewhileleavingthe|0⟩stateunchanged. Note
+that this does not change the probability of the |1⟩ state, since probabilities are squares of amplitudes;
+instead,itaddsaphaseofπ.
+TheHadamardgateisgivenby
+(cid:20) (cid:21)
+1 1 1
+H ˆ = √ . (45)
+2 1 −1
+ˆ
+Tounderstandtheeffectofthisgate,considertheeffectofapplyingH tothe|0⟩state:
+(cid:20) (cid:21) (cid:20) (cid:21)
+|s⟩ = 1 , H ˆ |s⟩ = √ 1 1 = √ 1 (cid:0) |0⟩+|1⟩ (cid:1) . (46)
+0 2 1 2
+11
+ˆ
+Similarly,considertheeffectofapplyingH tothe|1⟩state:
+(cid:20) (cid:21) (cid:20) (cid:21)
+|s⟩ = 0 , H ˆ |s⟩ = √ 1 1 = √ 1 (cid:0) |0⟩−|1⟩ (cid:1) . (47)
+1 2 −1 2
+These states are‘halfway’ between the twobasis states, thus the Hadamard gategenerates superpositions
+whereeach basisstate hasaprobability of1/2. Wemay thinkof thesetwostates asa uniform(symmetric
+andantisymmetric,resp.) superpositions,sincetheprobabilitiesareuniformlydistributedoveroutcomes
+(i.e. basisstates). NotethatH
+ˆ2
+= I
+ˆ
+,soapplyingtheHadamardgatetoauniformsymmetricsuperposition
+returnsthe|0⟩state,andapplyingtheHadamardgatetoauniformantisymmetricsuperpositionreturns
+the|1⟩state. TheHadamardgateistypicallyusedincircuitsattheverybeginningtogenerateauniform
+superpositionstatethatwillbeleveragedbytherestofthecircuit.
+ˆ ˆ
+We briefly mention a few other single qubit gates. The X and Z gates described above are often
+ˆ
+describedasPauligates,ofwhichtherearethree. ThePauliY gateisgivenby
+(cid:20) (cid:21)
+0 −i
+ˆ
+Y = . (48)
+i 0
+ˆ ˆ ˆ ˆ
+Awell-knownfeatureofPaulioperatorsisthattheset{I,X,Y,Z}formsabasisoverthespaceof2x2
+complexHermitianoperators.
+ThephasegateS isgivenby
+(cid:20) (cid:21)
+1 0
+ˆ
+S = , (49)
+0 i
+(cid:20) (cid:21) (cid:20) (cid:21)
+α α
+and is given this name simply because it maps a generic state |s⟩ = to the state |s⟩ = , thus
+β iβ
+creatingacomplexphase.
+ˆ
+Theπ/8gateisgiventhesymbolT andisgivenby
+(cid:20) (cid:21)
+1 0
+ˆ
+T = . (50)
+0 eiπ/4]
+√ √ √
+Notethat i = eiπ/4 = cos(π/4)+isin(π/4) = 2 +i 2,sotheT ˆ gateisthesquarerootoftheS ˆ gate
+2 2
+ˆ
+andcorrespondstoaπ/4rotationinthecomplexplaneasopposedtoaπ/2rotationwiththeS gate.
+ˆ ˆ ˆ
+Finally,therotationgatesR (θ),R (θ),R (θ)aregivenby
+X Y Z
+(cid:20) (cid:21)
+cosθ/2 −isinθ/2
+R
+ˆ
+(θ) =
+e−iθ/2·Xˆ
+= , (51)
+X −isinθ/2 cosθ/2
+(cid:20) (cid:21)
+cosθ/2 −sinθ/2
+R
+ˆ
+(θ) =
+e−iθ/2·Yˆ
+= , (52)
+Y sinθ/2 cosθ/2
+(cid:20) (cid:21)
+e−iθ/2 0
+R
+ˆ
+(θ) =
+e−iθ/2·Zˆ
+= . (53)
+Z 0 eiθ/2
+These gates are analogous to the rotation matrices in three Cartesian axes, and equivalently rotate the
+amplitudevectorontheBlochspheredescribedinfig.1aboutthecorrespondingaxis. Inthiscontextof
+rotationsontheBlochsphere,onecangeneralizeallsingle-qubitgatestoaproductofrotations. Namely,
+12
+ˆ
+anyarbitrarysingle-qubitgateU canbedecomposedas
+U ˆ = eiαR ˆ (β)R ˆ (γ)R ˆ (δ) (54)
+Z Y Z
+(cid:20) (cid:21)(cid:20) (cid:21)(cid:20) (cid:21)
+e−iβ/2 0 cosγ/2 −sinγ/2 e−iδ/2 0
+= eiα (55)
+0 eiβ/2 sinγ/2 cosγ/2 0 eiδ/2
+(cid:20) (cid:21)
+cosγ/2ei(α−β/2−δ/2 −sinγ/2ei(α−β/2+δ/2
+= , (56)
+sinγ/2ei(α+β/2−δ/2 cosγ/2ei(α+β/2+δ/2
+which equatesto fourparameters onthree sequential one-parameter gates (anda phasescaling parameter).
+Thispropertyisquiteuseful,andmaybeleveragedforthedesignofquantumcircuits.
+2.6 Two-Qubit Gates
+Inthecaseoftwo-qubitswehavefouroutcomes,asopposedtothetwointhesingle-qubitcase. Theseare
+givenby|00⟩,|01⟩,|10⟩,and|11⟩. Thusthesestatesdefinethecomputational basis,andonecandescribe
+superpositionsofthesebasisstatesinthegeneralform
+ 
+α
+00
+|s⟩ = α |00⟩+α |01⟩+α |10⟩+α |11⟩ =
+
+
+α 01
+ (57)
+00 01 10 11 α 10
+α
+11
+Insteadofmeasuringtheentirestateasinthecaseofasinglequbit,herewemaymeasurejustoneofthe
+twoqubits,whichhasa‘backaction’effectontheother. Saywemeasurethefirstqubit. Theprobability
+ofa |0⟩stateonthe firstqubitis|α |2 +|α |2,and suchanoutcomewould causeapost-measurement
+00 01
+stateof
+ 
+α
+00
+|s′⟩ = α (cid:112) 00 | | α 00⟩ |2 + + α | 0 α 1 |01 |2 ⟩ = (cid:112) |α |2 1 +|α |2    α 0 01   (58)
+00 01 00 01
+0
+Two-qubit gatesaredefined by4x4unitary matrices. Amongthemost famoustwo-qubitgates isthe
+CNOTgate,givenby
+ 
+1 0 0 0
+0 1 0 0 (cid:20) I ˆ ˆ0 (cid:21)
+CNOT =   = , (59)
+0 0 0 1 ˆ0 X ˆ
+0 0 1 0
+whereˆ0isjustthezeromatrix. Inessence,thisgateflipsthesecondqubitifthefirstqubitcontainsthe|1⟩
+state,anddoesnothingotherwise. Toseethis,letusapplyittothe|00⟩state:
+   
+1 1
+0 0
+CNOT|00⟩ = CNOT  =   (60)
+0 0
+0 0
+Thuswhenthefirstqubitis|0⟩,thetotalstateisunchanged. Thesameoccurstothestate|01⟩. Nextapply
+CNOTtothe|10⟩state:
+   
+0 0
+0 0
+CNOT|10⟩ = CNOT  =   = |11⟩. (61)
+1 0
+0 1
+13
+So,thesecondqubitisflippedwhenthefirstqubitcontainsthe|1⟩state. Thesamequbitflipoccursinthe
+caseofthe|11⟩state,producing|10⟩. Moregenerally,
+   
+α α
+CNOT   β  =   β , ∀ α,β,γ,δ ∈ C s.t. |α|2 +|β|2 +|γ|2 +|δ|2 = 1. (62)
+γ δ
+δ γ
+Thereareavarietyofothertwo-qubitgatesthatusethefirstqubitasacontrol,andconditionallyapply
+anyofthesingle-qubitgatesdescribedabove. Examplesincludethecontrolled-Zgate(sometimescalled
+CZ),givenby
+ 
+1 0 0 0
+0 1 0 0 
+controlled-Z =  , (63)
+0 0 1 0 
+0 0 0 −1
+andthecontrolled-phasegate(sometimescalledCS),givenby
+ 
+1 0 0 0
+0 1 0 0
+controlled-phase =  . (64)
+0 0 1 0
+0 0 0 i
+Anotherwidelyusedtwo-qubitgateistheswapgate,givenby
+ 
+1 0 0 0
+0 0 1 0
+swap =  . (65)
+0 1 0 0
+0 0 0 1
+Thisgateswapsthe|01⟩stateforthe|10⟩state,butleavesotherstatesunaffected. Forthegenerictwo-qubit
+state,wehave
+   
+α α
+swap   β  =   γ , ∀ α,β,γ,δ ∈ C s.t. |α|2 +|β|2 +|γ|2 +|δ|2 = 1. (66)
+γ β
+δ δ
+2.7 The Quantum Universal Gate Set
+Onecanquicklyseethattherichnessofthequantumdescriptionyieldsmanymoreusableoperationsin
+comparisontotheclassicalcase;onehasavarietyofnon-trivialsingle-qubitgatesincontrasttoonlyone
+non-trivialsinglebitgate. Thebasicintuitionbehindthisfeatureisthatquantumgatescancausecomplex
+amplitudestointerferewitheachother,thuscancelingoutquantumamplitudes. Thefeatureofhavinga
+muchlarger (uncountablyinfinite)gatesetis muchmorepronouncedwithlarger multi-qubitoperators.
+Thetrade-offisthatthereissignificantaddedcomplexitytodefinetheuniversalgatebasisset,thatis,the
+setofquantumgatesthatcanproduceanyunitaryoperatorwithsufficientprecision.
+Thechallengewithauniversalquantumgatesetisthatitaskstocomposeafinitesetofoperatorsthat
+when put in sequence can produce an uncountably infinite set of n-qubit operators. Thus, the claim of
+classical universality is weakened for the quantum case by only requiring that we produce any unitary
+operatorwithsufficientprecision. Somerequirementsforauniversalquantumgatesetarethatitmustbe
+14
+abletocreatesuperposition(e.g. Hadamard),thatitmustbeabletocreateentanglement,andthatitmust
+beabletocreatecomplexamplitudesaswellasrealones.
+ˆ ˆ
+Ithasbeenshown[6]thatonesuchuniversalquantumgatesetistheset{CNOT,S,R (π/4)}. This
+X
+ˆ
+setisnotunique;onecansubstitutetheR (π/4)gatefornearlyanyrotationgate. Suchauniversalset
+X
+enablesthequantumcomputingparadigmtorecreate,andgeneralizetheclassicalcomputingparadigm.
+2.8 Fundamental Challenges of Quantum Computing
+Herewedescribeoneofthemajordifficultiesinrealizingquantumcomputers. Theincreasedrichnessin
+theexpressibilityofaquantumsuperpositionstatealsoleadstooneofthehardestproblemsinrealizing
+quantumcomputinghardware,theproblem ofquantumerrorcorrection[17]. To elucidatethis,consider
+firsttheclassicalcomputingcase.
+Thereisalwaysnoisethatcaninduceerrorsinanyinformationprocessingchannel. Asaresult,even
+inclassicalcomputingtherecansometimesberandomerrorsthatchangeabitfroma0toa1,whichare
+calledbitfliperrors. Inclassicalcomputing,anychannelofcommunicatinginformationtypicallyappends
+redundant information to a binary string in order that one can use the redundant information to decode
+the binary string and recover the intended information despite the error. For example a repetition code
+withmajorityvotingisasimpleclassicalerrorcorrectionscheme,whereifyouintendtocommunicatea0
+bit,you insteadsend000, andsimilarlytosend the1bit yousend111. Atthe receivingend,you simply
+decodethebitofinformationbasedonthemajorityof0or1bitscommunicated,suchthatyoucanalways
+protectagainstasinglebitfliperror.
+Inthequantumerrorcorrectioncase,sinceourqubitstatesaresuperpositionsofbasisstates,errors
+canbeunderstoodaschangingtheprobabilityamplitudesofoutcomes. Considerasinglequbitasbefore:
+(cid:20) (cid:21)
+α
+|s⟩ = α|0⟩+β|1⟩ = , |α|2 +|β|2 = 1. (67)
+β
+ˆ
+AsinthecaseoftheX gate,thequbitflipyields:
+(cid:20) (cid:21)
+β
+|s′⟩ = = β|0⟩+α|1⟩. (68)
+α
+Wecansimilarlyapplytheclassicalrepetitioncodeforqubitsas:
+|0⟩ → |0⟩ ≡ |000⟩, |1⟩ → |1⟩ ≡ |111⟩ (69)
+L L
+where|·⟩ correspondstoalogicalqubit,sothatthesinglequbitstatebecomesathree-qubitstate:
+L
+|s⟩ = α|0⟩ +β|1⟩ . (70)
+L L
+Asbefore,wecandiagnoseandcorrectasinglequbitflipbymajorityvoting.
+When viewed as a Pauli rotation on the Bloch sphere, a single bit flip is equivalent to a π rotation
+about the x-axis. A fundamental challenge arises upon realizing that the error may rotate our qubit not
+onlyaboutthex-axis,butaboutanyaxisin3D.Thusforasinglequbit,wemustalsoperformasimilar
+error diagnosis on the phase flip of a qubit, which has a similar flavor to the bit flip diagnosis, but in a
+rotatedbasiscorrespondingtothex-axisontheBlochsphere
+1
+(cid:0)
+|+⟩ = √ |0⟩+|1⟩) (71)
+2
+1
+(cid:0)
+|−⟩ = √ |0⟩−|1⟩) (72)
+2
+(73)
+15
+Logical qubits can be formed in this basis such that a phase flip is diagnosed using a similar majority
+votingrepetitioncode
+AfamousresultinquantumerrorcorrectionisknownastheShorcode,whichcancorrectanarbitrary
+error(i.e. anysinglequbitrotationerror),byencodinga9-qubitlogicalqubit,howevertherearecodes
+that can correct any single qubit error by encoding as small as a 5-qubit logical qubit. Thus a quantum
+computer with only single qubit errors must implement 5 times the number of qubits to attain a given
+numberoflogicalqubits.
+Coupled to this issue is that circuits of increasing numbers of qubits suffer from cross-talk errors,
+whichiswhenqubitsindifferentchannelsbecomeundesirablyentangledtoeachother,whichrequires
+anotherlevelofquantumerrorcorrection. Thereareavarietyofquantumerrorsthatappearinhardware
+thatmustbediagnosedandcorrected,whichleadstoacomplexproblemofquantumerrorcorrectionover
+arbitrarywidthquantumcircuits. Amajorchallengeinquantumcomputingisfinding codesthatreduce
+thenecessarynumberofqubitstoachievealogicalqubit,andbuildingalargeenoughquantumcomputer
+withenoughfaulttolerancetobeabletoperformusefuloperationsontheselogicalqubits.
+3 Introduction to Classical Deep Learning Algorithms
+The primary goal of machine learning and more specifically deep learning is to optimally approximate
+somefunctionalmappingthatencodesachallengingtask. Thesetaskshistoricallydrewheavyinspiration
+from the everyday tasks that are accomplished by the animal brain. Today, a vast variety of interesting
+problemsareaddressedusingmachinelearninganddeeplearning,fromunderstandingproteinfoldingfor
+better drugdiscovery [19], topredicting complex weatherpatterns [20], toprocessing and/or translating
+language [21], to autonomous driving [22], to realizing nuclear fusion technology for green energy
+production[23].
+Forexamplewhenafoxseesthemovementofananimalinthedistance,itsvisualcortexmustquickly
+determine ifthat animalis a bearand the foxshould scurryaway, or ifthe animal is a rabbitand the fox
+should pursue it. This generalperception taskis highlystudied inmachine learningliterature andknown
+asthetaskofclassification. Here,thenaturalprocessesofthebrainthatclassifythevisualimageofan
+animal as a bear or a rabbit can be understood as a functional mapping between images and classes of
+animals.
+Anotherexampleisbasedonthemotorcortex,whereahumanmightwanttopickupaglassofwater
+in order to drink from it. The motor cortex evaluates the current position, velocity, and acceleration of
+thearm,andthecurrentpositionofthecup,andmustdeterminetheelectricalsignalsthataresenttothe
+armtocauseittoextendandgraspthecup. Thisgeneraltaskisalsohighlystudiedinroboticsliterature
+and known as the task of control (i.e. controlling the hand and arm to grasp the cup). Here again, the
+naturalprocessesofthebraincanbeunderstoodasafunctionalmappingbetweengeneralizedlocations
+andmuscularactuationsignals.
+This sort of input-outputmapping representation of a process or relationshipis extremely flexible and
+general,perhapsuniversal. Usingthisframework,thegoalofmachinelearningistocloselyapproximate
+the inherent relationship between input and output by a function that contains many, often millions, of
+flexibleparametersoftenreferredtoasweights. Themappingismostcommonlyrepresented,ormodeled,
+usingahighlyparameterizedArtificialNeuralNetwork(ANN),andthelearninginmachinelearningrefers
+tooptimizingtheparametersofthemodelsothatitcanmimictheprocessorrelationshiptohighaccuracy
+and precision. The adaptability and expressibility of ANNs have been one of the biggest motivators of
+theirwidespreaduse. Inthissection,thebasicsofANNswillbecovered.
+16
+3.1 Overview of Classical Machine Learning Problems and Terminology
+Inmachinelearningthegeneralgoalistolearnamodelfromasystemwithknowninputs,andsometimes
+outputs,sothatthemodelcanpredictorenhanceunderstandingoftheunderlyingdata. Inthemostgeneral
+casetherearetwotypesofmachinelearningalgorithms;supervisedandunsupervised. Intheunsupervised
+case,onlytheinputstoasystemareknownandthegoalisgenerallytobetterdescribethedataitself. For
+example,acommonunsupervisedlearningtaskiscalledclustering,whereinthemachinelearningmodel
+isattemptingtofindpatternsinthedatathatidentifycommoncharacteristicsofportionsofthedatasothat
+homogeneousdataisgrouped,orclustered,together. Inthesupervisedcase,boththeinputsandoutputsof
+thesystemareknownandthegoalistoaccuratelypredictthesystemsoutputsgiventheinputs. Wewill
+focusonthesupervisedcaseasthatismorerelatedtoourcurrentwork.
+In the supervised machine learning framework there are again two tasks that machine learning
+performs; classificationand regression. In theclassification taskmachine learningmodels seekto identify
+membership of the input data to categories known as classes. For example, determining if an image
+containsacatoradogisunderstoodasdeterminingiftheobjectintheimagebelongstothe‘cat’class
+orthe‘dog’class. Thistypeofmodelwilloftenbereferredtoasaclassifier,asitspurposeisgenerally
+to assign the correct class to an input, where the outputs are effectively binary ‘yes or ‘no’ for class
+membershipofeachclass. Theregressiontaskisverysimilarexceptthatinsteadofbeingbinaryinthe
+output,modelsgenerallyoutputacontinuousvalue,e.g. givenanimageofadog,predicttheweightin
+kilogramsofsaiddog. Thedifferencesinthesetasksusuallycomesdowntothetypeofdataavailableand
+thesetupoftheoptimizationproblem.
+Oncethetaskandmodelhavebeendefined,themodel’sparametersareoptimizedsuchthatthemodel
+fits the data as closely as possible. This optimization procedure is often referred to as training, and is
+thecriticalphaseofamachinelearningalgorithm. Here,somefunctionF thatquantifiessomeabstract
+measureofdistance,orerror,betweenthepredictedlabelsyˆandthetruelabelsy ofthetrainingdataxis
+minimizedas
+(cid:0) (cid:1)
+θ = argminF yˆ(θ,x),y , (74)
+best
+θ
+(cid:0) (cid:1)
+whereF yˆ(θ,x),y istheefunctiontobeminimized(e.g. meansquarederror)measuringsomenotion
+of ‘badness’of themodel’sprediction of theclass label. This function is sometimescalled anobjective
+function,acostfunction,oralossfunctiondependingonthecommunity. Allmachinelearningmodels
+can berepresented by anequation thatmaps the inputto the desiredoutput, and inthis case thepredicted
+labelsyˆareafunctionofthemodelparametersθ andthetrainingdatax.
+Before beginning to train, the available data is usually divided into three categories: training data,
+validationdata,andtestdata. Thetrainingdataisthedatathatisusedtooptimizethemodelparameters,
+whilethe validationdataisused topreventoverfitting. Overfittingoccurswhen theoptimizationprocess
+learns the training data too well and does not generalize to other data. During training, the validation
+data is evaluated using the same function as the training data, generally referred to as the validation
+loss, however the model is never updated using the validation loss. The validation loss is monitored
+over training iterations, and overfitting is generally indicated by an increase in the validation loss for a
+decreasingtrainingloss. Whenthevalidationlossbeginsincreasing,trainingcanbestoppedtoprevent
+overfitting. Thefinalstepinthemachinelearningprocessisthetestingphase. Herethemodelisevaluated
+to determine true performance. This phase requires a completely blind set of data called test data, i.e.
+neitherthevalidationnortrainingdatacanbeused. Thisensuresthattheperformanceofthemodelonthe
+testdatacaptureswhattypicalperformancewouldlooklikeinpractice.
+If weconsider ageneral classificationtask such asthe onedescribed above, the goalof trainingis to
+separatetheinputspaceintomultipleregionswhereeachregioncontainsonlyasingleclasslabel. This
+clearlyrequiresthatthedataisseparableinsomeway;andthesimplestcaseiswherethedataislinearly
+17
+Figure4: PerceptronExample
+separable. Let’sassumethatourdatahastwoclasses,ifastraightlinecanbedrawnbetweentheclasses
+that data is linearly separable and any machine learning model will be able to correctly classify this data.
+Thisvery rarelyhappensinrealworlddata,thusmany advancedmodelshave beendevelopedto handle
+dataofvariouscomplexities,suchasdatathatisnotlinearlyseparable. Onesuchmodelwillbecovered
+next.
+3.2 Neural Networks
+ThebeginningsofANNstracebackto1957withRosenblatt’sperceptron[24]. Theperceptronclassifier
+isasimplelinearclassifier/regressionmodel. Intheperceptronagroupofweightsareusedtotransform
+the input variables into the desired output. The perceptron uses the equation, y = Wx, where x is the
+inputvector,W aretheweights,andy istheoutputwhichiseitherascalarvalueoranewvector. Thisis
+alinearmappingwhichisseverelylimitedinitsrealworldapplicationasdemonstratedbythefollowing
+example.
+The XOR problem is often used for illustrations on the decision boundaries obtained with neural
+networks. TheXORproblemgenerallyconsistsoffourclustersofdatawhicharegroupedintotwoclasses.
+Theclustersaregenerallycreatedinasquare,i.e. thefourclustercentersarelocatedat(-1,-1),(-1,1),(1,
+1), and (1, -1), with the diagonal clusters labeled as one class and the off-diagonal clusters as the opposite
+class. Theperceptronisshowngraphicallyontheleftside offig.4,andtheimageontherightshowsthe
+limitationsoftheperceptroninsolvingtheXORproblem. Intheimage,thedifferentcolorseachindicate
+a different class. Since the perceptron is a linear classifier it can only define a simple linear decision
+boundary. Therefore,theperceptronisunabletocorrectlyseparatethediagonalandoff-diagonalclasses.
+Toimproveupontheperceptronitwasfoundthatperformancecouldbegreatlyimprovedbycombining
+multipleperceptronstogether. Thecombinationprocessinvolvescreatinglayersofperceptrons. Alayeris
+generatedbyhavingseveralperceptronsinparallel,witheachperceptronusingthesameinputs. When
+combined in this fashion each perceptron is generally called a neuron. As the single perceptron case is
+simply aninner productbetween theinputs andthe weights, alayer canbe seen asa linearmapping from
+theinputspacetothespacedefinedbytheweightsofeachneuron. Thuseachlayeriscomputedasamatrix
+multiplication. Theoutputfromeachlinearmappingisthenfedintoanon-linearfunctionoftenreferred
+to asan activation function,which isnamed after itsapproximation ofthe stepactivationof abiological
+neuron. This processis often referredto asthe Wiener method[25], whichhas the non-linear activation
+followingthesummationinfig.4. Thepurposeofthenon-linearactivationistoincreaseexpressibilityof
+thenetwork,aswithoutnon-linearitiesaseriesoflinearmappingswillalwaysreducetoasinglelinear
+mapping. Stacking multiple layers together, by connecting the outputs of a layer to the inputs of the
+followinglayer,createswhatiscalledtheMulti-LayeredPerceptron(MLP)[26],andisshownintheleft
+18
+Figure5: MultilayerPerceptronExample
+sideoffig.5. Inthediagrameachcircleisconsideredaneuron. Theoutputsfromthefinallayer,generally
+calledthelogits,areoftenconvertedtoprobabilitiesviathesoftmaxfunction,whichisdefinedas
+eβzi
+σ(z) = , i = 1,...,K, (75)
+i (cid:80)K
+eβzj
+j=1
+where K is e number of logits in the output layer, z is the vector of output logits with z being the ith
+i
+elementofthevector,andβ isreferredtoasthetemperaturewhichisahyperparameterthatcontrolsthe
+smoothnessofthesoftmaxfunction.
+With theadditionofmultiplelayersandnon-linearities, theMLPisnowcapable ofclassifyingdata
+that is not linearly separated, as in the right side of fig. 5. The stacking of layers allows the MLP to
+define multiple regionsthat can be separated linearly by thefinal classification layer. For example, inthe
+XORproblemshownintherightsideoffig.5thehiddenlayercandividethefeaturespaceintothefour
+quadrantsshown. Theclassificationlayerthenclassifiesthequadrantsintotheirproperclassesasthefirst
+layerprojectsthedataintoaspacewherethequadrantsarelinearlyseparable. TobeconsideredaMLP
+there must be at least three layers: the input layer, the output layer, then at least one hidden layer. The
+hiddenlayer(s)fall betweentheothertwolayers asshownintheleft sideoffig.5. Ingeneral multi-layer
+networks,therearemanylayersofmatrix-vectormultiplicationswhichcanbeexpressedas
+(cid:32) (cid:33)
+(cid:18) (cid:19)
+(cid:16) (cid:17)
+f(x ;W) = σ W σ W σ ···σ (W x ) , (76)
+n N N N N N 1 q n
+h h h−1 h−1 h−2
+wherex isaninput,N isthenumberofhiddenlayers,σ (·),h = 1,2,...,N areactivationfunctions,
+n h h h
+andW aretheweights. TodescribethepotentialcapabilitiesoftheMLPtheUniversalApproximation
+Theoremwasprovedin[27]whichstatesthatMLPsarecapableofapproximatinganycontinuousfunction
+toanarbitraryaccuracygiventhatthehiddenlayerisofsufficientsize.
+3.3 Shared Weight Neural Networks
+The standard MLP is effective for a broad category of tasks, however the MLP also introduces a bias
+towardinterconnectivityofeverydatapoint. Whilethisisoftenagoodstrategy,itcanintroducesignificant
+redundancy,andspecificallymanyclassificationproblemsrelyonimages,forwhichlocalrelationships
+are more important. In adding more capability to the MLP, the next big advancement was the shared
+19
+Figure6: Simpleconvolutionexample
+weightnetwork from[28]. This iseasiesttovisualize viatheconvolutionalneuralnetwork (CNN)[29].
+Convolutionnetworksarebasedonthestandardconvolutionoperationdefinedas:
+N−1
+(cid:88)
+(f ∗g )[n] = f[m]g [n−m], (77)
+θ θ
+m=0
+wheref andg arefunctionstobe convolved, andg isparameterizedbyθ andisoftenreferred toasthe
+θ θ
+convolutionfilter. Notethatconvolutionisusuallyimplementedascorrelationinconvolutionnetworks,
+becausecorrelation requiresfewer operations andtheconvolution filterislearned thereforethetwo are
+effectivelyequivalent. Tobetterexplainwhatishappeningseefig.6. Inthefigureasimpleconvolution
+exampleisshownusingtwovectors,oneofsize4andanotherofsize3.
+Forthisdemoonlythevalidportionoftheconvolutionisusedmeaningonlythelocationswheretwo
+vectorsfullyoverlapare used,thesetwopositionsare showninthecenterlineof thefigure. Thelast line
+ofthediagramshowstheoutputoftheconvolutionasanequationoftheindividualelementsoff andg .
+θ
+Thelastlinecanalsoberepresentedasamatrixmultiplicationasin:
+ 
+f[1]
+(cid:20) (cid:21)
+(f ∗g )[n] = g θ [3] g θ [2] g θ [1] 0   f[2] . (78)
+θ 0 g
+θ
+[3] g
+θ
+[2] g
+θ
+[1] f[3]
+f[4]
+Withthisrepresentationifwewritethe2×4matrixasW withw = g [n],andthevectoroff[n]as
+n θ
+x, with x = f[n], we are left with exactly the equation of a perceptron, y = Wx as was seen before.
+n
+Withthis newrepresentationwe canrewrite theconvolution operationwestartedwithas thesimplesingle
+layerneuralnetworkshowninfig.7.
+Inthisrepresentationtheweights{w ,w ,w }aresharedacrossbothoftheneuronsrepresentedby
+1 2 3
+the summation symbols, thus a small set of weights can be shared across the input space. This type of
+networkisingeneralappliedtoimages,andcandramaticallyreducethenumberofnetworkparameters,
+whichcanreduceoverfitting,reducetrainingtime,andreducemodelcomplexity.
+20
+Figure7: Simpleconvolutionlayerexample
+3.4 Gradient Descent
+Training for all types of neural networks uses some flavor of gradient descent. Gradient descent is an
+optimizationstrategythatiswidelyusedforfittingmanydifferenttypesofmodelsanddata. Assuminga
+convexfunction,foragivenpointthesignofthegradientpointsawayfromtheminimum. Forexample,
+in fig. 8, assume we are trying to find the minimum of the function F(x) starting at the point x = 2.
+1
+ComputingthegradientofF(x)atx resultsinF′(x ) = 4. IfF′(x )isaddedtox wewouldmovein
+1 1 1 1
+theopposite directionof theactualminimum locatedatx = 0. Thisalso happensforx onthe opposite
+2
+side of the minimum. With this example we can see that by taking a small step in the direction of the
+negativegradientwecanmoveclosertothetrueminimumfunctionvalue.
+Gradientdescentissimplyrepeatedlyovermanyiterations(updateevaluations)computingthegradient
+and taking a small step in the direction of the gradient. Therefore, the rule for updating any model via
+gradientdescentisasfollows,
+x = x −λ∇ F(x), (79)
+new old x
+whereF(x)isthe objective functionparameterized bythe parameterxandλisthe stepsize thatcontrols
+how far to move in the direction of the gradient. Repeatedly applying eq. (79) until convergence will
+returnthevalueofxthatminimizesF(x).
+Gradientdescentformachinelearningfollowsthesamebasicformulaasaboveexceptthatthefunction
+beingminimizedtypicallytakestheform,
+n
+1 (cid:88)
+F(W,X,Y) = L(W,x ,y ), (80)
+i i
+n
+i=1
+whereL(W,x ,y )isafunctionoftencalledthelossfunction(squarederrorforexample),whichdepends
+i i
+onthemodelparametersw,trainingdatax,andtraininglabelsy. Thelossfunctionisthensummedover
+the n samples available in the training dataset. This is an unbiased estimator for the expected value of
+L(w,x ,y ) over the inputs x . For example, using the perceptron discussed earlier as the model with
+i i i
+meansquarederrorasthelossfunctionyields,
+n
+1 (cid:88)
+F(w,X,y) = (y −wTx )2. (81)
+i i
+2n
+i=1
+Here the training data X and the training labels y are known, therefore optimization is done solely
+onthemodelparametersw EvaluatingthegradientandusingEquationeq.(79)generatesthefollowing
+21
+Figure8: Exampleofagradientcalculation
+updateequationfortheperceptronalgorithm,
+(cid:32) (cid:33)
+n
+λ (cid:88)(cid:0) (cid:1)
+w = w − y −wT x x . (82)
+new old n i old i i
+i=1
+Thismethodiscommonlyreferredtoasthebatchgradientdescentupdate. Heretheentiretyofthetraining
+setisusedtocomputeasingleupdatetothemodel,sothereisonlyasingleupdateineachiteration.
+Another version of gradient descent is commonly called stochastic gradient descent. In this variant
+insteadofusingtheentiretrainingdatasettocomputeasinglegradientupdate,onlyasingledatapointis
+usedforeachupdate. Therefore,thestochasticgradientdescentupdateequationisreducedto
+(cid:0) (cid:1)
+w = w −λ y −wT x x . (83)
+new old i old i i
+The biggest difference between the two methods is in how many updates are performed. For the batch
+gradientdescenttherewasonlyoneupdateforeachpassofthedataset,however,forthestochasticgradient
+descentmethod therewillbe updateseachpass. A passthroughthe dataset iscommonlycalled anepoch.
+A way to interpret the differences between the batch and the stochastic versions is that, effectively, the
+batchmethodcomputestheaverageofalltheindividualupdatestocomputeitsoneupdate. Thisallowsa
+smootherconvergencetothecorrectsolution. Thestochasticupdateleadstoamuchnoisierconvergence
+curve as the model is reacting to each data sample individually. The noisy convergence curve cab be
+beneficialthough, as therandomnessin theupdates allowsthe model tojump outof localminima during
+trainingtopotentiallyfindbettersolutions.
+Thereisathirdtypeofgradientdescentthatisfar morewidelyused,especiallyinthedeeplearning
+community, which is the mini-batch method. Mini-batch gradient descent is a hybrid of the batch and
+stochasticmethods. Whereasthebatchgradientmethodusestheentiredatasettocomputethegradient,
+themini-batchmethodusesonlyasmallsubset,largerthan1,tocomputethegradient. Thisalsoallows
+for updating the model multiple times during an epoch but does not require updating after every single
+trainingsample. Italsoincorporatesstochasticitybyrandomlysamplingthemini-batchesofdata. Thefull
+algorithmforthemini-batchgradientdescentisshowninalgorithm1below. Thismethodincorporates
+the benefitsof bothmethods by allowingthe optimizer tohavesome randomnessin the updateslike the
+stochasticmethodbutlimitstheamountofrandomnessbycontrollingthebatchsize. Asmallbatchsize
+increases the randomness, and thus optimization behaves more like the true stochastic version, while
+increasing the batch size reduces the randomness so the optimization behaves like the standard batch
+gradientdescentmethod.
+22
+Algorithm1Mini-batchgradientdescentalgorithm
+Input: TrainingdataX,traininglabelsy,numberofepochsN,batchsizem
+Randomlyinitializemodelparametersw
+fori = 1,...,N do
+RandomlyshuffleXandy
+DivideXandy intobatchesofsizem,savenumberofbatchesM
+forj = 1,...,M do
+w ← w−λ 1 (cid:80)m∇ L(w,X ,y )
+2m j w i i
+endfor
+endfor
+returnw
+3.5 Backpropagation: Gradient Descent for Neural Networks
+Gradient descent as it is defined above works well in many cases, however with neural networks the
+sheernumberofparametersandserialoperationscanmakedifferentiatingwithrespecttoeachparameter
+inefficient. CombiningEquationeq.(76)withthemeansquaredloss(forsimplicity)leaves:
+(cid:32)
+(cid:18) (cid:19)
+(cid:33)2
+1 (cid:16) (cid:17)
+(cid:0) (cid:1)
+f(x ,y ,W) = y −σ W σ W σ ···σ (W x ) , (84)
+n n n N N N N N 1 q n
+2 h h h−1 h−1 h−2
+as the full loss function to be optimized. Following the process described above for gradient descent
+we would differentiate with respect to W to find the update equation. However, a single expression
+cannotbefoundtooptimizeovereachindividual W simultaneouslyaswasdonebefore. Aseparate
+N
+h
+update function could be foundby differentiating with respect to eachW , however as mentioned thisis
+N
+h
+inefficient as each set of parameters will have a unique update equation, also many of the calculations
+for each of these differentiations are repeated. On top of that this process is not universal for all neural
+networks. Backpropagation is a way to compute the gradients in a systematic fashion to efficiently
+calculate all the gradients in a neural network one layer at a time that can be universally applied to all
+neuralnetworksthatalsominimizestheamountofduplicatecalculations. Atahighlevelbackpropagation
+can be thought of as a large chain rule. The per-layer loss gradient, often called the local gradient, is
+computedbackwardsacrosslayersofthenetwork. Inthismannerthelocalgradientforlayeriiscomputed
+withrespecttoonlytheinputsandoutputsoflayeri. Whenappliedinachain-rulelikemannertheloss
+is passed backwards, starting at the output, through each layer. Each layers’ parameters are updated in
+accordance with how much those parameters attribute, via the gradient, to the total loss. For a more
+detailedexplanationsee[30].
+4 Current State of Quantum Computing
+4.1 Quantum Circuit Architecture
+Thecurrentlydominantapproachtoquantumcomputingistocreateaquantumcircuit. Thisapproachis
+similartoclassicaldigitallogiccircuitsinorganizationandstructure,buttherearesomekeydifferences.
+In classical digital logic circuits, a set of bits are typically initialized in the binary 0 state, and are fed
+throughlogicgateoperationssequentiallyuntilthecomputationiscompleteandtheresultsarereadout.
+Thesecircuitsareoftenrepresentedgraphicallybysequencesoflinesbetween symbols representing logic
+23
+Figure9: TheXORgate.
+gatesthateventuallyleadtoanoutput. Critically,thevaluesofthebitsofthecircuitcanbemeasuredat
+anypointthroughoutthecircuitwithoutaffectingtherestofthecircuit.
+Withquantum circuits,qubitsare similarly preparedinsomeinitial state,usuallythequbit’s zerostate,
+and are also fed through sequences of gate operations that are also graphically represented by symbols
+(typicallyrectangles)connectedbylinesthateventuallyleadtosomeoutputwhichisreadbyquantum
+measurement. Howeveramajordifferencefromclassicaldigitalcircuitsisthataqubitmeasuredbefore
+the end of the circuit will have significant effects on the rest of the circuit. This is because there is an
+associatedback-actionasaresultofanyquantummeasurement,andoftenthemeasurementback-action
+collapsesthequantumwavefunctionofthemeasuredqubit,reducingittoasingleclassicalvaluefrom
+thatpointon. Thisaspectisrepresentedgraphicallyinquantumcircuitsusingdoublelinesforclassical
+valuesandsinglelinesforquantumvalues.
+Anothermajordifferencefromdigitallogicisregardingcircuitstructure. Asdescribedinthefunda-
+mentalsofquantumcomputingsection,digitallogicgatesareallowedtohaveadifferentnumberofinputs
+thanoutputs,whilequantumgatesmustbeunitaryandthushaveequalnumbersofinputsandoutputs. For
+exampleclassicalgatessuchasAND,OR,andXORgateshavetwoinputsandonlyoneoutput,suchthat
+the operations are irreversible and the total number of bits at any given point in the circuit is not fixed.
+Since quantum gate operations must be unitary and reversible, the total number of qubits is conserved
+throughoutthecircuit2. Forexample,considertheclassicalXORdigitallogicgatedepictedinfig.9and
+the quantum CNOT gate depicted in fig. 10. These two gates have similar outputs that produce similar
+truthtables. ForthedigitalXORgateshowninfig.9,twoinputs,AandB,arefedinandoneoutput,C,is
+produced. IfAandBarethesame,theoutputisavalueof0. IfAandBaredifferent,theoutputisavalue
+of1.
+Incontrast,thequantumCNOTgateusesthestateofoneoftheinputqubitsasacontrolqubit,and
+determines the action on the other qubit, the target qubit, based on the control qubit’s state. This is
+representedgraphicallyinfig.10,whereq isthecontrolqubitandq isthetargetqubit. TheCNOTgate
+0 1
+itselfisrepresentedbyauniquesymbol. The⊕symbolrepresentstheNOToperationbeingappliedto
+q , which is connected to the q qubit and terminates in a dot representing q as the control of the NOT
+1 0 0
+operation. If q is in the zero state, q is unaffected, while if q is in the one state, the NOT operation
+0 1 0
+will be applied to q and its state will be flipped, which is equivalent to rotation by π about the x-axis.
+1
+In contrast to the digital XOR gate, both input qubits are conserved throughout the calculation and are
+measuredattheendofthecircuit.
+Alsouniquetoquantumcomputingisthattheoutputofthequantummeasurementprocessisnotthe
+quantumstate. Instead,anobservableassociatedwiththequbitismeasured,yieldingoneofthepossible
+eigenvaluesoftheoperatorcorrespondingtothethequantumstatethequbitwasin. Thisishighlighted
+in the truth table in fig. 10, where the inputs are quantum states represented in ket notation, and the
+2
+Notethatquantummeasurementperformedbeforetheendofthecircuitmayoftenbegraphicallyrepresentedasreducing
+thenumberofqubits,howeverthesequbitscontinuetoexistclassicallyaftermeasurement
+24
+Figure10: SimplequantumCNOTgate.
+Figure11: Simplequantumcircuitexample
+outputsarethemeasuredeigenvaluesoftheoperator,andassociatedwiththetwopossiblequantumstate
+outcomes.
+Infig.10,M isthemeasurementoutcomeonq ,andM isthemeasurementoutcomeonq . Ifwe
+0 0 1 1
+omittheM column,thenwerecoverthetruthtablefortheclassicalXORgate. Notehoweverthatthis
+0
+truthtabledoesnotincludethecontinuumofpossiblesuperpositionsofqubitstates,whicharevalidinputs
+intheanalogousquantumgate. Additionally,theq qubitisstillpresentattheendofthecircuitwhich,for
+1
+unitarygates,allowsforreversibilityandreconstructionoftheinputstatesgiventheoutputandoperation
+applied. Graphically,gatesareappliedsequentiallyfromlefttoright,asdepictedinfig.11.
+Therearesomegatesthatoperateonlargernumbersofqubits. Theycanbegenericallyrepresented
+graphicallybyrectanglesthatcovermultiplequbitlines,howeversomespecificmulti-qubitgateshave
+theirownrepresentations. Anyunitarysinglequbitoperationcanbeturnedintoacontrolledoperationthat
+depends on the state of another qubit. This is shown by the appropriate box/symbol on the qubit to be
+operatedon,withaverticallineextendingfromtheboxtothehorizontallineofthecontrollingqubitwith
+adotplacedattheirintersection.
+Anothercontrasttoclassicallogiccircuitsisthatinquantumcircuits,onemeasurementisnotenough
+todeducethequantumstateoftheoutputqubit(s). Forexample,aqubitinthesuperpositionstate
+(cid:34) (cid:35)
+1 1 √ 1
+|q⟩ = √ |0⟩+ √ |1⟩ = 2 (85)
+1
+2 2 √
+2
+hasameasurementoutcomeof0withprobability1/2andameasurementoutcomeof1withprobability
+1/2. Thusseveralmeasurementsofthesamequbitmustbemadeinordertodeducehatitisinthegiven
+superpositionstate. Thustheexpectationvalueisestimatedbyrepeatingthemeasurementmanytimes.
+Also,sincethemeasurementvalueonlyreturnsthemagnitude,theexpectationvaluewillbeequivalentfor
+asetofquantumstatesthathavethesamemagnitudebutdifferentphase,forexamplethestate
+(cid:34) (cid:35)
+1 1 √ 1
+|q⟩ = √ |0⟩− √ |1⟩ = 2 (86)
+2 2 −√ 1
+2
+These two states are identical except for a phase factor, and this type of measurement protocol (with a
+singleZmeasurement)doesnothavetheresolutiontodiscernbetweensuchstates. Thereareworkarounds,
+25
+for example measuring with respect to the x-axis instead of the z-axis, but this leads to extra care that
+isnecessaryindesigningquantumcircuits. Forfurtherreadingonthefundamentalsquantumgatesand
+quantuminformation,seereferences[17,18].
+4.2 Embedding Classical Data in Quantum Circuits
+Sincequantumdataandclassicaldataareinherentlydifferentinnature,methodsmustbeusedtoencode
+classical data in a way that is usable in quantum circuits. Currently, there are two main strategies for
+building quantum machine learning circuits that use classical data. The first strategy is to use classical
+dimensionality reduction techniques to reduce the dimension of the classical data to match the number
+of qubits available in the circuit, such as principle component analysis. In order to embed binary data
+specifically, an additionalstep isnecessary toconvert the reduceddimension datato binaryvalues. An
+exampleofamethodtoreducedimensionalityandconverttobinaryvaluesisshowninsectionA1.
+Another type ofencoding is often called gateencoding. In this paradigm the originalfloating point
+dataisencodeddirectly intoaquantumcircuitwiththeuse ofrotationgates. Forthistypeof encoding,
+theoriginaldataisnormalizedtobeintherangeof[0,π]. Thisrangeisusedtoensurethatlargeandsmall
+valuesare notunintentionally confusedforbeing closetogether, asthey couldbeif thefull[0,2π)range
+wasused. Incaseswherethedatahasfewerorthesamedimensionsasthenumberofqubits,eachvalueof
+theoriginaldatacanbedirectlyencodedintotherotationparameterofarotationgate. Inthissetupeach
+dimensionofthedataisencodedbyexactlyonerotationgateperqubitduringtheencoding,which can
+thenbeusedbyadditionalcircuitelementsformachinelearning.
+An extension of this method, called block encoding, takes this method and applies it to higher
+dimensionaldata. Herethedataisrepresentedasaquantumcircuitcontainingmanyrotationgatesapplied
+tothesamequbitsinordertogenerateauniqueencodingforeachdatapoint. Fournumbersareimportant
+forthedesignofthisencodingscheme: thedimensionalityofthedata(D),thenumberofqubits(Q),the
+numberoflayersofthecircuit(L),andthenumberofgatesperblock(G). ThevaluesofD andQshould
+alreadybeknown andthevaluesofLandGaredesignvariables. To selectthevaluesofLandGfollow
+therulethatD ≤ QLGwhilealsotryingtominimizetheproductQLG. Forexample,ifthedataconsists
+of192totaldimensions,andweareusingaquantumcomputer/simulatorwith16qubits,wecansetLto4
+andGto3. Withthedesignsettled,thecircuitcanbecreated
+The circuit will consist of creating blocks of sets of cycling rotation gates (i.e. an x rotation gate
+followed by a z rotation gate followed by another x rotation gate). Consecutive rotation gates must be
+around different axes. The circuit is created by stacking these blocks together evenly across all qubits.
+After a layer of blocks is created a series of CNOT gates are used to connect consecutive qubit pairs.
+ThisprocessisrepeatedLtimes. Therotationamountisdefinedbythedataitselfaswasdonewiththe
+gate encoding above. If there are more gates than data dimensions the excess rotation gates use 0 for
+therotationangle,sotheyactaspassthroughgates. Theoutputsfromthisencodingcircuitnowencode
+the full data and return unique values for each of the inputs, without needing to follow a complicated
+dimensionalityreductiontechnique. Anexampleofacircuitwitheightqubits,fourlayers,andtwogates
+perblockisshowninfig.12.
+4.3 Quantum Machine Learning
+Quantum machine learning is a new and emerging sub-field of quantum computing that combines two
+specializedfieldsintoone. Theoverallprocessofquantummachinelearningisactuallyverysimilarto
+machine learning on classical computers, since quantum machine learning is really a hybrid quantum-
+classicalcomputation[31]. Inquantummachinelearningafewkeycomponentsoftheclassicalmachine
+learningprocessarereplacedbytheoutputofaquantumcomputer. Mostimportantly,theerrorfunction
+26
+Figure12: Exampleoftheblockencodingmethod
+Figure13: Examplequantummachinelearningcircuit
+tobeoptimizedisatleastpartiallycalculatedbyaquantumcomputer. Atleastoneexpectationvalueofa
+qubitofaquantumcircuitisusedtocomposetheerrorfunction[32],thoughclassicalcomponentsmaybe
+includedaswell,whichinsomecasesincreasesthefunctionality. Forexample,inaclassificationproblem
+thecorrectlabelwillbeapurelyclassicalvalue,whilethelabelpredictedbythenetworkiscalculatedon
+aquantumcomputer. Alsoinordertobeabletotuneandtrainthequantumnetwork,thenetworkmust
+includesomeclassicalparametersthatcanbekepttrackofandupdatedbythealgorithm[31,32].
+Oncethedatahasbeenencodedintothequantumcircuitusingoneoftheencodingmethodsmentioned,
+multi-qubitoperationsareappliedtothedataqubitsandthereadoutqubitswiththegoalofmanipulating
+thereadoutqubitstosomedesiredstatecorrespondingtothedatainput. Typicallytheseoperationsare
+parametrizedcontrolledrotationgatesappliedtothereadoutqubitandcontrolledoffofthedataqubits,
+thoughnon-controlledgatescanalsobeappliedtothereadoutqubit. Uponrunningthecircuitmultiple
+times, the expectation value of the measured readout qubit is used as the final output of the circuit and
+used to compute a loss function. An example circuit for quantum machine learning is shown in fig. 13.
+Thisexampleusedthesinglerotationgatedataencodingmethodmentionedabove.
+27
+In this setup, qubit 0 is the readout qubit and the only one that is measured for the output. The first
+twogatesactingonqubit0placethequbitintoanunbiasedinitialstatebeforethenetworkoperationsare
+applied. Qubits1-5arethedataqubits. Eachrotationoperationoneachofthosequbitsisparameterized
+bysomeclassicalvaluebasedontheinputdata. Theremaininggatesonqubit0aretrainablerotationgates
+controlledbythestateofthedataqubits. Thenetworkgatesareparameterizedbythetrainablenetwork
+variablesa[1],b[1],a[2],b[2],...,a[n],b[n].
+Similartoclassicalmachine learning,themostcommonmethodused tofindtheoptimalparameter
+valuesinquantummachinelearningisavariantofgradientdescent[31]. Sinceatleastpartoftheerror
+functioniscalculated onaquantumcomputer,thegradient calculation alsorequirespartialcomputation
+on aquantum computer, which leads toanother major differencebetween classicaland quantum machine
+learning. Inclassicalmachinelearningfastgradientcalculationisenabledbybackpropagation. Backpropa-
+gationrequiresintermediateresultstobemeasured/calculatedandstoredforlaterusetoavoidrecalculating
+themmanytimes. Obtainingintermediateresultsinthecalculationonaquantumcomputerwouldrequire
+intermediatemeasurements. However,onaquantumcomputertheseintermediatemeasurementswould
+destroy any quantum behavior being utilized by the quantum computer. This means that in order to
+maintainanytruequantumcalculation,backpropagationisnotpossible[31,33]andothermethodsmust
+beused forcalculating thegradient onquantum computers[33]. Fortunately, othermethods ofcalculating
+the gradient called parameter-shift rules have been developed and fit very well into the architecture of
+quantumcomputing.
+4.4 Parameter-Shift Rule
+The parameter-shift rule is a very useful tool that allows for an analytically exact gradient calculation
+that can be performed on a quantum computer using the same circuit used to calculate the loss, but
+with shifted parameter values [33, 34]. In practice, this results in an approximate gradient due to the
+approximation of the expectation value. This is also the case in the classical machine learning context
+definedabove,howeverinthatcasewedefinedthelossisthefiniteapproximation(underfinitedata)to
+the true expectation value. However, in the quantum machine learning context, there are in effect two
+expectations: anexpectationwithrespecttomeasurementoutcomesandanexpectationoverthedata. In
+contrast to the finite data problem, expectation values over measurement outcomes can be run as many
+timesasnecessarytogivesufficientprecision.
+Toshowthederivationofthisrule, agenericlossfunctionintheformofan expectation valuefroma
+readoutqubitwillbeused. LetthelossfunctionC(θ)bedefinedasanexpectationvalue[33,34,35]:
+C(θ) := ⟨ψ|U
+ˆ†(θ)A ˆ
+U
+ˆ
+(θ)|ψ⟩ (87)
+G G
+ˆ
+where|ψ⟩isthevectorrepresentingthequantumstateand⟨ψ|isitscomplexconjugatetranspose,U (θ)
+G
+isaunitaryoperatorparameterizedbyθ withtheformU
+ˆ
+(θ) =
+eiaθGˆ
+,whereG
+ˆ
+isaPaulioperator,U
+ˆ†(θ)
+G G
+ˆ ˆ
+isthecomplexconjugatetransposeofU (θ),Aistheobservablebeingmeasured,andaisafixedconstant.
+G
+Takingthederivativewithrespecttotheparameterθ
+dC(θ) d
+= ⟨ψ|U
+ˆ†(θ)A ˆ
+U
+ˆ
+(θ)|ψ⟩ (88)
+dθ dθ G G
+28
+requirestheuseoftheproductrule,giving:
+dC(θ) d d
+= ⟨ψ|
+(cid:0)
+U
+ˆ†(θ) (cid:1)
+A
+ˆ
+U
+ˆ
+(θ)|ψ⟩+⟨ψ|U
+ˆ†(θ)A ˆ (cid:0)
+U
+ˆ
+(θ)
+(cid:1)
+|ψ⟩ (89)
+dθ dθ G G G dθ G
+= ⟨ψ|(iaG
+ˆ
+)U
+ˆ†(θ)A ˆ
+U
+ˆ
+(θ)|ψ⟩+⟨ψ|U
+ˆ†(θ)A ˆ
+U
+ˆ
+(θ)(−iaG
+ˆ
+)|ψ⟩ (90)
+G G G G
+(cid:16) (cid:17)
+= ia ⟨ψ|G
+ˆ
+U
+ˆ†(θ)A ˆ
+U
+ˆ
+(θ)|ψ⟩−⟨ψ|U
+ˆ†(θ)A ˆ
+U
+ˆ
+(θ)G
+ˆ
+|ψ⟩ (91)
+G G G G
+= ia⟨ψ|U
+ˆ†(θ) (cid:2)
+G
+ˆ
+,A
+ˆ(cid:3)
+U
+ˆ
+(θ)|ψ⟩ (92)
+G G
+(cid:2)ˆ ˆ(cid:3) ˆ ˆ ˆˆ
+where G,A is the commutator GA − AG. While having a commutator in the calculation seems to
+complicatethings,itdoesallowforthefollowingidentitytobeused[34,35,36]:
+(cid:18) (cid:19)
+(cid:16)π(cid:17) (cid:16)π(cid:17) (cid:16)π(cid:17) (cid:16)π(cid:17)
+(cid:2)
+G
+ˆ
+,A
+ˆ(cid:3)
+= −i U
+ˆ†
+A
+ˆ
+U
+ˆ
+−U
+ˆ†
+A
+ˆ
+U
+ˆ
+, (93)
+G 2 G 2 G 2 G 2
+where U
+ˆ
+(θ) =
+eiaθGˆ
+, and G
+ˆ
+is assumed to be some Pauli operator. Using this identity does limit the
+G
+application of the final result to be valid only with Pauli operator-based unitary gates; but with how
+commonlyusedPauligatesare,thisresultisstillapplicable. Foraproofofthisidentity,seesectionA2.
+Applyingthisidentitytothecommutatorineq.(92)leadstoaformmorecompatiblewithquantum
+circuits:
+(cid:18) (cid:19)
+dC(θ) (cid:16)π(cid:17) (cid:16)π(cid:17) (cid:16)π(cid:17) (cid:16)π(cid:17)
+= ia⟨ψ|U
+ˆ†(θ)(−i)
+U
+ˆ†
+A
+ˆ
+U
+ˆ
+−U
+ˆ†
+A
+ˆ
+U
+ˆ
+U
+ˆ
+(θ)|ψ⟩ (94)
+dθ G G 2 G 2 G 2 G 2 G
+(cid:18) (cid:19)
+(cid:16)π(cid:17) (cid:16)π(cid:17) (cid:16) π(cid:17) (cid:16) π(cid:17)
+= a ⟨ψ|U
+ˆ†(θ)U ˆ†
+A
+ˆ
+U
+ˆ
+U
+ˆ
+(θ)|ψ⟩−⟨ψ|U
+ˆ†(θ)U ˆ†
+− A
+ˆ
+U
+ˆ
+− U
+ˆ
+(θ)|ψ⟩
+G G 2 G 2 G G G 2 G 2 G
+(95)
+(cid:18) (cid:19)
+(cid:16) π(cid:17) (cid:16) π(cid:17) (cid:16) π(cid:17) (cid:16) π(cid:17)
+= a ⟨ψ|U
+ˆ†
+θ+ A
+ˆ
+U
+ˆ
+θ+ |ψ⟩−⟨ψ|U
+ˆ†
+θ− A
+ˆ
+U
+ˆ
+θ− |ψ⟩ (96)
+G 2 G 2 G 2 G 2
+Inthisform,eachtermisanexpectationvaluesoitcanbecalculatedbyaquantumcircuit. Ofevenmore
+importance to this application is that each term is in the same form as the original loss function C(θ)
+except for the shift by ±π/2. This means the gradient calculation can utilize the exact same circuit as
+the original loss function. For each parameter’s gradient calculation all that is required is running the
+circuittwicemore,once withtheparametershiftedupbyπ/2,andonce withtheparametershifteddown
+by π/2 [34]. Using the circuit given in fig. 13 as an example, to calculate the gradient for the first gate
+parameter, a[0], andlettingk = π/2, thecircuits infig.14 wouldboth berun andthe outputmeasured for
+eachcircuit.
+Thedifferencebetweentheoutputsofthetwocircuitsinfig.14andthefactorofacanbecalculated
+classicallyinthehybridquantum-classicalscheme,whichwillthengivethegradientnecessaryforgradient
+descentoptimizationwithoutrequiringintermediatemeasurementsnorinterruptingthequantumbehavior
+ofthequantumcomputer. Thegradientcalculationprocessisrepeatedforeverynetworkparameter,and
+theparametersareupdatedaccordingtothegradientresult. Withawaytoefficientlycalculategradients
+onaquantumcomputer,theoverallquantummachinelearningprocesscanbedescribedbyalgorithm2.
+ThederivationinthissectionpertainstogatesoftheformU
+ˆ
+(θ) =
+eiaθGˆ
+withG
+ˆ
+aPaulioperator. This
+G
+isfairlygeneral,howevertherearecasesofgateswhichdonothavethisoperatorstructure. Insuchcases,
+thestochasticparameter-shiftrulegeneralizesthegradientcalculationtooperatorsofanyform,including
+multi-qubitgates[37]. TheinterestedreadermayrefertosectionA6foracompletederivation.
+While the parameter-shift rule does calculate exact gradients, it suffers from requiring significantly
+morecircuitevaluationsthanclassicalgradientdescent. Similarly,thestochasticparameter-shiftrulealso
+29
+Figure14: Examplecircuitsforparameterupshift(top)anddownshift(bottom)onparametera[1]
+requiresmultiplecircuitevaluationspertrainingiteration. Whilethesemethodsareverypopularmethods,
+theyarenottheonlymeansoftrainingvariationalquantumcircuits. Othernotablealgorithmsincludethe
+Simultaneous Perturbation Stochastic Approximation (SPSA) [38] and the Quantum Natural Gradient
+(QNG)[39].
+4.5 Variational Quantum Circuit Classification Example – The XOR Problem
+Theexclusive-or(XOR)problem wasdiscussedearlierintheintroduction toartificialneuralnetworks.
+Theproblemconsistsoftwo classesofdataonagridseparatedintofourblocks, whereblocksdiagonal
+from each other contain points in the same class, as depicted in fig. 5. This results in a classification
+problem where the two classes are not linearly separable. Comparing and contrasting the classical and
+quantum solutions highlights some of the advantages of quantum computing. Due to the non-linear
+separation between classes, a classical neural network requires multiple perceptrons to solve the XOR
+problem. However,ithasbeenshownthatasimplequantumcircuit,showninfig.15,usingonlyonequbit
+30
+Algorithm2Mini-batchgradientdescentalgorithm
+Input: TrainingdataX ,...,X ,traininglabelsy,learningrater,shiftk
+i m
+Randomlyinitializemodelparametersw ,...,w
+1 n
+fori = 1,...,mdo
+Run circuit with parameters w = [w ,...,w ] and calculate the expectation value of the output
+1 n
+ˆ
+⟨A(X ,w)⟩
+i
+ˆ
+CalculatelossusingdatalabelandcircuitoutputC(y ,X ,w) = y −⟨A(X ,w)⟩
+i i i i
+forj = 1,...,ndo
+Upshiftjth parameter: w = [w ,...,w +k,...,w ]
++ 1 j n
+ˆ
+Runcircuitwithnewparametersetw andmeasureoutputupshift = ⟨A(X ,w )⟩
++ i +
+Downshiftjth parameter: w = [w ,...,w −k,...,w ]
+− 1 j n
+ˆ
+Runcircuitwithnewparametersetw andmeasureoutputdownshift = ⟨A(X ,w )⟩
+− i −
+Calculategradientwithrespecttojth parameter∇ C(y ,X ,w) = 1(upshift−downshift)
+wj i i a
+endfor
+Updateparameterw = w −r∇ C(y ,X ,w)
+j j wj i i
+endfor
+returnw
+Figure15: QuantumcircuittosolvetheXORproblem
+asa singleperceptroncan solvethe XORproblem. Thisapproachleveragesthephase ofthequbit asan
+extradegreeoffreedom[40].
+Thiscircuitisfairlysimpleandconsistsofonlythreegates,aHadamardgatefollowedbyaZ-rotation
+gate, and then an X-rotation gate. The rotation angles of the gates are determined by the following
+classicalexpressions[40]:
+Z-rotationangle: θ x +α (97)
+1 1
+X-rotationangle: θ x +α, (98)
+2 2
+where θ ,θ are trainable parameters, x ,x are the input values, and α is another trainable parameter.
+1 2 1 2
+Here there is a direct solution by using θ = θ = π and α = −π/2 [40], however this circuit could be
+1 2
+trainedbygradientdescent. Indeed,fortheinputvectors(x ,x ) = (0,0)and(x ,x ) = (1,1)thecircuit
+1 2 1 2
+givesaresultnearthezerostate(uptoquantumhardprecision),andfortheinputvectors(x ,x ) = (0,1)
+1 2
+and (x ,x ) = (1,0) the circuit gives an output near the one state (up to quantum hard precision) [40].
+1 2
+Finally,with“noisy"non-integerinputsbetween0and1,thecircuitgivesoutputstatesbetweenthezero
+stateandtheonestate(seeTable2in[40]).
+Extending the circuit and methods introduced above, nearly identical results are obtained using a
+quantummachinelearningframeworkandtrainingonalargerdataset. Todothis,thecircuitfrom[40]is
+modifiedtomakeitmorecompatiblewiththeparameter-shiftgradientdescentmethoddescribedearlier.
+Thismodifiedcircuitisshownbelowinfig.16.
+Thiscircuitaddstwoqubitssothattherotationdataembeddingschemecanbeused. TheCRZ(θ )
+1
+gate controlled on qubit 1 for the first data input corresponds to the θ x part of the input parameters
+1 1
+to the original Z rotation gate, and similarly for CRX(θ ) and θ x . Since originally the α parameter
+2 2 2
+31
+Figure16: ModifiedcircuitforlearningtosolvetheXORproblem.
+Figure17: GeneratedXORdataset.
+is added as a constant, it can be applied in the new circuit as another gate applied in series with the
+respectivecontrolledgate. Additionally,thesingleα parameterhasbeensplitintoα andα fortheZand
+1 2
+Xrotations,respectively,toallowthecircuittobemoreflexible.
+The data for training and testing this new circuit is generated from a random uniform distribution
+between0and1forthexandy valuesofeachdatapoint,thoughvaluesofexactly0.5wereexcludedas
+theywouldbeontheclassboundaryanddegenerate. 1000samplepointsweregenerated,with750being
+usedfortraining,63usedforvalidationduringtraining,and187usedforblindtestingaftertrainingwas
+complete. Thisdatasetisshowninfig.17.
+The yellow data points are assigned to class 0, corresponding to a zero state output of the read-out
+qubit,andthepurpledatapointsareassignedtoclass1,correspondingtoaonestateoutputoftheread-out
+qubit. The observable used is the Pauli Z gate, which has two possible eigenvalues {+1,−1}, which
+are used as the labels for the classes, respectively. The goal for the network is to rotate the read-out
+qubit towards the zero state for data from class 0, and towards the one state for data from class 1. The
+expectationvalueshouldbecloserto+1forinputsfromclass0,andcloserto-1forinputsfromclass1.
+Thelossfunctiontobeoptimizedisgivenbythemeansquarederroroftheexpectationvalue.
+Tooptimizethelossfunction,mini-batchgradientdescentoptimizationwasused,withabatchsizeof
+25datasamplesandalearningrate(orstepsize)of0.025. Thenetworkwastrainedover150epochs. The
+loss function was averaged over the 25 samples in each mini-batch and that average loss function was
+usedinthegradientcalculation. Thegradientwascalculatedusingtheparameter-shiftruleineq.(96). To
+classifyasampleinthevalidationandtestingphasesofthemachinelearningprocess,thecontinuously
+32
+(a) (b)
+Figure18: (a)Traininglossvsbatchoverthetrainingperiodand(b)Validationaccuracyvsbatchoverthe
+trainingperiod.
+(a) (b)
+Figure19: True(a)andpredicted(b)labelsfortestdata.
+valued expectation value output from the network is thresholded. Outputs greater than or equal to are
+classifiedasclass0andoutputslessthanareclassifiedasclass1.
+Using these methods, the network was successfully trained and the results found match the results
+givenin[40]. Thelosswasrecordedforeverybatch,andtheplotofthelossvs. batchisshownbelowin
+fig.18(a). Thelossdecreasedtolessthan0.5onaverage,andplateauedfairlyearlyinthetrainingprocess.
+The plotof validationaccuracy perbatch overthe trainingperiod alsoplateaued earlyin trainingas well,
+asshowninfig.18(b). Thevalidationaccuracyconvergesto100%afterabout1000batches,whichisan
+indicatorofgoodnetworkperformance. Intestingthenetworkperformedverywell, correctlyclassifying
+100%ofthetestingdatasamples. Thetruelabelsandtheclassificationresultsfromthenetworkonthe
+testsetareshowninfig.19. Thesubplotsareidentical,showingthatthenetworkassignedthetruelabel
+toeverytestsample. Furthermore,convergedparametersareinfullagreementwiththeparametersused
+in [40]. The convergence of the parameters over the training period are shown below in fig. 20(a) and
+fig.20(b),wheretheidealparametervaluesfrom[40]areshownbydashedlines.
+In fig. 20(a), the dashed lines are at exactly π, which correspond to the value used for θ and θ in
+1 2
+[40]. The network parameters trained here, shown with solid lines, converge to approximately π. The
+33
+(a) (b)
+Figure20: Parameterconvergencefor(a)θ andθ ,and(b)α.
+1 2
+final values for θ and θ at the end of training were 3.14147 and 3.14479, respectively. The results for
+1 2
+theα parametersareshowninfig.20(b). Thedashed lines areatexactly−π/2,whichcorrespondtothe
+valuesusedforα andα in[40]. Thenetworkparametersα andα convergedtovaluesof4.71247and
+1 2 1 2
+4.71022.
+At first it appears that the network parameters are not in agreement as they converged to different
+values, however these values are approximately equal to +3π/2. Since rotations wrap from 2π back to
+0,arotationby+3π/2isequivalenttoarotationby−π/2. Thusthecircuittrainedhereisequivalentto
+the circuit presented in [40]. These results indicate that quantum circuits can be trained (in simulation)
+usingquantum machinelearning methods. Since theXOR problem isan exampleof aproblemthat can
+besolvedwithasinglequantumneuronincontrasttoamulti-layerclassicalperceptron,thissimulated
+demonstrationhighlightssomeofthepotentialadvantagesofquantumcomputingandquantummachine
+learning.
+5 Conclusion
+Thismanuscriptintroducestherelevantconceptsofquantummachinelearning,andservesasintroductory
+material. Thebasic notionsof quantummechanicsare described, includingquantumphase, superposition,
+entanglement, and expectations. These are used to introduce quantum gates as fundamental building
+blocksofthequantumcomputingframeworkincomparisonwiththeclassicaldigitallogicframework. The
+basics of classical machine learning are introducedspecifically related to deeplearning for classification,
+andareusedasabackgroundinordertointroducestandardnotionsinquantummachinelearning. Finally
+thesenotionsareappliedtoanexampleproblemthathighlightssomepotentialadvantagesofquantum
+machine learning over its classical counterpart. With the growing capabilities of quantum computers,
+quantummachinelearningholds promiseforsolvinghardproblemsin avariety ofdomains,andwarrants
+furtherinvestigationintothequantumadvantageofquantummachinelearning.
+References
+[1] A.Turing,“Intelligentmachinery(1948),”B.JackCopeland,p.395,2004.
+[2] K.Naja,S.F.Yelin,andX.Gao,“Thedevelopmentofquantummachinelearning,”2022.
+34
+[3] A.Adamatzky,Advancesinunconventionalcomputing: Volume1: Theory. Springer,2016,vol.22.
+[4] A.Adamatzky,B.D.L.Costello,andT.Asai,Reaction-diffusioncomputers. Elsevier,2005.
+[5] B. J. Shastri, A. N. Tait, T. Ferreira de Lima, W. H. Pernice, H. Bhaskaran, C. D. Wright, and
+P.R.Prucnal,“Photonicsforartificialintelligenceandneuromorphiccomputing,”NaturePhotonics,
+vol.15,no.2,pp.102–114,2021.
+[6] S. Aaronson, “Introduction to quantum information science ii lecture notes,” 2022. [Online].
+Available: https://www.scottaaronson.com/qclec.pdf
+[7] Y. Wang, Z. Hu, B. C. Sanders, and S. Kais, “Qudits and high-dimensional quantum computing,”
+FrontiersinPhysics,vol.8,p.589504,2020.
+[8] S. Lloydand S.L. Braunstein,“Quantum computation over continuous variables,”PhysicalReview
+Letters,vol.82,no.8,p.1784,1999.
+[9] O. Pfister, “Continuous-variable quantum computing in the quantum optical frequency comb,”
+JournalofPhysicsB:Atomic,MolecularandOpticalPhysics,vol.53,no.1,p.012001,2019.
+[10] T.KadowakiandH.Nishimori,“Quantumannealinginthetransverseisingmodel,”PhysicalReview
+E,vol.58,no.5,p.5355,1998.
+[11] P.Hauke,H.G.Katzgraber,W.Lechner,H.Nishimori,andW.D.Oliver,“Perspectivesofquantum
+annealing: Methodsandimplementations,”ReportsonProgressinPhysics,vol.83,no.5,p.054401,
+2020.
+[12] J. Biamonte, P. Wittek, N. Pancotti, P. Rebentrost, N. Wiebe, and S. Lloyd, “Quantum machine
+learning,”Nature,vol.549,no.7671,pp.195–202,2017.
+[13] “Ourquantumcomputingjourney,”2023.[Online].Available: https://quantumai.google/learn/map
+[14] J. S. Townsend, Quantum Physics: A Fundamental Approach to Modern Physics. University
+ScienceBooks,2010.
+[15] N.Zettili,“Quantummechanics: conceptsandapplications,”2009.
+[16] M.LeBellac,Quantumphysics. CambridgeUniversityPress,2011.
+[17] M. A. Nielsen and I. L. Chuang, Quantum computation and quantum information. Cambridge
+universitypress,2010.
+[18] P.Kaye,R.Laflamme,andM.Mosca,Anintroductiontoquantumcomputing. OUPOxford,2006.
+[19] J. Jumper, R. Evans, A. Pritzel, T. Green, M. Figurnov, O. Ronneberger, K. Tunyasuvunakool,
+R.Bates,A.Žídek,A.Potapenkoetal.,“Highlyaccurateproteinstructurepredictionwithalphafold,”
+Nature,vol.596,no.7873,pp.583–589,2021.
+[20] J.Pathak,S.Subramanian,P.Harrington,S.Raja,A.Chattopadhyay,M.Mardani,T.Kurth,D.Hall,
+Z.Li,K. Azizzadeneshelietal.,“Fourcastnet: Aglobaldata-drivenhigh-resolution weather model
+usingadaptivefourierneuraloperators,”arXivpreprintarXiv:2202.11214,2022.
+[21] R.OpenAI,“Gpt-4technicalreport.arxiv2303.08774,”ViewinArticle,vol.2,p.13,2023.
+35
+[22] Y.Lu,J.Fu,G.Tucker,X.Pan,E.Bronstein,R.Roelofs,B.Sapp,B.White,A.Faust,S.Whiteson
+et al., “Imitation isnot enough: Robustifyingimitation with reinforcementlearning for challenging
+drivingscenarios,”in2023IEEE/RSJInternationalConferenceonIntelligentRobotsandSystems
+(IROS). IEEE,2023,pp.7553–7560.
+[23] J.Degrave,F.Felici,J.Buchli,M.Neunert,B.Tracey,F.Carpanese,T.Ewalds,R.Hafner,A.Abdol-
+maleki,D. deLasCasasetal.,“Magnetic controloftokamakplasmas throughdeepreinforcement
+learning,”Nature,vol.602,no.7897,pp.414–419,2022.
+[24] F. Rosenblatt, The perceptron, a perceiving and recognizing automaton Project Para. Cornell
+AeronauticalLaboratory,1957.
+[25] N.Wiener,Nonlinearproblemsinrandomtheory,1966.
+[26] F.Rosenblattetal.,Principlesofneurodynamics: Perceptronsandthetheoryofbrainmechanisms.
+SpartanbooksWashington,DC,1962,vol.55.
+[27] K.Hornik,M.Stinchcombe,andH.White,“Multilayerfeedforwardnetworksareuniversalapproxi-
+mators,”Neuralnetworks,vol.2,no.5,pp.359–366,1989.
+[28] D. E. Rumelhart, G. E. Hinton, R. J. Williams et al., “Learning internal representations by error
+propagation,”1985.
+[29] Y. LeCun, B. Boser, J. S. Denker, D. Henderson, R. E. Howard, W. Hubbard, and L. D. Jackel,
+“Backpropagationappliedtohandwrittenzipcoderecognition,”Neuralcomputation,vol.1,no.4,pp.
+541–551,1989.
+[30] C.M.Bishop,Neuralnetworksforpatternrecognition. Oxforduniversitypress,1995.
+[31] V.Bergholm,J.Izaac,M.Schuld,C.Gogolin,S.Ahmed,V.Ajith,M.S.Alam,G.Alonso-Linaje,
+B. AkashNarayanan, A. Asadi et al., “Pennylane: Automatic differentiation of hybrid quantum-
+classicalcomputations,”arXivpreprintarXiv:1811.04968,2018.
+[32] J.Izaac,“Basictutorial: qubitrotation,”2019.[Online].Available: https://pennylane.ai/qml/demos/
+tutorial_qubit_rotation.html
+[33] ——, “Quantum gradients with backpropagation,” 2020. [Online]. Available: https:
+//pennylane.ai/qml/demos/tutorial_backprop.html#quantum-gradients-with-backpropagation
+[34] “Parameter-shift rules,” 2022. [Online]. Available: https://pennylane.ai/qml/glossary/parameter_shift.
+html
+[35] M. Schuld, V. Bergholm, C. Gogolin, J. Izaac, and N. Killoran, “Evaluating analytic gradients on
+quantumhardware,”PhysicalReviewA,vol.99,no.3,p.032331,2019.
+[36] K.Mitarai,M.Negoro,M.Kitagawa,andK.Fujii,“Quantumcircuitlearning,”PhysicalReviewA,
+vol.98,no.3,p.032309,2018.
+[37] N. Killoran, “The stochastic parameter-shift rule,” 2020. [Online]. Available: https:
+//pennylane.ai/qml/demos/tutorial_stochastic_parameter_shift/
+[38] J.C. Spall, “Implementationofthesimultaneous perturbationalgorithmforstochasticoptimization,”
+IEEETransactionsonaerospaceandelectronicsystems,vol.34,no.3,pp.817–823,1998.
+36
+[39] J.Stokes,J.Izaac,N.Killoran,andG.Carleo,“Quantumnaturalgradient,”Quantum,vol.4,p.269,
+2020.
+[40] I.Grossu,“Singlequbitneuralquantumcircuitforsolvingexclusive-or,”MethodsX,vol.8,p.101573,
+2021.
+[41] R.R.Purietal.,Mathematicalmethodsofquantumoptics. Springer,2001,vol.79.
+[42] L.BanchiandG.E.Crooks,“Measuringanalyticgradientsofgeneralquantumevolutionwiththe
+stochasticparametershiftrule,”Quantum,vol.5,p.386,2021.
+37
+Appendix
+A1 Binary Dimensionality Reduction Example
+In this example we will assume that our data has a starting dimension of 200 and that we are using a
+quantumcomputer/simulatorthathas16qubits. Forthisexamplewewillassumethatweareembedding
+binaryvalues. Toconvertthehighdimensionalfloatingpointdatatoa16bitbinaryvector,anensembleof
+weakclassifierswillbeused.
+Fortheweakclassifier,theperceptronmentionedinthemaindocumentisused. Thisworkswellinthe
+ensemblecaseasthealgorithmcanbeoptimizedthroughdirectoptimizationvia
+w = yXT(XXT)−1, (A1)
+wherey ∈ {−1,1}isthevectoroftruelabelsandXisthesetofalltrainingdata. Thisisthesolutionto
+solvingtheequationy = wXforw.
+To train an ensemble of perceptrons the training data is split into N sets of equal size, where N is
+the number of desired bits in the quantum encoding. A perceptron is then trained, using eq. (A1), for
+each of the N sets. The entirety of the data is then passed through each of the N perceptrons. Each −1
+isconvertedto zero,andthe N outputsare combined togethertoform thebinaryrepresentationfor the
+algorithmcomparisons.
+A2 Statement and Proof of the Pauli Commutator Identity
+Letσ beaPaulimatrix,andB anyoperator. LetU (θ) := exp(−iθσ ). Then
+i i 2 i
+(cid:18) (cid:19)
+(cid:16)π(cid:17) (cid:16)π(cid:17) (cid:16) π(cid:17) (cid:16) π(cid:17)
+[σ ,B] = −i U† BU −U† − BU − (A2)
+i i 2 i 2 i 2 i 2
+Proof. First, note that for Pauli matrix σ , i = 1,2,3, σ† = σ (that is, Pauli matrices are Hermitian).
+i i i
+PlugginginthedefinitionofU (π)yields
+i 2
+(cid:18) (cid:19)
+(cid:16) π (cid:17) (cid:16) π (cid:17) (cid:16) π (cid:17) (cid:16) π (cid:17)
+[σ ,B] = −i exp i σ Bexp −i σ −exp −i σ Bexp i σ . (A3)
+i i i i i
+4 4 4 4
+next,weapplythefollowingPaulimatrixidentity:
+eia(nˆ·⃗σ) = Icosa+i(nˆ ·⃗σ)sina, |nˆ| = 1, (A4)
+where⃗σ = σ xˆ+σ yˆ+σ zˆ. Put simply, this intermediate identity holds through the expansion of the
+x y z
+exponential into an infinite sum, splitting the sum into even and odd exponent parts, and noting that
+σ2p = I,p ∈ N ,whichcausesthecosine(composedoftheevenexponentterms)toonlyhaveprefactor
+i +
+Identity, andthesine (composedofthe oddexponentterms)to beleftwith thePaulimatrix prefactor. In
+ourcase,σ = nˆ ·⃗σ,thus
+i i
+(cid:16) π (cid:17) π π
+exp i σ = Icos +iσ sin (A5)
+i i
+4 4 4
+38
+Applyingthisidentity,andalsothefactthatcos(−a) = cos(a)andsin(−a) = −sin(a),yields
+(cid:18)
+(cid:16) π π(cid:17) (cid:16) −π −π(cid:17)
+[σ ,B] = −i Icos +iσ sin B Icos +iσ sin
+i i i
+4 4 4 4
+(cid:19)
+(cid:16) −π −π(cid:17) (cid:16) π π(cid:17)
+− Icos +iσ sin B Icos +iσ sin (A6)
+i i
+4 4 4 4
+(cid:18)
+(cid:16) π π(cid:17) (cid:16) π π(cid:17)
+= −i Icos +iσ sin B Icos −iσ sin
+i i
+4 4 4 4
+(cid:19)
+(cid:16) π π(cid:17) (cid:16) π π(cid:17)
+− Icos −iσ sin B Icos +iσ sin (A7)
+i i
+4 4 4 4
+√ √ √ √ √ √ √ √
+(cid:18) (cid:19)
+(cid:16) 2 2(cid:17) (cid:16) 2 2(cid:17) (cid:16) 2 2(cid:17) (cid:16) 2 2(cid:17)
+= −i I +iσ B I −iσ − I −iσ B I +iσ (A8)
+i i i i
+2 2 2 2 2 2 2 2
+(cid:18) (cid:19)
+i (cid:16) (cid:17)
+= − B −iBσ +iσ B −i2σ Bσ − B +iBσ −iσ B −i2σ Bσ (A9)
+i i i i i i i i
+2
+(cid:18) (cid:19)
+i
+= − −2iBσ +2iσ B = σ B −Bσ (A10)
+i i i i
+2
+A3 Derivation of the Baker-Campbell-Hausdorff Identity
+ˆ ˆ
+Let A : H → H and B : H → H be operators in Hilbert space H, and let f(λ) be a single parameter
+functionwithλ ∈ C,definedby:
+f(λ) =
+eλAˆ
+B
+ˆ e−λAˆ
+. (A11)
+Then
+f(λ) =
+eλ[Aˆ,·]B ˆ
+. (A12)
+Proof. Startingwiththefunctionf(λ) =
+eλAˆ
+B
+ˆ e−λAˆ
+,whichatypicalformofanexpectationvalueinthe
+HeisenbergorInteractionpicture,writeitasaTaylorseriesexpansionoftheform:
+(cid:88) ∞ Fn(a)(x−a)n
+F(x) = . (A13)
+n!
+n=0
+Takingthefirstderivativeoff(λ)yields:
+f′(λ) = eλAˆ A ˆ B ˆ e−λAˆ −eλAˆ B ˆ A ˆ e−λAˆ = eλAˆ [A ˆ ,B ˆ ]e−λAˆ . (A14)
+Theevaluatingforλ = 0:
+f′(0) = e0Aˆ [A ˆ ,B ˆ ]e−0Aˆ = [A ˆ ,B ˆ ] = [A ˆ ,·]1B ˆ (A15)
+where[A ˆ ,·]1B ˆ isanalternativenotationwhoseusefulnesswillbecomeapparentshortly. Repeatingthe
+abovestepsforthesecondderivativegives:
+f′′(λ) = eλAˆ A ˆ [A ˆ ,B ˆ ]e−λAˆ −eλAˆ [A ˆ ,B ˆ ]A ˆ e−λAˆ = eλAˆ(cid:2) A ˆ ,[A ˆ ,B ˆ ] (cid:3) e−λAˆ = eλAˆ [A ˆ ,·]2B ˆ e−λAˆ (A16)
+f′′(0) = e0Aˆ(cid:2) A ˆ ,[A ˆ ,B ˆ ] (cid:3) e−0Aˆ = (cid:2) A ˆ ,[A ˆ ,B ˆ ] (cid:3) = [A ˆ ,·]2B ˆ (A17)
+39
+Usingthedevelopingpattern,thenth derivativeevaluatedatzerocanbewrittenas:
+fn(0) = [A ˆ ,·]nB ˆ . (A18)
+Now,writingf(λ)asaTaylorexpansioneq.(A13)centeredatzero(i.e. witha = 0)gives:
+f(λ) =
+eλAˆ
+B
+ˆ e−λAˆ
+=
+(cid:88) ∞ fn(0)(λ−0)n
+=
+(cid:88) ∞ [A ˆ ,·]nB ˆ λn
+. (A19)
+n! n!
+n=0 n=0
+Thefinalformoftheexpressionlookslikethedefinitionofanexponential,
+eλAˆ
+=
+(cid:88) ∞ λnA ˆn
+. (A20)
+n!
+n=0
+Rewritingf(λ)inexponentialformyields:
+(cid:32) (cid:33)
+f(λ) =
+eλAˆ
+B
+ˆ e−λAˆ
+=
+(cid:88) ∞ [A ˆ ,·]nB ˆ λn
+=
+(cid:88) ∞ λn[A ˆ ,·]n
+B
+ˆ
+=
+eλ[Aˆ,·]B ˆ
+, (A21)
+n! n!
+n=0 n=0
+whichistheBaker-Campbell-Hausdorffidentity.
+A4 Derivation of the Derivative of a Parametric Exponential Opera-
+tor
+LetZ(θ)beasomeoperatorparameterizedbyθ. Then
+∂ (cid:90) 1 ∂
+eZ(θ) = e(1−s)Z(θ) Z(θ)esZ(θ)ds (A22)
+∂θ ∂θ
+0
+Proof. First,notethateZ(θ) = (cid:80)∞ Z(θ)n . So
+n=0 n!
+∞
+∂ (cid:88) 1 ∂
+eZ(θ) = Z(θ)n (A23)
+∂θ n!∂θ
+n=0
+∂ (cid:16) 1 (cid:17)
+= I +Z(θ)+ Z(θ)2 +... (A24)
+∂θ 2
+∂Z(θ) 1(cid:16) ∂Z(θ) ∂Z(θ) (cid:17)
+= 0+ + Z(θ) + Z(θ) +
+∂θ 2 ∂θ ∂θ
+1(cid:16)∂Z(θ) ∂Z(θ) ∂Z(θ)(cid:17)
++ Z(θ)2 +Z(θ) Z(θ)+Z(θ)2
+6 ∂θ ∂θ ∂θ
+1 (cid:16)∂Z(θ) ∂Z(θ) ∂Z(θ) ∂Z(θ)(cid:17)
++ Z(θ)3 +Z(θ) Z(θ)2 +Z(θ)2 Z(θ)+Z(θ)3 +... (A25)
+24 ∂θ ∂θ ∂θ ∂θ
+∂Z(θ) (cid:16)1 1 1 (cid:17)∂Z(θ)
+= I I + Z(θ)+ Z(θ)2 + Z(θ)3 +... I
+∂θ 2 6 24 ∂θ
+∂Z(θ)(cid:16)1 1 1 (cid:17)
++I Z(θ)+ Z(θ)2 + Z(θ)3 +...
+∂θ 2 6 24
+(cid:16) 1 (cid:17)∂Z(θ) ∂Z(θ)(cid:16) 1 (cid:17)
++ Z(θ)2 +... Z(θ)+Z(θ) Z(θ)2 +... +... (A26)
+24 ∂θ ∂θ 24
+∞ n
+(cid:88)(cid:88) 1 ∂Z(θ)
+= Z(θ)k Z(θ)n−k. (A27)
+(n+1)! ∂θ
+n=0 k=0
+40
+Now,shifting/swappingtheindicesusingtheidentity[41]
+∞ n ∞ ∞ ∞ ∞
+(cid:88)(cid:88) (cid:88)(cid:88) (cid:88)(cid:88)
+f = f = f , (A28)
+n,k n,k n+k,k
+n=0 k=0 k=0 n=k k=0 n=0
+wehave
+∞ ∞
+∂ (cid:88)(cid:88) 1 ∂Z(θ)
+eZ(θ) = Z(θ)k Z(θ)n. (A29)
+∂θ (n+k +1)! ∂θ
+k=0 n=0
+Nowmultiplyby1 = n!k!
+n!k!
+∞ ∞
+∂ (cid:88)(cid:88) n!k! ∂Z(θ)
+eZ(θ) = Z(θ)k Z(θ)n. (A30)
+∂θ n!k!(n+k +1)! ∂θ
+k=0 n=0
+Next,wenotethat n!k! isthedefinitionofthebetafunction,whichcanberepresentedasanintegral
+(n+k+1)!
+viaEuler’sbetafunctionidentity(proofprovidedaftertheconclusionofthisproof)
+n!k! (cid:90) 1
+B(k +1,n+1) := = (1−s)ksnds (A31)
+(n+k +1)!
+0
+PlugginginEuler’sbetafunctionidentityyields
+∂ (cid:90) 1 (cid:88) ∞ (cid:88) ∞ 1 (cid:16) (cid:17)k∂Z(θ)(cid:16) (cid:17)n
+eZ(θ) = (1−s)Z(θ) sZ(θ) ds (A32)
+∂θ n!k! ∂θ
+0 k=0 n=0
+(cid:90) 1 (cid:88) ∞ 1 (cid:16) (cid:17)k∂Z(θ) (cid:88) ∞ 1 (cid:16) (cid:17)n
+= (1−s)Z(θ) sZ(θ) ds (A33)
+k! ∂θ n!
+0 k=0 n=0
+(cid:90) 1 ∂Z(θ)
+= e(1−s)Z(θ) esZ(θ)ds (A34)
+∂θ
+0
+A5 Statement and Proof of Euler’s beta function identity
+(n−1)!(k −1)! (cid:90) 1
+B(k,n) := = (1−s)k−1sn−1ds (A35)
+(n+k −1)!
+0
+Proof. Thisproofisreadilyavailableinnumerousonlinesources. First,byintegration-by-parts,onecan
+showthatform ∈ N,
+(cid:90) ∞
+pm−1e−pdp = (m−1)! (A36)
+0
+Next,considertheproduct
+(cid:90) ∞ (cid:90) ∞
+(m−1)!(n−1)! = pm−1e−pdp× qn−1e−qdq. (A37)
+0 0
+Rewritingitasadoubleintegralovertheregionx,y ≥ 0inthe(x,y)-planeyields
+(cid:90) ∞ (cid:90) ∞
+(m−1)!(n−1)! = 2 x2m−1e−x2dx×2 y2n−1e−y2dy. (A38)
+0 0
+41
+Nowtransformtopolarcoordinates: x = rcosθ,y = rsinθ,anddxdy = rdrdθ
+(cid:90) ∞ (cid:90) π/2
+(m−1)!(n−1)! = 4 r2(m+n−1)e−r2rdr× sin2n−1θcos2m−1θdθ (A39)
+0 0
+(cid:90) π/2
+= 2(m+n−1)! sin2n−1θcos2m−1θdθ, (A40)
+0
+wherewehaveappliedthesingleintegerfactorialformineq.(A36). Thus,wehavethat
+(m−1)!(n−1)! (cid:90) π/2
+= 2 sin2n−1θcos2m−1θdθ. (A41)
+(m+n−1)!
+0
+Finally,makethechangeofvariablet = sin2θ,whichimpliesthatdt = 2sinθcosθdθ andcos2θ = 1−t.
+Re-writingtheintegralandapplyingthischangeofvariablesyields
+(cid:90) π/2 (cid:90) π/2
+2 sin2n−1θcos2m−1θdθ = sin2n−2θcos2m−2θ2sinθcosθdθ (A42)
+0 0
+(cid:90) 1
+= (1−t)n−1tm−1dt (A43)
+0
+Thuswehaveconcludedthat
+(m−1)!(n−1)! (cid:90) 1
+= (1−t)n−1tm−1dt (A44)
+(m+n−1)!
+0
+A6 Derivation of the Stochastic Parameter-Shift Rule
+Thestochastic parameter-shiftruleallows foramore generalizablegradient calculation thatis applicable
+ˆ
+toawidervarietyofgatesincludingmulti-qubitgates[37]. ThisisdonebyreplacingtheoperatorGin
+U
+ˆ
+(θ) =
+e−iaθGˆ
+withG
+ˆ
+= H
+ˆ
++θV
+ˆ
+,whereH
+ˆ
+isanarbitrarylinearcombinationofPaulioperatortensor
+G
+ˆ
+products,andV isatensorproductofPaulioperators. Sincemulti-qubitoperatorscanbeconstructedasa
+ˆ ˆ
+sum of tensor products of Pauli operators, the use of H and V in this form allows for generalization to
+arbitrarygatesandcalculationofthegradientanalytically. ThelossfunctionC(θ)thenbecomes:
+C(θ) = ⟨ψ|U
+ˆ†(θ)A ˆ
+U
+ˆ
+(θ)|ψ⟩ =
+⟨ψ|eiaθ(Hˆ+θVˆ)A ˆ e−iaθ(Hˆ+θVˆ)|ψ⟩.
+(A45)
+G G
+To find the gradient of this loss function and manipulate it into a form compatible with quantum
+computersrequires several identities. The Baker-Campbell-Hausdorff(BCH) identity[42]is derived in
+sectionA3,andisgivenby:
+(cid:32) (cid:33)
+f(λ) =
+eλAˆ
+B
+ˆ e−λAˆ
+=
+(cid:88) ∞ λn[A ˆ ,·]n
+B
+ˆ
+=
+eλ[Aˆ,·]B ˆ
+. (A46)
+n!
+n=0
+We also apply the commutator identity in eq. (93), and the following exponential derivative rule,
+derivedinsectionA4[37,42]:
+∂eZˆ(θ) (cid:90) 1 ∂Z ˆ (θ)
+=
+e(1−s)Zˆ(θ) esZˆ(θ)ds
+(A47)
+∂θ ∂θ
+0
+42
+Withthis,wederiveananalyticformofthegradientthatmaystillbeevaluatedbyaquantumcomputer.
+Thestartingpointiseq.(A45),repeatedhereforclarity:
+C(θ) =
+⟨ψ|eiaθ(Hˆ+θVˆ)A ˆ e−iaθ(Hˆ+θVˆ)|ψ⟩.
+ApplyingtheBCHidentityeq.(A46)yields:
+C(θ) =
+⟨ψ|eia[Hˆ+θVˆ,·]A ˆ
+|ψ⟩ (A48)
+Next,thederivativeistakenandpassedintotheexpectation:
+dC(θ) ∂ ∂
+=
+⟨ψ|eia[Hˆ+θVˆ,·]A ˆ
+|ψ⟩ = ⟨ψ|
+eia[Hˆ+θVˆ,·]A ˆ
+|ψ⟩. (A49)
+dθ ∂θ ∂θ
+Next the exponential derivative rule in eq. (A47) is applied, where
+eZˆ(θ)
+=
+eia[Hˆ+θVˆ,·]
+and
+∂Zˆ(θ)
+=
+∂θ
+∂ ia[H ˆ +θV ˆ ,·] = ia[V ˆ ,·],giving:
+∂θ
+dC(θ) ∂ (cid:90) 1
+= ⟨ψ|
+eia[Hˆ+θVˆ,·]A ˆ
+|ψ⟩ = ⟨ψ|
+e(1−s)ia[Hˆ+θVˆ,·]ia[V ˆ ,·]esia[Hˆ+θVˆ,·]A ˆ
+ds|ψ⟩. (A50)
+dθ ∂θ
+0
+Next,theconstantsaremovedoutoftheinnerproductandtheBCHidentityeq.(A46)isappliedtothe
+terminred:
+dC(θ) (cid:90) 1
+= ia⟨ψ|
+e(1−s)ia[Hˆ+θVˆ,·]ia[V ˆ ,·]{esia[Hˆ+θVˆ,·]A ˆ
+}ds|ψ⟩ (A51)
+dθ
+0
+(cid:90) 1
+= ia⟨ψ|
+e(1−s)ia[Hˆ+θVˆ,·]ia[V ˆ ,·]esia(Hˆ+θVˆ)A ˆ e−sia(Hˆ+θVˆ)ds|ψ⟩
+(A52)
+0
+(cid:90) 1
+= ia⟨ψ|
+e(1−s)ia[Hˆ+θVˆ,·]ia (cid:2)
+V
+ˆ ,esia(Hˆ+θVˆ)A ˆ e−sia(Hˆ+θVˆ) (cid:3)
+ds|ψ⟩, (A53)
+0
+ˆ ˆ ˆ ˆ
+where weuse thecommutator notation[A,·]B = [A,B]. Since the firstterm ofthe commutatornow only
+ˆ
+containsV,wecannowapplythecommutatoridentityeq.(93):
+dC(θ) (cid:90) 1 (cid:18) (cid:16)π(cid:17) (cid:16)π(cid:17)
+= a⟨ψ|
+e(1−s)ia[Hˆ+θVˆ,·]
+U
+ˆ† esia(Hˆ+θVˆ)A ˆ e−sia(Hˆ+θVˆ)U ˆ
+dθ V 2 V 2
+0
+(cid:19)
+(cid:16) π(cid:17) (cid:16) π(cid:17)
+−U
+ˆ†
+−
+esia(Hˆ+θVˆ)A ˆ e−sia(Hˆ+θVˆ)U ˆ
+− ds|ψ⟩, (A54)
+V 2 V 2
+whereU
+ˆ
+(θ) =
+eibθVˆ
+andbisanotherconstantb ̸= a. TheBCHidentityisappliedoncemoretotheentire
+V
+terminsidethebracketswhere
+(cid:18) (cid:19)
+(cid:16)π(cid:17) (cid:16)π(cid:17) (cid:16) π(cid:17) (cid:16) π(cid:17)
+U
+ˆ† esia(Hˆ+θVˆ)A ˆ e−sia(Hˆ+θVˆ)U ˆ
+−U
+ˆ†
+−
+esia(Hˆ+θVˆ)A ˆ e−sia(Hˆ+θVˆ)U ˆ
+− (A55)
+V 2 V 2 V 2 V 2
+is treated as the matrix B
+ˆ
+in
+eλAˆ
+B
+ˆ e−λAˆ
+=
+eλ[Aˆ,·]B ˆ
+, and
+e(1−s)ia[Hˆ+θVˆ,·]
+is the exponential. This BCH
+43
+identityapplicationyields:
+dC(θ) (cid:90) 1 (cid:18) (cid:16)π(cid:17) (cid:16)π(cid:17)
+= a⟨ψ|
+e(1−s)ia(Hˆ+θVˆ)
+U
+ˆ† esia(Hˆ+θVˆ)A ˆ e−sia(Hˆ+θVˆ)U ˆ
+dθ V 2 V 2
+0
+(cid:19)
+(cid:16) π(cid:17) (cid:16) π(cid:17)
+−U
+ˆ†
+−
+esia(Hˆ+θVˆ)A ˆ e−sia(Hˆ+θVˆ)U ˆ
+− ds|ψ⟩ (A56)
+V 2 V 2
+(cid:18) (cid:90) 1 (cid:16)π(cid:17) (cid:16)π(cid:17)
+= a ⟨ψ|
+e(1−s)ia(Hˆ+θVˆ)U ˆ† esia(Hˆ+θVˆ)A ˆ e−sia(Hˆ+θVˆ)U ˆ e−(1−s)ia(Hˆ+θVˆ)ds|ψ⟩
+V 2 V 2
+0
+(cid:90) 1 (cid:16) π(cid:17) (cid:16) π(cid:17) (cid:19)
+−⟨ψ|
+e(1−s)ia(Hˆ+θVˆ)U ˆ†
+−
+esia(Hˆ+θVˆ)A ˆ e−sia(Hˆ+θVˆ)U ˆ
+−
+e−(1−s)ia(Hˆ+θVˆ)ds|ψ⟩
+V 2 V 2
+0
+(A57)
+(cid:90) 1(cid:18)
+(cid:16)π(cid:17) (cid:16)π(cid:17)
+= a
+⟨ψ|e(1−s)ia(Hˆ+θVˆ)U ˆ† esia(Hˆ+θVˆ)A ˆ e−sia(Hˆ+θVˆ)U ˆ e−(1−s)ia(Hˆ+θVˆ)|ψ⟩
+V 2 V 2
+0
+(cid:19)
+(cid:16) π(cid:17) (cid:16) π(cid:17)
+−⟨ψ|e(1−s)ia(Hˆ+θVˆ)U ˆ†
+−
+esia(Hˆ+θVˆ)A ˆ e−sia(Hˆ+θVˆ)U ˆ
+−
+e−(1−s)ia(Hˆ+θVˆ)|ψ⟩
+ds
+V 2 V 2
+(A58)
+whichis thestochasticparameter-shiftrule [37,42]. Usingthe BCHidentity,the gradientwasable tobe
+ˆ
+manipulated back into the form of a difference of two expectation values with the observable A at the
+center,thegateoperationsandstatevector|ψ⟩onitsright,andtheircomplexconjugatestransposedon
+its left. Comparingeq. (A58) tothe original lossfunction eq. (A45), thegradient contains moreterms as
+wellasanintegral. Inordertoperformthisgradientcalculation,asecondquantumcircuitthatrepresents
+thegradientcalculationwouldneedtobesetupandruninconjunctionwiththeoriginalcircuitusedto
+calculatetheloss[37]. Additionally,theintegralisapproximatedbythefollowingsamplingscheme:
+(cid:90) 1 1 (cid:88) M
+⟨ψ|F(s)|ψ⟩ ≈ ⟨ψ|F(s )|ψ⟩, s ∼ U(0,1) (A59)
+i i
+M
+0
+i
+whereU(0,1)denotestheuniformdistributionon[0,1]. Avalueforsisrandomlysampledfromauniform
+distributionforeachrunofthecircuit[37]andexpectationsareaveraged. Whilethisdoesrequiremore
+resourcestorun,itisanaccuratequantumcalculationofthegradientofthequantumlossfunction.
+44

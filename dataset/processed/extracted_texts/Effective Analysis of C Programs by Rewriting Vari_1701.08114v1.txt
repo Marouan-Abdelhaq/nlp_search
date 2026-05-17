@@ -1,0 +1,1148 @@
+Effective Analysis of C Programs by Rewriting Variability
+Alexandru F. Iosif-Lazara, Jean Meloa, Aleksandar S. Dimovskia, Claus
+Brabranda, and Andrzej Wąsowskia
+a ITUniversityofCopenhagen,Denmark
+Abstract Context.Variability-intensiveprograms(programfamilies)appearinmanyapplicationareasand
+formanyreasonstoday.Differentfamilymembers,calledvariants,arederivedbyswitchingstaticallyconfig-
+urableoptions(features)onandoff,whilereuseofthecommoncodeismaximized.
+Inquiry. Verification of program families is challenging since the number of variants is exponential in the
+numberoffeatures.Existingsingle-programanalysisandverificationtoolscannotbeapplieddirectlytopro-
+gramfamilies,anddesigningandimplementingthecorrespondingvariability-awareversionsistediousand
+laborious.
+Approach.Inthiswork,weproposearangeofvariability-relatedtransformationsfortranslatingprogramfam-
+iliesintosingleprogramsbyreplacingcompile-timevariabilitywithrun-timevariability(non-determinism).
+Theobtainedtransformedprogramscanbesubsequentlyanalyzedusingtheconventionaloff-the-shelfsingle-
+programanalysistoolssuchastypecheckers,symbolicexecutors,modelcheckers,andstaticanalyzers.
+Knowledge. Our variability-related transformations are outcome-preserving, which means that the relation
+betweentheoutcomesinthetransformedsingleprogramandtheunionofoutcomesofallvariantsderived
+fromtheoriginalprogramfamilyisequality.
+Grounding. We present our transformation rules and their correctness with respect to a minimal core im-
+perativelanguageIMP.Then,wediscussourexperienceofimplementingandusingthetransformationsfor
+efficientandeffectiveanalysisandverificationofreal-worldCprogramfamilies.
+Importance.Wereportsomeinterestingvariability-relatedbugsthatwediscoveredusingvariousstate-of-the-
+artsingle-programCverificationtools,suchasFrama-C,Clang,LLBMC.
+ACMCCS2012
+Softwareanditsengineering→SoftwarecreationandmanagementSoftwareverificationandvalidation;
+SoftwarenotationsandtoolsFormallanguagedefinitions;
+Keywords ProgramFamilies,Variability-relatedTransformations,Verification,StaticAnalysis
+The Art, Science, and Engineering of Programming
+Submitted September1,2016
+Published January27,2017
+doi 10.22152/programming-journal.org/2017/1/1
+©AlexandruF.Iosif-Lazar,JeanMelo,AleksandarS.Dimovski,ClausBrabrand,andAn-
+drzejWąsowski
+Thisworkislicensedundera“CCBY4.0” license.
+InTheArt,Science,andEngineeringofProgramming,vol.1,no.1,2017,article1;25pages.
+EffectiveAnalysisofCProgramsbyRewritingVariability
+1 Introduction
+Many software systems today are variability intensive. They permit users to derive
+a custom variant by choosing suitable configuration options (features) depending
+on their requirements. There are different strategies for implementing variational
+systems (program families) [11]. Still, many popular industrial program families
+from system software (e.g. Linux kernel) and embedded software (e.g. cars, phones,
+avionics) domains are implemented using annotative approaches such as conditional
+compilation. For example, #ifdef annotations from the C-preprocessor are used to
+specify under which conditions, parts of the code should be included or excluded
+from a variant.
+Duetotheincreasingpopularityofprogramfamilies,formalverificationtechniques
+for proving their correctness are widely studied (see [35] for a survey). Analyzing
+program families is challenging [29]. From only a few compile-time configuration
+options, exponentially many variants can be derived. Thus, for large variability-
+intensive software systems, any brute-force approach that derives and analyzes all
+variantsindividuallyonebyoneusingexistingsingle-programanalysistoolsisveryinef-
+ficient or even infeasible. Recently, many dedicated family-based (variability-aware)
+analysistoolshavebeendeveloped,whichoperatedirectlyonprogramfamilies.They
+produce results for all variants at once in a single run by exploiting the similarities
+betweenthevariants.Examplesofsuccessfulfamily-basedanalysistoolsareappliedto
+syntax checking [25, 20], type checking [24, 8], static analysis [7, 6], model checking
+[10,14],etc.Althoughtheyaremoreefficientthanthebrute-forceapproach,stilltheir
+design and implementation for each particular analysis and language is tedious and
+error prone. Often, these family-based tools are research prototypes implemented
+fromscratch.Soitisverydifficulttore-implementalloptimizationalgorithmsinthem
+that already exist for their single-program industrial-strength counterparts, which
+have been under development for several decades.
+Another approach for efficient variability-aware verification would be to replace
+compile-time variability with run-time variability (or non-determinism) [37]. In
+particular, in this work we consider a class of variability-related transformations that
+transform a program family into a single program, whose outcomes are equal to the
+unionofalloutcomesofindividualvariants.Wecallthecorrespondingtransformations
+outcome-preserving.Subsequently,existingsingle-programanalysistools(verification
+oracles)thatcanhandlenon-determinism(run-timevariability)canbeusedtoanalyze
+the generated single program. Finally, the obtained results are interpreted back on
+the individual variants. The overview of this approach is given in Figure 1. Instead of
+using specialized variability-aware tools to analyze program families (which would
+be tedious and labor intensive), our transformation-based approach allows us to use
+the standard off-the-shelf single-program analysis tools to achieve the same goal.
+Nevertheless, the limitation of our approach is that we may not obtain the most
+precise conclusive results for all individual variants. Of course, this depends on the
+particular analysis and tool that we use.
+To demonstrate correctness of our transformation-based approach, we define the
+transformations formally using IMP, a small imperative language. To model compile-
+1-2
+A.F.Iosif-Lazar,J.Melo,A.S.Dimovski,C.Brabrand,A.Wasowski
+Variability-aware transform (cid:47)(cid:47)
+program
+erawa-ytilibairav
+rezylana
+Single program
+(cid:15)(cid:15)
+margorp-elgnis
+rezylana
+(cid:15)(cid:15)
+Variability-awareint(cid:111)(cid:111)erpretresults Single-program
+results results
+Figure1 Theoverviewofourtransformation-basedapproachforverificationofprogram
+families.Thesingle-programanalyzercanbeanyverificationoracleforsingle
+programs,suchas:symbolicexecutor,typechecker,staticanalyzer,modelchecker.
+time variability, we extend IMP with an “#ifdef” construct for encoding multiple
+variants, which we call IMP language. To encode run-time variability, we extend IMP
+with an “or” construct for encoding non-determinism, which we call IMPor language.
+WedefinetransformationsthattranslateanygivenIMPprogramintoacorresponding
+IMPor program. Furthermore, for each transformation we show the relation between
+the semantics of the input and output programs.
+Finally, we report on our experience with implementing and applying our trans-
+formations for a full-fledged language, C. The tool, called C Reconfigurator, uses
+variability-aware parser SuperC [20] for parsing C code with preprocessor anno-
+tations, then applies our variability rewrites thus producing a single C program as
+output.Weevaluateourapproachonreal-worldvariabilityintensiveCprogramswith
+real bugs. We show how some known off-the-shelf single-program analysis tools can
+be used for efficient and effective verification of such programs.
+In summary, this work makes the following contributions:
+A stand-alone variability-related transformation, which transforms a program fam-
+ilyintoasingleprogrambyreplacingcompile-timevariabilitywithnon-determinism.
+Correctness of the proposed transformation, which shows that the set of outcomes
+of the transformed program is equal to the union of sets of outcomes of variants
+from the input family.
+A prototype tool, C Reconfigurator, which implements the above variability-
+related transformation for the C language.
+Anevaluationoftheeffectivenessofourtransformation-basedapproachforfinding
+real variability bugs in large variability intensive C software systems.
+2 MotivatingExample
+WebeginbyshowinghowourvariabilitytransformationsworkonCprogramfamilies.
+Consider a preprocessor-based family of C programs shown in Figure 2 (left column),
+which uses two (Boolean) features Aand B. Our two features give rise to a family of
+four variants defined by the set of configurations (cid:75)={A∧B,A∧¬B,¬A∧B,¬A∧¬B}.
+1-3
+EffectiveAnalysisofCProgramsbyRewritingVariability
+int
+A:=rand()%2;
+intfoo
+() {
+int
+B:=rand()%2;
+intx:=1; int foo () {
+#if (A) x:=x+1#endif; intx :=1;
+#if (B) x:=x-1#endif; if (A) x:=x+1;
+return2/x; if (B) x:=x-1;
+} return2/x; }
+Figure2 Before(leftcolumn)andafter(rightcolumn)ourtransformations
+For each configuration a different variant (single program) can be generated by
+appropriately resolving #if statements. For example, the variant for A∧B will have
+bothfeaturesAand B enabled(settotrue),thusyieldingthefollowingbodyof foo():
+intx := 1;x := x+1;x := x-1;return2/x. The variant for ¬A∧¬B is: intx := 1;return2/x.
+Insuchprogramfamilies,errors(alsoknownasvariabilitybugs[1])canoccurinsome
+variants(configurations)butnotinothers.InourexampleprogramfamilyinFigure2,
+the variant ¬A∧B will crash at the return statement when we attempt to divide by
+zero. On the other hand, the other variants do not contain the division-by-zero error
+since the value of x at the return statement is: 1 for variants A∧B and ¬A∧¬B, and 2
+for A∧¬B.
+In Figure 2, we show a single program (right column) obtained by applying our
+variability-relatedtransformationonthefamilyshownintheleftcolumn.Allfeatures
+arefirstdeclaredasordinaryglobalvariablesandnon-deterministicallyinitializedto0
+or1,thenall#ifstatementsaretransformedintoordinaryif-swiththesameconditions.
+Thus, the division-by-zero error is present in this single program and corresponds to
+a trace when Ais initialized to 0 and B to 1. The set of outcomes of the transformed
+program (Figure 2, right column) is equal to the union of outcomes of all individual
+variants from the family (Figure 2, left column). Therefore, the division-by-zero error
+is present in the transformed program.
+In general, the transformed program that we obtain from the original program
+family can be analyzed by various single-program verification tools, in order to find
+variability errors or to confirm the absence of errors in the given program family.
+3 AFormalModelforTransformations
+We now introduce the IMP language that we use to demonstrate our transformations
+and their proofs of correctness. We describe two extensions of IMP: IMPor used to
+representrun-timevariability(non-determinism),andIMPusedtorepresentcompile-
+time variability.
+1-4
+A.F.Iosif-Lazar,J.Melo,A.S.Dimovski,C.Brabrand,A.Wasowski
+3.1 IMP
+We use a simple imperative language, called IMP [32, 34], which represents a regular
+general-purposeprogramminglanguage,aimedatthedevelopmentofsingleprograms.
+IMP is a well established minimal language, which is used only for presentational
+purposes here.
+Syntax. IMPisanimperativelanguagewithtwosyntacticcategories:expressionsand
+statements. Expressions includeinteger constants, variables,and binary operations.
+Statementsincludea“do-nothing”statementskip,assignments,statementsequences,
+conditionalstatements,whileloops,andlocalvariabledeclarations.Itsabstractsyntax
+is summarized using the following grammar:
+e ::= n | x | e ⊕e
+0 1
+s ::= skip | x := e|s ; s | if e then s else s | while e do s| var x:=e in s
+0 1 0 1
+In the above, n stands for an integer constant, x stands for a variable name, and ⊕
+stands for any binary arithmetic operator. We denote by Stm and Exp the set of all
+statements, s, and expressions, e, generated by the above grammar.
+Semantics. A state of a program is a store mapping variables to values (integer
+numbers), Val=(cid:90). We write Store=Var→Val to denote the set of all possible stores.
+Expressionsarecomputedinagivenstore,denotedbyσ.Afunction(cid:69) :Exp×Store→
+Val defined below by induction on e, maps an expression and a store to a single value,
+thereby formalizing evaluation of expressions.
+(cid:69)(n,σ)=n, (cid:69)( x,σ)=σ(
+x
+), (cid:69)(e ⊕e ,σ)=(cid:69)(e ,σ)⊕(cid:69)(e ,σ)
+0 1 0 1
+Figure 3 presents the inference rules for a small-step operational semantics for IMP
+[32, 34]. The notation σ[ x (cid:55)→ n] denotes the state that maps x into n and all other
+variables y into σ( y ). Following the convention popularized by C, we model Boolean
+valuesasintegers,withzerointerpretedasfalseandeverythingelseastrue(seerules
+If2 and Wh2, respectively, If1 and Wh1). Note that for variable declarations (see rules
+Var1 or Var2) we need to restore the declared variable, x, to its earlier global value
+assigned to x before the declaration, when the scope of declaration has completed.
+(cid:48)
+That is why the statement s in intermediate configurations (rule Var1) is prefixed
+with variable declarations whose initializations store the local values of x. We can
+use the inference rules in Figure 3 to define the transition relation: 〈s,σ〉→γ, where
+γ is either of the form 〈s (cid:48) ,σ(cid:48)〉 or of the form σ(cid:48) . If γ is of the form 〈s (cid:48) ,σ(cid:48)〉 then the
+execution of s is not completed and the complex statement s is rewritten into simpler
+ones (cid:48) ,possiblyupdatingthestoreσ intoσ(cid:48) (forinstance,Seq1orSeq2).Ifγisofthe
+form σ(cid:48) then the execution of s from σ has terminated and the final state is σ(cid:48) (for
+instance, Skip or Wh2).
+Aderivationsequenceofs startinginstoreσcanbeeitherafinitesequence〈s,σ〉→
+〈s ,σ 〉→...→σ(cid:48) (means: s is run in σ and terminates successfully transforming σ
+1 1
+toσ(cid:48) intheprocess),oraninfinitesequence〈s,σ〉→〈s ,σ 〉→...(means:sdiverges
+1 1
+1-5
+EffectiveAnalysisofCProgramsbyRewritingVariability
+n=(cid:69)(e,σ) 〈s
+0
+,σ〉→〈s
+0
+(cid:48) ,σ(cid:48)〉
+Skip Asgn Sq1
+〈skip,σ〉→σ 〈x := e,σ〉→σ[x(cid:55)→n] 〈s ;s ,σ〉→〈s (cid:48) ;s ,σ(cid:48)〉
+〈s ,σ〉→σ(cid:48) (cid:69)(e,σ)(cid:54)=0 0 1 0 1
+0
+Sq2 If1
+〈s ;s ,σ〉→〈s ,σ(cid:48)〉 〈if e thens elses ,σ〉→〈s ,σ〉
+0 1 1 0 1 0
+(cid:69)(e,σ)=0 (cid:69)(e,σ)(cid:54)=0
+If2 Wh1
+〈if e thens elses ,σ〉→〈s ,σ〉 〈while e dos,σ〉→〈s;while e dos,σ〉
+0 1 1
+(cid:69)(e,σ)=0 n=(cid:69)(e,σ) 〈s,σ[x(cid:55)→n]〉→〈s (cid:48) ,σ(cid:48)〉
+Wh2 Var1
+〈while e dos,σ〉→σ 〈var x:=e ins,σ〉→〈var x:=σ(cid:48)(x)ins (cid:48) ,σ(cid:48)[x(cid:55)→σ(x)]〉
+n=(cid:69)(e,σ) 〈s,σ[x(cid:55)→n]〉→σ(cid:48)
+Var2
+〈var x:=e ins,σ〉→σ(cid:48)[x(cid:55)→σ(x)]
+Figure3 Small-stepoperationalsemanticsforIMP
+when run in σ). We write [[s]]σ for the final store σ(cid:48) that can be derived from 〈s,σ〉
+(if the derivation is finite), i.e. 〈s,σ〉 →∗ σ(cid:48) , otherwise if the derivation is infinite
+[[s]]σ is undefined (empty). In general, we define:
+[[s]]=(cid:83) [[s]]σ
+σ∈StoreInit
+where StoreInit denotes the set of initial input stores on which s is executed.
+3.2 IMPor
+Syntax The language IMPor is obtained by extending IMP with a non-deterministic
+choice operator ‘or’ which can non-deterministically choose to evaluate either of its
+arguments.
+e ::= ... | e or e
+0 1
+Semantics. Since we have non-deterministic construct ‘or’, it is possible for an ex-
+pression to evaluate to a set of different values in a given store. Therefore, now we
+have (cid:69) :Exp×Store→(cid:80)(Val) defined as follows:
+(cid:69)(n,σ)={n}, (cid:69)( x,σ)={σ( x )}, (cid:69)(e or e ,σ)=(cid:69)(e ,σ)∪(cid:69)(e ,σ)
+0 1 0 1
+(cid:69)(e ⊕e ,σ)={v ⊕v |v ∈(cid:69)(e ,σ),v ∈(cid:69)(e ,σ)}
+0 1 0 1 0 0 1 1
+Thesmall-stepoperationalsemanticsrulesforIMPorarethoseofIMPgiveninFigure3,
+butnowtheytakeintoaccountthenon-determinismof(cid:69)(e,σ).Forexample,wehave:
+n∈(cid:69)(e,σ) n(cid:54)=0 0∈(cid:69)(e,σ)
+Wh1 Wh2
+〈 while e do s,σ〉→〈s;while e do s,σ〉 〈 while e do s,σ〉→σ
+ForIMPor,wewrite[[s]]σ fortheset offinalstoresσ(cid:48) thatcanbederivedfrom〈s,σ〉,
+i.e. 〈s,σ〉 →∗ σ(cid:48) . Note that since IMPor is a non-deterministic language [[s]]σ may
+contain more than one final store. Finally, [[s]]=(cid:83) [[s]]σ.
+σ∈StoreInit
+3.3 IMP
+A finite set of Boolean variables (cid:70)={A ,...,A } describes the set of available features
+1 n
+in the program family. Each feature may be enabled or disabled in a particular variant.
+1-6
+A.F.Iosif-Lazar,J.Melo,A.S.Dimovski,C.Brabrand,A.Wasowski
+A configuration k is a truth assignment or a valuation which gives a truth value to
+each feature, i.e. k is a mapping from (cid:70) to {true,false}. If a feature A∈(cid:70) is enabled
+for the configuration k then k(A)=true, otherwise k(A)=false. Any configuration
+k can also be encoded as a conjunction of literals: k(A )·A ∧···∧k(A )·A , where
+1 1 n n
+true·A = A and false·A = ¬A. We write (cid:75) for the set of all valid configurations
+defined over (cid:70) for a family. The set of valid configurations is typically described
+by a feature model [23], but in this work we disregard syntactic representations of
+the set (cid:75). Note that |(cid:75)|≤2 |(cid:70)| , since, in general, not every combination of features
+yields a valid configuration. We define feature expressions, denoted FeatExp, as the
+set of well-formed propositional logic formulas over (cid:70) generated using the grammar:
+φ::=true|A∈(cid:70)|¬φ|φ ∧φ |φ ∨φ .
+1 2 1 2
+Syntax. The programming language IMP is our two-stage extension of IMP (thus,
+IMP does not contain the ‘or’ construct). Its abstract syntax includes the same ex-
+pression and statement productions as IMP, but we add the new compile-time con-
+ditional statements for encoding multiple variants of a program. The new state-
+ments“#if (φ)s #endif”and“#if (φ) var x:=n in #endifs”containafeatureexpression
+φ∈FeatExpasapresencecondition,suchthatonlyifφ issatisfiedbyaconfiguration
+k∈(cid:75) then the code between #if and #endif will be included in the variant for k.
+s::=...| #if (φ) s #endif | #if (φ) var x:=n in #endif s
+Note that only statements and local variable declarations can be compile-time con-
+ditionally defined in IMP. However, in general “#if” constructs defined on arbitrary
+language elements could be translated into constructs that respect the appropriate
+syntactic structure of the language by code duplication [19]. Also note that the C
+preprocessorusesthefollowingkeywords:#if,#ifdef,and#ifndeftostartaconditional
+construct; #elif and #else to create additional branches; and #endif to end a construct.
+Any of such preprocessor conditional constructs can be desugared and represented
+onlyby#ifconstructweuseinthiswork,e.g.#ifdef (φ)s #elses #endifistranslated
+0 1
+into #if (φ) s #endif ; #if (¬φ) s #endif.
+0 1
+Semantics. The semantics of IMP has two stages: first, given a configuration k∈(cid:75)
+compute an IMP single program without #if-s; second, evaluate the obtained variant
+using the standard IMP semantics. The first stage is a simple preprocessor specified
+by the projection function π mapping an IMP program family into an IMP single
+k
+program corresponding to the configuration k∈(cid:75). The projection π copies all basic
+k
+statementsofIMPthatarealsoinIMP,andrecursivelypre-processesallsub-statements
+of compound statements. For example, π (skip)=skip and π (s ;s )=π (s );π (s ).
+k k 0 1 k 0 k 1
+Theinterestingcaseis“#if (φ)s #endif”(resp.,#if (φ) var x:=n in #endifs)statement,
+1-7
+EffectiveAnalysisofCProgramsbyRewritingVariability
+where the statement s (resp., the local variable declaration var x:=n in) is included in
+the resulting variant iff k|=φ ,1 otherwise it is removed. We have:
+(cid:168)
+π (s) if k|=φ
+π ( #if (φ) s #endif )= k
+k skip if k(cid:54)|=φ
+(cid:168)
+π ( var x:=n in s) if k|=φ
+π ( #if (φ) var x:=n in #endif s)= k
+k π (s) if k(cid:54)|=φ
+k
+Note that since any configuration k ∈ (cid:75) has only one satisfying truth assignment
+(values of all features are fixed in k), either k|=φ or k(cid:54)|=φ for any φ∈FeatExp.
+4 Variability-relatedTransformations
+Our aim is to transform an input IMP program family s with sets of features (cid:70) and
+configurations (cid:75) into an output IMPor program s(cid:48).
+In a pre-transformation phase, we first convert each feature A∈(cid:70) into the variable
+A, which is non-deterministically initialized to 0 or 1 (meaning to false or true). Let
+(cid:70) = {A ,...,A } be the set of available features in the family s, then we have the
+1 n
+following initialization fragment in the resulting pre-transformed program pre-t (s):
+pre-t (s)= var A :=0 or1 in ...var A :=0 or1 in s
+1 n
+Note that in the initialization we consider all possible combination of values for
+features (in total 2 |(cid:70)| ). We will take into account the specific set of configurations (cid:75)
+(|(cid:75)|≤2 |(cid:70)| ) later on, in the transformation phase.
+In the following, rewrite rules have the form:
+ψ (cid:96) s (cid:160) s (cid:48)
+meaning that: if the current program family being transformed matches any abstract
+syntax tree (AST) node of the shape s nested under #if-s with the resulting presence
+condition that implies ψ∈FeatExp (i.e. in context ψ) then replace s by s (cid:48) . Formally, if
+we apply the rule ψ (cid:96) s(cid:160)s (cid:48) to a family:
+...#if (φ ) ...#if (φ ) ...;s;... #endif... #endif...
+1 n
+where φ ∧...∧φ =⇒ ψ, then we obtain the transformed program:
+1 n
+...#if (φ ) ...#if (φ ) ...;s (cid:48) ;... #endif... #endif...
+1 n
+We write Rewrite(s,ψ (cid:96) s(cid:160)s (cid:48)) for the final transformed program s(cid:48) obtained by
+repeatedly applying the rule ψ (cid:96) s(cid:160)s (cid:48) on s and its transformed versions until we
+reach a point where this rule can not be applied (a fixed point of the rule). Note
+1Here|=denotesthestandardsatisfactionrelationofpropositionallogic.
+1-8
+A.F.Iosif-Lazar,J.Melo,A.S.Dimovski,C.Brabrand,A.Wasowski
+that rules of the form: true (cid:96) s(cid:160)s (cid:48) , are the most general and can be applied to any
+statement s no matter whether s is a top-level statement not nested within some #if
+or s is nested somewhere deep within #if-s. This is due to the fact that any “s” can be
+writtenas:“#if (true)s #endif”intheearliercasewhens isatop-levelstatement,and
+φ =⇒ trueforanyφ∈FeatExp inthelattercasewhens isnestedwithin#if-swith
+presence condition φ.
+We start with three rules for eliminating configurable variable declarations. They
+involve duplicating code and variable renaming. The most straightforward way to
+handle renaming of variables in different contexts is by adding an environment δ
+as a parameter to the statements being transformed. We define an environment
+δ:Var×FeatExp→Varasafunctionmappingagivenpairofavariableandafeature
+expression to a variable name. We write δfe( x ) ⊆ FeatExp for the set of all feature
+expressionsφsuchthatδ( x,φ)isdefined,i.e.δfe(
+x
+)={φ∈FeatExp|( x,φ)∈dom(δ)}.
+We write (s,δ) to denote the result of simultaneously substituting δ( x,φ) for each
+occurrence of any variable x in s in the context (presence condition) that implies φ.
+Conditionalvariabledeclaration. This rule transforms a local variable conditionally
+declared within a given context ψ∈FeatExp:
+ψ (cid:96) ( #if (φ) var x:=n in #endifs,δ) (cid:160) var x :=n in (s,δ[( x,φ)(cid:55)→ x ]) (1)
+new new
+where x is a fresh variable name that does not occur as a free variable in s and
+new
+range(δ).
+Conditionalvariableuse. The second rule handles the case when a local variable is
+used within a context ψ∈FeatExp. There are three cases to consider here.
+ψ (cid:96) ( y:=e[ x ],δ)(cid:160)( y:=e[δ( x,φ)],δ) (2.1)
+if there exists an unique φ ∈ δfe( x ), such that ψ|=φ. Here e[ x ] means that the
+variable x occurs free in the expression e. The second case is when there are several
+φ ,...φ ∈δfe( x ), such that sat (φ ∧ψ),...,sat (φ ∧ψ):
+1 n 1 n
+ψ(cid:96)( y:=e[ x ],δ)(cid:160)( #if (φ ) y:=e[δ( x,φ )] #endif;...#if (φ ) y:=e[δ( x,φ )] #endif,δ)
+1 1 n n
+(2.2)
+Otherwise, meaning that for all φ∈δfe( x ) it follows that unsat (φ∧ψ), we have:
+ψ (cid:96) ( y:=e[ x ],δ)(cid:160)( y:=e[ x ],δ) (2.3)
+Conditionalvariabledefine. The third rule applies when a local variable is assigned
+to within a context ψ∈FeatExp. There are three cases to consider here as well.
+ψ (cid:96) ( x:=e,δ) (cid:160) (δ( x,φ) :=e),δ (3.1)
+when there exists an unique φ∈δfe( x ), such that ψ|=φ.
+ψ (cid:96) ( x:=e,δ) (cid:160) ( #if (φ ) δ( x,φ ) :=e #endif;...#if (φ ) δ( x,φ ) :=e #endif ),δ (3.2)
+1 1 n n
+1-9
+EffectiveAnalysisofCProgramsbyRewritingVariability
+when there are φ ,...φ ∈δfe( x ), such that sat (φ ∧ψ),...,sat (φ ∧ψ). Otherwise,
+1 n 1 n
+ψ (cid:96) ( x:=e,δ) (cid:160) ( x:=e,δ) (3.3)
+After applying the above three rules, all local variable declarations that are condi-
+tionally defined (#if (φ) var x:=n in #endifs) are resolved. The transformed program
+contains only #if-s where statements are conditionally defined.
+Conditionalstatementelimination. The set of valid configurations (cid:75) can be equated
+to a propositional formula [4], say κ∈FeatExp, such that κ=∨ k∈(cid:75)k. The last rule
+simply replaces #if-s with ordinary if-s whose guards are strengthen with the feature
+model κ, thus taking into account only valid configurations (cid:75) of a family.
+ψ (cid:96) #if (φ) s #endif (cid:160) if (φ∧κ) then s else skip (4)
+Notethatweomittowritetheenvironmentδinrulesthatdonotuseitexplicitly(e.g.
+rules(4),(5)).Letδ =[]betheemptyenvironment.LetRewritepreserve(
+pre-t
+(s),δ )
+0 0
+be the final transformed program s(cid:48) obtained from the pre-transformed program
+pre-t (s) by applying the rules (1)–(3), and then the rule (4). The following result
+showsthatthesetoffinalanswersfromterminatingcomputationsofs(cid:48) coincideswith
+the union of final answers from terminating computations of all variants from s.
+Theorem 1. Let s(cid:48)=Rewritepreserve( pre-t (s),δ 0 ). We have: [[s(cid:48)]]=(cid:83) k∈(cid:75) [[π k (s)]].
+Proof. First, we show that Rewritepreserve( pre-t (s),δ ) terminates. This is due to the
+0
+fact the number of if-s in pre-t (s is finite, and by iteratively applying rules (1)–(3) we
+eliminate all #if (φ) var x:=n in #endifs; whereas by applying rule (4) afterwards we
+eliminate all #if (φ) s #endif. Subsequently, for each rule (1)–(3) and (4), the above
+result can be proved by structural induction.
+We now present an optimization rule, which is applied before the rules (1)–(4) for
+eliminating if-s. The correctness of our transformation does not depend on it, but we
+can use it for achieving faster convergence and smaller transformed programs. In our
+implementation, we use many such optimization rules.
+Guardinlining. This rule collapses two sequentially composed #if-s with mutually
+exclusive presence conditions φ and φ (i.e. φ ∧φ ≡ false) that conditionally
+0 1 0 1
+enable the same statement s into one #if that conditionally enables s:
+ψ (cid:96) #if (φ ) s #endif;#if (φ ) s #endif (cid:160) #if (φ ∨φ ) s #endif (5)
+0 1 0 1
+Example 2. We present the transformation rules on a program family with (cid:70)={A,B}
+and (cid:75)={A∧B,A∧¬B,¬A∧B,¬A∧¬B}.
+(cid:0) #if (A) var x:=2 in #endif#if (¬A) var x:=5 in #endif#if (B) y:=x #endif,δ (cid:1)
+0
+(cid:160) (1) var x :=2 in (cid:0) #if (¬A) var x:=5 in #endif#if (B) y:=x #endif,[( x,A)(cid:55)→ x ](cid:1)
+1 1
+(cid:160) (1) var x :=2 in var x :=5 in (cid:0) #if (B) y:=x #endif,[( x,A)(cid:55)→ x ,( x,¬A)(cid:55)→ x ](cid:1)
+1 2 1 2
+(2.2)
+(cid:160) var x :=2 in var x :=5 in #if (B) #if (A) y:=x ; #endif#if (¬A) y:=x #endif #endif
+1 2 1 2
+(4)
+(cid:160) var x :=2 in var x :=5 in if (B) thenif (A) then y:=x else skip;
+1 2 1
+if (¬A) then y:=x else skip; elseskip
+2
+1-10
+A.F.Iosif-Lazar,J.Melo,A.S.Dimovski,C.Brabrand,A.Wasowski
+5 Implementation
+We have developed a tool, called C Reconfigurator, which implements variability-
+relatedtransformationsfortheClanguage.Alltransformationsareimplementedusing
+Xtend 2 . The C Reconfigurator tool is available from: https://github.com/models-
+team/c-reconfigurator.Itcallsvariability-awareparserSuperC[20]toparsecodewith
+preprocessorannotations,whichusesBinaryDecisionDiagrams(BDD’s)forencoding
+feature expressions and for decisions during the parsing process. SuperC returns an
+AST with variability, in which variability is reflected with choice nodes over feature
+expressions. In particular, a choice node is a node with two children, such that the
+leftchildofthechoicenodeisincludedintheresultofthoseconfigurationsforwhich
+the given feature expression is satisfied; otherwise the right child of the choice node
+isincludedintheparsingresultwhenthefeatureexpressionisnotsatisfied.Weapply
+our variability-related transformation rules as described in Section 4 on AST’s with
+variability obtaining an ordinary AST, which is subsequently translated into a single
+C program. Since IMP is a subset of C, all rewritings described in Section 4 transfer
+directly to C. We now discuss how a selection of other interesting C constructs, which
+are not present in IMP, are handled by our tool.
+VariablesdeclaredwithoptionaltypesareverycommoninC.Forexample,wehave
+x-bit integers on x-bit machines. We handle them in a similar way as configurable
+variable declarations in rules (1)–(3). First, we rename and duplicate the variable
+declaration,thenateachpointwherethevariableisusedwetransformthecodesuch
+that the used variable refers to the correct configuration name. For example,
+#if (A) int #else float #endif x=0;
+x=x+1;
+will be transformed into:
+int x
+=0;
+float x
+=0;
+1 2
+#if (A) x = x +1; #else x = x +1; #endif
+1 1 2 2
+Notethatifoptionallocalvariablesareinitializedbynon-constantexpressions,thenwe
+splittheirtransformationintotwoparts:declarationwhichisperformedbyrenaming
+and duplication, followed by initialization where all optional variables refer to the
+correct configuration.
+Optional (configurable defined) functions are important since all statements in C
+are inside some function. If conditionally defined code occurs in the function body,
+then it will be transformed using the corresponding rules. For example,
+intf(
+intx
+){
+return#if
+(A) x++#else0#endif;}
+will be transformed into:
+intf(
+intx
+){
+return
+A?x++:0;}
+2http://www.eclipse.org/xtend/.
+1-11
+EffectiveAnalysisofCProgramsbyRewritingVariability
+If the function signature is configurable, then we use renaming plus duplication
+as in rules (1)–(3) for handling configurable variable declarations. For example, the
+code:
+intf(
+#if
+(A)
+int #else float #endif x
+){...}
+...f(5)...
+will be transformed into:
+intf ( intx ){...}
+1
+intf ( floatx ){...}
+2
+...#if (A) f (5) #elsef (5) #endif...
+1 2
+Arrays with optional size are also possible in real-world C programs. They usually
+emerge via constant macros with conditional definitions. For example, the code
+int a[#if (A) 10 #else 15 #endif];
+a
+[5]=0;
+will be transformed into:
+int a
+[10];
+int a
+[15];
+1 2
+#if
+(A)
+a
+[5]=0;
+#else a
+[5]=0;
+#endif
+1 2
+All other variability patterns that we met in our examples, such as configurable
+fields in struct-s and pointers, are also handled similarly: first by using renaming and
+duplication, then by modifying all references to the given pattern such that the use
+always refers to the correct definition. Consider the following code with pointers:
+int a
+=10;
+int
+∗
+p
+=&a;
+#if
+(A)
+p
+=null;
+#endif
+(∗
+p
+)
+++
+will be transformed into:
+int a
+=10;
+int
+∗
+p
+=&a;
+if
+(A)
+p
+=null; (∗
+p
+)
+++
+Hence, we obtain a variability bug whenever the feature Ais enabled.
+Remark. Wecanseethatmostofthevariabilitypatternsarehandledusingrenaming
+plus duplication. In the worst case, this may cause exponential growth of the trans-
+formed program in the number of used features. However, in practice this does not
+happen often (see Table 3 for some data from real files). Namely, variability patterns
+usuallydependonafewfeatures,soonlyafewnewdefinitionsareused.Alsoweapply
+several optimization rules, which eliminate all definitions that do not correspond to a
+valid configuration. Finally, the evaluation results in Section 6 show that the analysis
+time for such transformed programs is comparable to single programs. This is due to
+the fact that transformed programs are not increased significantly and the analysis
+tools we use (Frama-C, Clang, LLBMC) are very optimized and mature.
+1-12
+A.F.Iosif-Lazar,J.Melo,A.S.Dimovski,C.Brabrand,A.Wasowski
+6 Evaluation
+We evaluate our reconfiguration technique based on variability transformations and
+single-programverificationoraclesonseveralreal-worldCcasestudies.Theevaluation
+aims to show that we can use state-of-the-art single-program verification tools to
+verify realistic C program families using variability-related transformations. To do so,
+we ask the following research questions:
+How precise is our technique? (RQ1)
+Howefficientistheverificationoracletoidentifyvariabilitybugsaftertransforming
+the code using our technique? (RQ2)
+Inparticular,wewanttoreproducethevariabilitybugsreportedin[1,28]usingvarious
+verification oracles applied on transformed programs, which are obtained using our
+tool. We use Frama-C [27], Clang [9] and LLBMC [30] as our verification oracles.
+Frama-C is a framework for modular static (dataflow) analysis of C programs. The
+ClangprojectincludestheClangcompilerfront-endandtheClangstaticanalyzerfor
+several programming languages, including C. LLBMC (the low-level bounded model
+checker) is a software model checking tool for finding bugs in C programs.
+6.1 SubjectFilesandExperimentalSetup
+All transformations are applied using the C Reconfigurator tool as described in
+Section 5. We investigate precision and performance in finding real variability bugs
+extracted from three benchmarks: Linux, BusyBox and Libssh. In particular, we use
+simplified bugs from the VDBb3 database that are found in the Linux kernel files [1]
+and in BusyBox. Abal et al.[1] created a simplified version of a program for each
+bug they found by capturing the same essential behavior (and the same problem)
+as in the original bug. Simplified bugs are independent of the kernel code and the
+correspondingprogramswerederivedsystematicallyfromtheerrortrace.Inaddition,
+we use real variability bugs from Libssh provided by Medeiros et al.[28].
+Table 1 presents the characteristics of the subject files we analyzed in our empirical
+study. We list: the file id, bug type, number of features (|(cid:70)|), number of valid configu-
+rations (|(cid:75)|), lines of code, the size in KB of the files before (with #ifdef-s) and after
+(without #ifdef-s) our transformations, and commit hash (clickable) for each project.
+This collection consists of a diverse set of bug types such as null pointer dereferences,
+buffer overflow, and uninitialized variable. In total, we have 11 distinct kinds of bugs.
+The number of features per file varies from one to seven. In addition, the number of
+linesofcoderangesfrom12to165forthesimplifiedfiles(fromVBDb),andfrom1404
+to 2959 for real files (from Libssh). After the transformation, the biggest increase in
+size of almost 8 times can be observed for file id 7. This is due to the fact that this
+file has seven different features and several variability patterns that depend on them.
+In most of the other cases the size increase is not very big.
+3http://VBDb.itu.dk.
+1-13
+EffectiveAnalysisofCProgramsbyRewritingVariability
+File Bugtype |(cid:70)| |(cid:75)| LOC SizeKB Hash
+id before after
+VBDbLinuxfiles
+1 nullpointerderef. 5 24 165 2.9 4.3 76baeeb
+2 nullpointerderef. 3 6 112 1.9 2.5 f7ab9b4
+3 nullpointerderef. 4 8 55 0.9 1.0 ee3f34e
+4 nullpointerderef. 3 6 34 0.5 0.6 6252547
+5 bufferoverflow 1 2 58 1.0 1.2 8c82962
+6 bufferoverflow 1 2 33 0.6 0.7 60e233a
+7 readoutofbounds 7 63 69 1.1 8.4 0f8f809
+8 uninitializedvar. 2 4 54 0.8 1.0 7acf6cd
+9 uninitializedvar. 1 2 54 1.0 1.1 bc8cec0
+10 uninitializedvar. 1 2 53 0.8 1.0 30e0532
+11 uninitializedvar. 2 4 38 0.9 1.2 1c17e4d
+12 uninitializedvar. 2 4 26 0.3 0.5 e39363a
+13 undefinedsymbol 4 14 25 0.4 0.6 7c6048b
+14 undefinedsymbol 2 4 20 0.3 0.5 2f02c15
+15 undefinedsymbol 2 4 20 0.3 0.5 6515e48
+16 undefinedsymbol 2 4 19 0.3 0.5 242f1a3
+17 undeclaredidentifier 3 8 37 0.6 1.0 6651791
+18 undeclaredidentifier 2 4 20 0.3 0.4 f48ec1d
+19 wrong#ofargs 1 2 12 0.2 0.4 e67bc51
+20 multiplefunct.defs 2 4 21 0.3 0.8 e68bb91
+21 deadcode 1 2 19 0.2 0.3 809e660
+22 incompatibletype 2 4 27 0.4 0.7 d6c7e11
+23 assertionviolation 2 4 79 1.5 1.8 63878ac
+24 assertionviolation 2 4 75 1.1 1.2 657e964
+25 assertionviolation 2 4 41 0.6 0.7 0988c4c
+VBDbBusyBoxfiles
+26 nullpointerderef. 1 2 28 0.4 0.7 199501f
+27 nullpointerderef. 2 4 24 0.4 0.6 1b487ea
+28 uninitializedvar. 2 4 28 0.4 0.7 b273d66
+29 undefinedsymbol 1 2 42 0.8 0.9 cf1f2ac
+30 undefinedsymbol 2 4 27 0.4 0.6 ebee301
+31 undeclaredidentifier 1 2 35 0.5 0.8 5275b1e
+32 undeclaredidentifier 1 2 19 0.3 0.4 b7ebc61
+33 incompatibletype 3 8 46 0.9 1.5 5cd6461
+RealLibsshfiles
+34 nullpointerderef. 6 48 1404 34.8 32.6 0a4ea19
+35 nullpointerderef. 4 4 1428 44.1 31.9 fadbe80
+36 uninitializedvar. 3 4 2959 72.4 77.6 2a10019
+Table1 Characteristicsofthebenchmarkfiles.
+1-14
+A.F.Iosif-Lazar,J.Melo,A.S.Dimovski,C.Brabrand,A.Wasowski
+Frama-C
+id buggyvariantreconfigured all
+y/n time y/n time time
+VBDbLinuxfiles
+1 (cid:216) 218 (cid:216) 235 5602
+2 (cid:216) 220 (cid:216) 225 1394
+3 (cid:216) 215 x 236 1918 Clang/LLBMC
+4 (cid:216) 218 (cid:216) 224 1379 id buggyvariantreconfigured all
+5 (cid:216) 218 (cid:216) 227 488 yes/notimeyes/notimetime
+6 (cid:216) 213 (cid:216) 227 463 VBDbLinuxfiles
+7 (cid:216) 218 (cid:216) 225 14381 22 (cid:216) 21 (cid:216) 23 91
+8 (cid:216) 241 (cid:216) 250 918 23 (cid:216) 4 (cid:216) 10 10
+9 (cid:216) 224 (cid:216) 230 462 24 (cid:216) 3 (cid:216) 7 11
+10 (cid:216) 216 inc 224 460 25 (cid:216) 3 (cid:216) 5 8
+11 (cid:216) 234 (cid:216) 224 917
+VBDbBusyBoxfiles
+12 (cid:216) 216 inc 227 914
+13 (cid:216) 239 (cid:216) 248 3194 33 (cid:216) 27 (cid:216) 31 222
+14 (cid:216) 237 (cid:216) 244 905 (b)VBDbfilesusingClang(files22and
+15 (cid:216) 224 (cid:216) 248 906 33)andLLBMC(files23,24,and25).
+16 (cid:216) 213 (cid:216) 222 910
+17 (cid:216) 216 (cid:216) 230 3823
+Clang/LLBMC
+18 (cid:216) 210 (cid:216) 224 901
+id buggyvariantreconfigured all
+19 (cid:216) 210 (cid:216) 224 452
+yes/notimeyes/notime time
+20 (cid:216) 213 x 228 907
+34 (cid:216) 1526 (cid:216) 1702 17029
+21 (cid:216) 239 x 240 458
+35 (cid:216) 1591 (cid:216) 1804 5917
+VBDbBusyBoxfiles 36 (cid:216) 112 (cid:216) 144 448
+26 (cid:216) 230 (cid:216) 234 484
+(c)LibsshfilesusingClang(file36)and
+27 (cid:216) 224 (cid:216) 234 959
+LLBMC(files34and35).
+28 (cid:216) 237 inc 237 957
+29 (cid:216) 230 (cid:216) 236 481
+30 (cid:216) 231 (cid:216) 228 968
+31 (cid:216) 220 (cid:216) 228 486
+32 (cid:216) 216 (cid:216) 224 477
+(a)VBDbfilesusingFrama-C.
+Table2 Verificationresultsforthebenchmarkfiles.Timesinmilliseconds(ms).
+All experiments were executed on a Kubuntu VM (64bit, 4 CPUs), Intel®CoreTM i7-
+3720QM CPU running at 2.6GHz with 12GB RAM memory. The performance numbers
+reported constitute the median runtime of fifty independent executions.
+6.2 Results
+We now present the results of our empirical study and discuss the implications.
+All experiment materials are available online at https://github.com/models-team/c-
+reconfigurator-test. Before we proceed, we stress that we only evaluate bugs that are
+detectable by the verification tools on the erroneous variant code.
+1-15
+EffectiveAnalysisofCProgramsbyRewritingVariability
+Simplifiedfiles. Table 2a shows the results of verifying our benchmark files which
+contain known bugs by using Frama-C. The table has three main columns: buggy
+variant, reconfigured, and all that depict the tool results on the buggy variant
+code, on the reconfigured program family code, and on all valid variants from (cid:75)
+analyzed one by one (in a brute force fashion), respectively. Each checkmark ((cid:216))
+means that the same bug was found in both the buggy variant and reconfigured
+program by the verification tool. Otherwise, the result is either x—bug not found
+in the reconfigured program, or inc—inconclusive which means that Frama-C was
+able to detect a bug in the reconfigured program that is different from the bug in the
+product variant. In the case of brute force approach (all), we consider the analyses
+times of all valid variants regardless of whether they contain a bug or not.
+In terms of precision, our C Reconfigurator tool transforms the family code by
+preserving the erroneous traces from the buggy variant in most cases. For instance,
+Frama-C could detect 22 (78%) bugs from the simplified benchmark files (28 in total)
+after reconfiguring the files using our tool. Besides that, the C Reconfigurator
+preserves a variety of bug types such as buffer overflow and uninitialized variable.
+Still, for different types of bugs the success rate depends on the tool which may or
+maynotdetectthem.Forexample,ourtechniqueisabletotransformafilecontaining
+a memory leak error, but Frama-C does not have any analysis to identify it.
+In three specific cases (cf. file ids 10, 12 and 28), Frama-C did not report the
+original bug as an error, but it did detect that some variable might be uninitialized
+in some conditions. This happens because Frama-C performs a may value analysis
+for finding uninitialized variables. A may analysis describes information that may
+possibly be true along one path to the given program point and, thus in our case,
+computes a superset of all uninitialized variables in all variants. So the reported
+variable may not match with the one in the buggy variant. We marked these three
+cases as inc—inconclusive in the table. Still the verification oracle reports that there
+might be an error in the reconfigured code.
+In addition, the verification tool could not identify the required bug in the recon-
+figured file in three cases (cf. file ids 3, 20 and 21). For example, file 21 contains
+dead code, which is a function (do_sect_fault()) that is never called when feature
+ARM is enabled (see the code snippet in Fig. 4, left column). The C Reconfigurator
+transforms the code by changing the #ifdef into ordinary if condition, making the
+function available for the transformed single program (i.e., the function is not dead
+anymore),asshowninthecodesnippetinFig.4(rightcolumn).Theothertwocases
+are similar to this one in the sense that the C Reconfigurator makes feature code
+explicit to the entire program family.
+Generally speaking, if one variant does not use a variable/function, but another
+does, then the reconfigured code will use the variable/function and the error will be
+hidden (like in the example above). This happens due to the limitations of variability
+encoding, especially because we cannot preprocess the reconfigured code to filter out
+theirrelevantfeaturesforaparticularvariant.Inareconfiguredcode,allvariantsare
+encoded as a single program (see Section 6.4 for more discussion).
+We now consider the remaining simplified files. We use Clang and LLBMC to
+analyze only the other types of bugs (incompatible type and assertion violation) that
+1-16
+A.F.Iosif-Lazar,J.Melo,A.S.Dimovski,C.Brabrand,A.Wasowski
+(){ (){
+intdo_sect_fault intdo_sect_fault
+return0; return0;
+} }
+(){
+intmain
+(){
+#ifndefARM intmain
+do_sect_fault
+();
+if(!ARM)
+#endif do_sect_fault
+();
+return0; return0;
+} }
+Figure4 File21-Before(left)andafter(right)ourtransformations
+Frama-C cannot handle. We treat Clang/LLBMC as one verification oracle, since we
+first need to compile and emit llvm code with Clang in order to analyze it using
+LLBMC. So, we do not make difference in reporting whether the bug was found by
+Clang during the compilation or afterwards by LLBMC.
+Table2b,similarlytoTable2a,showstheresultsofverifyingboththebuggyvariant
+and the reconfigured code using Clang and LLBMC. We also report the analysis
+time of the brute force approach in the column all. As we can see, all bugs were
+found by Clang/LLBMC in the reconfigured version. We can thus confirm that our C
+Reconfigurator tool transforms the family code by preserving the erroneous traces
+from the buggy variant. We are now ready to answer RQ1 on the precision of our
+technique. Based on analyzing 33 simplified variability bugs from Linux and BusyBox,
+we find that:
+Answer RQ1 (precision). The C Reconfigurator enables single-program
+verificationtoolssuchasFrama-C,Clang,andLLBMCtosuccessfullydetect
+most of the simplified variability bugs on the reconfigured code, obtained
+from the Linux and BusyBox benchmark files.
+WenowturntoevidenceregardingresearchquestionRQ2(performance).Weevaluate
+performance of the verification tools to identify the given variability bugs. Tables 2a
+and 2b show time needed for the verification tools to analyze the buggy variant code
+(buggyvariantcolumn)andthereconfiguredprogramfamilycode(reconfigured
+column). We can see that the analysis times in both cases are similar although
+reconfigured code is bigger in size. In fact, Frama-C takes less than half a second to
+analyze each file regardless whether it is a variant or a reconfiguredfile.For instance,
+Frama-C analyzes file 1 in 218 and 235 milliseconds on the variant code and on the
+reconfiguredprogramfamilycode,respectively.Recallthatfile1containsanullpointer
+dereference and has five features. If we apply the brute force approach (all column),
+whichanalyzesallvariantsindividuallyonebyone,tothisfileusingFrama-Cittakes
+5,602 ms, since the number of configurations is 24. In this way, we obtain significant
+speed-up to verify the program family using our approach. We also obtain similar
+resultsintermsofperformanceusingClang/LLBMC(seeTables2band2c).Ingeneral,
+the performance of analyzing a reconfigured code is similar to analyzing only one
+variant, which gives us a speed-up proportional to the number of valid variants of a
+1-17
+EffectiveAnalysisofCProgramsbyRewritingVariability
+program family. Overall, we answer the second research question (RQ2) by observing
+that:
+AnswerRQ2(performance).TheCReconfiguratorspeeds-upthefamily-
+basedanalysisviasingle-programverificationtools,sothatwecanefficiently
+detect simplified variability bugs on the reconfigured code, obtained from
+the VBDb benchmark.
+Real files. We now consider real files to confirm our previous observations with
+respect to precision and performance. Table 2c presents the results of analyzing three
+real files from the Libssh project using Clang and LLBMC.4 These files contain two
+types of bugs: null pointer dereference and uninitialized variable. Each file has at
+least three distinct features.
+We can see that our C Reconfigurator transforms the family code by preserving
+the erroneous traces from the buggy variant even for complex and large files. In fact,
+the verification tool (Clang/LLBMC) found the same bug (from the buggy variant
+code) on the reconfigured code in all three cases. From this preliminary evidence,
+we thus confirm that our technique enables single-program verification oracles to
+successfully detect variability bugs on the reconfigured code, obtained from complex
+and real files.
+Regarding performance, we can still see the similarity in verifying a variant code
+and a reconfigured one. For example, Clang/LLBMC took 1,5 sec to analyze file 34 in
+the single variant version, whereas in the reconfigured version, the tool analyzed it
+in 1,7 sec. We can also observe a speed-up of the family-based analysis using the C
+Reconfigurator and single-program verification tools by a factor of the number of
+valid variants compared to the brute force approach. We conclude that:
+Summary. All single-program verification tools (Frama-C, Clang, LLBMC)
+detect successfully and efficiently most of the variability bugs on the recon-
+figured code as well as on the single variant code.
+6.3 ThreatstoValidity
+Internalvalidity. Verifying semantics preservation in a complex transformation is a
+very hard problem [22, 2]. We manually verified the correctness of the C Reconfigu-
+rator on the simplified VBDb files by comparing the original and the reconfigured
+filesside-by-side,whichleavesspaceforhumanerror.Forthelargerrealfileswewere
+not able to determine if the C Reconfigurator preserved semantics for all variants
+on the entire file due to the complex configuration space, but instead we focused on
+the functions involved in producing/reproducing the bug. We mitigate this threat by
+relying on the results of our evaluation which show the effectiveness of conventional
+single-program analysis tools to identify the same bugs in the reconfigured code
+version as in the buggy single varaints.
+4WedonotreportresultsfromFrama-ContherealfilesbecauseFrama-Ccouldnothandle
+them.
+1-18
+A.F.Iosif-Lazar,J.Melo,A.S.Dimovski,C.Brabrand,A.Wasowski
+External validity. From our preliminary evaluation, we show that our technique
+transforms the program family code by preserving the erroneous traces from the
+buggy variant. However, we acknowledge that our transformations were not tested
+under the entirety of the C language, but only on the subset used in the VBDb and
+Libssh files presented here. The C Reconfigurator though can be extended with
+extrarulestodealwithothercasesthatwedidnotfaceinourbenchmarkfiles.Worst
+case exponential growth of transformed programs can happen, even though we have
+not observed it in our subject files.
+6.4 Discussion
+The main limitation of our transformation based approach is that we may not obtain
+conclusiveresultsforallindividualvariants,thuslosingsomeprecision.Thisisdueto
+the fact that our transformed program contains all possible paths that may occur in
+any variant. However, the precision loss depends on the particular analysis we use.
+Consider the case of model checking. Since (single-system) model checkers stop
+onceasinglecounter-exampleisfoundinthemodel,wecanuseourapproachtofind
+avariabilitybugwhichoccursin somesubset ofvalidvariantsbutwewillnotbe able
+to report conclusive results (whether the given property is satisfied or not) for the
+rest of the valid variants. To overcome this issue, we may repeat our technique on
+the remaining variants for which no conclusive results were reported in the previous
+iteration.
+Consider the case of must dataflow analysis (e.g., available expressions, very busy
+expressions). In this case, the result in a given program point contains only the
+common results found on all execution paths to that point. Thus, the analysis result
+forthetransformedprogramwillcontainonlytheresultsthatoccurinallvariants.For
+example, for available expressions analysis we may obtain less available expressions
+than there are in any single variant. The available expression analysis determines
+which expressions must have already been computed, and not later modified, on all
+paths to a program point [32]. This information can be used to avoid re-computation
+of an expression. Consider the program family:
+x := a+b;while ( y >a+b) do { #ifdef (A) y := y −1 #else a := a+1 #endif }
+The expression a+b is available at the guard of the while loop for variants satisfying
+A, so it needs not be re-computed for them. However, in the transformed program we
+have paths from all variants, so the expression a+b is modified by the assignment
+a := a+1 in a path coming from variants ¬A. Therefore, the analyzer will not report
+this expression as available at the guard of the loop for the transformed program.
+Considerthecaseofmay dataflowanalysis(e.g.,reachingdefinitions,livevariables,
+uninitialized variables). In this case, the result in a given program point contains the
+results found on at least one execution path to that point. Thus, the analysis result
+for the transformed program will contain all results that occur in at least one variant.
+For example, for live variables analysis, we may obtain more live variables than there
+are in any single variant. The live variables analysis determines which variables may
+be live at a program point, that is there is a path from the program point to a use of
+1-19
+EffectiveAnalysisofCProgramsbyRewritingVariability
+the variable that does not redefine it [32]. This information can be used as a basis for
+dead code elimination. If a variable is not live at the exit from an assignment to the
+variable, then that assignment can be eliminated. Consider the program family:
+x := 5;y := 1;#ifdef (A) x := 1 #else x := x +1 #endif
+The variable x is not live at the exit from the first assignment x := 5 for variants
+satisfyingA.Therefore,theassignmentx := 5isredundantforthosevariants.However,
+xislivefor¬Avariants,soitwillbeliveafterthefirstassignmentforthetransformed
+program as well. Thus, we cannot eliminate this assignment in the transformed
+program. This is also the reason why Frama-C does not identify the variability bug
+for files 3, 20 and 21.
+7 Relatedwork
+Recently, formal analysis and verification of program families have been a topic of
+considerable research. The challenge is to develop efficient techniques that work at
+the level of program families, rather than the level of single programs. There are two
+main approaches to address this issue: (1) to develop dedicated variability-aware
+(family-based) techniques and tools; (2) to use specific simulators and encodings
+which transform program families into single programs that can be analyzed by
+the standard single-program verification tools. The two approaches have different
+strengths and weaknesses. The advantage of (1) is that precise (conclusive) results
+are reported for every variant, but the disadvantage is that their implementation
+can be tedious and labor intensive. On the other hand, the approaches based on (2)
+re-useexistingtoolsfromsingle-programworld,butsomeprecisionmaybelostwhen
+interpreting the obtained results.
+Specificallydesignedvariability-awaretechniques. Variousliftedtechniqueshavebeen
+proposed which lift existing single-program verification techniques to work on the
+level of program families. This includes lifted syntax checking [25, 20], lifted type
+checking [24, 8], lifted static analysis [7, 6, 31], lifted model checking [10, 14], etc.
+TypeChef [25] and SuperC [20] are variability-aware parsers, which can parse lan-
+guageswithpreprocessorannotations.TheresultsareASTswithvariabilitynodes.The
+difference between these two approaches is that feature expressions are represented
+as formulae in TypeChef, and as BDD’s in SuperC. TypeChef has also implemented
+somevariability-aware dataflowanalyses.Several approaches havebeen proposed
+for type checking program families directly. In particular, lifted type checking for
+Featherweight Java was presented in [24], whereas variational lambda calculus was
+studied in [8]. Lifted model checking for verifying variability intensive systems has
+been introduced in [10]. SNIP, a specifically designed family-based model checker,
+is implemented for efficient verification of temporal properties of such systems. The
+input language to SNIP is fPromela, which represents a variability-aware extension
+of the known Promela language for the (single-system) SPIN model checker [21].
+fPromela uses an #ifdef-like statement for encoding multiple variants, which rep-
+1-20
+A.F.Iosif-Lazar,J.Melo,A.S.Dimovski,C.Brabrand,A.Wasowski
+resents a nondeterministic “if” statement guarded by features expressions that are
+used to specify what system parts are included (resp., excluded) for which variants.
+An approach for lifted software model checking using game semantics has been
+introduced in [14]. It verifies safety of #ifdef-based second-order program families
+containing undefined components, which are compactly represented using symbolic
+game semantics models [13, 12]. Brabrand et al. [7] and Midtgaard et al. [31] show
+how to lift any single-program dataflow analysis from the monotone framework to
+workonthelevelofprogramfamilies.Theobtainedlifteddataflowanalysesaremuch
+faster than ones based on the naive variant-by-variant approach that generates and
+analyzes all variants one by one. Another efficient implementation of lifted analysis
+formulatedwithintheIFDSframeworkforinter-proceduraldistributiveenvironments
+has been proposed in SPLLIFT [6]. In order to speed-up the lifted verification tech-
+niques,variabilityabstractionshavebeenintroducedin[17,18,15,16].Theytamethe
+exponentialblowupcausedbythelargenumberoffeaturesandvariantsinaprogram
+family. In this way, variability abstractions enable deliberate trading of precision for
+speed in the context of lifted (monotone) data-flow analysis [17, 18] and lifted model
+checking [15, 16].
+Lifting by simulation. Variability encoding [37] and configuration lifting [33] are
+based on generating a product-line simulator which simulates the behaviour of all
+productsintheproductline.Then,anexistingoff-the-shelfsingle-programanalyzeris
+usedtoverifythegeneratedproduct-linesimulator,whichrepresentsasingleprogram.
+Theworkin[37]definesvariabilityencodingonthetopofTypeChefparserforCand
+Javaprogramfamilies.Theyhaveappliedtheresultsofvariabilityencodingtotesting
+[26], model checking [3], and deductive verification [36]. Compared to [37], our
+approachhasthefollowingdistinguishedcharacteristics.CReconfiguratorisaimed
+at transforming C program families and uses SuperC as a back-end tool. We show
+transformationrulesandtheircorrectnesswithrespecttoaminimalC-likeimperative
+(state-based) language, whereas in [37] the rules and their correctness is shown
+with respect to Featherweight Java. C is a language much wider used in industry for
+variability than (Featherweight)Java. Also, we do not have to rely on object-oriented
+encodings to make the variability-transformations work. We evaluate our approach
+withseveralstate-of-the-artsingle-programverificationtoolsforfindingrealvariability
+bugs on real-world C programs (both on large and sanitized files). The academic
+examples(e-mail,elevator,mine-pump)consideredbyApeletal.[3]areconsiderably
+smallerthanthosepresentedhere;andtheyarefocussedonverifyingspecificclassof
+bugs: undesired feature interactions (using CPAchecker [5]), whereas we consider
+herevarioustypesofmoreseverebugsthatoccurinpractice.Inthisway,theexternal
+validity of our experiments is considerably broader. Yet another difference is that the
+work in [3] considers product lines implemented using compositional approaches,
+where all features are modeled as separate and composable units. In contrast, we
+consider here annotative product lines based on #ifdef-s, which is a common way of
+implementing variability in industry.
+1-21
+EffectiveAnalysisofCProgramsbyRewritingVariability
+8 Conclusion
+We have proposed variability-related transformations to translate program families
+into single programs without variability. The transformed programs can then be ef-
+fectively analyzed using various single-program analyzers. The evaluation confirms
+that some interesting variability bugs can be found in real-world C programs in this
+way.Asafuturework,weplantoextendourevaluationandconsidermoreverification
+oracles as well as different practical case studies. We derive several observations from
+the attempt to verify, analyze, and find bugs in realistic C programs. We hope that
+our technique will be useful for future builders of analysis tools.
+References
+[1] Iago Abal, Claus Brabrand, and Andrzej Wasowski. 42 variability bugs in the
+linux kernel: a qualitative analysis. In ACM/IEEE International Conference on
+Automated Software Engineering, ASE ’14, pages 421–432. ACM, 2014. URL: http:
+//doi.acm.org/10.1145/2642937.2642990, doi:10.1145/2642937.2642990.
+[2] Ahmad Salim Al-Sibahi, Aleksandar S. Dimovski, and Andrzej Wasowski. Sym-
+bolic execution of high-level transformations. In Proceedings of the 2016 ACM
+SIGPLAN International Conference on Software Language Engineering, SLE 2016,
+pages 207–220. ACM, 2016.
+[3] Sven Apel, Alexander von Rhein, Philipp Wendler, Armin Größlinger, and Dirk
+Beyer. Strategies for product-line verification: case studies and experiments. In
+35th Intern. Conference on Software Engineering, ICSE ’13, pages 482–491, 2013.
+[4] Don Batory. Feature models, grammars, and propositional formulas. In 9th
+International Software Product Lines Conference, SPLC ’05, volume 3714 of LNCS,
+pages 7–20. Springer-Verlag, 2005.
+[5] DirkBeyerandM.ErkanKeremoglu.Cpachecker:Atoolforconfigurablesoftware
+verification. In Computer Aided Verification - 23rd International Conference,
+CAV 2011. Proceedings, volume 6806 of LNCS, pages 184–190, 2011. URL: http:
+//dx.doi.org/10.1007/978-3-642-22110-1_16, doi:10.1007/978-3-642-22110-1_16.
+[6] Eric Bodden, Társis Tolêdo, Márcio Ribeiro, Claus Brabrand, Paulo Borba, and
+lift
+Mira Mezini. Spl : Statically analyzing software product lines in minutes
+instead of years. In ACM SIGPLAN Conference on PLDI ’13, pages 355–364, 2013.
+[7] ClausBrabrand,MárcioRibeiro,TársisTolêdo,JohnniWinther,andPauloBorba.
+Intraprocedural dataflow analysis for software product lines. Transactions on
+Aspect-Oriented Software Development, 10:73–108, 2013.
+[8] ShengChen,MartinErwig,andEricWalkingshaw. Anerror-toleranttypesystem
+for variational lambda calculus. In ACM SIGPLAN International Conference on
+Functional Programming, ICFP’12, pages 29–40, 2012. URL: http://doi.acm.org/10.
+1145/2364527.2364535, doi:10.1145/2364527.2364535.
+[9] Clang. Clang static analyzer. Clang: a C language family frontend for LLVM.
+URL: http://clang-analyzer.llvm.org/.
+1-22
+A.F.Iosif-Lazar,J.Melo,A.S.Dimovski,C.Brabrand,A.Wasowski
+[10] Andreas Classen, Maxime Cordy, Pierre-Yves Schobbens, Patrick Heymans, Axel
+Legay, and Jean-François Raskin. Featured transition systems: Foundations
+for verifying variability-intensive systems and their application to LTL model
+checking. IEEE Trans. Software Eng., 39(8):1069–1089, 2013. URL: http://doi.
+ieeecomputersociety.org/10.1109/TSE.2012.86, doi:10.1109/TSE.2012.86.
+[11] PaulClementsandLindaNorthrop. SoftwareProductLines:PracticesandPatterns.
+Addison-Wesley, 2001.
+[12] Aleksandar Dimovski and Ranko Lazic. Compositional software verification
+based on game semantics and process algebra. STTT, 9(1):37–51, 2007. URL:
+http://dx.doi.org/10.1007/s10009-006-0005-y, doi:10.1007/s10009-006-0005-y.
+[13] Aleksandar S. Dimovski. Program verification using symbolic game semantics.
+Theor. Comput. Sci., 560:364–379, 2014. URL: http://dx.doi.org/10.1016/j.tcs.2014.
+01.016, doi:10.1016/j.tcs.2014.01.016.
+[14] Aleksandar S. Dimovski. Symbolic game semantics for model checking program
+families. InModelCheckingSoftware-23ndInternationalSymposium,SPIN2016,
+Proceedings, volume 9641 of LNCS, pages 19–37. Springer, 2016.
+[15] Aleksandar S. Dimovski, Ahmad Salim Al-Sibahi, Claus Brabrand, and Andrzej
+Wasowski. Family-based model checking without a family-based model checker.
+In 22nd International SPIN Workshop on Model Checking of Software, SPIN ’15,
+volume 9232 of LNCS, pages 282–299. Springer, 2015.
+[16] Aleksandar S. Dimovski, Ahmad Salim Al-Sibahi, Claus Brabrand, and Andrzej
+Wasowski. Efficient family-based model checking via variability abstractions.
+STTT, 2016. doi:10.1007/s10009-016-0425-2.
+[17] Aleksandar S. Dimovski, Claus Brabrand, and Andrzej Wasowski. Variability
+abstractions: Trading precision for speed in family-based analyses. In 29th
+European Conference on Object-Oriented Programming, ECOOP ’15, volume 37 of
+LIPIcs, pages 247–270. Schloss Dagstuhl - Leibniz-Zentrum fuer Informatik, 2015.
+[18] AleksandarS.Dimovski,ClausBrabrand,andAndrzejWasowski.Findingsuitable
+variability abstractions for family-based analysis. In FM 2016: Formal Methods -
+21st International Symposium, Proceedings, volume 9995 of LNCS, pages 217–234,
+2016. URL: http://dx.doi.org/10.1007/978-3-319-48989-6_14, doi:10.1007/978-3-319-
+48989-6_14.
+[19] Alejandra Garrido and Ralph E. Johnson. Refactoring C with conditional compi-
+lation. In 18th IEEE International Conference on Automated Software Engineering
+(ASE 2003), pages 323–326. IEEE Computer Society, 2003. URL: http://doi.
+ieeecomputersociety.org/10.1109/ASE.2003.1240330, doi:10.1109/ASE.2003.1240330.
+[20] Paul Gazzillo and Robert Grimm. Superc: parsing all of C by taming the
+preprocessor. In ACM SIGPLAN Conference on Programming Language De-
+sign and Implementation, PLDI ’12, 2012, pages 323–334, 2012. URL: http:
+//doi.acm.org/10.1145/2254064.2254103, doi:10.1145/2254064.2254103.
+[21] Gerard J. Holzmann. The SPIN Model Checker - primer and reference manual.
+Addison-Wesley, 2004.
+1-23
+EffectiveAnalysisofCProgramsbyRewritingVariability
+[22] Alexandru F. Iosif-Lazar, Ahmad Salim Al-Sibahi, Aleksandar S. Dimovski,
+Juha Erik Savolainen, Krzysztof Sierszecki, and Andrzej Wasowski. Experi-
+ences from designing and validating a software modernization transformation
+(E). In30thIEEE/ACMInternationalConferenceonAutomatedSoftwareEngineer-
+ing, ASE 2015, pages 597–607, 2015. URL: http://dx.doi.org/10.1109/ASE.2015.84,
+doi:10.1109/ASE.2015.84.
+[23] KyoC.Kang,SholomG.Cohen,JamesA.Hess,WilliamE.Novak,andA.Spencer
+Peterson. Feature-Oriented Domain Analysis (FODA) feasibility study. Technical
+report,Carnegie-MellonUniversity SoftwareEngineeringInstitute, November
+1990.
+[24] Christian Kästner, Sven Apel, Thomas Thüm, and Gunter Saake. Type checking
+annotation-basedproductlines. ACMTrans.Softw.Eng.Methodol.,21(3):14,2012.
+[25] ChristianKästner,PaoloG.Giarrusso,TillmannRendel,SebastianErdweg,Klaus
+Ostermann, and Thorsten Berger. Variability-aware parsing in the presence of
+lexical macros and conditional compilation. In OOPSLA’11, pages 805–824. ACM,
+2011.
+[26] Christian Kästner, Alexander von Rhein, Sebastian Erdweg, Jonas Pusch, Sven
+Apel, Tillmann Rendel, and Klaus Ostermann. Toward variability-aware testing.
+In FOSD ’12, pages 1–8, 2012.
+[27] Florent Kirchner, Nikolai Kosmatov, Virgile Prevosto, Julien Signoles, and Boris
+Yakobowski. Frama-c: A software analysis perspective. Formal Asp. Comput.,
+27(3):573–609, 2015. URL: http://dx.doi.org/10.1007/s00165-014-0326-7, doi:10.
+1007/s00165-014-0326-7.
+[28] Flávio Medeiros, Márcio Ribeiro, Rohit Gheyi, Christian Kästner, and Sven Apel.
+An empirical study on configuration-related bugs. Submitted for publication at
+IEEE TSE, 2016.
+[29] Jean Melo, Claus Brabrand, and Andrzej Wasowski. How does the degree of
+variability affect bugfinding? In Proceedings of the 38th International Conference
+onSoftwareEngineering,ICSE’16,pages679–690,NewYork,NY,USA,2016.ACM.
+URL: http://doi.acm.org/10.1145/2884781.2884831, doi:10.1145/2884781.2884831.
+[30] FlorianMerz,StephanFalke,andCarstenSinz.LLBMC:boundedmodelchecking
+ofCandC++programsusingacompilerIR. InVerifiedSoftware:Theories,Tools,
+Experiments-4thInternationalConference,VSTTE2012,Proceedings,volume7152
+ofLNCS,pages146–161.Springer,2012. URL:http://dx.doi.org/10.1007/978-3-642-
+27705-4_12, doi:10.1007/978-3-642-27705-4_12.
+[31] Jan Midtgaard, Aleksandar S. Dimovski, Claus Brabrand, and Andrzej Wasowski.
+Systematicderivationofcorrectvariability-awareprogramanalyses. Sci.Comput.
+Program., 105:145–170, 2015. URL: http://dx.doi:10.1016/j.scico.2015.04.005, doi:
+10.1016/j.scico.2014.10.002.
+[32] Flemming Nielson, Hanne R. Nielson, and Chris Hankin. Principles of Program
+Analysis. Springer-Verlag, Secaucus, USA, 1999.
+[33] H.PostandC.Sinz. Configurationlifting:Verificationmeetssoftwareconfigura-
+tion. In ASE’08, pages 347–350, LAquila, Italy, 2008. IEEE Computer Society.
+1-24
+A.F.Iosif-Lazar,J.Melo,A.S.Dimovski,C.Brabrand,A.Wasowski
+[34] John C. Reynolds. Theories of Programming Languages. Cambridge University
+Press, 1998.
+[35] Thomas Thüm, Sven Apel, Christian Kästner, Ina Schaefer, and Gunter Saake. A
+classification and survey of analysis strategies for software product lines. ACM
+Comput. Surv., 47(1):6, 2014.
+[36] Thomas Thüm, Ina Schaefer, Martin Hentschel, and Sven Apel. Family-based
+deductive verification of software product lines. In Generative Programming and
+Component Engineering, GPCE’12, pages 11–20. ACM, 2012. URL: http://doi.acm.
+org/10.1145/2371401.2371404, doi:10.1145/2371401.2371404.
+[37] Alexander von Rhein, Thomas Thüm, Ina Schaefer, Jörg Liebig, and Sven Apel.
+Variability encoding: From compile-time to load-time variability. J. Log. Algebr.
+Meth. Program., 85(1):125–145, 2016. URL: http://dx.doi.org/10.1016/j.jlamp.2015.
+06.007, doi:10.1016/j.jlamp.2015.06.007.
+1-25

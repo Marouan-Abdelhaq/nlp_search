@@ -1,0 +1,264 @@
+International Journal of Computer Trends and Technology (IJCTT) – volume 13 number 1 – Jul 2014
+A Comparative Review Of Internet Protocol Version
+4 (IPv4) and Internet Protocol Version 6 (IPv6)
+Olabenjo Babatunde1, Omar Al-Debagy2
+1, 2 Department of Information Systems Engineering
+Cyprus International University
+Nicosia, Cyprus
+Abstract— Many computers and devices are becoming more be; the discussion was whether they should use a 32-bit
+connected to the internet in recent years; the use of the Internet address or a 128-bit address length. In 1977, a decision was
+Protocol (IP) has made the connectivity and identification of made that a 32-bit length address should be used for IPv4 by
+these devices possible in large scale. In this paper, we will discuss
+Vint Cerf [3]. This was a total of about 4.3 billion addresses
+the evolution of Internet Protocol version 4 (IPv4), its features,
+and at that time they never foresaw the need for more than that
+issues and limitations and how Internet Protocol version 6 (IPv6)
+number and this was the beginning of the internet at the time.
+tends to solve some of these issues including the differences and
+IPv4 consists of five classes, A, B, C, D, E. Classes A, B and
+transition between these two protocols.
+C have a different bit length for addressing a network host.
+Class D addresses are reserved for multicasting, while class E
+Keywords— IPv4, IPv6, Networking, Internet.
+addresses are reserved for future use. IPv4 uses a 32 bit
+I. INTRODUCTION addressing which amounts to 4,294,967,296 unique addresses
+[1]. An example of an IPv4 address is “158.80.164.3”, it
+The Internet Engineering Task Force (IETF) in 1991
+involves four octets of 8 bits each all resulting to a 32-bit
+decided to create a new version of the Internet Protocol (IP)
+address [5]. In binary form, it would look like
+called Internet Protocol version 6 (IPv6) to replace the old
+10011110.01010000.10100100.00000011 for the four octets.
+Internet Protocol version 4 (IPv4). This eventually started in
+The table below shows how the classes of IPv4 addresses are
+1994[1]. Due to the fact that more and more devices are being
+assigned including the number of hosts each class has.
+connected to the internet, the eventual exhaustion of IPv4
+addresses is one of the major reasons why IPv6 was developed.
+Currently, the great number of IPv4 users and the huge size
+TABLE I
+of the internet makes an instant migration to IPv6 impossible
+[1]. Also, because these two protocols can co-exist together
+Networks and Hosts per Class
+due to the auto configuration feature of IPv6, users can enjoy
+Network Class Number of Networks Number of Hosts
+the features of IPv6 and still communicate with IPv4 devices
+without any problem. We will discuss one of the techniques A 126 16,777,214
+used by IPv4 to extend the time it will take to exhaust its
+B 16,382 65,534
+addresses and also look at some of the techniques and issues
+involved in migrating to IPv6. C 2,097,150 254
+NETWORKS AND HOSTS PER CLASS
+II. WHAT IS IPV4?
+Internet Protocol version 4 (IPv4) has been existing since
+The IP addressing system includes a subnet mask which
+the early 1980’s [3]. It is the forth version of the Internet
+allows us to distinguish between a network address and hosts
+Protocol (IP) and has been widely used till now. The Internet
+for example, if we have an IP address of 192.168.0.2 and a
+Protocol is one of the major protocols in TCP/IP. In the OSI
+subnet mask of 255.255.255.0 the “192.168.0” identifies the
+model, the protocol works on the Network layer and the major
+network which is a class C network address and the last octet
+function of the protocol is to identify hosts based on their
+in decimal “2” identifies the host.
+logical addresses in order to route data between them over the
+network. B. Why are we running out of IPv4 addresses?
+The logical address of a host in a network is the IP address
+In recent years, the use and production of more handheld
+and the IPv4 addressing scheme is what has been used for a
+devices such as mobile phones and tablet including the use of
+while now in identifying hosts in a network. This system is
+more computers all connecting to the internet have increased
+based on a 32-bit logical address [1].
+the demand for more IPv4 addresses. On the 3rd of February
+A. Addressing System 2011, the Internet Corporation for Assigned Names and
+Numbers (ICANN) released the last block of the IPv4
+Before the implementation of IPv4, engineers working on
+addresses [3]. This evidently shows that we are running out of
+ARPANET discussed what the length of an IP address should
+IPv4 addresses, which means it would be difficult to allocate
+ISSN: 2231-5381 http://www.ijcttjournal.org Page 10
+International Journal of Computer Trends and Technology (IJCTT) – volume 13 number 1 – Jul 2014
+IP addresses to new or expanding companies in the future. receiving computer. This delay and multiple requests can
+Just because we are running out of IPv4 addresses, several cause packets to be lost and this is not good for real-time data
+methods have been employed to increase the time it would like VOIP or video streaming.
+take before we completely run out of IPv4 addresses.
+5) Data Priority: Due to the fact that IPv4 cannot recognize
+C. IPv4 shortage workaround the kind of data being transmitted its difficult for the protocol
+to prioritize transmission high priority data like video
+Although we are currently running out of IPv4 addresses,
+streaming and others.
+some technologies have been employed to work around this
+issue. The most common are Network Address Translation
+III. WHAT IS IPV6?
+(NAT), Classless Inter-Domain Routing (CIDR), and dynamic
+Internet Protocol (IPv6 or IPng) is the next generation of IP
+IPv4 address assignment (DHCP) or Dynamic Host
+and it is the successor of IP version 4 which is widely used
+Configuration Protocol [4]. Network Address Translation
+nowadays. The development of IPv6 started in 1991 and was
+(NAT) has been the most popular of these technologies and it
+completed in 1997 by the Internet Engineering Task Force
+has helped shift further the time it would take before IPv4
+(IETF), and was officially used in 2004 when ICANN added
+addresses are exhausted [3].
+IPv6 addresses to its DNS server [2].
+D. Network Address Translation (NAT) Data transfers between hosts in packets across networks,
+To reduce the number of addresses needed for an these packets require addressing schemes. Using IPv4 and
+organization in order to save IP addresses, Service Providers IPv6 these packets can identify their sources and also find
+(SP) try to reuse address blocks by using multiple layers of their destinations. Every device on the Internet needs an IP
+Network Address Translation (NAT) [3]. Network Address address to communicate with other devices, and the growth of
+Translation allows a single device, such as a router, to act as the Internet led to a need for a new alternative for IPv4,
+an agent between the Internet "public network" and a local because IPv4 cannot provide the needed number of IP address
+"private" network. This allows a single IP address to represent around the world [6].
+an entire group of computers or devices. The address space in IPv6 is much larger than the address
+NAT translates public IP addresses into private IP networks; space of IPv4, and it went from 32 bits to 128 bits; in other
+private networks are networks that cannot access the internet words, it went from 4 billion addresses to 340 trillion trillion
+[4]. They consists of the following IP addresses for each class trillion of unique address [2]. IPv6 is designed to provide
+of network; For Class A, network 10 is used, for the Class B, unique addresses for everyone on earth. This expansion in
+networks 172.16 to 172.31 is used and for Class C, networks address space will not just provide more unique address but it
+192.168.0 to 192.168.255 is used in the private network [4]. will also make routing easier and cleaner because of its
+With the use of NAT, Internet Service Providers (ISPs) do hierarchical addressing and simpler IP header [2].
+not need to assign individual IP addresses to each customers The IPv6 addressing structure is designed to provide
+device, they only need to assign a single IP address to the compatibility with existing IPv4 networks and allows the
+customer and then this address can be used via NAT to existence of both networks. IPv6 does not only solve the
+provide more private IP addresses to other devices the problem of shortage that IPv4 is causing, but it is also
+customer may have thus enabling more IP addresses to be enhances and improves some of the features that IPv4 has [4].
+available to more customers. IPv6 uses 128 bits addressing format that is represented by
+16-bit hexadecimal number fields separated by colons “:”.
+E. Shortcomings of IPv4 Using this format makes IPv6 less messy and error-free. Here
+Internet Protocol version 4 (IPv4) has a few shortcomings is an example of an IPv6 address [2]:
+stated below;
+1) Address Space: Due to the number of increasing devices 2031:0000:130F:0000:0000:09C0:876A:130B
+connected to the internet, the IPv4 addresses can only
+Additionally, this address can be shortened using some
+accommodate about 4 billion hosts. This is a significant
+rules like compressing the block of zeros to a single zero like
+limitation as more and more devices are getting online.
+this [2]:
+2) Security: IPv4 does not provide any security like
+2031:0:130F:0:0:9C0:876A:130B or 0000=0
+authenticating packets [5] when they are transmitted or
+encryption of the data. Also, successive fields of zero can be represented by
+double colons “::”, but it is only allowed once to use a double
+3) Network Congestion: Due to the broadcast feature in IPv4
+colon, so the above example will be shortened to this:[2].
+network devices can become congested and overloaded since
+packets are sent to all addresses in the network. 2031:0:130F::9C0:876A:130B
+4) Packet Loss: IPv4 contains a Time to Live (TTL) [5] field A. Solving problems in IPv4
+in the header of an IP and this set the expiry time for the The main reason behind adapting IPv6 is the exhaustion of
+datagram. If the data was unable to get to the destination on available IPv4 address space. IPv6 has many new features and
+time, it will expire and will be requested again from the
+ISSN: 2231-5381 http://www.ijcttjournal.org Page 11
+International Journal of Computer Trends and Technology (IJCTT) – volume 13 number 1 – Jul 2014
+some critical improvements over IPv4. Due to the rapid enterprises and companies invest more money on the
+growth of Internet users in the past ten years and the ongoing migration process [6].
+growth, IPv4 is being exhausted and its address space will not
+4) Security Issues: IPv6 have not been used widely and has
+be able to satisfy the huge number of Internet users and does
+not been tested properly. So, the security level of IPv6 is still
+not provide the geographical needs for the expansion of the
+vague [6].
+Internet. Also, the emergence and the growth of mobile
+devices like smart phones and tablets made the problem of There are many techniques and mechanisms that will make
+IPv4 more urging than before. the transition from IPv4 to IPv6 an interoperable operation.
+Some of these techniques are:
+IPv6 will provide larger address space for more reach and
+1) Dual Stack: IPv6 is an upgrade for IPv4, so IPv6 inherits
+scalability and this will almost provide unlimited number of
+some features from IPv4; therefore it is relatively easy to
+IP addresses and more efficient techniques for routing, so
+create a network stack that supports both IPv4 and IPv6. Such
+these features will provide global addresses for each network
+an implementation is called a dual stack. Most of the new
+device and will enable end-to-end reachability and better
+network devices and software which provide IPv6 have
+network performance.
+implemented dual stack mechanisms [1].
+In addition to solving the problems of IPv4, IPv6 will 2) Tunnelling: If we want an internet that is fully depended
+provide networks and IT professionals with a list of benefits on IPv6, the implemented IPv6 networks and hosts must be
+and features which are listed below [4]: able to transfer IPv6 packets through the existing IPv4
+infrastructure. So this can be done using a technique called
+tunnelling, which consists of encapsulating IPv6 packets
+ Larger address space.
+within IPv4, which means using IPv4 as a link layer for IPv6
+ Hierarchical network architecture. [4].
+ Simpler header format which will make packet 3) Addressing simplicity: Address simplicity allows a router
+handling more efficient. or host being updated to IPv6 to continue to use IPv4 address
+more like automatic tunnelling which are simple mechanisms
+ There will be no need for network address translation
+that provides IPv6 connectivity between separated dual-stack
+(NAT) and application’s layered gateway (ALG).
+hosts, routers, or both [1].
+ Built-in security with IPSec implementation.
+4) Proxying and Translation: This technique is used when an
+ Auto-configuration and plug-and-play support. IPv6 device tries to access an IPv4 service like a web server,
+so there should be some kind of translation between these two
+ Expanding the number of multicast addresses.
+end-points in order to connect to each other. Therefore, the
+ Improved support for Mobile IP and Mobile most reliable way of translation is the use of dual-stack
+Computing Devices. application-layer proxy, or in other words a web proxy [4].
+B. IPv6 Migration Issues and Techniques IV. COMPARING IPV4 WITH IPV6
+The migration from IPv4 to IPv6 has already started, but Although NAT in IPv4 helped reduce the number of public
+before launching IPv6 the network infrastructure should be IP addresses needed in an organization, NAT still has some
+upgraded in order to support services and software. But there security and performance issues. NAT being good for client
+are some issues should be taken care of before migrating from server communication such as email and web has issues when
+IPv4 to IPv6, and these issues are: it comes to peer-peer communication [4]. IPv6 provides an
+end to end network connection which is a peer-peer system
+1) Infrastructure Issues: Many of the protocols and
+used in applications like VOIP. It also has an auto
+technologies should be redesigned in order to support IPv6
+configuration system that allows clients to communicate
+including DHCP, OSPF, and RIP, BGP, ARP, TCP/IP and
+independently without any need for a manual setup and also
+others [6].
+makes use of IPSec compulsorily in all its communication.
+2) Tunnelling Issues: Without any change in applications, This make IPv6 more secure than IPv4 [5].
+IPv6 can be used in an existing network by using IPv6 over
+IPv4 tunnelling for connecting the IPv4 nodes to the backbone Also, because IPv4 has fewer addresses than IPv6, this will
+network. But tunnelling has very less throughput and it needs require the use of proxies and other forms of network mapping,
+network managers to configure the tunnel end points thereby increasing the risk in packet sniffing through proxies
+information, which is a time consuming process [6]. but IPv6 contains more address space thereby reducing the use
+of proxies and ultimately increasing the level of security on
+3) Financial Issues: Migrating from IPv4 to IPv6 requires
+the network.
+purchase of new network devices that support IPv6 like
+switches, routers, and others devices, which will make
+The table below shows some of the key differences
+between IPv4 and IPv6.
+ISSN: 2231-5381 http://www.ijcttjournal.org Page 12
+International Journal of Computer Trends and Technology (IJCTT) – volume 13 number 1 – Jul 2014
+TABLE III REFERENCES
+DIFFERENCES BETWEEN IPV4 AND IPV6
+[1] Amer Nizar Abu Ali, “Comparison study between IPV4 & IPV6”,
+Differences between IPv4 and IPv6 International Journal of Computer Science Issues, Vol. 9, Issue 3, No 1,
+May 2012.
+IPv4 IPv6 [2] CISCO IOS Learning Services, “The ABCs of IP Version 6”,
+IPv4 uses a 32 bits address IPv6 uses a 128 bits address Understanding the Essentials Series, 2002.
+[3] Jinesh Doshi, Rachid Chaoua, Saurabh Kumar, Sahana Mallya, “A
+space space
+Comparative Study of IPv4/IPv6 Co-existence Technologies”,
+Does not require DHCP or University of Colorado, Boulder, May 2012.
+Must support DHCP or be manual configuration, it [4] Next Generation Internet, “IPv4 Address Exhaustion, Mitigation
+configured manually supports stateless auto Strategies and Implications for the U.S.”, IEEE-USA White Paper,
+2009.
+configuration[1]
+[5] S.Clement Virgeniya and Dr.V.Palanisamy, “Attacks on Ipv4 and Ipv6
+IPSec is not compulsory IPSec is compulsory Protocols and its Performance Parameters”, International Journal of
+Computer Trends and Technology (IJCTT), Vol. 4, Issue. 8, August
+There are no broadcasts 2013.
+Broadcasts sends traffic to all instead multicasts is used [6] Saurabh Dey and Shilpa N., “Issues in IPv4 to IPv6 Migration”,
+hosts on a subnet thereby reducing broadcast International Journal of Computer Applications in Engineering
+floods found in IPv4 Sciences, Vol. 1, Issue1, pp. 9-13, March 2011
+The IP header has a variable IP header has a fixed length
+length of 20-60 bytes depending of 40 bytes and there are no
+on the IP header options IP header options available
+V. CONCLUSION
+The future of the internet is IPv6 but migrating from IPv4
+to IPv6 is a gradual process and may take several years before
+we completely migrate. Several techniques being used to
+maintain interconnectivity between the two protocols will
+allow these protocols to coexist without issues as more
+companies migrate to the new protocol.
+ISSN: 2231-5381 http://www.ijcttjournal.org Page 13

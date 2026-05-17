@@ -1,0 +1,426 @@
+(IJCSIS) International Journal of Computer Science and Information Security,
+Vol. 7, No. 1, 2010
+Vision Based Game Development Using Human
+Computer Interaction
+Ms.S.Sumathi Dr.S.K.Srivatsa Dr.M.Uma Maheswari
+Bharath University St.Joseph College of Engineering Bharath University
+Chennai,India Chennai,India Chennai,India
+Abstract— A Human Computer Interface (HCI) location and shape of the nose, as it is located in the
+System for playing games is designed here for middle of the face it is more comfortable to use it as
+more natural communication with the machines. the feature that moves the mouse pointer and
+The system presented here is a vision-based defines its coordinates, and it is located on the axis
+system for detection of long voluntary eye blinks that the face rotates about, so it basically does not
+and interpretation of blink patterns for change its distinctive convex shape which makes it
+communication between man and machine. This easier to track as the face moves. We use the human
+system replaces the mouse with the human face feature Eyes to simulate mouse clicks, so the user
+as a new way to interact with the computer. can fire their events as he blinks. While different
+Facial features (nose tip and eyes) are detected devices were used in HCI (e.g. infrared cameras,
+and tracked in real-time to use their actions as sensors, microphones) we used a webcam that
+mouse events. The coordinates and movement of affords a moderate resolution and frame rate as the
+the nose tip in the live video feed are translated capturing device in order to make the ability of
+to become the coordinates and movement of the using the program affordable for all individuals.
+mouse pointer on the application. The left/right
+We present an algorithm that distinguishes true
+eye blinks fire left/right mouse click events. The
+eye blinks from involuntary ones, detects and tracks
+system works with inexpensive USB cameras and
+the desired facial features precisely, and fast enough
+runs at a frame rate of 30 frames per second.
+to be applied in real-time. In our work we are trying
+Keywords: Human Computer Interface (HCI), to implement this in playing video games. Getting
+SSR Filter, Hough transform the player physically involved in the game provides
+a more immersive experience and a feeling of
+taking direct part rather than just playing as an
+I. INTRODUCTION
+external beholder. Already motion sensors have
+One of the promising fields in artificial been implemented to recognize physical activity, we
+intelligence is HCI. Human-Computer Interface can even use finger gestures in playing games but
+(HCI) can be described as the point of we increase human computer interaction by using
+communication between the human and a computer. our eyes in playing games.
+HCI aims to use human features to interact with the
+We propose an accurate algorithm that
+computer. The system tracks the computer user's
+distinguishes true eye blinks from involuntary ones,
+movements with a video camera and translates them
+detects and measures their duration, and fast enough
+into the movements of the mouse pointer on the
+to be applied in real-time to control a non –
+screen. The tip of the user's nose can be tracked and
+intrusive interface for computer users in playing
+captured with a webcam and monitor its movements
+games. This system can be used in playing games
+in order to translate it to some events that
+like first shooter game, a role playing game and an
+communicate with the computer. In our system, the
+action game. When we compare eye-based and
+nose tip is the pointing device, because of the
+mouse-based control it is found that using an eye
+147 http://sites.google.com/site/ijcsis/
+ISSN 1947-5500
+(IJCSIS) International Journal of Computer Science and Information Security,
+Vol. 7, No. 1, 2010
+tracker can increase the immersion and leads to a the HCI. Researchers chose different facial features:
+stronger feeling of being part of the game. We are eye pupils, eyebrows, nose tip, lips, eye lids’
+tracking the nose movements and eye blinks for corners, mouth corners for each of which they
+playing the games, the nose movements are provided an explanation to choose that particular
+interfaced with the mouse movements and the eye one.
+blinks are interfaced with the mouse clicks. The
+eye-movement or eye blink controlled human- Different detection techniques were applied where
+computer interface systems are very useful for the goal was to achieve more accurate results with
+persons who cannot speak or use hands to less processing time. To control the mouse pointer
+communicate. There are no lighting requirements or various points were tracked ranging from the middle
+offline templates needed for the proper functioning distance between the eyes, the middle distance
+of the system. It works with inexpensive USB between the eyebrows, to the nose tip. To simulate
+cameras and runs at a frame rate of 30 frames per mouse clicks; eye blinks, mouth opening/closing,
+second. and sometimes eyebrow movement were used. Each
+HCI method that we read about had some
+The automatic initialization phase is triggered drawbacks, some methods used expensive
+by the analysis of the involuntary blinking of the equipments, some were not fast enough to achieve
+current computer user, which creates an online real-time execution, and others were not robust and
+template of the eye to be used for tracking. This precise enough to replace the mouse. We tried to
+phase occurs each time the current correlation score profit from the experience that other researchers
+of the tracked eye falls below a defined threshold in gained in the HCI field and added our own ideas to
+order to allow the system to recover and regain its produce an application that is fast, robust, and
+accuracy in detecting the blinks. This system can be useable.
+utilized by users for applications that require mouse
+clicks as input for e.g. games. The main Eye movement events detected in EOG signals
+contribution of this paper is to provide a such as saccades, fixations and blinks have been
+reimplementation of this system that is able to run used to control robots or a wearable system for
+in real time at 30 frames per second on readily medical care givers. Patmore et al. described a
+available and affordable webcams in playing video system that provides a pointing device for people
+games. with physical disabilities. All of these systems use
+basic eye movements or eye-gaze direction but they
+II. RELATED WORK do not implement movement sequences which
+provide a more versatile input modality for gaming
+With the growth of attention about computer
+applications.
+vision, the interest in HCI has increased
+proportionally. Different human features and III. SYSTEM OVERVIEW
+monitoring devices were used to achieve HCI, but
+This system design can be broken down into
+during our research we were only into works that
+three modules, (1) Facial Features tracking (2)
+involved the use of facial features and webcams.
+Integrating Nose tip movements with the mouse
+cursor (3) Replacing the eye blinks with the mouse
+The current evolution of computer technologies
+click events.
+has enhanced various applications in human-
+computer interface. Face and gesture recognition is
+Face Detection
+a part of this field, which can be applied in various
+applications such as in robotic, security system, In this module, we propose a real-time face
+drivers monitor, and video coding system. detection algorithm using Six-Segmented
+Rectangular (SSR) filter, distance information, and
+We noticed a large diversity of the facial features
+template matching technique. Since human face is a
+that were selected, the way they were detected and
+dynamic object and has a high degree of variability,
+tracked, and the functionality that they presented for
+148 http://sites.google.com/site/ijcsis/
+ISSN 1947-5500
+(IJCSIS) International Journal of Computer Science and Information Security,
+Vol. 7, No. 1, 2010
+we propose the method combine both feature-based s(x ,y ) = s(x , y - 1) + i(x ,y) (2)
+and image-based approach to detect the point ii(x ,y ) = ii(x - 1, y) + s(x ,y ) (3)
+between the eyes by using Six-Segmented
+Where s(x, y) is the cumulative row sum,
+Rectangular filter (SSR filter). The proposed SSR
+filter, which is the rectangle divided into 6
+s(x , -1) = 0, and ii(-1, y) = 0.
+segments, operates by using the concept of bright-
+dark relation around Between-the-Eyes area. Using the integral image, the sum of pixels within
+Between-the-Eyes is selected as face representative rectangle D (r ) can be computed at high speed with
+s
+in our detection because its characteristic is four array references as shown in Fig.1.
+common to most people and is easily seen for a
+wide range of face orientation. s = (ii (x ,y ) + ii(x - W, y - L)) - (ii (x - W,
+r
+y) + ii(x, y - L )) (4)
+Firstly, we scan a certain size of rectangle divided
+into six segments throughout the face image. Then
+their bright-dark relations are tested if its center can
+be a candidate of Between-the-Eyes. Next, the
+distance information obtained from stereo camera
+and template matching is applied to detect the true
+Between-the-Eyes among candidates. Between-the-
+Eyes has dark part (eyes and eyebrows) on both
+sides, and has comparably bright part on upper side
+(forehead), and lower side (nose and cheekbone).
+This characteristic is stable for any facial
+expression.
+We use an intermediate representation of image
+called integral image to calculate sums of pixel
+Figure 1. Integral Image
+values in each segment of SSR filter. Firstly, SSR
+filter is scanned on the image and the average gray
+2) SSR filter
+level of each segment is calculated from integral
+image. Then, the bright-dark relations between each At the beginning, a rectangle is scanned throughout
+segment are tested to see whether its center can be a the input image. This rectangle is segmented into
+candidate point for Between-the- Eyes. Next, the six segments as shown in Fig.2 (a).
+stereo camera is used to find the distance
+information and the suitable Between-the- Eyes
+template size.. Finally the true Between-the-Eyes
+can be detected.
+1) Integral Image
+The SSR filter is computed by using intermediate
+representation for image called integral image. For
+the original image i(x, y), the integral image is
+Figure 2. SSR Filter
+defined as,
+i i ( x , y ) = ∑ ∑ i ( x ' , y ' ) W e denote the total sum of pixel value of each
+(1) segment (B1 B6) as 1 6 b b S S. The proposed SSR
+x',≤x y'≤y
+filter is used to detect the Between-the-Eyes based
+The integral image can be computed in one pass
+on two characteristics of face geometry.
+over the original image by the following pair of
+recurrences.
+149 http://sites.google.com/site/ijcsis/
+ISSN 1947-5500
+(IJCSIS) International Journal of Computer Science and Information Security,
+Vol. 7, No. 1, 2010
+(1) The nose area ( n S ) is brighter than the right Then right and left half of p is re-defined again
+mn
+and left eye area ( er S and el S , respectively) as separately as pr (i=0,...,15, j = 3, ...., 15) and p1
+ij ij
+shown in Fig.2 (b), where (i=0,...,15, j = 3, ...., 15), respectively, each has been
+converted to have average value of 128 and
+S = S + S
+n b2 b5 standard deviation of 64.
+S = S + S
+er b1 b4
+S = S + S Then the left mismatching value (D) and the right
+el b3 b6 l
+mismatching value (D) are calculated by using the
+r
+Then, following equation.
+S n > S er (5) D ∑( p ijl− t ijl) 2 (8)
+S n > S el (6) l = ν ijl
+(2) The eye area (both eyes and eyebrows) ( e S ) is D ∑( p ijr− t ijr)2 (9)
+relatively darker than the cheekbone area (including r = ν ijr
+nose) ( c S ) as shown in Fig. 2 (c), where
+S = S + S + S
+e b1 b2 b3
+The processing flow of Real-Time face detection
+S = S + S + S
+c b4 b5 b6
+system is shown in Fig. 4.
+Then,
+S < S
+e c (7)
+When expression (5), (6), and (7) are all satisfied,
+the center of the rectangle can be a candidate for
+SSR-filter
+Between-the-Eyes.
+Candidate point
+Stereo camera to find distance information
+Between the Eyes template
+Average Between-the-Eyes templates matching
+Figure 3. Between-the-Eyes candidates from SSR
+filter
+In Fig.3 (b), the Between-the-Eyes candidate area
+Eyes detection
+is displayed as the white areas and the non-
+candidate area is displayed as the black part. By
+performing labeling process on Fig. 3 (b), the result
+of using SSR filter to detect Between-the-Eyes Between -the – Eyes point detection
+candidates is shown.
+Because the SSR filter extracts not only the true
+Between-the- Eyes but also some false candidates, Figure 4. Processing Flow of Real-Time Face
+so we use the average Between-the-Eyes template Detection
+matching technique to solve this problem.
+After extracting the templates, we pass them to the
+To evaluate the candidates, we define the Between support vector machine in order to classify them.
+the- Eyes pattern as p mn (m=0,...,31, n = 0, ...., 15) . Positive classification results mean true faces, while
+150 http://sites.google.com/site/ijcsis/
+ISSN 1947-5500
+(IJCSIS) International Journal of Computer Science and Information Security,
+Vol. 7, No. 1, 2010
+negative ones mean false faces. Since the program In vertical intensity profiles we add horizontally to
+will be used by one person at a time, we need to each column the values of the columns that
+pick one of the positive results as the final detected precedes it in the ROI the same as in the horizontal
+face. To achieve that, we pick the highest positive profile, the values accumulate faster at the nose tip
+result, but before doing so, we will multiply each position so the maximum value gives us the ‘y’
+positive result by the area of the cluster that its coordinate of the nose tip. From both, the horizontal
+template represents. and vertical profiles we were able to locate the nose
+tip position.
+Finding the Nose Tip
+After locating the eyes, the final step is to find the
+nose tip. From figure 5 we can see that the blue line
+defines a perfect square of the pupils and outside
+corners of the mouth; the nose tip should fall inside
+this square, so this square becomes our region of
+interest in finding the nose tip.
+Figure 5 The square that forms the ROI
+The nose tip has a convex shape so it collects more
+light than other features in the ROI because it is Figure 7: Horizontal Sums of the columns
+closer to the light source. In horizontal intensity After locating the nose bridge we need to find the
+profiles we add vertically to each line the values of nose tip on that bridge. Since each NBP represents
+the lines that precedes it in the ROI, so since that the brightest S2 sector on the line it belongs to, and
+the nose bridge is brighter than the surrounding that S2 sector contains the accumulated vertical sum
+features the values should accumulate faster at the of the intensities in that sector from the first line to
+bridge location; in other words the maximum value the line it belongs to, we will be using this
+of the horizontal profile gives us the ‘x’ coordinate information to locate the nose tip. Nose trills are
+of the nose tip. dark areas, and the portion that they add to the
+accumulated sum in the horizontal profile is smaller
+than the contribution of other areas; in other words
+each NBP will add with its S2 sector a certain
+amount to the accumulated sum in the horizontal
+profile, but the NBP at the nose trills location will
+add a smaller amount, we will notice a local minima
+at the nose trills location, by locating this local
+minima we take the NBP that corresponds to it as
+the nose trills location, and the next step is to look
+for the nose tip above the nose trills. Since the nose
+Figure 6:The horizontal profile of ROI
+tip is brighter than other features it will donate with
+its S2 sector to the accumulated sum more than
+151 http://sites.google.com/site/ijcsis/
+ISSN 1947-5500
+(IJCSIS) International Journal of Computer Science and Information Security,
+Vol. 7, No. 1, 2010
+other NBPs, which means a local maxima in the transform gives several lines so we approximate
+first derivate, so the location of the nose tip is the them to a final line which is the eye brow.
+location of the NBP that corresponds to the local
+Motion Detection
+maxima that is above the local minima in the first
+derivate. Tracking the nose tip will be achieved by To detect motion in a certain region we subtract the
+template matching inside the ROI. pixels in that region from the same pixels of the
+previous frame, and at a given location (x,y); if the
+absolute value of the subtraction was larger than a
+certain threshold, we consider a motion at that pixel.
+Blink Detection
+We apply blink detection in the eye’s ROI before
+finding the eye’s new exact location. The blink
+detection process is run only if the eye is not
+moving, because when a person uses the mouse and
+wants to click, he moves the pointer to the desired
+location, stops, and then clicks, so basically the
+same for using the face, the user moves the pointer
+with the tip of the nose, stops, then blinks. To detect
+a blink we apply motion detection in the eye’s ROI;
+if the number of motion pixels in the ROI is larger
+Figure 8:The final result of the face and eye
+than a certain threshold we consider that a blink was
+detection process
+detected, because if the eye is still, and we are
+Hough Transform detecting a motion in the eye’s ROI, that means that
+the eyelid is moving which means a blink. In order
+The Hough transform is a technique which can be
+to avoid multiple blinks detection while they are a
+used to isolate features of a particular shape within
+single blink (because motion pixels will appear
+an image. In our proposal we use this to find our
+while the eye is closing and reopening), the user can
+eye brows. The classical Hough transform is most
+set the blink’s length, so all blinks which are
+commonly used for the detection of regular curves
+detected in the period of the first detected blink are
+such as lines, circles, ellipses, etc.
+omitted.
+The Hough transform can be used to identify the
+IV Conclusion
+parameter of a curve which best fits a set of given
+edge points. This edge description is commonly The proposed system is the best system for the
+obtained from a feature detecting operator such as users to play games interactively. The automatic
+the Roberts Cross, Sobel or Canny edge detector initialization phase is greatly simplified in this
+and may be noisy, i.e. it may contain multiple edge system, with no loss of accuracy in locating the
+fragments corresponding to a single whole feature. user’s eyes and choosing a suitable open eye
+Furthermore, as the output of an edge detector template. Another improvement in this system is, it
+defines only where features are in an image, the is compatible with inexpensive USB cameras, as
+work of the Hough transform is to determine both opposed to the high- resolution cameras. The
+what the features are (i.e. to detect the feature(s) for experiments indicate that the system performs
+which it has a parametric (or other) description) and equally well in extreme lighting conditions. The
+how many of them exist in the image. To find the accuracy percentages in all the cases were
+eyebrow line from the set of thresholding points we approximately the same as those that were retrieved
+apply the Hough transform. Sometimes Hough in normal lighting conditions.
+152 http://sites.google.com/site/ijcsis/
+ISSN 1947-5500
+(IJCSIS) International Journal of Computer Science and Information Security,
+Vol. 7, No. 1, 2010
+Another important consideration is the placement AUTHORS PROFILE
+and orientation of camera. The experiments showed
+She has completed her Bachelor of
+that placing the camera below the user’s head
+engineering in Computer Science
+resulted in desirable functioning of the system.
+from Raja Rajeswari engineering
+However, if the camera is placed too high above the
+College,Anna University and
+user’s head, in such a way that it is aiming down at
+Master of Engineering from P.S.N.A
+the user at a significant angle, the blink detection is
+Engineering college ,Anna
+no longer as accurate. This is caused by the very
+University.She is currently doing her Ph.D in
+small amount of variation in correlation scores as
+Bharath University.Her research interest includes
+the user blinks, since nearly all that is visible to the
+image processing,computer vision and database
+camera is the eyelid of the user. Thus, when
+management systems.
+positioning the camera, it is beneficial to the
+detection accuracy to maximize the degree of
+Dr.S.K.Srivatsa was born at
+variation between the open and closed eye images
+Bangalore on 21st July 1945.He
+of the user.Higher frame rates and finer camera
+received his Bachelor of Electronics
+resolutions could lead to more robust eye detection
+and Telecommunication
+that is less restrictive on the user, while increased
+Engineering degree (Honors) from
+processing power could be used to enhance the
+Jadavpur University(securing first
+tracking algorithm to more accurately follow the
+rank and two medals).Master degree in Electrical
+user’s eye and recover more gracefully when it is
+Commuication Engineering(With distinction)from
+lost.
+Indian Institute of Science and Ph.D also from
+REFERENCES
+Indian Institute of Scienc,Bangalore.In July 2005,he
+1.M. Bartlett, G. Littlewort, B. Braathen, T. Sejnowski,
+retired as professor of Electronics engineering from
+and J. Movellan. A prototype for automatic recognition
+Anna University.He has taught twenty-two different
+of Spontaneous facial actions. In S. Becker, S. Thrun,
+Courses at P.G level during the last 33 years.He has
+and K. Obermayer, editors, Advances in Neural
+Information Processing Systems, volume 15, pages 1271– functioned as a Member of the Board of studies in
+1278, 2003. some Educational Institutions.His name is included
+2. T. N. Bhaskar, F. T. Keat, S. Ranganath, and Y.V.
+in the Computer Society of India database of
+Venkatesh.Blink detection and eye tracking for eye
+Resource professionals.He has received about a
+localization. In Proc. TENCON 2003, volume 2, pages 821–
+dozen awards.He has produced 24 Ph.Ds.He is the
+824, 2003.
+3. A. Haro, M. Flickner, and I. Essa. Detecting and author of well over 400 publications.
+tracking eyes by using their physiological properties, .
+dynamics, and appearance. In IEEE International
+Dr.M.Uma maheswari received her
+Conference on Computer Vision and Pattern Recognition,
+bachelor of science in Computer
+volume 1, pages 163–168,2000.
+Science from Bharathidasan
+4.Q. Ji, H. Wechsler, A. Duchowski, and M. Flickner.
+Editorial: special issue: eye detection and tracking. university in 1995, Master of
+Comput.Vis.Image Underst., 98(1):1–3, 2005. Computer Applications in
+5.D. G. Lowe. Distinctive image features from scale-invariant Computer Sience from
+keypoints. Int. J. of Computer Vision, 60(2):91–110, 2004.
+Bharathidasan University
+6. M. Valstar, M. Pantic, Z. Ambadar, and J. Cohn.
+in1998,M.Phil in Computer Science from Alagappa
+Spontaneous vs. posed facial behavior: Automatic analysis of
+brow actions. In Int. Conf. on Multimodal Interfaces, pages University,Karaikudi in 2005,Master of Technology
+162–170, 2006. in Computer Science from Mahatma Gandhi Kasi
+Vidyapeeth university in 2005 and Ph.D in
+Computer Science from Magadh Universty,Bodh
+Gaya in 2007.She has 10 years of teahing
+experience and guided 150 M.C.A projects,23
+M.Tech projects and 6 Ph.D research works.
+153 http://sites.google.com/site/ijcsis/
+ISSN 1947-5500

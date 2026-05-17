@@ -1,0 +1,1397 @@
+Data Science Methodologies:
+Current Challenges and Future Approaches
+In˜igoMartineza,b,∗,ElisabethVilesb,c,IgorGOlaizolaa
+aVicomtechFoundation,BasqueResearchandTechnologyAlliance(BRTA),Donostia-SanSebastia´n20009,Spain
+bTECNUNSchoolofEngineering,UniversityofNavarra,Donostia-SanSebastia´n20018,Spain
+cInstituteofDataScienceandArtificialIntelligence,UniversityofNavarra,Pamplona31009,Spain
+Abstract
+Datasciencehasemployedgreatresearcheffortsindevelopingadvancedanalytics,improvingdatamodelsandcultivatingnewal-
+gorithms.However,notmanyauthorshavecomeacrosstheorganizationalandsocio-technicalchallengesthatarisewhenexecuting
+adatascienceproject: lackofvisionandclearobjectives,abiasedemphasisontechnicalissues,alowlevelofmaturityforad-hoc
+projects and the ambiguity of roles in data science are among these challenges. Few methodologies have been proposed on the
+literaturethattacklethesetypeofchallenges,someofthemdatebacktothemid-1990,andconsequentlytheyarenotupdatedto
+thecurrentparadigmandthelatestdevelopmentsinbigdataandmachinelearningtechnologies. Inaddition,fewermethodologies
+offeracompleteguidelineacrossteam, projectanddata&informationmanagement. Inthisarticlewewouldliketoexplorethe
+necessity of developing a more holistic approach for carrying out data science projects. We first review methodologies that have
+beenpresentedontheliteraturetoworkondatascienceprojectsandclassifythemaccordingtothetheirfocus: project,team,data
+andinformationmanagement. Finally,weproposeaconceptualframeworkcontaininggeneralcharacteristicsthatamethodology
+formanagingdatascienceprojectswithaholisticpointofviewshouldhave. Thisframeworkcanbeusedbyotherresearchersasa
+roadmapforthedesignofnewdatasciencemethodologiesortheupdatingofexistingones.
+Keywords: datascience,machinelearning,bigdata,datasciencemethodology,projectlife-cycle,organizationalimpacts,
+knowledgemanagement,computingmilieux
+1. Introduction 80%ofdatascienceprojectswill“remainalchemy,runbywiz-
+ards” through 2020. With the competitive edge that such ad-
+Inrecentyears,thefieldofdatasciencehasreceivedincreased vanced techniques provide to researchers and practitioners, it
+attention and has employed great research efforts in develop- is quite remarkable to witness such low success rates in data
+ingadvancedanalytics,improvingdatamodelsandcultivating scienceprojects.
+newalgorithms. Thelatestachievementsinthefieldareagood Regardinghowdatascienceteamsareapproachingandde-
+reflectionofsuchundertaking[1]. Infact,thedatasciencere- velopingprojectsacrossdiversedomains,LeoBreiman[5]states
+search community is growing day by day, exploring new do- thattherearetwoculturesonstatisticalmodeling: a)thefore-
+mains,creatingnewspecializedandexpertroles,andsprouting castingbranchwhichisfocusedonbuildingefficientalgorithms
+more and more branches of a flourishing tree called data sci- forgettinggoodpredictivemodelstoforecastthefuture,andb)
+ence. Besides, the data science tree is not alone, as it is nour- the modeling branch that is more interested on understanding
+ished by the neighboring fields of mathematics, statistics and the real world and the underlying processes. From the latter
+computerscience. perspective,theory,experience,domainknowledgeandcausa-
+However, these recent technical achievements do not go tion really matter, and the scientific method is essential. On
+handinhandwiththeirapplicationtorealdatascienceprojects. thiswise,philosophersofsciencefromtheXXcenturysuchas
+In 2019, VentureBeat [2] revealed that 87% of data science KarlPopper,ThomanKuhn,ImreLakatos,orPaulFeyerabend
+projects never make it into production and a NewVantage sur- theorizedabouthowtheprocessofbuildingknowledgeandsci-
+vey[3]reportedthatfor77%ofbusinessestheadoptionofbig enceunfolds[6]. Amongotherthings,theseauthorsdiscussed
+data and artificial intelligence (AI) initiatives continue to rep- thenatureandderivationofscientificideas,theformulationand
+resentabigchallenge. Also[4]reportedthat80%ofanalytics useofthescientificmethod,andtheimplicationsofthediffer-
+insights will not deliver business outcomes through 2022 and entmethodsandmodelsofscience. Inspiteoftheobviousdif-
+ferences,inthisarticlewewouldliketomotivatedatascientists
+todiscusstheformulationanduseofthescientificmethodfor
+∗Correspondingauthor
+data science research activities, along the implications of dif-
+Emailaddresses:imartinez@vicomtech.org(In˜igoMartinez),
+eviles@tecnun.es(ElisabethViles),iolaizola@vicomtech.org(IgorG ferentmethodsforexecutingindustryandbusinessprojects. At
+Olaizola) present, data science is a young field and conveys the impres-
+PreprintsubmittedtoBigDataResearch-Elsevier January6,2020
+2202
+naJ
+41
+]GL.sc[
+2v78270.6012:viXra
+sionofahandcraftedwork.However,amongalltheuncertainty 2. TheoreticalFramework
+andtheexploratorynatureofdatascience,therecouldbeindeed
+2.1. Backgroundanddefinitions
+arigorous“science”, asitwasunderstoodbythephilosophers
+ofscience,andthatcanbecontrolledandmanagedinaneffec- In order to avoid any semantic misunderstanding, we start by
+tiveway. defining the term “data science” more precisely. Its definition
+On the literature, few authors [7, 8] have come across the willhelpexplainingtheparticularitiesofdatascienceprojects
+organizational and socio-technical challenges that arise when and frame the management methodology proposed in this pa-
+executing a data science project, for instance: lack of vision, per.
+strategy and clear objectives, a biased emphasis on technical
+issues, lack of reproducibility, and the ambiguity of roles are 2.1.1. Datascience
+amongthesechallenges, whichleadtoalowlevelofmaturity Amongtheauthorsthatassembledatasciencefromlong-established
+indatascienceprojects,thataremanagedinad-hocfashion. areasofsciences,thereisaoverallagreementonthefieldsthat
+Eventhoughtheseissuesdoexistinreal-worlddatascience feed and grow the tree of data science. For instance, [12] de-
+projects, the community has not been overly concerned about finesdatascienceastheintersectionofcomputerscience,busi-
+them, and not enough has been written about the solutions to nessengineering,statistics,datamining,machinelearning,op-
+tackle these problems. As it will be illustrated on Section 4, erationsresearch,sixsigma,automationanddomainexpertise,
+someauthorshaveproposedmethodologiestomanagedatasci- whereas[13]statesthatdatascienceisamultidisciplinaryinter-
+enceprojects,andhavecomeupwithnewtoolsandprocesses sectionofmathematicsexpertise,businessacumenandhacking
+tohandlethecitedissues. skills. For[14],datasciencerequiresskillsrangingfromtradi-
+However,whiletheproposedsolutionsareleadingtheway tionalcomputersciencetomathematicstoartand[15]presents
+totackletheseproblems,therealityisthatdatascienceprojects a Venn diagram with data science visualized as the joining of
+are not taking advantage of such methodologies. On a survey a) hacking skills b) math and stats knowledge and c) substan-
+[9]carriedoutin2018toprofessionalsfrombothindustryand tive expertise. By contrast, for the authors of [16], many data
+not-for-profitorganizations,82%oftherespondentsdidnotfol- scienceproblemsarestatisticalengineeringproblems,butwith
+low an explicit process methodology for developing data sci- larger, more complex data that may require distributed com-
+enceprojects,but85%oftherespondentsconsideredthatusing puting and machine learning methods in addition to statistical
+animprovedandmoreconsistentprocesswouldproducemore modeling.
+effectivedatascienceprojects.
+Yet, few authors look on the fundamental purpose of data
+Considering a survey from KDnuggets in 2014 [10], the science,whichiscrucialtounderstandtheroleofdatascience
+mainmethodologyusedby43%ofresponderswasCRISP-DM. in the business & industry areas and its possible domain ap-
+This methodology has been consistently the most commonly plications. For the authors of [9], data science is the analysis
+used for analytics, data mining and data science projects, for of data to solve problems and develop insights, whereas [17]
+each KDnuggets poll starting in 2002 up through the most re- states that data science uses “statistical and machine learning
+cent 2014 poll [11]. Despite its popularity, CRISP-DM was techniques on big multi-structured data in a distributed com-
+createdbackinthemid-1990andhasnotbeenrevisedsince. putingenvironmenttoidentifycorrelationsandcausalrelation-
+Therefore, the aim of this paper is to conduct a critical re- ships,classifyandpredictevents,identifypatternsandanoma-
+viewofmethodologiesthathelpinmanagingdatascienceprojects, lies,andinferprobabilities,interestandsentiment”. Forthem,
+classifying them according to their focus and evaluating their data science combines expertise across software development,
+competences dealing with the existing challenges. As a result datamanagementandstatistics. Ason[18],datascienceisde-
+of this study we propose a conceptual framework containing scribed as the field that studies the computational principles,
+featuresthatamethodologyformanagingdatascienceprojects methodsandsystemsforextractingandstructuringknowledge
+with a holistic point of view could have. This scheme can be fromdata.
+usedbyotherresearchersasaroadmaptoexpandcurrentlyused Therehasalsobeenagrowinginterestondefiningthework
+methodologiesortodesignnewones. carriedoutbydatascientistsandlistingthenecessaryskillsto
+Fromthispointonwards,thepaperisstructuredasfollows: become a data scientist, in order to better understand its role
+A contextualization of the problem is presented in Section 2, amongtraditionaljobpositions. Inthissense,[19]definesdata
+where some definitions on the terms “data science” and “big scientistasapersonwhois“betteratstatisticsthananysoftware
+data”areprovidedtoavoidanysemanticmisunderstandingand engineer and better at software engineering than any statisti-
+additionally frame what a data science project is about. Sec- cian”as[20]presentsa“unicorn”perspectiveofdatascientists,
+tion2alsopresentstheorganizationalandsocio-technicalchal- and states that data scientists handle everything from finding
+lenges that arise when executing a data science project. Sec- data, processing it at scale, visualizing it and writing up as a
+tion 3 describes the research methodology used in the article story.
+andintroducestheresearchquestions. Section4presentsacrit- Amongthehundredsofdifferentinterpretationsthatcanbe
+ical review of data science project methodologies. Section 5 found for data science, we take the comments included above
+discusses the results obtained and finally, Section 6 describes asareferenceandprovideourowndefinitiontoframetherest
+thedirectionsonhowtoextendthisresearchinthefutureand ofthearticle:
+themainconclusionsofthepaper.
+2
+Datascienceisanmultidisciplinaryfieldthatliesbetween Overall, during the last years the data science community
+computer science, mathematics and statistics, and comprises has pursued the excellence and has employed great research
+theuse ofscientificmethods andtechniques, to extractknowl- efforts in developing advanced analytics, focusing of solving
+edge and value from large amounts of structured and/or un- technicalproblemsandasaconsequencetheorganizationaland
+structureddata. socio-technicalchallengeshavebeenputaside. Thefollowing
+Hence,fromthisdefinitionwedrawthatdatascienceprojects section summarizes the main problems faced by data science
+aimatsolvingcomplexrealproblemsviadata-driventechniques. professionalsduringrealbusinessandindustryprojects.
+In this sense, data science can be applied to almost every ex-
+isting sector and domain out there: banking (fraud detection 2.2. CurrentChallenges
+[21], credit risk modeling [22], customer lifetime value [23]), Leveraging data science within a business organizational con-
+finance (customer segmentation [24], risk analysis [25], algo- textinvolvesadditionalchallengesbeyondtheanalyticalones.
+rithmictrading[26]),health-care(medicalimageanalysis[27], Thestudiesmentionedattheintroductionofthispaperjustre-
+drugdiscovery[28],bio-informatics[29],),manufacturingopti- flect the existing difficulty in executing data science and big
+mization(failureprediction[30],maintenancescheduling[31], dataprojects. Herebelowwehavegatheredsomeofthemain
+anomalydetection[32]),e-commerce(targetedadvertising[33], challengesandpainpointsthatcomeoutduringadatascience
+product recommendation [34], sentiment analysis [35]), trans- project,bothattheorganizationallevelandatechnicallevel.
+portation(selfdrivingcars[36],supplychainmanagement[37],
+congestion control [38]) just to mention some of them. Even Coordination,collaborationandcommunication
+thoughdatasciencecanbeseenasanapplication-agnosticdis-
+The field of data science is evolving from a work done by in-
+cipline,webelievethatitinordertoappropriatelyextractvalue
+dividual, “lone wolf” data scientists, towards a work carried
+fromdataitishighlyrecommendedtohaveanexpertiseinthe
+out by a team with specialized disciplines. Considering data
+applicationdomain. science projects as a complex team effort, [41, 9, 42] bring
+upcoordination,definedas“themanagementofdependencies
+2.1.2. Bigdatatechnologies
+amongtaskactivities”asthebiggestchallengefordatascience
+Looking back at the evolution of data science during the last
+projects. Poorlycoordinatedprocessesresultinconfusion, in-
+decade,itsrapidexpansioniscloselylinkedtothegrowingabil- efficienciesanderrors. Moreover, thislackofefficientcoordi-
+itytocollect,storeandanalyzedatageneratedatanincreasing
+nationhappensbothwithindataanalyticsteamsandacrossthe
+frequency[39]. Infact,duringthemid-2000sthereweresome
+organization[43].
+fundamental changes in each of these stages (collection, stor-
+Apart from lack of coordination, for [44, 45, 46] there are
+ageandanalysis)thatshiftedtheparadigmofdatascienceand
+clear issues of collaboration and [47, 48] highlight a lack of
+bigdata.
+transparentcommunicationbetweenthethreemainstakehold-
+Withrespecttocollection,thegrowthofaffordableandre-
+ers: business (client), analytics team and the IT department.
+liableinterconnectedsensors,builtinsmart-phonesandindus- Forinstance,[44]mentionsthedifficultyforanalyticsteamsto
+trial machinery, has significantly changed the way statistical
+deploy to production, coordinate with the IT department and
+analysisisapproached.Infact,traditionallytheacquisitioncost
+explaindatasciencetobusinesspartners. [44]alsorevealsthe
+wassohighthatstatisticianscarefullycollecteddatainorderto
+lack of support from the business side, in a way that there is
+benecessaryandsufficienttoansweraspecificquestion. This
+not enough business input or domain expertise information to
+majorshiftindatacollectionhasindeedprovokedanexplosion
+achieve good results. Overall, it seems that the data analytics
+of the amount of machine-generated data. In regards to stor- team and data scientists in general are struggling to work effi-
+age, we must highlight the development of new techniques to
+cientlyalongsidetheITdepartmentandthebusinessagents.
+distributedataacrossnodesinaclusterandthedevelopmentof In addition, [48] points out ineffective governance models
+distributedcomputationtoruninparallelagainstdataonthose
+fordataanalyticsand[43]emphasizeinadequatemanagement
+clusternodes. HadoopandApacheSparkecosystemsaregood
+and a lack of sponsorship from top management side. In this
+examplesofnewtechnologiesthatcontributedtotheadvances context,[49]affirmthatworkinginconfusing,chaoticenviron-
+in collection and storage techniques. Besides, a major break-
+ments can be frustrating and may lower team members’ moti-
+throughfortheemergenceofnewalgorithmsandtechniquesfor
+vationandtheirabilitytofocusontheprojectobjectives.
+data analysis has been the increase in the computation power,
+bothinCPUsandGPUs. SpeciallythelatestadvancesinGPUs
+Buildingdataanalyticsteams
+havepushedforwardtheexpansionofdeeplearningtechniques,
+In other terms, [50] brings out problems to engage the proper
+veryeageroffastmatrixoperations[40].
+teamfortheprojectand[45,46,43,48,51]highlightthelackof
+Inadditiontotheimprovementsoncollection, storageand
+peoplewithanalyticsskills. Theseshortagesofspecializedan-
+analysis,datasciencehasbenefitedfromahugecommunityof
+alyticallaborhavecausedeverymajoruniversitytolaunchnew
+developersandresearchers, comingfromcuttingedgecompa-
+big data, analytics or data science programs [42]. In this re-
+niesandresearchcenters.Inourterminology,“bigdata”,which
+gard,[46]advocatestheneedforamultidisciplinaryteam:data
+iscommonlydefinedbythe5V’s(volume,velocity,variety,ve-
+science,technology,businessandmanagementskillsareneces-
+racity, value) is a subset field within data science that focuses
+sary to achieve success in data science projects. For instance,
+ondatadistributionandparallelprocessing.
+3
+[9]statesthatdatascienceteamshaveastrongdependenceon problemisthezeroimpactandlackofuseoftheprojectresults
+the leading data scientist, which is due to process immaturity bythebusinessortheclient[44].
+andthelackofarobustteam-basedmethodology.
+Drivingwithdata
+Definingthedatascienceproject Theuseofadata-drivenapproachdefinesthemainparticularity
+Datascienceprojectsoftenhavehighlyuncertaininputsaswell of a data science project. Data is at the epicenter of the entire
+ashighlyuncertainoutcomes,andareoftenad-hoc[52],featur- project. Yet, it also produces some particular issues discussed
+ingsignificantback-and-forthamongthemembersoftheteam, below. Hereafter we have gathered the main challenges that
+andtrial-and-errortoidentifytherightanalysistools,programs, arise when working with data, whether related to the tools, to
+andparameters. thetechnologyitself,ortoinformationmanagement.
+The exploratory nature of such projects makes challeng- A reiterated complain in real data science projects by data
+ingtosetadequateexpectations[17],establishrealisticproject scientistsisthequalityofthedata: whetherdataisdifficultto
+timelines and estimate how long projects would take to com- access[46],orwhetheris“dirty”andhasissues,datascientists
+plete[8]. Inthisregard,[50,53]pointoutthatthescopeofthe usuallyconcludethatdatahasnotenoughpotentialtobesuit-
+projectcanbedifficulttoknowexante,andunderstandingthe ableformachinelearningalgorithms. Understandingwhatdata
+businessgoalsisalsoatroublingtask. might be available [50], its representativeness for the problem
+Moreexplicitly,theauthorsin[47,43,48]highlighttheab- at hand [46] and its limitations [53] is critical for the success
+senceofclearbusinessobjectives,insufficientROIorbusiness of the project. In fact, [59] states that the lack of coordinated
+cases, and an improper scope of the project. For [54] there is datacleaningorqualityassurancecheckscanleadtoerroneous
+a biased emphasis on the technical issues, which has limited results. In this regard, data scientists tend to forget about the
+theabilityoforganizationstounleashthefullpotentialofdata validation stage. In order to assure a robust validation of the
+analytics. Rather than focusing of the business problem, data proposedsolutionunderrealindustrialandbusinessconditions,
+scientistshavebeenoftenobsessedwithachievingstateofthe dataand/ordomainexpertisemustbegatheredwithenoughan-
+artresultsonbenchmarkingtasks,butsearchingforasmallin- ticipation.
+creaseinperformancecaninfactmakemodelstoocomplexto Consideringthebigdataperspectiveisalsoimportant[60].
+beuseful. Thismindsetisconvenientfordatasciencecompe- Anincreaseindatavolumeandvelocityintensifiesthecompu-
+titions, such as Kaggle [55], but not for the industry. Kaggle tationrequirementsandhencethedependenceoftheprojecton
+competitionsareactuallygreatformachinelearningeducation, IT resources [8]. In addition, the scale of the data magnifies
+but they can set wrong expectations about what to demand in the technology complexity and the necessary architecture and
+real-lifebusinesssettings[56]. infrastructure[48]andasaresultthecorrespondingcosts[43].
+Inotherterms,[46,43,60]alsohighlighttheimportanceof
+StakeholdersvsAnalytics data security and privacy, and [43, 48] point out the complex
+Besides,moreoftenthannottheprojectproposalisnotclearly dependencyonlegacysystemsanddataintegrationissues.
+defined[44]andthereisnotenoughinvolvementbythebusiness Inrelationtothelimitationsofmachinelearningalgorithms,
+side,whomightjustprovidethedataandbarelysomedomain oneofmostrepeatedissuesisthatpopulardeeplearningtech-
+information, assuming that the data analytics team will do the niquesrequiremanyrelevanttrainingdataandtheirrobustness
+rest of the “magic” by itself. The high expectations set up by iseverysooftencalledintoquestion. [51]bringsuptheexces-
+machine learning and deep learning techniques has induced a sivemodeltrainingandretrainingcosts. Infact,datascientists
+misleadingperceptionthatthesenewtechnologiescanachieve tendtouse4timesasmuchdataastheyneedtotrainmachine
+whatever the business suggests at a very low cost, and this is learningmodels,whichisresourceintensiveandcostly. Apart
+veryfarfromreality[57]. Thelackofinvolvementbythebusi- fromthat,[51]pointsoutthatdatascientistscanoftenfocuson
+nesssidecanalsobecausedbyalackofunderstandingbetween thewrongmodelperformancemetrics,withoutmakinganyref-
+bothparties: datascientistsmaynotunderstandthedomainof erencetooverallbusinessgoalsortrade-offsbetweendifferent
+thedata,andthebusinessisusuallynotfamiliarwithdataanal- goals.
+ysis techniques. In fact, the presence of an intermediary that
+understandsboththelanguageofdataanalyticsandthedomain Deliverinsights
+of application can be crucial to make these two parties under- [41, 9, 60] point out the issue of slow information and data
+standeachotherandreducethisdatasciencegap[58]. sharing among the team members. They state that these poor
+The exposed project management issues may be the result processes for storing, retrieving and sharing data and docu-
+ofalowlevelofprocessmaturity[52]andalackofconsistent ments wastes time as people need to look for information and
+methods and processes to approach the topic of data science increases the risk for using the wrong version. In relation to
+[45]. Furthermore, the consequences of such low adoption of this, [41,9,59]revealalackofreproducibilityindatascience
+processes and methodologies may also lead to delivering the projects. In fact, they call for action and development of new
+“wrong thing” [41, 9, 59], and “scope creep” [41, 9]. In fact, toolstotacklethelackofreproducibility,sinceitmightbe“im-
+the lack of effective processes to engage with stakeholders in- possible to further build on past projects given the inconsis-
+creasestheriskthatteamswilldeliversomethingthatdoesnot tentpreservationofrelevantartifacts”likedata,packages,doc-
+satisfystakeholderneeds. Themostobviousportrayalofsuch umentation,andintermediateresults.
+4
+TeamManagement ProjectManagement Data&InformationManagement
+Poorcoordination Lowlevelofprocessmaturity Lackofreproducibility
+Collaborationissuesacrossteams Uncertainbusinessobjectives Retainingandaccumulationofknowledge
+Lackoftransparentcommunication Settingadequateexpectations LowdataqualityforML
+Inefficientgovernancemodels Hardtoestablishrealisticprojecttimelines Lackofqualityassurancechecks
+Lackofpeoplewithanalyticsskills Biasedemphasisontechnicalissues Novalidationdata
+Relynotonlyonleadingdatascientist Deliveringthewrongthing Datasecurityandprivacy
+Buildmultidisciplinaryteams Projectnotusedbybusiness InvestmentinITinfrastructure
+Table1:Datascienceprojectsmainchallenges
+This can be a serious problem for the long-term sustain- summarizesthemainchallengesthatcomeoutwhenexecuting
+abilityofdatascienceprojects. Inseveralapplieddatascience realdatascienceprojects.
+projects, the main outcome of the project may not be the ma- SomeofthechallengeslistedonTable1areconsideredto
+chine learning model or the predicted quantity of interest, but be a symptom or reflection of a larger problem, which is the
+anintangiblesuchastheprojectprocessitselforthegenerated lackofacoherentmethodologyindatascienceprojects,aswas
+knowledgealongitsdevelopment. Whileitisessentialtoreach stated by [7]. In this sense, [9] suggested that an augmented
+the project goals, in some cases it is more important to know data science methodology could improve the success rate of
+how the project did reach those goals, what path did it follow datascienceprojects. Inthesamearticle,theauthorpresented
+andunderstandwhyittookthosestepsandnototherones. This asurveycarriedoutin2018toprofessionalsfrombothindustry
+generatedknowledgeabouttheroutethatadatascienceproject andnot-for-profitorganizations,where82%oftherespondents
+follows is crucial for understanding the results and paves the declaredthattheydidnotfollowanexplicitprocessmethodol-
+way for future projects. That is why this knowledge has to be ogyfordevelopingdatascienceprojects,but85%oftherespon-
+managedandpreservedingoodcondition,andforthattheabil- dents considered that using an improved and more consistent
+itytoreproducedatasciencetasksandexperimentsisdecisive. processwouldproducemoreeffectivedatascienceprojects.
+[51]statesthatretaininginstitutionalknowledgeisachallenge, Therefore, in this article we would like to explore the fol-
+sincedatascientistsanddevelopersareinshortsupplyandmay lowingresearchquestions:
+jumptonewjobs.
+• RQ1:Whatmethodologiescanbefoundontheliterature
+To tackle this problem, [51] proposes to document every-
+tomanagedatascienceprojects?
+thing and create a detailed register for all new machine learn-
+ingmodels,thusenablingfuturehirestoquicklyreplicatework • RQ2:Aretheseavailablemethodologiespreparedtomeet
+donebytheirpredecessors.Inthisregard,[53]notedknowledge-
+thedemandsofcurrentchallenges?
+sharingwithindatascienceteamsandacrosstheentireorgani-
+zationasonekeyfactorforprojectsuccessand[43,48]added
+data&informationmanagementaswell. 3. ResearchMethodology
+In relation to data management, [51] also pointed out the
+Inordertoinvestigatethestate-of-the-artindatasciencemethod-
+issueofmultiplesimilarbutinconsistentdatasets,wheremany
+ologies,inthisarticlewehaveoptedforacriticalreviewofthe
+versions of the same data sets could be circulating within the
+literature. Saunders and Rojon [61] define a critical literature
+company,withnowaytoidentifywhichisthecorrectone.
+reviewasa“combinationofourknowledgeandunderstanding
+Summary of what has been written, our evaluation and judgment skills
+and our ability to structure these clearly and logically in writ-
+Thepresentedproblematicpointshavebeenclassifiedinthree
+ing”. They also point out several key attributes of a critical
+maincategories,accordingtowhethertheyrelatetothea)team
+literature review: a) it discusses and evaluates the most rele-
+ororganization,b)totheprojectmanagementorc)tothedata
+vantresearchrelevanttothetopic,b)itacknowledgesthemost
+&informationmanagement. Thistaxonomyismeanttofacili-
+importantandrelevanttheories,frameworksandexpertswithin
+tateandbetterunderstandthetypesofproblemsthatarisedur-
+the field, c) it contextualizes and justifies aims and objectives
+ing a data science project. In addition, this classification will
+andd)itidentifiesgapsinknowledgethathasnotbeenexplored
+gohandinhandwiththereviewofdatasciencemethodologies
+inpreviousliterature.
+thatwillbeintroducedlaterinthepaper. Analternativeclassi-
+Thepresentedcriticalliteraturereviewwascarriedoutbased
+ficationsystemforbigdatachallengesisproposedon[60],de-
+ontheprecedingconceptsandthroughacomparisonoflitera-
+fined by data, process and management challenges. For them,
+ture on data science project management. The main reason to
+data challenges are related to the characteristics of data itself,
+goforacriticalreviewratherthanasystematicreviewwasthat
+processchallengesarisewhileprocessingthedataandmanage-
+informationregardingtheuseofdatasciencemethodologiesis
+ment challenges tackle privacy, security, governance and lack
+scattered among different sources, such as scientific journals,
+of skills. We claim that the proposed taxonomy of challenges
+books,butalsoblogs,whitepapersandopenonlinepublishing
+incorporatesthisclassificationandhasabroaderview. Table1
+5
+platforms. The information available on informal sources was ThequantitativeinformationincludedontheTables[2,3,4]
+indeedveryimportanttounderstandtheperspectiveofrealdata has also been illustrated in a triangular plot (Figure 1 right).
+science projects. In order to select articles for inclusion, a set Each axis represents a category of challenges - team, project,
+ofselectioncriteriawasset: data & information - and the value in percentage (%) reflects
+how well a methodology addresses those challenges. More
+• Source and databases used for search: Web of Science, specifically, the percentage value is calculated as the ratio be-
+Mendeley,GoogleScholar,Google tweenthesumofthescoresandthemaximumpossiblesumin
+eachcategory. Forexample, theprojectmanagementcategory
+• Timeperiod:from2010until2020(exceptiononCRISP- has7challenges,sothemaximumpossiblescoreis7·3 = 21.
+DM,from1995)
+A methodology that obtains 14 points will have a percentage
+• Language: English
+scoreof14/21=66%.
+The percentage scores included in the triangular plot were
+• Document type: journal paper, conference paper, white alsoexploitedtoestimatetheintegrityofmethodologies,which
+paper. Bothacademicandpractitionerpaperswereused. measures how well a given methodology covers all three cat-
+Practitionerarticleswerealsoincludedastheycouldpro- egories of challenges. Figure 1 (left) illustrates the integrity
+videanindustry-levelperspectiveonthedatascience scoresforthereviewedmethodologies. Theintegrityiscalcu-
+methodologies. latedastheratiobetweentheareaofthetriangleandtheareaof
+the triangle with perfect scores 100% on √the three categories,
+• Content: allpapersselectedhadtodowithdatascience which clearly has the maximum area (3 3/4). Calculating
+project methodologies either directly (title, or text), or theareaofthetriangleusingthethreepercentagescoresisnot
+indirectly(inferredbythecontent). Alltheincludedpa- straightforward,asitisexplainedintheAppendix A.
+persinvolvedfindingsrelatedtoatleastoneofthethree Therefore, Tables [2,3,4] quantitatively evaluate the quali-
+categoriesofmethodologiesanalyzedinthisreview(i.e. tativecharacteristicsofeachmethodologyanditssuitabilityto
+team,projectanddata&informationdimensionsofdata takeonthechallengesidentifiedonSection2forthemanage-
+scienceprojectmanagement). mentofteams,projectsanddata&information.
+Ultimately, a total of 19 studies (from 1996 to 2019) were
+selected for examination. Each study contained a lot of infor- 4. Results: CriticalReviewofDataScienceMethodologies
+mation, and thus, it was decided that the best way to compare
+Hereunder we review a collection of methodologies that pro-
+studies was through the creation of a comparative table. This
+poseguidelinesformanagingandexecutingdatascienceprojects.
+firsttableattemptedtoseparatethekeyelementsofthestudies
+Eachmethodologyisdescribedindetailinordertoanalyzehow
+intofourpoints:
+wellitmeetsthedemandsofthepresentedchallenges. Thisin-
+1. Paperdetails(Author/Journal/Year) cludesadescriptionofstructure, features, principles, artifacts,
+2. Mainideasandkeywords and recommendations. Each methodology is concluded with
+3. Perspective(team,project,data&information) a summary of its main strengths and drawbacks. We suggest
+4. Findings thereadertocheckthescoresgiventoeachmethodologyafter
+readingthecorrespondingcriticalreview.
+Afterwards,asecondtablewascreatedtoanalyzehoweach
+methodologymetthedemandsoftheidentifiedchallenges.This
+4.1. CRISP-DM
+tablehasbeenpartitionedintothreeseparateTables[2,3,4],one
+Cross-IndustryStandardProcessforDataMining(CRISP-DM)
+for each category of challenges. The first column takes into
+[63] is an open standard process model developed by SPSS
+account the challenges identified on Section 2 for team man-
+and Teradata in 1996 that describes common approaches used
+agement,projectmanagementanddata&informationmanage-
+by data mining experts. It presents a structured, well defined
+ment. Inordertodealthesechallenges, methodologiesdesign
+and extremely documented process iterative process. CRISP-
+andimplementdifferentprocesses.Examplesofsuchprocesses
+DM breaks down the lifecycle of a data mining project into
+have been included on the second column. Based on the pro-
+six phases: business understanding, data understanding, data
+posalofeachmethodology,ascoreisassignedtoeachcriteria.
+preparation,modeling,evaluationanddeployment.
+Thesescoresattempttocapturetheeffortputbytheauthorsto
+The business understanding phase focuses on the project
+solveeachchallenge. Takingasareference[62],thefollowing
+objectives and the requirements from a business perspective,
+punctuationsystemhasbeenused:
+andconvertsthisinformationintoadatascienceproblem.Thus
+• 0: criterianotfulfilledatall ittriestoalignbusinessanddatascienceobjectives,settingade-
+quateexpectationsandfocusingofdeliveringwhatthebusiness
+• 1: criteriahardlyfulfilled
+isexpecting.Theoutcomeofthisstageisusuallyafixedproject
+• 2: criteriapartiallyfulfilled plan,whichhardlytakesintoaccountthedifficultytoestablish
+• 3: criteriafulfilledtoagreatextend realisticprojecttimelinesduetotheexploratorynatureofdata
+scienceprojectsandtheirintrinsicuncertainty.
+6
+Table2:MethodologyScoresonProjectManagement
+Toaddressthechallengesof... Methodologyprovides... [4.1] [4.2] [4.3] [4.4] [4.5] [4.6] [4.7] [4.8] [4.9] [4.10][4.11][4.12][4.13][4.14][4.15][4.16][4.17][4.18][4.19]
+Lowlevelofprocessmaturity data science lifecycle: high level 3 3 3 3 3 0 3 3 2 3 3 3 3 3 2 2 3 3 3
+tasks/guideline/projectmanage-
+mentscheme
+Uncertainbusinessobjectives schematic to prevent making the 2 2 2 2 1 0 1 3 3 2 3 3 1 1 3 2 0 3 2
+importantquestionstoolateintime
+Setadequateexpectations givesimportancetothebusinessor 3 3 2 3 2 0 2 3 3 2 2 3 2 3 2 2 1 2 3
+industryunderstandingphase
+Hardtoestablishrealisticprojecttime- processes to control and monitor 0 1 0 0 3 2 0 0 0 3 0 2 2 0 0 0 0 0 0
+lines howlongspecificstepswilltake
+Biasedemphasisontechnicalissues involvedwithaligningbusinessre- 2 2 3 2 0 0 1 3 3 3 2 0 2 1 2 2 1 2 2
+quirementsanddatasciencegoals
+Deliveringthe”wrongthing” makessurethattheoutcomeofthe 2 3 1 2 1 0 0 3 3 2 2 3 2 3 0 2 0 2 2
+projectiswhattheclient/researcher
+isexpecting
+Resultsnotusedbybusiness methodsforresultsevaluation,inte- 2 3 1 2 0 0 0 3 2 2 2 3 2 3 2 0 0 3 3
+grationoftheserviceorproductin
+theclientenvironmentandprovides
+necessarytraining
+total 14 17 12 14 10 2 7 18 16 17 14 17 14 14 11 10 5 15 15
+%overperfect(21) 67 81 57 67 48 10 33 86 76 81 67 81 67 67 52 48 24 71 71
+Table3:MethodologyScoresonTeamManagement
+Toaddressthechallengesof... Methodologyprovides... [4.1] [4.2] [4.3] [4.4] [4.5] [4.6] [4.7] [4.8] [4.9] [4.10][4.11][4.12][4.13][4.14][4.15][4.16][4.17][4.18][4.19]
+Poorcoordination establishesroles/responsibilitiesin 0 3 3 3 3 3 3 2 1 0 2 0 1 0 2 2 1 3 0
+adatascienceproject
+Collaborationissuesacrossteams definescleartasksandproblemsfor 0 3 3 3 3 3 1 0 0 2 2 0 0 0 0 0 3 3 0
+everyperson,andhowtocollabo-
+rate
+Lackoftransparentcommunication describeshowteamsshouldworkto 0 2 0 2 2 3 3 0 0 1 2 0 2 0 0 0 3 0 0
+communicate, coordinateandcol-
+laborateeffectively
+Inefficientgovernancemodels describes how to coordinate with 0 0 2 3 2 3 0 1 3 2 1 3 1 0 1 3 0 2 3
+ITandapproachesthedeployment
+stage
+Relynotonlyonleadingdatascientist shares responsibilities, promotes 0 1 2 1 2 2 0 2 0 1 2 1 1 0 2 0 0 2 0
+trainingofemployees
+Buildmultidisciplinaryteams promotesteamworkofmultidisci- 0 2 1 2 1 2 1 0 1 1 1 3 0 0 2 1 2 0 1
+plinaryprofiles
+total 0 11 11 14 13 16 8 5 5 5 10 7 5 0 7 6 9 10 4
+%overperfect(18) 0 61 61 78 72 89 44 28 28 42 56 39 28 0 39 33 50 56 22
+Table4:MethodologyScoresonData&InformationManagement
+Toaddressthechallengesof... Methodologyprovides... [4.1] [4.2] [4.3] [4.4] [4.5] [4.6] [4.7] [4.8] [4.9] [4.10][4.11][4.12][4.13][4.14][4.15][4.16][4.17][4.18][4.19]
+Lackofreproducibility offers setup for assuring repro- 0 3 3 1 2 2 3 0 3 0 0 0 0 0 0 0 3 0 2
+ducibilityandtraceability
+Retainingandaccumulationofknowl- generation and accumulation of 2 2 3 3 2 3 3 0 3 1 0 1 0 0 1 0 3 0 2
+edge knowledge: data, models, experi-
+ments,projectinsights,bestprac-
+ticesandpitfalls
+LowdataqualityforMachineLearn- takesintoaccountthelimitationsof 1 0 0 2 0 0 0 0 0 0 0 0 2 1 0 1 2 1 2
+ingalgorithms MachineLearningtechniques
+Lackofqualityassurancechecks tests to check data limitations in 2 3 0 2 1 0 1 0 0 3 2 0 2 2 0 2 2 3 2
+qualityandpotentialuse
+Novalidationdata robust validation of the proposed 2 2 3 2 2 0 0 3 1 2 3 2 1 1 2 0 0 0 2
+solution&makeshypothesis
+Datasecurityandprivacy concernedaboutdatasecurityand 0 0 0 2 0 0 2 0 0 2 0 0 2 0 2 0 0 2 0
+privacy
+InvestmentinITinfrastructure preallocates resources for invest- 0 1 2 0 1 0 0 3 3 3 2 3 2 2 2 2 0 2 2
+mentonITresources
+total 7 11 11 12 8 5 9 6 10 11 7 6 9 6 7 5 10 8 12
+%overperfect(21) 33 52 52 57 38 24 43 29 48 52 33 29 43 29 33 24 48 38 57
+ScorePunctuationSystem:criterianotfulfilledatall(0),hardlyfulfilled(1),partiallyfulfilled(2),fulfilledtoagreatextend(3).
+Legend:4.1CRISP-DM;4.2MicrosoftTDSP;4.3DominoDSLifecycle;4.4RAMSYS;4.5AgileDataScienceLifecycle;4.6MIDST;4.7DevelopmentWorkflowsforData
+Scientists;4.8BigDataIdeation,AssessmentandImplementation;4.9BigDataManagementCanvas;4.10AgileDeliveryFramework;4.11SystematicResearchonBigData;
+4.12BigDataManagingFramework;4.13DataScienceEdge;4.14FoundationalMethodologyforDataScience;4.15AnalyticsCanvas;4.16AIOps;4.17DataScience
+Workflow;4.18EMCDataAnalyticsLifecycle;4.19Towarddataminingengineering
+7
+Figure1:Quantitativesummaryofthereviewedmethodologies:a)integrityvalueisrepresentedonthebarplotandb)eachcategory’sscoresareillustratedonthe
+triangularplot,withthelinecolorrepresentingtheintegrity
+The rest of the stages (data preparation, modeling, evalua- 4.2. MicrosoftTDSP
+tionanddeployment)arequitestraight-forward,andthereader Microsoft Team Data Science Process (TDSP) by Microsoft
+issurelyfamiliarwiththem. AnstrictadherencetotheCRISP- [65]isan“agile,iterativedatasciencemethodologythathelps
+DMprocessforcestheprojectmanagertodocumenttheproject improving team collaboration and learning”. It is very well
+and the decisions made along the way, thus retaining most of documented and it provides several tools and utilities that fa-
+thegeneratedknowledge. Apartfromthat,thedatapreparation cilitateitsuse. Unfortunately,TDSPisverydependentonMi-
+phaseinvolvesdataqualityassessmenttests, whiletheevalua- crosoft services and policies, and this complicates a broader
+tion phase gives a noticeable importance to the validation and use. In fact, we believe that any methodology should be in-
+evaluationoftheprojectresults. dependent of any tools or technologies. As it was defined on
+Nevertheless,oneofthemainshortcomingsofCRISP-DM [66],amethodologyisageneralapproachthatguidesthetech-
+is that it does not explain how teams should organize to carry niques and activities within a specific domain with a defined
+outthedefinedprocessesanddoesnotaddressanyoftheabove set of rules, methods and processes and does not rely on cer-
+mentionedteammanagementissues. Inthissense,inwordsof taintechnologiesortools. WithindependenceoftheMicrosoft
+[64], CRISP-DM needs a better integration with management tools in which TSDP relies, this methodology provides some
+processes, demands to align with software and agile develop- interesting processes, both on project, team and data & infor-
+ment methodologies, and instead of simple checklists, it also mationmanagement,whichhavebeensummarized.
+needsmethodguidanceforindividualactivitieswithinstages. ThekeycomponentsofTDSPare: 1)datasciencelifecycle
+Overall,CRISP-DMprovidesacoherentframeworkforguide- definition 2) a standardized project structure 3) infrastructure
+linesandexperiencedocumentation. Thedatasciencelifecycle andresourcesand4)toolsandutilitiesforprojectexecution.
+presented by CRISP-DM is commonly used as a reference by TDSP’s project lifecycle is like CRISP-DM and includes
+other methodologies, that replicate it with different variations. fiveiterativestages: a)BusinessUnderstandingb)DataAcqui-
+However, CRISP-DMwasconceivedin1996, andthereforeis sition and Understanding c) Modeling d) Deployment and e)
+notupdatedtothecurrentparadigmandthelatestdevelopments Customer Acceptance. It is indeed a iterative and cyclic pro-
+indatasciencetechnologies,especiallyinregardofbigdataad- cess: the output of the “Data Acquisition and Understanding”
+vancements. InwordsofindustryveteranGregoryPiatetskyof phasecanfeedbacktothe“BusinessUnderstanding”phase,for
+KDNuggets: “CRISP-DMremainsthemostpopularmethodol- example.
+ogyforanalytics, datamining, anddatascienceprojects, with At the business understanding stage, TDSP is concerned
+43%shareinlatestKDnuggetssurvey[10], butareplacement aboutdefiningSMART(Specific,Measurable,Achievable,Rel-
+forunmaintainedCRISP-DMislongoverdue”. evant,Time-bound)objectivesandidentifyingthedatasources.
+In this sense, one of the most interesting artifacts is the char-
+(cid:52) Coherentandwelldocumentediterativeprocess
+terdocument: thisstandardtemplateisalivingdocumentthat
+(cid:53) Does not explain how teams should organize and does keeps updating throughout the project as new discoveries are
+notaddressanyteammanagementissues made and as business requirements change as well. This arti-
+8
+facthelpsdocumentingtheprojectdiscoveryprocess,andalso andcreatingdeliverablemock-ups. Thesepreliminarybusiness
+promotes transparency and communication, as long as stake- analysis activities can dramatically reduce the project risk by
+holders are involved in it. Besides, iterating upon the charter drivingalignmentacrossstakeholders.
+documentfacilitatesthegenerationandaccumulationofknowl- Thedataacquisitionandexplorationphaseincorporatesmany
+edgeandvaluableinformationforfutureprojects. Alongwith elementsfromthedataunderstandinganddatapreparationphases
+other auxiliary artifacts, this document can help tracing back ofCRISP-DM.Theresearchanddevelopmentphaseisthe“per-
+on the history of the project and reproducing different experi- ceived heart” of the data science process. It iterates through
+ments. Regardingreproducibility,foreachtestedmodel,TDSP hypothesis generations, experimentation, and insight delivery.
+providesamodelreport:astandard,template-basedreportwith DominoLabrecommendsstartingwithsimplemodels,settinga
+detailsoneachexperiment. cadence for insight deliveries, tracking business KPIs, and es-
+Inrelationtothequalityassessment,adataqualityreportis tablishingstandardhardwareandsoftwareconfigurationswhile
+prepared during the data acquisition and understanding phase. beingflexibletoexperiment.
+Thisreportincludesdatasummaries,therelationshipsbetween The validation stage highlights the importance of ensuring
+each attribute and target, variable ranking, and more. To ease reproducibilityofresults,automatedvalidationchecks,andthe
+this task, TDSP provides an automated utility, called IDEAR, preservation of the null results. In the delivery stage, Domino
+tohelpvisualizethedataandpreparedatasummaryreports. In recommendstopreservelinksbetweendeliverableartifacts,flag
+thefinalphasethecustomervalidateswhetherthesystemmeets dependencies,anddevelopamonitoringandtrainingplan.Con-
+theirbusinessneedsandwhetheritanswersthequestionswith sidering models’ non deterministic nature, Domino suggests
+acceptableaccuracy. monitoring techniques that go beyond standard software mon-
+TDSPaddressestheweaknessofCRISP-DM’slackofteam itoringpractices: forexample,usingcontrolgroupsinproduc-
+definitionbydefiningfourdistinctroles(solutionarchitect,project tionmodelstokeeptrackofmodelperformanceandvaluecre-
+manager, data scientist, and project lead) and their responsi- ationtothecompany.
+bilities during each phase of the project lifecycle. These roles Overall, Domino’s model does not describe every single
+are very well defined from a project management perspective stepbutismoreinformativetoleadateamtowardsbetterper-
+andtheteamworksunderAgilemethodologies,whichimprove formance. It effectively integrates data science, software en-
+the collaboration and the coordination. Their responsibilities gineering, and agile approaches. Moreover, it leverages ag-
+regarding the project creation, execution and development are ilestrategies,suchasfastiterativedeliveries,closestakeholder
+clear. management,andaproductbacklog.Inwordsof[67]Domino’s
+lifecycleshouldnotbeviewedasmutuallyexclusivewithCRISP-
+(cid:52) Integralmethodology:providesprocessesbothonproject, DM or Microsoft’s TDSP; rather its “best practices” approach
+teamanddata&informationmanagement with“alacarte”elementscouldaugmenttheseorothermethod-
+ologiesasopposedtoreplacethem.
+(cid:53) Excessive dependence on Microsoft tools and technolo-
+gies (cid:52) Holisticapproachtotheprojectlifecycle. Effectivelyin-
+tegratesdatascience,softwareengineering,andagileap-
+proaches
+4.3. DominoDSLifecycle
+Domino Data Lab introduced its data science project lifecycle (cid:53) Informativemethodologyratherthanprescriptive
+ina2017white-paper[59]. InspiredbyCRISP-DM,agile,and
+a series of client observations, it takes “a holistic approach to 4.4. RAMSYS
+the entire project lifecycle from ideation to delivery and mon- RAMSYS[68]bySteveMoyleisamethodologyforsupporting
+itoring.” Themethodologyisfoundedonthreeguidingprinci- rapidremotecollaborativedataminingprojects. Itisintended
+ples: a)“Expectandembraceiteration”but“preventiterations for distributed teams and the principles that guide the design
+frommeaningfullydelayingprojects, ordistractingthemfrom ofthemethodologyare: lightmanagement,startanytime,stop
+the goal at hand”. b) “Enable compounding collaboration” by any time, problem solving freedom, knowledge sharing, and
+creatingcomponentsthatarere-usableinotherprojects.c)“An- security.
+ticipate auditability needs” and “preserve all relevant artifacts ThismethodologyfollowsandextendstheCRISP-DMmethod-
+associatedwiththedevelopmentanddeploymentofamodel”. ology, and it allows the data mining effort to be expended at
+Theproposeddatasciencelifecycleiscomposedofthefol- very different locations communicating via a web-based tool.
+lowing phases: a) ideation b) data acquisition and exploration Theaimofthemethodologyistoenableinformationandknowl-
+c)researchanddevelopmentd)validatione)deliveryf)moni- edge sharing, as well as the freedom to experiment with any
+toring problemsolvingtechnique.
+Theideationmirrorsthebusinessunderstandingphasefrom RAMSYS defines three roles, named “modellers”, “data
+CRISP-DM. In this phase business objectives are identified, master” and “management committee”. The “data master” is
+successcriteriaareoutlinedandifitisthecase,theinitialROI responsibleformaintainingthedatabaseandapplyingthenec-
+analysis is performed. This phase also integrates common ag- essarytransformations. The“managementcommittee”ensures
+ilepracticesincludingdevelopingastakeholder-drivenbacklog
+9
+Figure2:CRISP-DM Figure3:MicrosoftTDSP Figure4:DominoDSLifecycle Figure5:RAMSYS
+that information flows within the network and that a good so- Thebookincludesthe“AgileDataSciencemanifesto”,which
+lutionisprovided. Thiscommitteeisalsoresponsibleforman- attemptstoapplyagilitytothepracticeofdatascience, andis
+agingtheinterfacewiththeclientandsettingupthechallenge basedonseveralprinciples:1)Iterate,iterate,iterate:theauthor
+relative to the data science project in hand: defining the suc- emphasizestheiterativenatureofthecreating,testingandtrain-
+cesscriteria, receivingandselectingsubmissions. Inthisway, inglearningalgorithms. 2)Shipintermediateoutput: through-
+“modellers”experiment,testthevalidityofeachhypothesisand out cycles of iteration, any intermediate output is committed
+producenewknowledge. Withthat,theycansuggestnewdata andsharedwithotherteammembers. Inthissense,bysharing
+transformations to the “data master”. One of the strengths of workonacontinualbasis,themethodologypromotesfeedback
+theRAMSYSmodelistherelativefreedomgiventomodellers and the creation of new ideas. 3) Prototype experiments over
+intheprojecttotrytheirownapproaches. Modellersbenefitof implementingtasks:itisuncertainifanexperimentwillleadto
+central data management, but have to conform to the defined anyvaluableinsight. 4)Integratethetyrannicalopinionofdata
+evaluationcriteria. in product management: it is important to listen to the data.
+The “information vault” is an proposed artifact that con- 5) Climb up and down the data value pyramid: the data value
+tainstheproblemdefinition,thedata,andthehypothesisabout pyramidprovidesaprocesspathfrominitialdatacollectionto
+the data and the models, among other concepts. Moreover, discovering useful actions. The generation of value increases
+RAMSYS proposes the use of the “hypothesis investment ac- astheteamclimbstohigherlayersofthepyramid. 6)Discover
+count”, which contains all the necessary operations to refute andpursuethecriticalpathtoakillerproduct. Thecriticalpath
+orcorroborateanhypothesis: thehypothesisstatement,refuta- istheonethatleadstosomethingactionablethatcreatesvalue.
+tion/corroboration evidence, proof, hypothesis refinement and 7) Describe the process, not just the end state. Document the
+generalization. This artifact can be used to extract reusable processtounderstandhowthecriticalpathwasfound.
+knowledgeintheformoflessonslearnedforfutureprojects. Overall,AgileDataSciencetriestoaligndatasciencewith
+Therefore,RAMSYSintendstoallowthecollaborativework the rest of the organization. Its main goal is to document and
+of remotely placed data scientists in a disciplined manner in guideexploratorydataanalysistodiscoverandfollowthecrit-
+what respects the flow of information while allowing the free icalpathtoacompellingproduct. Themethodologyalsotakes
+flowofideasforproblemsolving. Ofcourse,thismethodology into account that products are built by teams of people, and
+can be applied to more common data science team that share henceitdefinesabroadspectrumofteamroles,fromcustomers
+location. The clear definition of the responsibilities for each totheDevOpsengineers.
+roleallowseffectivecollaborationandthetoolsthatsupportthis
+methodologyarewelldefinedtobeappliedtorealprojects. (cid:52) Rapiddeliveryofvaluefromdatatocustomer.
+Morerealisticfeedback: assessvalueindeliverables
+(cid:52) Considersdistributedteamsandenablesinformationand
+(cid:53) Agileislessstraightforward,worksbetterindynamicen-
+knowledgesharing
+vironmentsandevolvingrequirements
+(cid:53) Lackofsupportforsharingdatasetsandmodels
+4.6. MIDST
+4.5. AgileDataScienceLifecycle
+KevinCrowston[70]presentsatheoreticalmodelofsocio-technical
+Agile Data Science Lifecycle [69] by Russell Jurney presents affordancesforstigmergiccoordination.Thegoalofthismethod-
+aframeworktoperformdatasciencecombinedwithagilephi- ologyistobettersupportcoordinationindatascienceteamsby
+losophy. This methodology asserts that the most effective and transferring findings about coordination from free/libre open
+suitable way for data science to be valuable for organizations source software (FLOSS) development. For that purpose, the
+is through a web application, and therefore, under this point authors design and implement a system to support stigmergic
+of view, doing data science evolves into building applications coordination.
+that describe the applied research process: rapid prototyping, Aprocessisstigmergiciftheworkdonebyoneagentpro-
+exploratorydataanalysis, interactivevisualizationandapplied videsastimulus(stigma)thatattractsotheragentstocontinue
+machinelearning. thejob.Thus,stigmergiccoordinationisaformofcoordination
+10
+thatisbasedonsignalsfromsharedwork. Theorganizationof haveagooddatadirectorystructure.Toolssuchascookiecutter
+the collective action emerges from the interaction of the indi- can take care of all the setup and boilerplate for data science
+vidualsandtheevolvingenvironment,ratherthanfromashared projects.
+planordirectinteraction. Withreferencetothedatamodeling,itissuggestedtocre-
+Asitisclaimedonthearticle,thespecifictoolsthatwould ate two teams: one for building models and a completely in-
+beusefultodatascienceteamsmightbedifferentthanthefea- dependent one to evaluate and validate the models. Doing so,
+turesthatareimportantforFLOSSdevteams, makingitdiffi- data training leaks are prevented and also the success criteria
+cult to configure a data science collaboration environment us- iskeptsafefromthemodelcreationprocess. Thenextstepon
+ingexistingtools. Thatiswhytheauthorsproposeanalterna- the process, testing, is yet a debated area. Here is where data
+tiveapproachbasedonstigmergiccoordinationanddevelopeda scienceandsoftwaredevelopmentpracticesdeviate:indatasci-
+web-baseddatascienceapplicationtosupportit. Inthisregard, encethereisalotoftrialanderror,whichcanbeincompatible
+atheoryofaffordancetosupportstigmergiccoordinationisde- with test-driven frameworks. Still, it is recommended to use
+veloped, which is based on the following principles: visibility testing technologies to improve interpretability, accuracy, and
+ofwork,useofcleargenresofworkproductsandcombinability theuserexperience.
+ofcontributions. Having a documentation phase is without a doubt an in-
+Theproposedframeworkistargetedtoimprovethecollab- novative yet logical point for data science methodologies. In
+oration between data scientists, and does not attempt to cover fact, documenting the working solution is not always enough,
+projectmanagementnordatamanagementissues. Itshouldbe since it is equally valuable to know the pitfalls and the dead
+takenintoconsiderationthatthepresentedweb-basedapplica- ends.Itisrecommendedtocreateacodebooktorecordallsteps
+tion was further tested on real cases with students. While it taken,toolsused,datasources,resultsandconclusionsreached.
+is truethat someof thereviewed methodologiesare explained Thisphaseisdirectlyrelatedtothe“examiningpreviouswork”
+together with use cases, most lack empirical and field experi- phase, as having a well documented project will help subse-
+mentation. That is why the effort put by this methodology in quent projects. Then models are deployed to production. For
+thatdirectionisspeciallyemphasized. thistask,itisproposedtouseanstandardgit-flowtoversionall
+changestothemodels. Finally,thelaststepintheprocessisto
+(cid:52) Improves collaboration between data scientists through
+communicatetheresults,whichtogetherwithaskingtheinitial
+stigmergiccoordination.
+question,canbethemostproblematicsteps.
+(cid:53) Exclusivelyfocusedonimprovingteamcoordination Thismethodologyisbuiltupontherecommendationsfrom
+first-classdata-drivenorganizations,andthereliesitsmainstrength.
+It includes novel phases in the data science workflow, such as
+4.7. DevelopmentWorkflowsforDataScientists “previous work examination”, “code documentation” and “re-
+DevelopmentWorkflowsforDataScientists[53]byGithuband sults communication”. It also proposes a team structure and
+O’Reilly Media gathers various best practices and workflows roles: datascientist, machinelearningengineer, dataengineer.
+for data scientists. The document examines how several data- Overall, it is concluded that ultimately a good workflow de-
+drivenorganizationsareimprovingdevelopmentworkflowsfor pends on the tasks, goals, and values of each team, but it rec-
+datascience. ommends to produce results fast, reproduce, reuse and audit
+Theproposeddatascienceprocessfollowsaniterativestruc- results,andenablecollaborationandknowledgesharing.
+ture: a) ask interesting question b) examine previous work c)
+get data d) explore the data e) model the data f) test g) docu- (cid:52) Builtuponrecommendationsandbest-practicesfromfirst-
+mentthecodeh)deploytoproductioni)communicateresults classdata-drivenorganizations
+Theprocessstartsbyaskinganinterestingquestion,which
+(cid:53) Lacksanin-depthbreakdownofeachphase
+isdescribedasoneofthehardesttasksindatascience. Under-
+standingthebusinessgoalsandthedatalimitationsarerequired
+4.8. BigDataIdeation,AssessmentandImplementation
+priortoaskinginterestingquestions. Inthisregard, defininga
+suitablesuccessmeasureforboththebusinessandthedatasci- Big data ideation, assessment and implementation by Martin
+ence team is also described as a challenge. The next step in Vanauer [57] is a methodology to guide big data idea genera-
+theprocessisexaminingpreviouswork. However,moreoften tion, idea assessment and implementation management. It is
+than not data science teams are coming across non-structured based on big data 4V’s (volume, variety, velocity, value and
+projects and scattered knowledge, which complicates under- veracity), IT value theory, workgroup ideation processes and
+standingpreviouswork. Inthissense,theyrecommendtheuse enterprisearchitecturemanagement.
+oftoolstomakedatascienceworkmorediscoverable,suchas The authors claim that the introduction of big data resem-
+theAirbnb’sKnowledgeRepo[71]. blesaninnovativeprocess,andthereforetheyfollowamodelof
+From then on, data is obtained and explored. Regarding workgroup innovation to propose their methodology, which is
+thedatacollection,theauthorsclaimthatisnotenoughtojust structuredintwophases:ideationandimplementation.Ideation
+gather relevant data, but to also understand how it was gener- referstothegenerationofsolutionsbyapplyingbigdatatonew
+atedanddealwithsecurity,complianceandanonymizationas- situations.Implementationisrelatedtotheevaluationofthede-
+pects.Tohelpduringthedataexploration,itisrecommendedto velopedsolutionsandthesubsequentrealization.
+11
+Figure8: DevelopmentWorkflowsfor Figure 9: Big Data Ideation, Assess-
+Figure6:AgileDataScienceLifecycle Figure7:MIDST
+DataScientists mentandImplementation
+More specifically, for the ideation phase two perspectives valuecreationfromdatabylinkingbusinesstargetswithtech-
+are defined: either there are business requirements that can be nicalimplementation.
+betterfulfilledbyIT,whichtheauthorscalled“BusinessFirst” Thisresearcharticleproposesabigdatamanagementpro-
+(BF), or, the IT department opens up new business opportuni- cessthathelpsknowledgeemergeandcreatevalue. Kaufmann
+ties,socalled“DataFirst”(DF).Underthisperspective,thereis asserts that creating value from big data relies on “supporting
+nosuchthingas“TechnologyFirst”.Theauthorsclaimthatpri- decisionswithnewknowledgeextractedfromdataanalysis”. It
+oritizingtechnologyisnotfeasiblebecausetechnologyshould providesaframeofreferencefordatasciencetoorienttheengi-
+not be introduced as an end by itself, but in a way in which it neeringofinformationsystemsforbigdataprocessing,toward
+providesvaluetothebusiness.Therefore,theideationphaseei- thegenerationofknowledgeandvalue.Theauthorincorporates
+therresemblestheidentificationofbusinessneeds(BF),orthe thevaluetermonthebigdataparadigm,inthiscasedefinedby
+developmentofnewbusinessmodelsbasedonanidentification the5V’s: volume,velocity,variety,veracity,andvalue.
+ofavailabledata(DF). In this regard, big data management refers to the process
+Eachphase(ideationandimplementation)isalsostructured of“controllingflowsoflargevolume, highvelocity, heteroge-
+intothetransitionandactionsub-phases:1)Ideationtransition: neousand/oruncertaindatatocreatevalue”. Toensurethatthe
+comprises the mission definition and identification of objec- project is effectively focused on value creation, business and
+tives. Two artifacts are used to support this stage: the “Mod- ITalignmentisanessentialprinciple. ThepresentedBigData
+ellingandRequirementsEngineering”fortheBFandthe“Key Management Canvas consists of the following five phases: 1)
+Resources Assessment” for the DF perspective. 2) Ideation Data preparation: combination of data from different sources
+action: here creative solutions are identified by preparing a into a single platform with consistent access for analytics 2)
+business use case (BF) or a value proposition (DF), assisted Dataanalytics:extractionofactionableknowledgedirectlyfrom
+by a “Business Model Canvas”. 3) Implementation transition: datathroughaprocessofdiscovery,hypothesisformulationand
+involves evaluating and selecting the most appropriate ideas. hypothesistesting. 3)Datainteraction: definitionofhowusers
+Here is where a financial and organizational feasibility study interferewiththedataanalysisresults.4)Dataeffectuation:use
+is carried out, by means of a cost/benefit analysis (BF) or a ofdataanalysisresultstocreatevalueinproductsandservices.
+valuepropositionfitassessment(DF).Thetechnicalfeasibility 5)Dataintelligence: abilityoftheorganizationtoacquireand
+isalsoanalyzedusingEAMmethodsforimpactassessmentand applyknowledgeandskillsindatamanagement. Inthissense,
+rollout. 4) Implementation action: finally, the implementation there are three types of knowledge and skills: a) knowledge
+roadmapisdeveloped. generatedfromdatab)knowledgeaboutdataanddatamanage-
+Thisproposalintroducesatotallynewperspectivethathas ment and c) knowledge and skills necessary for data analytics
+nothingtodowiththerestofpresentedmethodologies.Itshows andmanagement
+acompletelydifferentpipeline,thatbreaksawayfromtheCRISP- Thisframeworkisbasedonanepistemicmodelofbigdata
+DM-based data analytics lifecycles. Its main strength comes managementasacognitivesystem: ittheorizesthatknowledge
+from the structure of ideation and implementation phases, but emerges not by passive observation, but by “iterative closed
+moreimportantlyfromthedistinctionofbusiness-firstvsdata- loopsofpurposelycreatingandobservingchangesintheenvi-
+firstperspectives, whichdefinethesubsequentpathstobefol- ronment”.Targetingthisvisiontowardsdataanalytics,itclaims
+lowed. However, it does not address team related challenges, that the knowledge that big data analytics generates emerges
+nordatamanagementissues. fromtheinteractionofdatascientistsandend-userswithexist-
+ingdatabasesandanalysisresults.
+(cid:52) Distinctionofbusiness-firstvsdata-firstperspectives Overall, this methodology offers a different perspective of
+datascience,explicitlyprioritizingthevaluecreationfromdata.
+(cid:53) Overlooksteamrelatedanddatamanagementissues
+Mostapproachestobigdataresearchaimatdatastorage,com-
+4.9. BigDataManagementCanvas putation and analytics instead of knowledge and value, that
+should be the result of big data processing. This change of
+BigDataManagementCanvasbyMichaelKaufmann[72]isa
+perspective affects the project development, continuously bal-
+reference model for big data management that operationalizes
+12
+ancingandaligningbusinessandtechnology. 4.11. SystematicResearchonBigData
+Das et al. [17] explore the systematization of data-driven re-
+(cid:52) Prioritizesvaluecreationfromdata,ratherthanfocusing
+search practices. The presented process is composed of eight
+onstorage,computationandanalytics.
+Agileanalyticsteps,thatstartwithagivendatasetandendwith
+(cid:53) Teammanagementchallengesarenotaddressed theresearchoutput. Inthissense,[74]istherecommendedde-
+velopmentstylefortheprocess.
+First, information is extracted and cleaned. Even though
+4.10. AgileDeliveryFramework the core of data-driven research is the data, the authors claim
+thattheprocessshouldstartfromaquestionofwhatisintended
+LarsonandChang[73]proposeaframeworkbasedonthesyn-
+to obtain from the research and the data. Therefore, the next
+thesis of agile principles with Business Intelligence (BI), fast
+phase is the preliminary data analysis, in which some patterns
+analytics and data science. There are two layers of strategic
+andinformationarerevealedfromthedata. Thesepatternscan
+tasks: (A)thetoplayerincludesBIdeliveryand(B)thebottom
+be extracted with the help of unsupervised methods, and will
+layerincludesfastanalyticsanddatascience.
+be used to find an appropriate target and starting point of the
+In the top layer there are five sequential steps: discovery,
+research. Hence, the generated data patterns and discoveries
+design,development,deploymentandvaluedelivery. A1)“dis-
+leadtothedefinitionoftheresearchgoalorresearchhypothesis.
+covery” is where stakeholders determine the business require-
+Once the setup of the research goal is defined, more work
+ments and define operating boundaries. A2) “design” focuses
+canbeputontheextracteddata. Otherwise, theresearchgoal
+on modeling and establishing the architecture of the system.
+must be modified, and preliminary data analysis tasks such as
+A3)“development”isaverybroadphasethatincludesawide
+descriptive analytics need to be carried out again. Therefore,
+arrayofactivities,forinstance,codingETLsorscriptingschedul-
+furtheranalysiscanbedonegiventhegoaloftheresearch,se-
+ingjobs.A4)“deployment”focusesonintegrationofnewfunc-
+lecting the most relevant features and building machine learn-
+tionalities and capabilities into production. A5) “value deliv-
+ing models. The output from these models or predictive sys-
+ery” includes maintenance, change management and end user
+tems is further evaluated. Within an Agile process, the output
+feedback.
+evaluationcanbedoneiniterativeenhancements. Finally,itis
+Thebottomlayerincludessixsequentialsteps: scope,data
+importanttocommunicateandreporttheresultseffectively,us-
+acquisition, analysis, model development, validation and de-
+ingmeaningfulinfographicsanddatavisualizationtechniques.
+ployment. B1) “scope” defines the problem statement and the
+These steps may be repeated in an iterative fashion until the
+scopeofdatasources. B2)“dataacquisition”acquiresthedata
+desiredresultsorlevelofperformanceisachieved.
+from the data lake and assesses the value of the data sources.
+Thismethodologysuggeststoexecutetheaboveworkflow
+B3) “analysis” visualizes the data and creates a data profiling
+withasmallsubsetofthedataset,identifyissuesearlyon,and
+report. B4) “model development” fits statistical and machine
+only when satisfactory, expand to the entire dataset. In addi-
+learningmodelstothedata. B5)“validation”ratifiesthequal-
+tion to the use of iterative Agile planning and execution, the
+ityofthemodel. Boththemodeldevelopmentandthevalida-
+authorsclaimthatageneralizeddatasetandastandardizeddata
+tionarecarriedoutviatimeboxediterationsandagilemethods.
+processingcanmakedata-drivenresearchmoresystematicand
+B6)“deployment”preparesdashboardsandothervisualization
+consistent.
+tools.
+Ingeneral,thisframeworkprovidesaprocessforperform-
+The framework is designed to encourage successful busi-
+ing systematic research on big data and is supported by Agile
+nessandITstakeholdercollaboration.Fortheauthors,datasci-
+methodologiesalongthedevelopmentprocess. Agilecanpro-
+enceisinherentlyagileastheprocessiscarriedoutthroughit-
+motefrequentcollaborationandavalue-drivendevelopmentin
+erations,anddatascienceteamsareusuallycomposedbysmall
+aniterative,incrementalfashion. However,notenougheffortis
+teamsandrequirecollaborationbetweenbusinesspartnersand
+putbytheauthorsondefiningtherolesandinteractionsofthe
+technical experts. Similarly, the BI lifecycle has three phases
+teammembersacrossthedifferentstagesoftheproject. Over-
+inwhichtheagileapproachcanbesuitable: thediscovery,de-
+all, this methodology is closer to the research and academic
+signanddevelopmentphasesmaybenefitfromiterativecycles
+world, andsincedatasciencefindsitselfbetweenresearchac-
+andsmalltime-boxedincrements,eventhoughtherearenotany
+tivities and business applications, it is very valuable to have
+softwareprogrammingtasks. Themainnovelapproachofthis
+a methodology to bring out the best from at least, one of the
+methodology is that completely separates the business intelli-
+worlds.
+gence and the data analysis worlds. In fact, it proposes two
+methodologiesthatevolveparalleltoeachotherandbymeans
+(cid:52) Research-focusedandsystematicapproach
+of agile methods pledges an effective collaboration between
+thesetwoparts. (cid:53) Doesnotdefinerolesandinteractionsbetweenteammem-
+bersacrossthedifferentstagesoftheproject
+(cid:52) Twomethodologiesforbusinessintelligenceandthedata
+analysisthatworkinparallel
+4.12. BigDataManagingFramework
+(cid:53) Data management challenges and reproducibility issues Duttaetal.[75]presentanewframeworkforimplementingbig
+areomitted data analytics projects that combines the change management
+13
+Figure10:BigDataManagementCan- Figure12:SystematicResearchonBig Figure13:BigDataManagingFrame-
+Figure11:AgileDeliveryFramework
+vas Data work
+aspectsofanITprojectmanagementframeworkwiththedata arobustarchitectureisanchallengingtask. Tomaketheimple-
+managementaspectsofananalyticsframework. Thismethod- mentationofthenewsystemeasier,usersneedtobe“trainedin
+ology presents a iterative and cyclical process for a big data howtousethetoolsandthedatathatisavailable”. Inthisway,
+project,whichisorganizedintothreedistinctphases: strategic userswillfeelmorecomfortablewithanewsourceofinsights
+groundwork,dataanalyticsandimplementation. whiletakingtheirbusinessdecisions.
+Thestrategicgroundworkphaseinvolvestheidentification
+ofthebusinessproblem,brainstormingactivities,theconceptu- (cid:52) Emphasizeschangemanagementaspects, suchascross-
+alizationofthesolutiontobeadoptedandtheformationofthe functionalteamformationandtrainingofpeople
+project teams. More in detail, the “business problem” phase
+(cid:53) Not enough emphasis is given to the validation of data
+sets the right expectations of the stakeholders, and dissipate
+analyticsandmachinelearningmodels
+anymythsaboutwhatabigdataprojectcanachieve. The“re-
+search” phase studies how similar problems have been solved
+and it also looks for different analytics products available in
+4.13. DataScienceEdge
+the market. Then the team is conformed, and it recommends
+TheDataScienceEdge(DSE)methodologyisintroducedalong
+building it up with people from various backgrounds: busi-
+two articles by Grady et al. [64, 76]. It is a enhanced process
+ness units, IT experts, data scientist, experts in the field, busi-
+modeltoaccommodatebigdatatechnologiesanddatascience
+nessdecisionmakers, etc. Thus, thisframeworkstandsupfor
+activities. DSEprovidesacompleteanalyticslifecycle,witha
+cross-functional and multidisciplinary teams. With all of this,
+five step model - plan, collect, curate, analyze, act, which are
+theprojectroadmapisprepared,gatheringupthemajoractivi-
+organizedaroundthematurityofthedatatoaddresstheproject
+tiesoftheproject, withtimelinesanddesignatedpeople. This
+requirements. The authors divide the lifecycle into four quad-
+roadmapmustbeflexibleenough, andshouldfocusonexecu-
+rants-assess,architect,buildandimprove-whicharedetailed
+tionanddeliveryratherthanaimingtoastrictadherencetothe
+herebelow.
+plan.
+The first quadrant - assess - consists in the planning, anal-
+The data analytics phase has a clear structure, formed by
+ysis of alternatives and rough order of magnitude estimation
+“data collection and examination”, “data analysis and model-
+process. Itincludestherequirementsanddefinitionofanycrit-
+ing”,“datavisualization”and“insightgeneration”.Asobserved
+ical success factors. The activities within this first assessment
+inothermethodologies,theuseofapreliminaryphasefordata
+phase correspond to the “plan” stage: defining organizational
+collectionandexplorationiswidelyused.Nevertheless,relying
+boundaries, justifyingtheinvestmentandattendingpolicyand
+on data visualization techniques to present the results of data
+governanceconcerns.
+analysis tasks is a novel point, and indicates that the authors
+“Architect” is the second quadrant and it consists on the
+areverymuchconcernedaboutgettingallthestakeholdersin-
+translation of the requirements into a solution. The “collect”
+volvedontheprojectdevelopment. Besides, innovativevisual
+and “curate” stages are included on this phase. More specifi-
+representation of the data can help in insight generation and
+cally, the “collect” stage is responsible for the databases man-
+in detecting similar and anomalous patterns in data. The data
+agement, data distribution and dynamic retrieval. Likewise,
+analytics phase is concluded with the insight generation step,
+duringthe“curate”stagethefollowingactivitiesaregathered:
+whichisanotherinnovativepointoccasionallyomittedbyother
+exploratoryvisualization,privacyanddatafusionactivities,and
+methodologies. Itisimportanttounderstandtheunderlyingla-
+dataqualityassessmentchecks,amongothers.
+tentreasonsbehinddatatrends. Thislaststeptakestheanalysis
+The “build” quadrant comprises the “analyze” and “act”
+toinsightsandpossibleactionablebusinessinputthatcanbeof
+stages and consists of the development, test and deployment
+valuetotheorganization.
+ofthetechnical solution. Novel activitiesinthestage are: the
+Finally,duringtheimplementationphasethesolutionisin-
+search for simpler questions, latency and concurrency, or the
+tegratedwiththeITsystemandthenecessarypeoplearetrained
+correlation versus causation problem. The last quadrant, “im-
+tolearnhowtouseit. Theintegrationisafriction-pronephase,
+prove”consistsoftheoperationandmanagementofthesystem
+sinceitinvolvesdealingwithexistingITsystemsanddesigning
+14
+Figure14:DataScienceEdge Figure15:FMDS Figure16:AnalyticsCanvas Figure17:AIOps
+as well as an analysis of “innovative ways the system perfor- (cid:53) InheritssomeofthedrawbacksofCRISP-DM,especially
+mancecouldbeimproved”. onteamanddatamanagement
+On the whole, Grady et al. propose a novel big data an-
+alytics process model that extends CRISP-DM and that pro- 4.15. AnalyticsCanvas
+videsusefulenhancements. ItisclaimedthatDSEservesasa TheAnalyticsCanvasbyArnoKuhn[47]isasemi-formalspec-
+completelifecycletoknowledgediscovery,whichincludesdata ification technique for the conceptual design of data analytics
+storage,collectionandsoftwaredevelopment. Theauthorsex- projects. It describes an analytics use case and documents the
+plainhowtheDSEprocessmodelalignstoagilemethodologies necessary data infrastructure during the early planning of an
+and propose the required conceptual changes to adopt agile in analytics project. It proposes a four layer model which differ-
+dataanalytics. Finally, theauthorsconcludethatbyfollowing entiatesbetweenanalyticusecase,dataanalysis,datapoolsand
+theagilemethodologies,theoutcomescouldbeexpectedmore datasources.
+quickly to make a decision and to validate the current state of The first step is understanding the domain and identifying
+theproject. theanalyticsusecase: root-causeanalysis,processmonitoring,
+predictivemaintenanceorprocesscontrol. Managementagents
+(cid:52) EnhancedCRISP-DMprocessmodeltoaccommodatebig
+usuallyinitiatethisstage,astheyhaveawidevisionofthecom-
+datatechnologiesanddatascienceactivities
+pany. Based on the analytics use case, data sources are speci-
+(cid:53) Challengesrelatedtoteammanagementareomitted fiedbydomainexperts:sensors,controlsystems,ERPsystems,
+CRM,etc.Inadditiontoknowingwherethedatacomesfrom,it
+4.14. FoundationalMethodologyforDataScience isnecessarytospecifytheplaceswheredataisstored. Forthis
+purpose,theITexpertistheassignedperson. Finally,theana-
+TheFoundationalMethodologyforDataScience[77]byIBM
+lytics use case is linked to a corresponding data analysis task:
+has some similarities with CRISP-DM, but it provides a num-
+descriptive,diagnostic,predictiveorprescriptive. Herethedata
+ber of new practices. FMDS’s ten steps illustrate an iterative
+scientististhemainagentinvolved.
+natureoftheprocessofdatascience,withseveralphasesjoined
+Therefore, the Analytics Canvas assigns a specialized role
+together by closed loops. The ten stages are self-explanatory:
+toeachphase:management,domainexpert,ITexpert,datasci-
+1)businessunderstanding2)analyticapproach3)datarequire-
+entist. The team is also supervised by the analytics architect.
+ments4)datacollection5)dataunderstanding6)dataprepara-
+This canvas is very useful to structure the project in its early
+tion7)modeling8)evaluation9)deployment10)feedback.
+stages and identify its main constructs. Incorporating such a
+Itshouldbepointedouttheinterestingpositionoftheana-
+tool helps setting up clear objectives and promotes a transpar-
+lytic approach phase at the beginning of the project, just after
+entcommunicationbetweenstakeholders. Apartfromdescrib-
+understanding the business and without having any data col-
+ingtheanalyticsusecaseandthenecessarydatainfrastructure,
+lection nor exploratory analysis. Even though author’s point
+the Analytics Canvas allows clear description and differentia-
+of view is understood, in reality data scientists have difficul-
+tion of the roles of stakeholders, and thus enables interdisci-
+ties to chose the analytic approach prior to the exploring the
+plinarycommunicationandcollaboration.
+data. Framingthebusinessprobleminthecontextofstatistical
+andmachinelearningtechniquesusuallyrequiresapreliminary
+(cid:52) Helpsontheconceptualdesignofdataanalyticsprojects,
+study using descriptive statistics and visualization techniques.
+primarilyduringtheearlyphases
+Overall this methodology structures a data science project in
+morephases(10)thanCRISP-DM(6),buthasthesamedraw- (cid:53) Hard to implement as an scalable framework along the
+backs,intermsoflackadefinitionofthedifferentrolesofthe entireprojectdevelopment
+team, and zero concerns on reproducibility, knowledge accu-
+mulationanddatasecurity. 4.16. AIOps
+John Thomas presents a systematic approach to “operational-
+(cid:52) Provides new practices and extends CRISP-DM process
+izing”datascience[78], whichcoversmanagingthecomplete
+model
+end-to-end lifecycle of data science. The author referrers to
+15
+thesesetofconsiderationsasAIOps,whichinclude: a)Scope Whereas the analysis phase involves programming, the re-
+b) Understand c) Build (dev) d) Deploy and run (QA) and e) flection phase involves thinking and communicating about the
+Deploy,run,manage(Prod) outputs of analyses. After inspecting a set of output files, a
+For each stage, AI-Ops defines the necessary roles: data data scientist might take notes, hold meetings and make com-
+scientist, business user, data steward, data provider, data con- parisons. The insights obtained from this reflection phase are
+sumer, data engineer, software engineer, AI operations, etc. used to explore new alternatives by adjusting script code and
+whichhelpsorganizingtheprojectandimprovescoordination. executionparameters.
+However, there are no guidelines for how these roles collabo- Thefinalphaseisdisseminatingtheresults,mostcommonly
+rateandcommunicatewitheachother. intheformofwrittenreports. Thechallengehereistotakeall
+Duringthescopestage, themethodologyinsistsonhaving thevariousnotes,sketches,scriptsandoutputdatafilescreated
+clearbusinessKPIs. ProceedingwithoutclearKPIsmayresult throughout the process to aid in writing. Some data scientists
+intheteamevaluatingtheprojectsuccessbythemodelperfor- also distribute their software so that other researchers can re-
+mance,ratherthanbyitsimpactonthebusiness. Inthissense, producetheirexperiments.
+correlating model performance metrics and trust/transparency Overall,discerningtheanalysisfromthereflectionphaseis
+elements to the business KPIs is indeed a frequent challenge. the main strength of this workflow by Guo. The exploratory
+Withoutthisinformation,itisdifficultforthebusinesstogeta nature of data science projects makes challenging to establish
+viewofwhetheraprojectissucceeding. a waterfall execution and development. Hence, usually it is
+The data understanding phase is pivotal: AI-Ops proposes needed to go back and forth to find the appropriate insights
+toestablishtheappropriaterulesandpoliciestogovernaccess and the optimal model for the business. Separating the pure
+to data. For instance, it empowers data science teams to shop programmingtasks(analysis)fromthediscussionoftheresults
+fordatainacentralcatalog: firstexploringandunderstanding isveryvaluable fordatascientists, thatcanget lostwithinthe
+data,afterwhichtheycanrequestadatafeedandexploititon programmingspiral.
+thebuildphase.
+Thismethodologysplitsthedeploymentstageintotwosep- (cid:52) Discernstheanalysisphasefromthereflectionphase
+arated steps: quality assessment (QA) and production (prod),
+(cid:53) Explicitly focused on research/science, not immediately
+in order to make sure that any model in production meets the
+applicableinbusinesscase
+businessrequirementsandthequalitystandardsaswell. Over-
+allthismethodologyisfocusedontheoperationalizationofthe
+project,thusgivingmoreimportancetothedeployment,thein-
+4.18. EMCDataAnalyticsLifecycle
+vestmentonITinfrastructureandcontinuousdevelopmentand
+EMC Data Analytics Lifecycle by EMC [80] is a framework
+integrationstages.
+for data science projects that was designed to convey several
+(cid:52) Primarilyfocusedonthedeploymentandoperationaliza- key points: A) Data science projects are iterative B) Continu-
+tionoftheproject ouslytestwhethertheteamhasaccomplishedenoughtomove
+forward C) Focus work both up front, and at the end of the
+(cid:53) Doesnotofferguidelinesforhowdifferentrolescollabo- projects
+rateandcommunicatewitheachother This methodology defines the key roles for a successful
+Reproducibility and knowledge retaining issues are left analytics project: business user, project sponsor, project man-
+unexploredduringmodelbuildingphase ager, business intelligence analyst, database admin, data engi-
+neer,datascientist.EMCalsoencompassessixiterativephases,
+4.17. DataScienceWorkflow whichareshowninacirclefigure: datadiscovery,dataprepa-
+DataScienceWorkflow[79]byPhilipGuointroducesamodern ration,modelplanning,modelbuilding,communicationofthe
+research programming workflow. There are four main phases: results,andoperationalization.
+preparationofthedata,alternatingbetweenrunningtheanaly- Duringthediscoveryphase,thebusinessproblemisframed
+sisandreflectiontointerprettheoutputs,andfinallydissemina- as an analytics challenge and the initial hypothesis are formu-
+tionofresults. lated. The team also assesses the resources available (people,
+Inthepreparationphasedatascientistsacquirethedataand technologyanddata). Onceenoughinformationisavailableto
+clean it. The acquisition can be challenging in terms of data draft an analytic plan, data is transformed for further analysis
+management,dataprovenanceanddatastorage,butthedefini- onthedatapreparationphase.
+tion of this preliminary phase is quite straightforward. From EMC separates the model planning from the model build-
+therefollowsthecoreactivityofdatascience,thatis,theanal- ing phase. During the model planning, the team determines
+ysis phase. Here Guo presents a separate iterative process in themethods,techniques,andworkflowitintendstofollowfor
+which programming scripts are prepared and executed. The the subsequent model building phase. The team explores the
+outputsofthesescriptsareinspectedandafteradebuggingtask, datatolearnabouttherelationshipsbetweenvariablesandsub-
+thescriptsarefurtheredited. Guoclaimsthatthefasterthedata sequently selects key variables and the most suitable models.
+scientist can make it through each iteration, the more insights Isolatingthemodelplanningfromthebuildingphaseisasmart
+couldpotentiallybeobtainedperunittime. move,sinceitassiststheiterativeprocessoffindingtheoptimal
+16
+Figure19: EMCDataAnalyticsLife- Figure 20: Toward data mining engi-
+Figure18:DataScienceWorkflow
+cycle neering
+model. Thebackandforthprocessofobtainingthebestmodel methodology includes the lifecycle selection, and more pro-
+canbechaoticandconfusing:anewexperimentcantakeweeks cesses that will not be further explained: acquisition, supply,
+toprepare,programandevaluate.Havingaclearseparationbe- initiation,projectplanningandprojectmonitoringandcontrol.
+tween model planning and model building sure enough helps The integral processes are necessary to successfully com-
+duringthatstage. plete the project activities. In this category the processes of
+Presented as a separated phase, the communication of the evaluation,configurationmanagement,documentationanduser
+resultsisadistinctivefeatureofthismethodology.Inthisphase, trainingareincluded.Theorganizationalprocesseshelptoachieve
+theteam,incollaborationwithmajorstakeholders,determines a more effective organization, and it is recommended to adapt
+if the results of the project are a success or a failure based on the SPICE standard. This group includes the processes of im-
+thecriteriadevelopedinthediscoveryphase. Theteamshould provement (gather best practices, methods and tools), infras-
+identifykeyfindings,quantifythebusinessvalue,anddevelop tructure(buildbestenvironments)andtraining.
+a narrative to summarize and convey findings to stakeholders. Thecoreprocessesindatascienceengineeringprojectsare
+Finally,ontheoperationalizationphase,theteamdeliversfinal the development processes which are divided into pre-, KDD-
+reports,briefings,code,andtechnicaldocuments. , and post-development processes. The proposed engineering
+Overall, the EMC methodology provides a clear guideline process model is very complete and almost covers all the di-
+forthedatasciencelifecycle,andadefinitionofthekeyroles. mensionsforasuccessfulprojectexecution. Itisbasedonvery
+Itisveryconcernedaboutteamsexcessivelyfocusingonphases well studied and designed engineering standards and as a re-
+twothroughfour(datapreparation,modelplanningandmodel sult are very suitable for large corporations and data science
+building), and explicitly prevents them from jumping into do- teams. Nevertheless,excessiveeffortisputintothesecondary,
+ing modeling work before they are ready. Even though it es- supporting activities (organizational, integral and project pro-
+tablishes the key roles in a data science project and how they cesses) rather than on the core development activities. This
+shouldcollaborateandcoordinate,itdoesnotgetintodetailon extra undertaking may produce non-desired effects, burdening
+howteamsshouldcommunicatemoreeffectively. the execution of the project and creating inefficiencies due to
+processes complexity. In general terms, this methodology is
+(cid:52) Prevents data scientists from jumping prematurely into verypowerfulinprojectmanagementandinformationmanage-
+modelingwork mentaspects,asitconveysfullcontrolovereveryaspectofthe
+project.
+(cid:53) Lacksareproducibilityandknowledgemanagementsetup
+(cid:52) Thoroughengineeringprocessmodelforasuccessfulproject
+4.19. Towarddataminingengineering
+execution
+Marba´n et al. [81] propose to reuse ideas and concepts from
+software engineering model processes to redefine and add to (cid:53) Teamrelatedchallengesareleftunexplored
+theCRISP-DMprocess,andmakeitadataminingengineering
+standard. 5. Discussion
+The authors propose a standard that includes all the activ-
+ities in a well-organized manner, describing the process phase So far, the challenges that arise when executing data science
+by phase. Here only the distinctive points are discussed. The projectshavebeengatheredonSection2,andacriticalreview
+activitiesmissingfromCRISP-DMareprimarilyprojectman- of methodologies has been conducted as summarized on Sec-
+agement processes, integral processes and organizational pro- tion 4. Based on the reviewed methodologies a taxonomy of
+cesses. Theprojectmanagementprocessesestablishtheproject methodologiesisproposed,asillustratedonFigure21
+structure and coordinate the project resources throughout the The criteria for such taxonomy has focused on summariz-
+projectlifecycle.CRISP-DMonlytakesintoaccounttheproject ing the categories each methodology adequately covers. For
+plan, which is a small part of the project management. This example,theEMCdataanalyticslifecycle[80]methodologyis
+resilientonprojectandteammanagementchallenges,whereas
+17
+Figure21:Taxonomyofmethodologiesfordatascienceprojects
+MIDST[70]clearlyleanstowardteammanagement. Thistax- onceprovidedwithasetofprocessesandbestpracticesfromin-
+onomyismeanttobetterunderstandthetypesofmethodologies dustry,businessandacademicprojects. Thisframeworkcanbe
+thatareavailableforexecutingdatascienceprojects. usedbyotherresearchersasaroadmaptoexpandcurrentlyused
+Apart from the lack of a methodology usage in real data methodologiesortodesignnewones. Infact,anyonewiththe
+science projects that was mentioned on Section 2, there is an vision for a new methodology could take this boiler-template
+absence of complete or integral methodologies across the lit- andbuilditsownmethodology.
+erature. In this sense, of the 19 reviewed methodologies, Inthissense,weclaimthatanefficientdatasciencemethod-
+only 4 are classified as “integral”. Among these “integral” ology should not rely on project management methodologies
+methodologies,certainaspectscouldbeimproved: TSDP[65] alone,norshouldbesolelybasedonteammanagementmethod-
+has a strong dependence on Microsoft tools and technologies ologies. Inordertoofferacompletesolutionforexecutingdata
+and their roles stick too closely to Microsoft services. For in- science projects, three areas should be covered, as it is illus-
+stance, TDSP’s data scientist role is limited to the cloning of tratedonFigure22:
+several repositories and to merely executing the data science
+project. Thedatascientistroleshouldbebrokendowntomore
+tangible roles, and detail their responsibilities outside the Mi-
+crosoftuniverse.
+DominoLab lifecycle [59] lacks tests to check the limita-
+tionsandqualityofdata,andeventhoughitintegratesateam-
+based approach, it does not describe how teams should work
+tocommunicate,coordinateandcollaborateeffectively. RAM- Figure22: Proposedfoundationstonesofintegralmethodologiesfordatasci-
+enceprojects
+SYS[68]notcompletelyaddressreproducibilityandtraceabil-
+ity assurance, and the investment on IT resources is not fully
+Project methodologies are generally task-focused kind of
+takenintoaccount.Lastly,AgileDataScienceLifecycle[69]is
+methodologies that offer a guideline with the steps to follow,
+notoverlyconcernedaboutthelimitationsofMachineLearning
+sometimes presented as a diagram-flow. Basically they try to
+techniques, data security and privacy, nor does propose meth-
+define the data science lifecycle, which in most cases is very
+odsforresultsevaluation.
+similarbetweendifferentnamedmethodologies[83]: business
+Besides,othermethodologieswhichfocusonprojectman-
+problem understanding, data gathering, data modeling, evalu-
+agement tend to forget about the team executing the project,
+ation, implementation. Thus, their main goal is to prepare the
+andoftenleavethemanagementofdata&informationbehind.
+mainstagesofaprojectsothatitcanbesuccessfullycompleted.
+What is needed is a management methodology that takes into
+Itseemstruethatdatascienceprojectsareveryhardtoman-
+account the various data-centric needs of data science while
+age due to the uncertain nature of data among other factors,
+alsokeepinginmindtheapplication-focusedusesofthemodels
+and thus their project failure rate is very elevated. One of the
+andotherartifactsproducedduringandatasciencelifecycle,as
+mostcriticalpointsisthatatthebeginningofanyproject,data
+proposed on[82]. In view ofthe reviewedmethodologies, we
+scientists are not familiar with the data, and thus it is hard to
+thinkthat,aseverydatascienceprojecthasitsowncharacteris-
+know the data quality and its potential to accomplish certain
+ticsanditishardtocoverallthepossibilities,itwouldberec-
+business objectives. This complicates a lot the project defini-
+ommendabletoestablishthefoundationforbuildinganintegral
+tion and the establishment of SMART objectives. Therefore,
+methodology. Consequently, we propose a conceptual frame-
+having an effective project management methodology is fun-
+work that takes in the general features that a integral method-
+damentalfor thesuccess ofany project, andspecially fordata
+ologyformanagingdatascienceprojectcouldhave. Aframe-
+scienceprojects,sincetheycan: a)monitorinwhichstagethe
+work that could cover all the pitfalls and issues listed above
+project is at any moment b) setup the project goals, its stages,
+18
+PROJECTMANAGEMENT TEAMMANAGEMENT DATA&INFORMATIONMANAGEMENT
+Definitionofdatasciencelifecycleworkflow
+Promotion&communicationof
+Standardizationoffolderstructure scientificfindings
+Reproducibility:creationofknowledgerepository
+Continuousprojectdocumentation Roledefinitiontoaidcoordination
+betweenteammembersandacross Robustdeployment:versioningcode,data&models
+Visualizationofprojectstatus stakeholders
+Modelcreationforknowledgeandvaluegeneration
+Alignmentofdatascience&businessgoals Boostteamcollaboration:git
+Traceabilityreinforcement:putjourneyovertarget
+workflow&codingagreements
+Consolidationofperformance&successmetrics
+Separationofprototype&product
+Table5:Summaryoftheproposedprinciplesofintegralmethodologiesfordatascienceprojects
+outcomesoftheproject,itsdeliverablesandc)managethetask Information is usually extracted from data to gain knowl-
+scopes,anddeliverablesdeadlines. edge,andwiththatknowledgedecisionsaremade. Depending
+Regardingteammanagement,datascienceisnomorecon- ontheprobleminhandandthequalityandpotentialuseofthe
+sideredanindividualtaskundertakenby”unicorn”datascien- information,moreorlesshumaninputisnecessarytomakede-
+tists. It is definitely a team effort, which requires a method- cisionsandfurthertakeactions. Theprimarystrategicgoalof
+ology that guides the way the team members communicate, theanalyticsproject(descriptive,diagnostic,predictiveorpre-
+coordinate and collaborate. That is why we need to add an- scriptive) may affect the type of information that needs to be
+otherdimensiontothedatasciencemethodology,onethatcan managed,andasaconsequencealsomayinfluencetheimpor-
+helpmanagingtheroleandresponsibilitiesofeachteammem- tanceoftheinformationmanagementstage.Eachstrategicgoal
+berandhelpsalsoefficientlycommunicatingtheteamprogress. triestoanswerdifferentquestionsandalsodefinethetypeofin-
+Thatistheobjectiveoftheso-calledteammanagementmethod- formationthatisextractedfromdata.
+ologies. The important point in this regard is that no project With only descriptive information from the data, it is re-
+managementmethodologyalonecanensurethesuccessofthe quiredtocontrolandmanagethehumanknowledgeunderuse;
+data science project. It is necessary to establish a teamwork whereaswithmorecomplexmodels(diagnosticandpredictive)
+methodologythatcoordinatesandmanagesthetaskstobeper- itismuchmoreimportanttomanagethedata,themodel,inputs,
+formedandtheirpriority. outputs,etc. Therefore,withmoreusefulinformationextracted
+We could say that these two dimensions, project and team fromthedata,thepathtodecisionisshortened.
+managementcouldbeappliedtoalmostanyproject. Ofcourse, Besides, [85] points out that knowledge management will
+themethodologiesforeachcasewouldneedtobeadaptedand be the key source for competitive advantage for companies.
+adjusted. However,datascienceprojectsinherentlyworkwith Withdatasciencegrowingwithmorealgorithms,moreinfras-
+data, and usually with lots of data, to extract knowledge that tructure, the ability to capture and exploit unique insights will
+cananswersomespecificquestionsofabusiness,amachine,a be a key differentiator. As the tendency stands today, in few
+systemoanagent,thusgeneratingvaluefromthedata. There- yearstimedatascienceandtheapplicationofmachinelearning
+fore, we believe it is fundamental to have a general approach models will become more of a commodity. During this trans-
+thatguidesthegenerationofinsightsandknowledgefromdata, formationdatasciencewillbecomelessaboutframework,ma-
+socalleddata&informationmanagement. chinelearningandstatisticsexpertiseandmoreaboutdataman-
+The frontier between information and knowledge can be agementandsuccessfullyarticulatingbusinessneeds,whichin-
+delicate, but in words of [84], information is described as re- cludesknowledgemanagement.
+fined data, whereas knowledge is useful information. Based All things considered, Table 5 summarizes the main foun-
+on the DIKW pyramid, from data we can extract information, dationsforourframework: theprinciplesarelaiddownsothat
+frominformationknowledgeandfromknowledgewisdom. We further research can be developed to design the processes and
+claimthatdatascienceprojectsarenoteagertoextractwisdom theadequatetools.
+from data, but to extract useful information, thus knowledge,
+fromdata.
+6. Conclusions
+Therefore,itisnecessarytomanagedatainsightsandcom-
+municate the experiments outcomes in a way that contributes Overall,inthisarticleaconceptualframeworkisproposedfor
+to the team and project knowledge. In the field of knowledge designing integral methodologies for the management of data
+management, this means that tacit knowledge must be contin- scienceprojects. Inthisregardthethreefoundationstonesfor
+uouslybeconvertedintoexplicitknowledge. Inordertomake such methodologies have been presented: project, team and
+this conversion from tacit knowledge, which is intangible, to data & information management. It is important to point out
+explicit knowledge, which can be transported as goods, infor- thatthisframeworkmustbeconstantlyevolvingandimproving
+mation and a communication channel is required. Therefore, toadapttonewchallengesindatascience.
+theinformationmanagementandtheteamcommunicationpro- The proposed framework is built upon a critical review of
+cessesarecompletelyrelated. currently available data science methodologies, from which a
+19
+taxonomy of methodologies has been developed. This taxon- References
+omyisbasedonaquantitativeevaluationofhoweachmethod-
+[1] NathanBenaich,IanHogarth,StateofAI2019.
+ologyovercomesthechallengespresentedonSection2. Inthis
+[2] VentureBeat, Why do 87% of data science projects never make it into
+regard, the obtained scores were estimated by the authors’ re- production?(2019).
+spectiveresearchgroups.Eventhoughthisevaluationmaycon- [3] NewVantage,NewVantagePartners2019BigDataandAIExecutiveSur-
+vey(2019).
+tain some bias, we believe it gives an initial estimation of the
+[4] Gartner,TakingaFirstSteptoAdvancedAnalytics.
+strengths and weaknesses of each methodology. In this sense,
+[5] L.Breiman,Statisticalmodeling: Thetwocultures(withcommentsand
+we would like to extend the presented analysis to experts and arejoinderbytheauthor),Statisticalscience16(3)(2001)199–231.
+researchersandalsotopractitionersinthefield. [6] L.Garc´ıaJime´nez,Anepistemologicalfocusontheconceptofscience:A
+basicproposalbasedonkuhn,popper,lakatosandfeyerabend,Andamios
+4(8)(2008)185–202.
+Acknowledgements [7] J.S.Saltz,Theneedfornewprocesses,methodologiesandtoolstosup-
+portbigdatateamsandimprovebigdataprojecteffectiveness,in: 2015
+This research did not receive any specific grant from funding IEEEInternationalConferenceonBigData(BigData),2015,pp.2066–
+2071.doi:10.1109/BigData.2015.7363988.
+agenciesinthepublic,commercial,ornot-for-profitsectors.
+[8] J.Saltz,I.Shamshurin,C.Connors,Predictingdatasciencesociotechni-
+calexecutionchallengesbycategorizingdatascienceprojects,Journalof
+theAssociationforInformationScienceandTechnology68(12)(2017)
+Appendix A. Triangulararea
+2720–2728.doi:10.1002/asi.23873.
+[9] J.Saltz,N.Hotz,D.J.Wild,K.Stirling,Exploringprojectmanagement
+Thissupplementcontainstheproceduretocalculatetheareaof
+methodologiesusedwithindatascienceteams,in:AMCIS,2018.
+thetriangletakingasoriginthefirstFermatpoint. Theareaisa
+[10] G.Piatetsky,Crisp-dm,stillthetopmethodologyforanalytics,datamin-
+relevant measure for the integrity of each methodology, as the ing,ordatascienceprojects,KDDNews.
+distancesfromthefirstFermatpointrepresenttheirpercentage [11] JeffreySaltz,NicholasJHotz,CRISP-DM–DataScienceProjectMan-
+agement(2019).
+scoreonproject,teamandinformationmanagement.
+[12] V.Granville,DevelopingAnalyticTalent:BecomingaDataScientist,1st
+Given the coordinates of the three vertices A,B,C of any Edition,WileyPublishing,2014.
+triangle,theareaofthetriangleisgivenby: [13] FrankLo,WhatisDataScience?
+[14] M.Loukides,Whatisdatascience?,”O’ReillyMedia,Inc.”,2011.
+∆= (cid:12) (cid:12) (cid:12) (cid:12) A x (B y −C y )+B x (C y −A y )+C x (A y −B y ) (cid:12) (cid:12) (cid:12) (cid:12) (A.1) [15] D. Conway, The data science venn diagram, Retrieved December 13
+(cid:12) 2 (cid:12) (2010)2017.
+[16] A.Jones-Farmer,R.Hoerl,Howisstatisticalengineeringdifferentfrom
+datascience?
+[17] M. Das, R. Cui, D. R. Campbell, G. Agrawal, R. Ramnath, Towards
+methods for systematic research on big data, in: 2015 IEEE Interna-
+tionalConferenceonBigData(BigData),2015,pp.2072–2081. doi:
+10.1109/BigData.2015.7363989.
+[18] J.Saltz,F.Armour,R.Sharda,Datasciencerolesandthetypesofdata
+science programs, Communications of the Association for Information
+Systems43(1)(2018)33.
+[19] JoshWills,Datascientistdefinition(2012).
+[20] P.Warden,Whytheterm”datascience”isflawedbutuseful-O’Reilly
+Radar(2011).
+[21] E.Ngai,Y.Hu,Y.Wong,Y.Chen,X.Sun,Theapplicationofdatamining
+techniquesinfinancialfrauddetection: Aclassificationframeworkand
+anacademicreviewofliterature,DecisionSupportSystems50(3)(2011)
+559–569,onquantitativemethodsfordetectionoffinancialfraud.doi:
+https://doi.org/10.1016/j.dss.2010.08.006.
+[22] P.M.Addo,D.Guegan,B.Hassani,Creditriskanalysisusingmachine
+FigureA.23: Triangulardiagram: originofcoordinates,triangleverticesand anddeeplearningmodels,Risks6(2).doi:10.3390/risks6020038.
+correspondingangles [23] B.P.Chamberlain,Aˆ.Cardoso,C.H.B.Liu,R.Pagliari,M.P.Deisen-
+roth, Customer life time value prediction using embeddings, CoRR
+With the origin of coordinates as the first Fermat point of
+abs/1703.02596.arXiv:1703.02596.
+[24] Y.Kim,W.Street,Anintelligentsystemforcustomertargeting: adata
+the triangle, the coordinates of the vertices A,B,C are defined
+mining approach, Decision Support Systems 37 (2) (2004) 215 – 228.
+as: doi:https://doi.org/10.1016/S0167-9236(03)00008-3.
+A =a·cos(π/2); A =a·sin(π/2); [25] G.Kou,Y.Peng,G.Wang,Evaluationofclusteringalgorithmsforfinan-
+x y
+B =b·cos(7π/6); B =b·sin(7π/6); (A.2) cialriskanalysisusingmcdmmethods,InformationSciences275(2014)
+x y 1–12.doi:https://doi.org/10.1016/j.ins.2014.02.137.
+C x =c·cos(11π/6); C y =c·sin(11π/6); [26] J.Chen,W.Chen,C.Huang,S.Huang,A.Chen,Financialtime-series
+dataanalysisusingdeepconvolutionalneuralnetworks,in:20167thIn-
+Then, inserting these expressions for A,B,C coordinates
+ternationalConferenceonCloudComputingandBigData(CCBD),2016,
+into A.1 yields the final expression for the area of the trian- pp.87–92.doi:10.1109/CCBD.2016.027.
+gle. To reach this simplification it√must be taken into account [27] M.deBruijne,Machinelearningapproachesinmedicalimageanalysis:
+that cos(7π/6) = −cos(11π/6) = 3/2 and also sin(7π/6) = Fromdetectiontodiagnosis,MedicalImageAnalysis33(2016)94–97,
+20thanniversaryoftheMedicalImageAnalysisjournal(MedIA). doi:
+sin(11π/6)=−1/2.
+https://doi.org/10.1016/j.media.2016.06.032.
+(cid:12)√ (cid:12) [28] A.Lavecchia,Machine-learningapproachesindrugdiscovery: methods
+∆= (cid:12) (cid:12) (cid:12) 3 (a·b+a·c+b·c) (cid:12) (cid:12) (cid:12) (A.3) andapplications,DrugDiscoveryToday20(3)(2015)318–331. doi:
+(cid:12) (cid:12) 4 (cid:12) (cid:12) https://doi.org/10.1016/j.drudis.2014.10.012.
+20
+[29] P.Larran˜aga,B.Calvo,R.Santana,C.Bielza,J.Galdiano,I.Inza,J.A. [50] J.Saltz,I.Shamshurin,C.Connors,Aframeworkfordescribingbigdata
+Lozano,R.Arman˜anzas,G.Santafe´,A.Pe´rez,V.Robles,Machinelearn- projects, in: W.Abramowicz,R.Alt,B.Franczyk(Eds.), BusinessIn-
+inginbioinformatics,BriefingsinBioinformatics7(1)(2006)86–112. formationSystemsWorkshops,SpringerInternationalPublishing,Cham,
+doi:10.1093/bib/bbk007. 2017,pp.183–195.
+[30] J.Wan,S.Tang,D.Li,S.Wang,C.Liu,H.Abbas,A.V.Vasilakos,A [51] Jennifer Prendki, Lessons in Agile Machine Learning from Walmart
+manufacturingbigdatasolutionforactivepreventivemaintenance,IEEE (2017).
+TransactionsonIndustrialInformatics13(4)(2017)2039–2047. doi: [52] A.P.Bhardwaj,S.Bhattacherjee,A.Chavan,A.Deshpande,A.J.Elmore,
+10.1109/TII.2017.2670505. S.Madden, A.G.Parameswaran, Datahub: Collaborativedatascience
+[31] R.Ismail,Z.Othman,A.A.Bakar,Datamininginproductionplanning &datasetversionmanagementatscale,CoRRabs/1409.0798. arXiv:
+andscheduling:Areview,in:20092ndConferenceonDataMiningand 1409.0798.
+Optimization,2009,pp.154–159.doi:10.1109/DMO.2009.5341895. [53] C.Byrne,DevelopmentWorkflowsforDataScientists,O’ReillyMedia,
+[32] D.Kwon, H.Kim, J.Kim, S.Suh, I.Kim, K.Kim, Asurveyofdeep 2017.
+learning-basednetworkanomalydetection,ClusterComputing22. doi: [54] S.Ransbotham,D.Kiron,P.K.Prentice,Mindingtheanalyticsgap,MIT
+10.1007/s10586-017-1117-8. SloanManagementReview,2015.
+[33] M. Grbovic, V. Radosavljevic, N. Djuric, N. Bhamidipati, J. Savla, [55] Kaggle,Kaggle:YourMachineLearningandDataScienceCommunity.
+V.Bhagwan,D.Sharp,E-commerceinyourinbox: Productrecommen- [56] H.Jung,TheCompetitionMindset: howKaggleandreal-lifeDataSci-
+dations at scale, in: Proceedings of the 21th ACM SIGKDD Interna- encediverge(2020).
+tionalConferenceonKnowledgeDiscoveryandDataMining,KDD’15, [57] M.Vanauer, C.Bo¨hle, B.Hellingrath, Guidingtheintroductionofbig
+AssociationforComputingMachinery, NewYork, NY,USA,2015, p. data in organizations: A methodology with business- and data-driven
+1809–1818.doi:10.1145/2783258.2788627. ideationandenterprisearchitecturemanagement-basedimplementation,
+[34] W.X.Zhao, S.Li, Y.He,E.Y.Chang,J.Wen,X.Li, Connectingso- in:201548thHawaiiInternationalConferenceonSystemSciences,2015,
+cialmediatoe-commerce:Cold-startproductrecommendationusingmi- pp.908–917.doi:10.1109/HICSS.2015.113.
+croblogginginformation,IEEETransactionsonKnowledgeandDataEn- [58] E.Colson,WhyDataScienceTeamsNeedGeneralists,NotSpecialists,
+gineering28(5)(2016)1147–1159.doi:10.1109/TKDE.2015.2508816. HarvardBusinessReview.
+[35] X.Fang, J.Zhan, Sentimentanalysisusingproductreviewdata, JBig [59] DominoDataLab,ManagingDataScienceTeams(2017).
+Data2.doi:10.1186/s40537-015-0015-2. [60] U. Sivarajah, M. M. Kamal, Z. Irani, V. Weerakkody, Critical anal-
+[36] M. Bojarski, D. D. Testa, D. Dworakowski, B. Firner, B. Flepp, ysis of big data challenges and analytical methods, Journal of Busi-
+P. Goyal, L. D. Jackel, M. Monfort, U. Muller, J. Zhang, X. Zhang, nessResearch70(2017)263–286. doi:https://doi.org/10.1016/
+J. Zhao, K. Zieba, End to end learning for self-driving cars, CoRR j.jbusres.2016.08.001.
+abs/1604.07316.arXiv:1604.07316. [61] M. N. Saunders, C. Rojon, On the attributes of a critical literature re-
+[37] H.Min,Artificialintelligenceinsupplychainmanagement: theoryand view,Coaching:AnInternationalJournalofTheory,ResearchandPrac-
+applications,InternationalJournalofLogisticsResearchandApplications tice4(2)(2011)156–162.doi:10.1080/17521882.2011.596485.
+13(1)(2010)13–39.doi:10.1080/13675560902736537. [62] S.Brown,Likertscaleexamplesforsurveys,ANRProgramevaluation,
+[38] J.Park,Z.Chen,L.Kiliaris,M.L.Kuang,M.A.Masrur,A.M.Phillips, IowaStateUniversity,USA.
+Y.L.Murphey,Intelligentvehiclepowercontrolbasedonmachinelearn- [63] C.Shearer,Thecrisp-dmmodel:thenewblueprintfordatamining,Jour-
+ingofoptimalcontrolparametersandpredictionofroadtypeandtraffic nalofdatawarehousing5(4)(2000)13–22.
+congestion, IEEETransactionsonVehicularTechnology58(9)(2009) [64] N. W. Grady, Kdd meets big data, in: 2016 IEEE International Con-
+4741–4756.doi:10.1109/TVT.2009.2027710. ferenceonBigData(BigData),2016,pp.1603–1608. doi:10.1109/
+[39] SueGreen,Advancementsinstreamingdatastorage,real-timeanalysis BigData.2016.7840770.
+and(2019). [65] Microsoft,TeamDataScienceProcessDocumentation(2017).
+[40] S. Shi, Q. Wang, P. Xu, X. Chu, Benchmarking state-of-the-art deep [66] ScottEllis,Frameworks,MethodologiesandProcesses(2008).
+learningsoftwaretools,in: 20167thInternationalConferenceonCloud [67] NicholasJHotz, JeffreySaltz, DominoDataScienceLifecycle–Data
+Computing and Big Data (CCBD), 2016, pp. 99–104. doi:10.1109/ ScienceProjectManagement(2018).
+CCBD.2016.029. [68] S.Moyle,A.Jorge,Ramsys-amethodologyforsupportingrapidremote
+[41] JacobSpoelstra,H.Zhang,GopiKumar,DataScienceDoesn’tJustHap- collaborativedataminingprojects,in: ECML/PKDD01Workshop: In-
+pen,ItTakesaProcess(2016). tegratingAspectsofDataMining,DecisionSupportandMeta-learning
+[42] J.A.Espinosa,F.Armour,Thebigdataanalyticsgoldrush: Aresearch (IDDM-2001),Vol.64,2001.
+frameworkforcoordinationandgovernance,in:201649thHawaiiInter- [69] R.Jurney, AgileDataScience2.0: BuildingFull-stackDataAnalytics
+nationalConferenceonSystemSciences(HICSS),2016,pp.1112–1121. ApplicationswithSpark,”O’ReillyMedia,Inc.”,2017.
+doi:10.1109/HICSS.2016.141. [70] K.Crowston,J.S.Saltz,A.Rezgui,Y.Hegde,S.You,Socio-technical
+[43] M. Colas, I. Finck, J. Buvat, R. Nambiar, R. R. Singh, Cracking the affordancesforstigmergiccoordinationimplementedinmidst,atoolfor
+dataconundrum: Howsuccessfulcompaniesmakebigdataoperational, data-scienceteams,ProceedingsoftheACMonHuman-ComputerInter-
+CapgeminiConsulting(2014)1–18. action3(CSCW)(2019)1–25.
+[44] StefCaraguel,DataScienceChallenges(2018). [71] ChetanSharma,JanOvergoor,ScalingKnowledgeatAirbnb(2016).
+[45] E.Maguire, Data&AdvancedAnalytics: HighStakes, HighRewards [72] M.Kaufmann,Bigdatamanagementcanvas:Areferencemodelforvalue
+(2017). creationfromdata,BigDataandCognitiveComputing3(1)(2019)19.
+[46] J.S.Saltz,I.Shamshurin,Bigdatateamprocessmethodologies:Aliter- doi:10.3390/bdcc3010019.
+aturereviewandtheidentificationofkeyfactorsforaproject’ssuccess, [73] D.Larson,V.Chang,Areviewandfuturedirectionofagile,businessin-
+in: 2016IEEEInternationalConferenceonBigData(BigData),2016, telligence,analyticsanddatascience,InternationalJournalofInformation
+pp.2872–2879.doi:10.1109/BigData.2016.7840936. Management36(5)(2016)700–710.
+[47] A.Ku¨hn, R.Joppen, F.Reinhart, D.Ro¨ltgen, S.vonEnzberg, R.Du- [74] K.Collier,Agileanalytics: Avalue-drivenapproachtobusinessintelli-
+mitrescu, Analytics canvas – a framework for the design and specifi- genceanddatawarehousing,Addison-Wesley,2012.
+cationofdataanalyticsprojects, ProcediaCIRP70(2018)162–167, [75] D.Dutta,I.Bose,Managingabigdataproject: Thecaseoframcoce-
+28thCIRPDesignConference2018,23-25May2018,Nantes,France. mentslimited,InternationalJournalofProductionEconomics165(2015)
+doi:https://doi.org/10.1016/j.procir.2018.02.031. 293–306.doi:https://doi.org/10.1016/j.ijpe.2014.12.032.
+[48] D.K.Becker,Predictingoutcomesforbigdataprojects:Bigdataproject [76] N. W. Grady, J. A. Payne, H. Parker, Agile big data analytics:
+dynamics(bdpd):Researchinprogress,in:2017IEEEInternationalCon- Analyticsops for data science, in: 2017 IEEE International Confer-
+ferenceonBigData(BigData),2017,pp.2320–2330. doi:10.1109/ ence on Big Data (Big Data), 2017, pp. 2331–2339. doi:10.1109/
+BigData.2017.8258186. BigData.2017.8258187.
+[49] JeffreySaltz,NicholasJHotz,ShortcomingsofAdHoc–DataScience [77] JohnRollings,Foundationalmethodologyfordatascience(2015).
+ProjectManagement(2018). [78] J.Thomas,AIOps—ManagingtheEnd-to-EndLifecycleofAI(2019).
+21
+[79] P.J.Guo,Softwaretoolstofacilitateresearchprogramming,Ph.D.thesis,
+StanfordUniversityStanford,CA(2012).
+[80] D. Dietrich, Data analytics lifecycle processes, uS Patent 9,262,493
+(Feb.162016).
+[81] O.Marba´n,J.Segovia,E.Menasalvas,C.Ferna´ndez-Baiza´n,Towarddata
+miningengineering: Asoftwareengineeringapproach,Informationsys-
+tems34(1)(2009)87–107.
+[82] K. Walch, Why Agile Methodologies Miss The Mark For AI & ML
+Projects(2020).
+[83] F. Foroughi, P. Luksch, Data science methodology for cybersecurity
+projects,CoRRabs/1803.04219.arXiv:1803.04219.
+[84] J.C.Terra,T.Angeloni,Understandingthedifferencebetweeninforma-
+tion management and knowledge management, KM Advantage (2003)
+1–9.
+[85] A.Ferraris, A.Mazzoleni, A.Devalle, J.Couturier, Bigdataanalytics
+capabilitiesandknowledgemanagement: impactonfirmperformance,
+ManagementDecision.
+22

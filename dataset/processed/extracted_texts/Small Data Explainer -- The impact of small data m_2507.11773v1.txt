@@ -1,0 +1,1417 @@
+Small Data Explainer - The impact of small
+data methods in everyday life
+Maren Hackenberg#1,2, Sophia G Connor1, Fabian Kabus1, June Brawner3, Ella
+Markham3,4, Mahi Hardalupas3, Areeq Chowdhury3, Rolf Backofen5,6, Anna Köttgen7,
+Angelika Rohde8, Nadine Binder2,9, Harald Binder1,2,6, and the Collaborative Research
+Center 1597 Small Data
+1InstituteofMedicalBiometryandStatistics,FacultyofMedicineandMedicalCenter,UniversityofFreiburg,
+Freiburg,Germany
+2FreiburgCenterforDataAnalysis,ModelingandAI,UniversityofFreiburg,Freiburg,Germany
+3TheRoyalSociety,London,UnitedKingdom
+4UniversityofEdinburgh,Edinburgh,UnitedKingdom
+5DepartmentofComputerScience,FacultyofEngineering,UniversityofFreiburg,Germany
+6CentreforIntegrativeBiologicalSignallingStudies(CIBSS),UniversityofFreiburg,Freiburg,Germany
+7InstituteofGeneticEpidemiology,FacultyofMedicineandMedicalCenter,UniversityofFreiburg,Germany
+8DepartmentofMathematicalStochastics,FacultyofMathematicsandPhysics,UniversityofFreiburg,
+Germany
+9InstituteofGeneralPractice/FamilyMedicine,FacultyofMedicineandMedicalCenter,Universityof
+Freiburg,Germany
+#Correspondingauthor: maren.hackenberg@uniklinik-freiburg.de
+Abstract
+Theemergenceofbreakthroughartificialintelligence(AI)techniqueshasledtoare-
+newedfocusonhowsmalldatasettings,i.e.,settingswithlimitedinformation,canbenefit
+fromsuchdevelopments. Thisincludessocietalissuessuchashowbesttoincludeunder-
+represented groups in data-driven policy and decision making, or the health benefits of
+assistive technologies such as wearables. We provide a conceptual overview, in partic-
+ular contrasting small data with big data, and identify common themes from exemplary
+case studies and application areas. Potential solutions are described in a more detailed
+technicaloverviewofcurrentdataanalysisandmodellingtechniques,highlightingcontri-
+butionsfromdifferentdisciplines,suchasknowledge-drivenmodellingfromstatisticsand
+data-drivenmodellingfromcomputerscience. Bylinkingapplicationsettings,conceptual
+contributions and specific techniques, we highlight what is already feasible and suggest
+whatanagendaforfullyleveragingsmalldatamightlooklike.
+1
+5202
+luJ
+51
+]YC.sc[
+1v37711.7052:viXra
+1 Introduction
+Inrecentyears,therehasbeenanincreasingrecognitionofthepotentialofsmalldataintechnology
+development and decision-making processes, complementing and potentially even outpacing the
+trajectoryseenforbigdata[1]–[5]. Whilethereisnoconsensusonthedefinitionofsmalldata,small
+data approaches are typically needed in scenarios where there is a limited amount of information,
+such as the analysis of a small number of observations in a dataset. Whether a dataset is con-
+sidered small also depends on the amount of heterogeneity between observations. For example,
+a clinical patient dataset with six patients might be considered small, while an experiment with six
+mice in biomedical research would not be considered small, due to large diversity in human beings
+as compared to animal models in biomedical research. A further important factor is the complexity
+ofthequestionstobeexploredwithadataset. Forexample,traininglargelanguagemodels(LLMs)
+withmachinelearningtechniquesrequiresvasttrainingdatasetsofmillionsorbillionsofdocuments.
+ThetrainingofaspecialisedLLMwithonlythousandsofdocumentsthenisasmalldatachallenge,
+while the use of simpler statistical modelling techniques with clinical patient data might only face a
+smalldatachallengewhenthenumberofobservationsisbelowafewdozenpatients.
+Insightsfromsmalldataareparticularlyvaluableinscenarioswherelargedatasetsarenotavailable
+or where unique and specific data points can provide critical understanding [1], [6]. Unlike big data
+approaches, which rely on vast datasets to identify overall trends and patterns, small data derives
+insights from smaller and often more homogenous datasets, which might put the focus on specific,
+sometimes overlooked subgroups of a population and thus address diversity in a targeted way [1],
+[7]. Even when there are large datasets available, they may exclude under-represented groups,
+or small groups might not be represented in patterns extracted by big data techniques, reinforcing
+biases [8], [9]. Therefore, small data is increasingly seen as a fruitful and necessary alternative
+remedyingthelimitationsofbigdataapproaches[5].
+Smalldataproblemsoccurinarangeoffieldsandhence,smalldatamethodologieshavealsobeen
+developed across many different research areas (e.g., computer science, mathematics, statistics)
+[10]–[12]. Whilethisshowstherelevanceofsmalldataresearchinmanydomains,italsomeansthat
+researchmaybeimpededduetoalackofinterdisciplinarycommunication[2],[13]. Inparticular,the
+lackofasharedlanguageforsmalldataapproachesacrossdisciplinesisamajorhurdle,inaddition
+totechnicalchallengeswhenusingsmalldatamethods,suchasoverfittingandvalidation[14],[15].
+To foster such a shared language, this explainer jointly addresses audiences from many different
+communitiesdevelopingsmalldatamethods.
+Specifically, we aim to raise awareness of, and illustrate, the unique challenges posed by small
+data, which originate from limited sample sizes and limited information in the face of complex data
+analysis tasks. This is relevant to a range of audiences, including: 1) policymakers and policy
+professionals who are interested in understanding how advancements in data science can inform
+policy decisions; 2) data scientists familiar with statistical methods, modelling techniques, and ma-
+chine learning algorithms, who are interested in understanding small data techniques, challenges,
+2
+and potential solutions; and 3) computer scientists, mathematicians, and statisticians developing
+algorithms,tools,andtechniquesforprocessingandanalysingdata.
+Thisexplainerwasguidedbythreeprimaryquestions,answeredthroughextensivedeskreviewand
+evidencesynthesis:
+1. Whatarethefundamentalprinciplesunderlyingtheconceptofsmalldata,andhowdotheydif-
+ferfromthoseofbigdata,particularlyinthecontextoftechnologydevelopmentanddecision-
+making?
+2. Why has there beena growing interest in leveragingsmall data as analternative approach to
+bigdata,andwhataretheoverarchingimplicationsforinclusivetechnologydevelopmentand
+decision-makingprocesses?
+3. How can various methods and techniques for working with small data be adapted and opti-
+mised to address the unique challenges and opportunities present in the context of AI devel-
+opmentandpersonalisedapplications?
+Toapproachthesequestions,welookatsmalldatafrommultipleperspectives. Section2focuseson
+the relevance of both big and small data for policy and decision making, and the core components
+of small data applications. We present an overview of big data versus small data and introduce
+some limitations of big data that may be addressed by using small data. In particular, we focus on
+howbigdatastrugglestorepresentanddealwithextremevaluesinadatadistributionorsubgroups
+that might need to be described by their own distribution. This means that under-represented and
+minority groups can often become invisible or ignored when the outputs from big data methods
+are used to inform decisions, which is especially concerning for high-stakes policy decisions. This
+section also includes case study examples of small data use (e.g., rare disease treatment and
+wearableassistivetechnology),andintroducesthethemesofsimilarity,transfer,anduncertaintyfor
+structuring small data applications and subsequent discussion of specific methods. It is targeted
+towardsabroadaudiencewithaspecificfocusonpolicymakers.
+In Section 3, also targeted towards a broad audience, we highlight some exemplary application
+fields of small data. For some of these, some tailored small data approaches have already been
+developed,suchasforrarediseasesettingsorprecisionmedicine,whichcouldserveastemplates
+forotherapplicationfields,wheresmalldataapproachesarestilllacking.
+InSection4,wedescribesmalldatamethodologiesinmoredetail(e.g.,approachesforincorporating
+similarity, foundation models, few-shot learning, meta learning, and the combination of knowledge-
+driven and data-driven modelling). Many of these methodologies were developed by different dis-
+ciplines and fields, which may potentially hinder awareness and adoption of methods by different
+research groups. To address this, we highlight the contributions of different disciplines and explore
+potential links. We also present some common challenges in using small data, such as overfit-
+ting and validation. This section therefore takes a more technical approach and is tailored for an
+interdisciplinarydatascienceaudience.
+3
+We conclude with some potential opportunities and propose an agenda for increasing the use of
+smalldataininSection5.
+2 Small data and policy
+2.1 The significance of big data for research and decision making
+The ability to process vast amounts of information quickly and efficiently has made possible the
+identificationofbroadtrends, predictionoffuturebehaviours, andoptimisationofcomplexsystems.
+These discoveries and innovations are fuelled by so-called big data. The term big data initially
+referredtodatasetssovasttheyrequiredspecialisedcomputingsolutionsforanalysis[16],yetsuch
+advanced computing power nowadays is easily available. Despite the name, sheer size is not what
+definesbigdata. Insimpleterms,bigdataismoreaccuratelycharacterisedbytheabilitytosearch,
+aggregate, and cross-reference extensive datasets, with potential challenges due to a large variety
+of data types and data quality issues [8]. However, from a sociotechnical lens, big data rests at the
+intersection of 1) technology (maximising the power of computation and algorithms to gather and
+analyselargedatasets);2)analysis(identifyingpatternswithinlargedatasetstomakeclaimsabout
+processes);and3)mythology(thewidespreadtrustinlargedatasetstoofferthepossibilityoftruth,
+objectivityoraccuracypreviouslynotpossible)[17].
+The contemporary emphasis on big data began in the early 2000s, coinciding with advancements
+in computing power and the large varied quantities of data generated and collected by digital tech-
+nologies, including those connected through the internet. Global technology companies began to
+harnessbigdatatotransformtheirbusinessmodels,creatinghighlypersonaliseduserexperiences
+[18], [19]. The success of these enterprises underscored the value of big data, leading to the
+widespreadadoptionofbigdatapracticesacrossvarioussectors,includinghealthcare,financeand
+publicpolicy[20].
+The corresponding increased awareness of the opportunities of data and focus on gathering data
+for better understanding structures and processes has led to significant advancements, regardless
+of whether specific applications are big data or not. For example, data availability in healthcare
+hasenabledbreakthroughsinprecisionmedicine[21]andpredictivemaintenanceinmanufacturing
+[22]. More than this, big data created “a radical shift in how we think about research [...] Big Data
+reframes key questions about the constitution of knowledge, the processes of research, how we
+shouldengagewithinformation,andthenatureandthecategorizationofreality”[17].
+2.2 Limitations of big data and the problem of the ‘average man’
+One key limitation of big data approaches is data availability: in many contexts, large datasets are
+simply not available, especially in specialised fields like rare diseases (see Box 1 for an exemplary
+scenario, and Section 3.1 for more details) or niche markets. Small data approaches, on the other
+hand,thriveondetailed,context-specificinformationfromsmallerdatasets,makingtheminvaluable
+wheredataisscarce.
+4
+A clinician specialising in Gaucher disease, a rare genetic disorder that leads to the buildup
+of glucocerebroside in various organs [23] due to the deficiency of a specific enzyme, wants
+to assess whether a patient is responding well to enzyme replacement therapy (ERT). It is
+often challenging for the clinician to find the correct dose of ERT, as the disease presents
+with diverse manifestations and many different factors need to be considered [24]. In order
+to address these issues, the clinician might have access to a clinical registry of patients with
+this medical condition, which contains information as to their ERT doses. Despite the likely
+small number of observations, which is to be expected for a rare disease registry, a machine
+learning approach could be used to deliver dose predictions, ideally leveraging all available
+data,leadingtoasmalldatachallenge.
+When the clinician has a new patient, for example a 6-year-old child trialling ERT again after
+apause,themachinelearningapproachshouldtakeintoaccounthowsimilarthenewpatient
+is to the patients already present within the clinical registry. Often, there will be considerable
+heterogeneity across patients in a registry, which means that the patients are dissimilar to
+each other. Therefore, the new patient might need to be matched to the most similar sub-
+group to allow for modelling and prediction based on this subgroup, while still taking some
+informationfromtheothersubgroupsintoaccount. Inthiscase,forexample,theremightonly
+be a limited subgroup of patients under the age of 10. For these reasons, it can be difficult
+tomatchthecurrentpatienttopreviouspatientsinordertomakeaccuratepredictions. When
+the new patient cannot be appropriately matched, transfer techniques are required to still en-
+ablepredictionmodellingbyatleastusingsomeamountofinformation,e.g.,byextrapolating
+acrossagegroups.
+Box1: Hypotheticalexemplaryscenariofromthefieldofrarediseasesmalldataapplications.
+A second key limitation of big data approaches is the mythology surrounding them, in particular,
+the assumption that bigger datasets lead to more reliable conclusions. The belief that ‘bigger is
+better’, wheretraditional approachesinbusiness, governance, and technology prioritiselargenum-
+bers, goes hand in hand with advancements in computing and AI, which excel at processing vast
+amountsofinformationbutoftenfalterwhenconfrontedwithextremevalues(Figure1,PanelA)and
+uniquescenarios(Figure1,PanelB).Forinstance,AImodelsforself-drivingcarshaveshowncriti-
+calfailureswhenconfrontedwithunexpectedsituations,suchasencounteringabackward-propelled
+wheelchair,evenwhentrainedextensivelyonwheelchair-representativedatasets[25].
+This highlights how big data approaches, which can be useful for identifying general trends within
+large datasets, might obscure the nuances and specificity present in smaller datasets, which might
+cover a more diverse range of scenarios. Consequently, individuals and scenarios that do not fit
+the majority pattern are marginalised, leading to significant knowledge gaps and inadequately ad-
+dressed needs. When these approaches are used for policy decisions, this can lead to ineffective,
+inefficientandinequitabledecision-making.
+The necessity of considering alternatives to big data approaches becomes even more apparent
+5
+focus
+Dimension 1
+2
+noisnemiD
+(A)
+Dimension 1
+2
+noisnemiD
+(B)
+limited
+consideration
+not considered
+own distributions
+Figure 1: Conceptual illustration of small data challenges with hypothetical data where individuals
+aredescribedbytwodimensions,suchaswhenconsideringfactors“age”and“yearsofexperience
+withdigitaltechnologies”whendesigningachatbotsystembasedonlargelanguagemodels(LLMs).
+(A) Small data conceptualised as the extreme values of a distribution, e.g., a Gaussian distribution,
+corresponding to the concept of Quetelet [26]. In this figure, the individuals in the “Focus” area are
+within the average, whereas individuals that deviate from this average are considered less often or
+notatall. (B)Conceptualisationofsmalldataviasubgroupsofindividualswhichmightbedescribed
+by their own distribution, e.g., not treating children as small adults, or analysing the specific needs
+ofelderlyusers.
+when knowledge of the historical context of statistical methodologies is applied to human popula-
+tions and social phenomena. Specifically, the concept of the ‘average man’ was introduced in the
+19th century by Belgian astronomer and statistician Adolphe Quetelet FRS. Quetelet’s work laid
+the foundation for modern statistics and the field of social physics, which applies statistical meth-
+ods to social phenomena. In his pivotal work, Quetelet proposed the idea of the ‘average man’
+(‘l’homme moyen’), a hypothetical individual whose characteristics represent the average values of
+a population’s various traits. He applied the Gaussian distribution, which had been used primarily
+in astronomy and other physical sciences, to human traits. In doing so, he suggested that most
+people cluster around a central, average value, with fewer individuals exhibiting extreme values at
+themargins.
+Quetelet’s concept had profound implications for modern statistics and social science. First, it in-
+troduced the idea that human characteristics, such as height, weight, and even behaviours, could
+be quantified and analysed statistically. Second, Quetelet asserted that the average value within a
+distribution(thel’hommemoyen)shouldbetheprimaryfocuswhenstudyinghumanattributes[26].
+This idea laid the groundwork for the development of fields like demography, public health, and so-
+cialstatistics. However,italsoledtoanoveremphasisontheaverage,sometimesattheexpenseof
+understanding the diversity and complexity of human population, neglecting those who fall outside
+thenorm. ThisisillustratedinFigure1,PanelA.
+6
+Glossary: Foundation models are large-scale machine learning models trained on vast
+amounts of diverse data, allowing them to serve as a general-purpose base for a wide range
+of downstream tasks. These models, suchas large language models (LLMs) and multimodal
+AI systems, acquire broad representations that can be adapted to more specific applications
+with limited available data through fine-tuning or in-context learning. These capabilites make
+themapowerfultoolforbothbigandsmalldatasettings.
+As an alternative conceptualisation, small groups might not be considered as the extreme margins
+of a Gaussian distribution, but as having their own, separate distribution (1, Panel B). This implies
+theneedtoreasonaboutthesedistributions,whichismadedifficultbylimitedavailabilityofdata. A
+solutionistoassesstowhatextentinformationfromthemajoritydistributionorothersubgroupscan
+beadapted.
+The implications of Quetelet’s work are still evident today with the reliance on averages to use big
+data in decision making and policy making. However, it is important to remember that “...people
+areindividualpeopleandnotanaverage”[27]. Whileaveragescanprovideusefulsummaries,they
+alsomaskimportantvariationsandleadtodecisionsthatdonotadequatelyaddressthenecessities
+of all individuals, particularly those with less common traits or needs. This has led to a growing
+recognitionoftheimportanceofsmalldataandpersonalisedapproachesthatcancapturetheunique
+and diverse experiences of individuals, thereby fostering more inclusive and effective political and
+technologicalsolutions,ultimatelybenefitingtheentirepopulation.
+An example of this is closed captioning [28], which was initially developed for the deaf and hard of
+hearing, however is now widely used in noisy environments like gyms and bars, and by individuals
+learningnewlanguagesortryingtofollowalongwithoutsound. Similarly,automaticdoors[29],Text-
+to-speech (TTS) and Speech-to-text (STT) systems [30], voice assistants [31] like Amazon’s Alexa
+and Apple’s Siri, as well as smartphone accessibility features [32] were also originally designed to
+assistdisabledpeoplebuthavedevelopedamuchwiderscopegiventheirconvenienceandeaseof
+useinvarioussituations.
+2.3 The rise of small data
+Inanerawherebigdatadominatesdecision-making,smalldata,whichfocusesondetailed,context-
+specificinformationfromsmallerdatasets,offersuniqueandcriticalinsights.
+Small data is sometimes referred to as the ‘original data’: early-modern scientific discoveries, from
+those of Darwin’s evolutionary theory to Einstein’s fundamental laws, predate big data approaches
+and contemporary computational abilities. Humans are also naturally small data learners: given a
+single image of a car, children can generalise the concept and recognise similar objects. This is an
+impressiveexampleofone-shotlearning,i.e.,learningaclassfromasinglelabelledexample,which
+is not straightforward to obtain with classical machine learning approaches [33]. Therefore, it might
+7
+be attractive to utilise small data ideas also in big data contexts. Certain methodologies already
+have integrated small data with big data to transfer information between the big dataset and the
+small dataset. For example, foundation models now allow the transfer of information from a huge
+body of text, images, or other data to settings with limited data [34] (see Box 2 for an exemplary
+scenario).
+Consequently,smalldatais(re-)emergingasacrucialcomplementtobigdata,inpartbecauseofits
+relevancetoadvancesintechnologieslikeAI.Thisapproachisparticularlyimportantinareaswhere
+context-specificinsightsarecritical,suchasinrarediseaseresearch(seeBox1),andpersonalised
+marketingstrategies(seeBox3).
+Supposeapolicymakerinalargetechcompanyaimstoimprovethesecurityandrobustness
+of the company’s software products against cybersecurity threats, e.g., in accordance with a
+report recently published by the White House Office of the National Cyber Director [35]. To
+achievethis,theyfocusonaddressingknownclassesofvulnerabilitiesthroughuseofsecure
+software development practices. The most commonly used programming language for the
+company’s products is C++, which is also one of the languages that lacks memory safety
+[36]. Inaddition, thepolicymakerknowsthatitiscommonpracticeamongdevelopersintheir
+companytouseLLM-basedproductsforassistancewhengeneratingcode. Whilerecentver-
+sions of C++ allow for memory-safe programming, the C++ code used to train LLMs is likely
+to span several decades, i.e., represent old non-safe practices with potential memory safety
+bugs[37]. Thus, thechallenge wouldbeto uselimited amountsofmemory-safe examplesof
+codeavailabletogenerateviatheLLMfurthermemory-safecodefortherequestedtask. Ide-
+ally,therewouldbeasimilaritymetrictoassessdifferentLLMsanddeterminewhichcanbest
+provide this code, in order to select the best solution. Alternatively, LLMs could be fine-tuned
+to generate safer code. Users should at least be provided with a warning if the generated
+code deviates from the safety standards of the company, or the model might even be able to
+morepreciselyindicatehowconfidentitisthatitsoutputisindeedmemory-safe.
+Box2: HypotheticalexemplaryscenariofromthefieldofgenerativeAIandfoundationmodels.
+8
+Suppose a finance tech start up (“FinTech”) is developing an app that helps its users make
+informedfinancialdecisionsbyprovidingthempersonalisedrecommendations. Asconsumer
+trust is an important factor for the adoption of the product [38], [39], they focus on a strong
+adherence to user privacy, in particular, by storing information only on the device of the user,
+e.g., a smartphone. In addition, the recommendation algorithm is focused on data minimisa-
+tion, by asking the user only for absolutely necessary information and storing only aggregate
+data where possible, e.g., only the average proportion of income spent on rent or eating out.
+Thislimitstheprivacyimpact,e.g.,incaseofadatabreach.
+To enable precise predictions as a basis for recommendations, missing information that is
+still required might be extrapolated from similar users, e.g., from a database of users who
+agreed to such use of their data. For example, the prediction algorithm might determine
+how the individual fits different archetypes, i.e., a student who likes to travel or a married
+individual with a stable income and children, using similarity measures. As banks continue
+to open up their data to third parties [40], the app should give specific recommendations
+on retirement planning by transferring the generic recommendation model onto the specific
+spending habits of the user provided by the bank. As financial advice, especially concerning
+investments, involves uncertainty, which might be increased by data minimisation, the app
+should include uncertainty evaluations to help the individuals make informed decisions about
+therisksinvolved,e.g.,whendecidingforasavingstrategy. Theappmightevenindicatewhat
+additionalinformationwouldbeneededtoreduceuncertainty.
+Box3: Hypotheticalexemplaryscenariofromthefieldof financesandtrustedpersonalisedrecom-
+mendations.
+The growing interest in small data is also driven by advancements in data collection and analy-
+sis technologies that make it easier to gather and interpret more detailed information from smaller
+samples. Forexample,wearabledevices,mobilesensors,andspecialisedsoftwareenablethecon-
+tinuouscollectionofgranulardata, datathatisverydetailedandspecific, providingarichsourceof
+insightsthatwerepreviouslyinaccessible[41](seeBox4).
+As another example, mixed-methods research combines quantitative data from large samples with
+qualitative insights from smaller groups to provide a more comprehensive understanding of com-
+plex phenomena. This integrative approach is particularly valuable in fields like social sciences,
+where understanding human behaviour requires analysis of both broad patterns and individual ex-
+periences. For a primer on these themes see [42]. Small data techniques are also relevant where
+limited,granulardatasetsarecollectedbyindividualresearchersduringday-to-dayexperiments,as
+these datasets may be richly diverse, covering a range of heterogeneous scenarios, and relatively
+small, so-called long-tail data [6]. Long-tail data is valued for its diversity and specificity, which can
+providecriticalinsightsthatlarge,aggregateddatasetsmightoverlook.
+Furthermore, small data approaches can help foster innovation and resilience in technologies, as
+theyspecificallyacknowledgesubgroups,potentiallyinawiderangeofscenarios,makingthemmore
+9
+Supposeahealthcareprovideraimstodecreasethenumberofhospitaladmissionsresulting
+from recurrent falls among patients. To do this, they give wearable devices with accelerom-
+eters to individuals [43]. The detection of falls needs to be performed on the device with
+the limited data available there. After a period of time, there is enough accelerometer data
+availablefortheindividual,suchashowtheynormallymove,sothatpersonalisationandthus
+improvedfalldetectionmightbefeasible. Iftheproviderhasadatabaseofaccelerometerdata
+generated from use of this wearable device, the data from the individual could be mapped to
+subgroupsofotherindividuals,oralternatively,apredictionmodelcouldbeusedthatisaware
+of subgroups and has already been trained on the database. Ideally, this analysis in the con-
+textofsimilardatashouldbeperformedwithouttransferringthedataofindividualstoacentral
+server,toprotectprivacy.
+However, fall detection using accelerometer data is challenging due to significant variability
+in how movements are recorded, as well as differences in individual anatomy [44], [45]. This
+variability might introduce considerable uncertainty in similarity assessment and predictions.
+Therefore, approaches for quantifying uncertainty in all steps are needed. In addition, some
+of the patients might not like the wearable device, but want to use the accelerometer on their
+phonesinstead[46]. Thismeansthatinformationtransferisrequiredtolinkthisnewdatatype
+totheoriginaldatasetsandmodels.
+Box4: Hypotheticalexemplaryscenariofromthefieldofassistivetechnologies.
+robust in the face of dynamic environments. Thus, personalised and context-specific technology
+solutionswillrelyontheutilisationandinclusionofsmalldata.
+2.4 Common themes: similarity, transfer, and uncertainty
+For making small data challenges manageable, it can be useful to identify sub-tasks that appear in
+many small data settings. In the examples given above (in particular Boxes 1-4), there were three
+themesthatrepeatedlyemerged: similarity,transfer,anduncertainty. TheseareillustratedinFigure
+2, and are briefly introduced in the following. A detailed description of the corresponding technical
+approachesisprovidedinSection4.
+2.4.1 Similarity
+Similarity is relevant when comparing different datasets for potential subsequent integration. In-
+tegrating datasets increases the number of observations available for modelling, and involves as-
+sessing the similarity of individuals to other individuals or groups of individuals, such as in rare
+disease applications, to leverage evidence from similar individuals. In other settings, similarity of
+datasetsthatincludeseveralobservationalunitsneedstobeassessed,e.g.,whendecidingwhether
+to combine datasets for modelling. As similarity will typically be assessed quantitatively, modelling
+techniques that are subsequently used also need to incorporate such quantitative information on
+similarity.
+10
+similarity transfer uncertainty
+Dimension 1 Dimension 1 Dimension 1
+2
+noisnemiD
+(A) (B) (C)
+2
+noisnemiD
+2
+noisnemiD
+Figure2: Illustrationofcommonthemes,namelysimilarity,transfer,anduncertainty,whenaddress-
+ing small data challenges. The example uses hypothetical data where individuals are described by
+two dimensions, such as when considering factors “age” and “years of experience with digital tech-
+nologies” when designing a chatbot system based on LLMs. (A) Assessing the similarity of groups
+for potentially incorporating information, e.g., deciding whether to jointly analyse data from children
+and older adults when considering inclusive chatbot design. (B) More general information transfer,
+whendata/informationcannotbedirectlycombined,e.g.,leveragingchild-centereduserexperience
+describedinthescientificliteraturewhendesigningachatbotforolderadults. (C)Quantifyinguncer-
+tainty,toassesswhetherthereisenoughdataforobtainingreliableevidence,e.g.,decidingwhether
+thereisenoughinformationtoreasonablytailorachatbotforchildren.
+When there is already a big dataset or (pre-)trained model, e.g., a foundation model, approaches
+for similarity can be useful for assessing whether a dataset at hand is close enough to the typical
+settingsrepresentedbythebigdatasetormodeltowarrantuse. Subsequentadaptation,whenthere
+issufficientsimilarity,mightthenincludepersonalisationofthemodel,e.g.,byidentifyingsubgroups
+representedbythelargemodelthatarethemostsimilartothedatasetathand. Thiscorrespondsto
+acknowledgingtheheterogeneityofbigdatasetsandpotentiallyreducingthemintointerlinkedsmall
+datasets.
+2.4.2 Transfer
+The combination of similar datasets already implicitly entails a transfer of information from one
+datasettotheother. Yet,weunderstandtransferinabroadersense,relatingnotonlytothetransfer
+ofinformationbetweensimilardatasets,butalsotoamoregeneralinformationtransferfromexternal
+sources to enrich a small dataset. In particular, information from other sources to be incorporated
+can include, e.g., other types of data (other data forms, databases, etc., see Figure 2, Panel B) or
+pre-trainedmodels(e.g.,LLMs),reflectingimplicitknowledge,tofacilitatemodellingwithsmalldata
+by additional prior knowledge. This requires methods for explicitly transferring information. Use of
+methods for transfer ideally should include some quantification of similarity between the different
+typesofinformationsourcestoassesswhetherinformationtransferindeedisbeneficial,orwhether
+itinsteadisdetrimental,e.g.,whenLLMsoverridetheinformationinthedatasetathandthatisused
+11
+ascontext.
+Insomesettings,knowledgeofthedomainathandmightnotbeavailableinformatsreadyforinfor-
+mation transfer, such as mechanistic knowledge or heuristic knowledge of experts. A formalisation
+step is then required, before information transfer can be performed. For example, knowledge on
+relations between quantities of interest could be expressed in the form of mathematical equations,
+even if it is not possible to fully and precisely specify these equations. Methods for information
+transferthenneedtoincorporatetheuncertaintyinspecification.
+2.4.3 Uncertainty
+Due to limited information, uncertainty is a particularly pressing issue to be considered in small
+data settings. While uncertainty has been conventionally considered in the context of variability in
+parameterestimationinstatisticalmodels,suchaswhenestimatingtreatmenteffects, thetermcan
+also be understood in a broader sense. In particular, there are many other kinds of uncertainties,
+includinggeneralsourcesofuncertaintyinmodelling,suchasthechoiceofappropriatemodels[47].
+Some sources of uncertainty are more specific to small data, particularly uncertainty arising from
+quantification of similarity and transfer of information, e.g., in the formalisation of expert knowledge
+forinclusionintomodelling.
+Where uncertainty cannot be avoided, comprehensive quantification of the different sources of un-
+certainty is needed. This enables informed use of the resulting models and predictions. Such
+quantification can also enable deliberate acceptance of uncertainty, e.g., when making informed
+decisions on data minimisation for a trade-off between uncertainty and privacy (see Box 3 for an
+example).
+2.5 Implications of small data for evidence-informed policy-making
+Thepolicyimplicationsofsmalldataapproachesaresignificant. Duringtimesoffinancialconstraint,
+decision-makersoftenrelyondata-supportedstrategiestosetspendingprioritiesandjustifyinvest-
+ments in public funds. However, this reliance can marginalise individuals who do not fit within the
+majority,suchasthosewithdisabilitiesorexceptionalaccessrequirements[48].
+Likewise, dominantbigdataresearchmethodsprioritiselargegroupsandpopulationaverages, po-
+tentially disregarding extreme values and reinforcing the ‘invisibility’ of marginalised groups when it
+comestodecisionmaking. Forexample, researchintoassistivetechnologiesoftenlacksgeneralis-
+ability due to its small, varied sample sizes [49]. Moreover, current big data tools are not designed
+tohighlightpatternsortrendsspecifictounderrepresentedgroups,insteadamplifyingtheaverages
+andleavingoutcriticalinsightsfromthemargins.
+To address these issues, it is essential to recognise that including the margins in research and de-
+signprocessescanbenefiteveryone. Movingawayfrombigdataapproachestowardspersonalised
+learning and informed, self-aware learners can help create a more equitable and responsive edu-
+cational system. Embracing small data and dynamic instability in policymaking can lead to better
+12
+outcomesforbothindividualsandsocietyasawhole.
+3 Exemplary application fields of small data
+3.1 Rare diseases and N-of-1 studies
+Small data methods are crucial for studying rare diseases, i.e., diseases afflicting less than one in
+2,000 persons [50], as this is a prime example for medical conditions with limited data (see Box
+1 for a hypothetical example). Correspondingly, this area has produced numerous methodologies
+specificallydesignedforsmalldatasets. Still,itisachallengetoadaptmachinelearning,inparticular
+deeplearningtechniques,whichtypicallyrequiremoredata[51]. Nevertheless,suchmethodological
+developments can be used as a blueprint for other small data settings. It is important to note that
+manyofthesetechniquesarenotexplicitlylabelledassmalldatamethods, eventhoughtheyapply
+to these scenarios, reflecting the challenge of the lack of shared terminology around small data
+methods.
+N-of-1studiesareaparticulartypeofsmalldatastudywhichproducedatalimitedbydesign,asthey
+focusoncollectingandanalysingdatafromasingleparticipant[52]. Thisisoftenperformedinorder
+to determine how effectively the participant responds to a specific intervention, and may involve
+the need to combine multiple different types of data from the individual, which requires transfer
+methodologies. N-of-1studiesarebettersuitedforchronicconditionsratherthanrapidlyprogressive
+diseases, and commonly deployed to assess neurological or musculoskeletal disease [53]. This is
+because chronic conditions are often relatively stable or slowly progressive, and require long term
+management,whichenablesmultiplecrossoverperiodstoassessefficacyofvarioustreatmentson
+thesamepatient.
+Smalldatamethodscanassessmedicationefficacy,aswellastheefficacyfromsurgicalprocedures,
+behavioural modifications, or medical device assessments [54]. These methodologies can then be
+applied to similar study designs where only a single participant is assessed. When aggregating
+many N-of-1 studies, the combined data could, e.g., be used for future predictions [55]. Yet, to do
+this,onemustassesshowsimilarthedatasetsareanddevelopmethodstocombinedatasetswhen
+theyarenotinexactlythesameformat,i.e.,tailoredapproachesareneededforinformationtransfer.
+3.2 Precision medicine and case-based reasoning
+Personalisation of models, predictions and decisions in small data settings aims to tailor particular
+outcomes to the unique characteristics of a single observational unit or a small group. In precision
+orpersonalisedmedicine,thisinvolvesadaptingspecifictherapiestosuiteachindividual,accurately
+diagnosingdiseases,orpredictingindividualhealthoutcomesbytakingintoaccountuniquegenetic,
+lifestyle or environmental factors [48]. Effectively, this means that even a rather large, potentially
+multi-modaldatasetmightbereducedtomanysmallsubsetswhenlookingforhomogeneousgroups
+ofpatientsthatcouldreceiveapersonalisedprediction. Therefore,muchlikeinrarediseasesettings,
+many methodologies developed in the field of precision medicine are useful for small data settings,
+13
+though they are often not explicitly identified as such. Often, methodologies initially developed for
+specific diseases are also applicable to other small data scenarios once researchers recognise
+similarunderlyingfeatures.
+Oncology has consistently led to advancements in precision medicine, largely because of the ge-
+netic basis of many cancers and the rapid progression of genomic technologies, e.g., allowing for
+morereliableandaffordablecancerdiagnosis[49],[56]. Theseadvancesenablethecomprehensive
+screening of an individual’s genome in just days, facilitating the development of tailored diagnostic,
+prognostic and therapeutic strategies. Big data analysis is effective at identifying patterns across
+large datasets, but small data methods are much more adept at tasks such as detecting rare mu-
+tations. Small data methodologies can provide assistance, for example, in analysing data from an
+individual’sowncellstopredicthowtheywillrespondtotreatment,throughpersonalisedinvivoand
+in vitro cancer models [57]. However, this raises many small data challenges, such as looking for
+similardatatoincreasethedatasetsize,transferringinformationfromothersources,andassessing
+theuncertainty,i.e.,quantifyingthereliabilityofpredictionsfromsuchcancermodels.
+The paradigm of case-based reasoning (CBR) considers an extremely personalised setting where
+thedatafromthepatientathand,i.e.,asingleobservationalunit,isusedasastartingpointforrea-
+soning. CBRthenoffersamodellingmethodologyforusingprevioussimilarexamplesofaproblem
+and its solutions, each called a “case”, to offer recommendations for a current similar issue [58].
+Thisrecommendationisthenstoredforusewithfuturecases,allowingforiterativelearning[59]. As
+for other settings in precision medicine, similarity assessment is therefore crucial in CBR because
+theaccuracyofthesolutiondependsontheaccuracyoftheevaluationofsimilaritybetweenthenew
+case and stored cases [60]. Furthermore, a machine learning approach must be able to search for
+similarcaseseffectivelyandtimeefficiently[58]. Uncertaintyneedstobetakenintoaccount,asthe
+available information from previous cases may be incomplete, imprecise, or subjective [61], [62]. It
+is also beneficial to develop transfer learning techniques that allow recognition of useful knowledge
+fromothersystems,andsupporttheirintegrationintotheCBRmodel[63].
+3.3 Assistive technologies, quantified self, and wearable health devices
+Therobustpaceofadvancementsinenergy-efficientcomputingandsensorminiaturisation[64]has
+enabled wearable devices to become increasingly more capable as assistive technologies. Contin-
+uous use of wearable health devices throughout the day can facilitate novel data-driven paradigms
+in healthcare and personal health management by providing real-time, comprehensive data from
+sensorstoenablepersonalisedmonitoring,e.g.,falldetection(seeBox4),earlydetectionofhealth
+issues, and tailored interventions [65]. In particular, this technology has led to a rapidly expanding
+“quantifiedself”movement,whereindividualsuseself-trackingtoimprovetheirhealthandwell-being
+[66]. Thecorrespondingdata,althoughpotentiallylongitudinallyextensive,issimilartoraredisease
+situations, as it pertains to a single individual. In particular, the devices often do not transfer all
+recordeddatatocentralisedserversforcombinedanalysiswithdatafromotherindividuals. Instead,
+therecordeddataprimarilystayson-deviceandcorrespondinglyanalysisisperformedthere,e.g.,in
+14
+anedgecomputingsolution[67]. Ifthedeviceatleastintermittentlyhasaccesstoexternalservers,
+thesecanbeleveragedforadditionalinformation,e.g.,additionaldataand/ortrainedmodelshosted
+by the manufacturer. However, it is still desirable to analyse the small data on-device, and use this
+external information as additional context to improve predictions made from the small dataset [68],
+asthesepredictionsshouldstillideallybepersonalisedtotheuser. Thismeansthatsomematching
+to subgroups represented by the external data is needed, including assessment of similarity and
+potentialapproachesforinformationtransfer. Muchlikeabove,thissettingissimilartoraredisease
+applications, yet with the additional complication of having the different sources of information in
+different locations. On the device itself, the model based on the larger amount of information can
+thenbeadaptedtotheuser,toreducethepredictionuncertainty[69].
+3.4 Data minimisation
+Dataminimisation,i.e.,thecollectingandprocessingofonlythedatarequiredforaspecificpurpose,
+is a crucial concept that must be taken into account whenever dealing with data from individuals.
+Data minimisation is governed by regulations such as the EU General Data Protection Regulation
+(GDPR)[70],whichalsounderscoresthenecessityofinformedconsentforcollectingdataandman-
+dates that models be designed to provide explanations for their decision-making processes when
+required [71]. Small data techniques support data minimisation as they can potentially still achieve
+acceptable performance with limited data. This allows for deliberate collection of less data, reduc-
+ing unnecessary privacy intrusions (see Box 3 for a hypothetical example). The data of individuals
+also might not need to be copied to central servers, e.g., as indicated for applications with wear-
+able devices. Together, this lowers the risk of unintended data leaks [72], [73]. This is helpful in a
+widerangeofscenarios,frommedicinetofinance,wheredataminimisationshouldbeencouraged.
+Minimisation, as enabled by small data methods, might even be beneficial for other reasons, as
+collection and analysis of smaller data is often cheaper and can be performed with higher quality
+[1]. Yet, deliberate minimisation requires careful assessment of the resulting uncertainty in order to
+performaninformedtrade-off. Also,fillinginthegapsleftbydeliberateminimisationbyincorporating
+similar data that is already available might require development of targeted techniques for informa-
+tiontransfer,ifthereisonlylimitedsimilaritybetweenthedatatobeincorporatedandtheminimised
+data.
+3.5 Generative AI
+LLMs,suchasthatbehindChatGPT,areanexampleoffoundationmodels,thelatestgenerationof
+generativeAIapproaches whichprovidegeneralrepresentations learnedfromlarge-scaledatasets
+[34]. Correspondingly, they are adaptable for a wide range of creative tasks, such as generating
+artwork [74], [75] or music [76], [77], as well as practical tasks such as data augmentation, text
+generation, and image synthesis [78]–[80]. They can also be applied to fields such as biology or
+medicine [81]–[83]. Once tailored to a specific scenario, such foundation models can be used to
+simulate and explore hypothetical situations, even with limited real data available. This ability to
+generate synthetic data based on a learned structure, combined with expert insights or established
+15
+Glossary: In-context learning allows large language models (LLMs), and more generally
+foundation models, to perform new tasks without retraining by providing task-specific context
+information,e.g.,prompttextthatincludesexamples,aspartoftheinputduringinference. Un-
+liketraditionallearningmethodsthatrequireextensivefine-tuning,in-contextlearningenables
+LLMs to adapt dynamically to new problems by interpreting the provided context. For exam-
+ple,whentaskedwithtranslatingasentenceorgeneratingasummary,themodelcaninferan
+appropriate approach based on the information contained in the query itself. This capability
+hassignificantimplicationsforrapidprototypingandadaptabilityinreal-worldapplications.
+knowledge from a specific field, is particularly attractive in small data settings, as it allows for the
+conversionofadditionalknowledgeintodata.
+Yetsmalldataproblemsstillarise,asevenlarge-scaledatasetshaveareasthatarehardlycovered,
+e.g., asillustratedin2. WhenanLLMisusedtogeneratetextpertainingtoapartoftheunderlying
+statistical distribution that is only supported by limited data, it might also have a tendency to hallu-
+cinate, which means it fabricates a plausible but incorrect answer [84]. This setting, where the text
+used to prompt the LLM corresponds to the small data at hand, while the LLM represents implicit
+knowledgefromalarge-scaledataset,isanexampleofamoregeneralclassofsmalldatasettings
+where a small dataset is used as context information for in-context learning with foundation mod-
+els [85]. Therefore, the challenge is to assess how close the small data at hand is to the implicit
+knowledgerepresentedbythefoundationmodeltodetectpotentialissueswithinformationtransfer,
+such as hallucination in LLMs. Alternatively, foundation models can be fine-tuned to the small data
+at hand by adapting the model parameters. However, this might be challenging with limited data.
+Even if such an adaptation is not feasible or straightforward, a model should at least be adapted
+to warn the user when the provided response is based on an underrepresented knowledge area.
+Theimportanceofacknowledgingandcommunicatingunderlyinguncertaintiesinmodelsshouldbe
+considered when formulating policies that rely on predictions or insights from foundation models,
+ensuringthereisclearcommunicationfromdevelopersonuncertaintiesandlimitationsinthemodel
+predictionsandthatpoliciesaccountforpotentialbiases,gapsinknowledgeandmodellimitations.
+4 Methods for working with small data
+4.1 Contributions of different disciplines
+Small data problems occur in a broad range of diverse application fields, as illustrated by the ex-
+amples of small data presented in Box 1-4 and in Section 3. This diversity in applications indicates
+an increasing recognition of the need to develop specific small data approaches that can be used
+across different disciplines. Currently, since different small data application scenarios are typically
+addressed by different disciplines, such as computer science, mathematics, or statistics, there is
+high diversity in methodology developed to address small data challenges. This means that small
+16
+Glossary: Few-shot learning refers to a method in AI where models are trained to perform
+tasks using only a small number of labeled examples. This technique is especially useful in
+scenarios where gathering extensive labeled datasets is impractical, such as rare medical
+conditions or highly specific tasks in industrial applications. By leveraging knowledge from
+previouslyseentasksordatasets,few-shotlearningenablesmodelstogeneralizeeffectively,
+bridgingthegapbetweendata-richanddata-scarceenvironments.
+Glossary: Meta-learning, often referred to as “learning to learn”, trains models to adapt to
+new tasks using prior knowledge from multiple datasets. Instead of building a single model
+optimized for a specific task, meta learning equips the model with a generalized capability to
+handlediverse problems. This approachis particularlyrelevantin smalldata contexts, where
+theabilitytoleverageknowledgefromrelateddomainscansignificantlyenhanceperformance.
+dataresearchiscurrentlyscatteredacrossdisciplines,impedingtherealisationofitsfullpotential.
+A particular challenge is the limited exchange of methods between different data science disci-
+plines. For example, mathematics and statistics have been traditionally seen as the disciplines for
+small data challenges, as research there has historically been performed in the context of applica-
+tions with strong assumptions, which are used to gain mechanistic insight and to compensate for
+typically small datasets [1]. Take, for instance, infectious disease modelling, where assumptions
+regarding disease transmission and recovery rates are employed to predict the spread of diseases
+like influenza or COVID-19 when real-time data is scarce [86]. Similarly, in tumour growth mod-
+elling, assumptions about the growth rates and limitations of resources within the tumour are used
+toestimatetheprogressionofcancerandoptimisetreatmentswithlimiteddata[87].
+Yet,thecomputersciencecommunityhasalsorecentlydevelopedimportantsmalldatatechniques.
+These approaches are typically based on AI, and known under labels such as transfer learning,
+few-shotlearningormeta-learning,butareonlyslowlyfindingtheirwayintootherdatasciencecom-
+munities[88]. Inparticular,manyoftherecentinnovationsingenerativeAIhaveconsiderablepoten-
+tial for small data challenges, but are currently scarcely discussed within this context. Conversely,
+even though the benefits of incorporating assumptions and domain knowledge into AI approaches
+areincreasinglyrecognised(e.g.,[89]–[92]),themodellingexpertiseinthestatisticsandmathemat-
+ics community is only slowly being incorporated in current AI approaches developed in computer
+science.
+Small data applications typically also require strong domain knowledge, but domain experts often
+donothaveaccesstostate-of-the-artsmalldatamethods. Eventhoughsuchconnectionsbetween
+disciplines are increasingly recognised and needed, it also becomes apparent that they are often
+obscured by the lack of a common language [14]. This is particularly relevant with respect to small
+data methods, as none of the disciplines have developed a comprehensive small data framework.
+17
+Clarification and mutual understanding of relevant terminology could remove hurdles and be a first
+steptowardssuchasharedframeworkandlanguageacrossdisciplines.
+Toachievethis,itisessentialtoreflectonthecontributionsofthedifferentdisciplinestocurrentsmall
+datamethods. Firstly,wewillpresentrelevantsmalldataapproachesusedindifferentcommunities,
+including corresponding terminology. We begin by giving a brief overview of the contributions of
+disciplinesandmethodsdevelopedtheretothesmalldatathemessimilarity,transferanduncertainty
+outlined in Section 2.4, before going into more detail on selected specific classes of methods and
+approaches.
+4.2 Similarity
+Quantifying and incorporating similarity into modelling has traditionally been dealt with extensively
+inthestatisticscommunity. Forexample,approachesformatching[93]andre-weightingindividuals
+[94], [95], allow researchers to make different groups more comparable, or to integrate informa-
+tion from other groups when focusing on a specific subgroup [96], [97]. The concept of localised
+regression [98] allows researchers to make models, such as regression models, specific to individ-
+uals, and can be extended to more flexible nonparametric approaches [99]. Further, approaches
+forquantifyingthesimilarityoffittedmodels[100],[101]canbeleveragedforassessingthesimilar-
+ity of different groups, e.g., in models for clinical time-to-event data of rather small patient groups
+[102], [103]. Dissimilarity of groups of individuals is also considered in meta-analysis techniques,
+developed in clinical biostatistics, which allow for the estimation of overall treatment effects across
+severalclinicaltrials. Differencesatthedatasetlevelcanalsobetakenintoaccountbyre-calibrating
+existing models to local conditions [104]. Methods for taking into account heterogeneity due to dis-
+similarityhavealsobeendevelopedforpredictiontasks[105], andtherehavebeensuggestionsfor
+quantifyingsimilarityinsuchsettings[106],[107].
+Fromacomputerscienceperspective,similaritycanalsobelearnedfromdata,calledmetriclearning
+[108]–[111]. Neural networks can also be used for learning a potentially complex mapping into a
+latentspacewheresimilaritycanbequantified(e.g.,[112],[113]). Forincorporatingsimilarityatthe
+datasetlevel,so-calleddatasetmetafeaturescanbeleveragedinmeta-learningapproaches[114].
+4.3 Transfer
+Approachesforinformationtransferhavebeenprimarilydrivenbythecomputersciencecommunity
+andwillbepresentedinmoredetailinthefollowingsubsections. Suchapproachesincorporatetech-
+niquesfortransferringinformationfromtrainedmodelsviapre-trainingandfine-tuningstrategies,or
+specificallyinthecontextofLLMs,viatechniquesforretrieval-augmentedgenerationandin-context
+learning. More generally, transferring knowledge based on a representation learned from data is
+enabledbyapproachesinthefieldofrepresentationlearning. Thisincludestechniquesforfew-shot
+learning,whereamodelistrainedtoperformtaskswithverylimitedtrainingexamples.
+Another strategy to transfer information is to incorporate explicit knowledge. Corresponding ap-
+18
+Glossary: Representation learning focuses on transforming raw input data into compact,
+meaningful representations that capture the essential features and patterns within the data.
+These representations make it easier for downstream tasks, such as classification or cluster-
+ing, to identify underlying relationships. Techniques like autoencoder deep neural networks
+arecommonlyusedtouncovertheserepresentations,whichareparticularlyvaluableinsmall
+data settings. For example, in image recognition, representation learning can distil critical
+features like edges and textures into an efficient format, enabling accurate predictions with
+limitedtrainingsamples.
+Glossary: Neuro-symbolic AI combines the pattern recognition capabilities of neural net-
+workswiththestructuredreasoningofsymbolicAI.Thishybridapproachaimstoaddressthe
+limitations of purely neural or symbolic systems by integrating data-driven learning with ex-
+plicitknowledgerepresentationandreasoning. Neuro-symbolicAIenablessystemstoreason
+logicallyabouttheirpredictionswhilehandlingcomplex,unstructureddatalikeimagesortext.
+proaches are developed in the field of neuro-symbolic AI for incorporating knowledge, e.g., rep-
+resented by mathematical equations or logical systems. More generally, approaches for combin-
+ing knowledge-driven and data-driven modelling enable AI-based models to leverage such explicit
+knowledge,e.g.,encodedindifferentialequations.
+4.4 Uncertainty
+The topic of uncertainty is at the core of mathematical and applied statistics, e.g., when providing
+uncertainty of estimates in statistical models via confidence intervals. Quantifying uncertainty is
+also a crucial aspect of (network) meta-analysis [115]. The need to quantify uncertainty of model
+parameters can also be extended to modelling techniques such as differential equations that might
+be used for incorporating knowledge [116]. Beyond parameter estimation, the need to quantify
+uncertainty more broadly encompasses uncertainty in model prediction, as well as in optimisation
+strategy and hyperparameter tuning [117]–[119]. The latter is of particular relevance in AI-based
+models, which heavily rely on such hyperparameters to optimise performance. An important class
+of approaches for reducing uncertainty by learning across many datasets is provided by ensemble
+methodsandspecificallymeta-learning.
+4.5 Foundation models
+AsintroducedbrieflyinSection2,foundationmodelsandinparticularLLMshaveopenedanewera
+of generative AI, as they provide powerful representations adaptable to a wide range of tasks and
+applications[34]. Typically,theyhavemanyparameters(billionsorevenhundredsofbillions)andare
+first trained on large datasets to learn a general representation. This is referred to as pre-training,
+while subsequently adjusting the model to a task-specific, potentially a smaller target dataset of
+19
+interest, is called fine-tuning. Such a pre-training and fine-tuning strategy is a prototypical example
+of information transfer that may be helpful in small data settings, e.g., if a pre-trained model can be
+fine-tunedonthesmalltargetdatasetathand.
+To avoid the need for large amounts of manually annotated training data, foundation models are
+often trained in a self-supervised or weakly supervised fashion [120]. In self-supervised training,
+labelled samples are derived from the input data itself, e.g., by predicting a part of the input from
+other parts or by reconstructing the original input after random perturbation [121], [122]. Weak
+supervision means training on noisy or only partially labelled samples that can be generated in an
+automatedway[122].
+Foundation models are typically based on a transformer neural network architecture [123]. Trans-
+formers have originally been developed for natural language processing (NLP) tasks, such as sen-
+timent classification, text summarization, question answering or translation. They leverage the con-
+cept of self-attention to learn the patterns that underlie given input sequences, such as sentences.
+Even though their core architecture is not inherently generative, transformers can be adapted to
+generative tasks by combining them with additional components such as autoregressive decoding
+[124], where the model generates one word at a time conditional on previously generated words.
+Alternatively, they can be used within a generative adversarial setup for text generation tasks with
+transformersasgeneratoranddiscriminatorcomponents(e.g.,[125]–[128]). Thistechniqueislever-
+aged, for example, in the GPT models (generative pre-trained transformer), a series of autoregres-
+sivelanguagemodelsthatformthebackboneofChatGPT[129],[130]. Anotherprominentexample
+of a language foundation model based on transformers is BERT (bidirectional encoder representa-
+tions from transformers) [131], which has also been adapted for other applications, e.g., for protein
+structureprediction[132].
+The data that can be generated with such models is not limited to text. For example, foundation
+models and transformers have found their way into a wide range of data types and applications, in-
+cludingimage[133],[134]andaudiodata[76],[77]. Theyhaveevenbeenextendedacrossmultiple
+modalities[78]–[80]. Awell-knownexampleareimagegeneratorssuchasDALL-E[74],[75],where
+images are generated based on a text prompt entered by the user. Notably, transformer-based
+foundation models even enable the generation of tabular data, such as data collected from individ-
+uals, e.g., customers, study participants, or patients. For example, prior-data fitted networks [135]
+leverage a transformer architecture for training on a large number of synthetic tabular datasets and
+subsequently perform inference on a potentially small real-world target dataset without re-training
+[135]–[137]. Suchfoundationmodelsforsyntheticdataareparticularlyinterestingfromasmalldata
+perspective, as they leverage synthetic data as prior knowledge, which allows the minimization of
+trainingdata,inlinewithdataminimisationprinciples.
+4.6 Representation learning, in-context learning, and few-shot learning
+Many generative AI approaches can be considered a form of representation learning. This means
+that they learn to embed the input data into a meaningful representation, which captures its under-
+20
+lying patterns and structure and allows for generating new data based on the representation. Such
+representationlearningiscloselylinkedtotransferlearning,asthelearnedrepresentationallowsre-
+searchers to generalise different information sources, as well as datasets, and transfer information
+between them. For example, such a representation enables information transfer from the dataset
+used for pre-training to a target dataset of interest, or even between different data modalities (e.g.,
+inmulti-modalfoundationmodels).
+A powerful representation is also a key feature of in-context learning. In-context learning performs
+anewtaskbasedonasmallsetofexamplespresentedwithinthecontext(theprompt)atinference
+time[85]. ThispropertyisfoundinparticularinLLMs,wheredemonstrationsofthetaskareprovided
+to the model as part of the prompt (in natural language). This enables application on novel tasks
+without the need for fine-tuning the LLM. Further, it may enable use of LLMs in small data settings,
+wherein-contextlearningcanbeusedtotailorthepre-trainedLLMtothesmalldatataskathand.
+Another strategy to tailor LLMs to a specific task of interest based on a learned representation is
+retrieval-augmented generation. Here, an LLM is linked to an external data source or knowledge
+base to include additional information [138]–[140]. This enables information transfer between the
+externalknowledgebaseandtheLLMrepresentation,andthuscanalsobeastrategyforleveraging
+thepowerofLLMsforsmalldatasettings. Theideaofincludingknowledgeintoadata-drivenmodel
+such as an LLM is tightly linked to principles of neuro-symbolic AI and more generally combining
+data-drivenandknowledge-drivenmodelling,asexplainedinmoredetailbelow.
+Few-shot learning techniques can be employed when a small dataset at hand, comprising only few
+observations, has a similar format as the data used for training a large-scale model. Few-shot
+learning mimics humans’ ability to learn tasks after having seen only a few samples. The aim is
+to leverage the representation obtained from a larger dataset to aid in making predictions for a
+smaller target set [108]. Similarly to the setting of in-context learning, a few-shot approach is able
+to make predictions for a new task not seen earlier during training by reasoning only from a few
+examples(analogoustothecontext)providedduringinference. Inthiscase,thecontextisgivenby
+theobservationsofthefew-shottask.
+Few-shot learning is an attractive tool for tackling small data challenges, as it aims to optimise
+performance when training data is scarce. For example, research in few-shot learning focuses on
+how to best extract features from training data, such that the model can learn a feature space
+that also covers the subsequent few-shot tasks, i.e., aiming to find an optimal representation for
+generalisingtothefew-shottasks. Therepresentationshouldfurtherbestructuredsuchthattraining
+on the subsequent task should not lead to forgetting critical structure from previous trainings [141].
+In small data situations, few-shot methods also allow for increasing the set of examples used for
+training (with data augmentation or generative approaches) or transferring knowledge from prior
+learning [142], also across domains. For example, in cross-modal few-shot learning, large-scale
+public image databases such as ImageNet [143] are leveraged for the few-shot task of medical
+imagediagnosischallenges[144]–[147].
+21
+4.7 Meta-learning
+Meta-learning refers to a set of approaches that allow for sharing information between several (po-
+tentially small) datasets. Such information transfer can, e.g., occur via hyperparameters, neural
+networkarchitectures,orothermeta-parameters,suchasinitialvaluesofmodelparameters. Meta-
+learningapproachesthenaimtotrainamodeljointlyonseveraldatasetssothatitcanbefine-tuned
+quickly fornew tasks with fewexamples [148], [149]. Specifically, prior knowledge is extractedfrom
+a meta-dataset of several different datasets and/or tasks and subsequently leveraged to fine-tune
+on a separate target dataset. This strategy has been particularly successful for joint meta-learning
+of prediction models [148], [150]. As several datasets are incorporated at once, typically less fine-
+tuningisrequiredonthetargetdataset[151],whichisparticularlyattractivewhenthetargetdataset
+issmall.
+However, a necessary condition for meta-learning is that source and target datasets are not too
+dissimilar. Toaddressthis,meta-learningcanbecombinedwithsimilaritytechniquesforquantifying
+andincorporatingthesimilarityofdatasets,e.g.,viadatasetmeta-features,i.e.,characteristicsofthe
+target dataset. For example, auxiliary neural networks have been used for generating such dataset
+meta-featuresfortabulardatasets[114].
+4.8 Knowledge-driven modelling
+In many real-world applications, a substantial body of knowledge about the subject at hand may
+already be available, e.g., the specialist knowledge of domain experts or knowledge encoded in
+rules, systems, or mathematical equations. Knowledge-driven modelling or the incorporation of
+suchexistingpriorknowledgeintomodellingmayallowforthereductionoftheamountofextradata
+neededandisthusparticularlyattractiveforsmalldatascenarios.
+This idea has been at the core of much of the research in statistics and mathematical statistics,
+meaning that these disciplines are a key contributor to small data methodologies [1]. There has
+been a recent surge in research in these disciplines, for infusing this broad small data expertise
+into settings where big data techniques need to be adapted to small data settings. This is com-
+plemented by developments in computer science, where ideas of knowledge driven-modelling are,
+e.g., reflected in neuro-symbolic AI. This approach combines data-driven modelling by neural net-
+works with symbolic AI techniques, which rely on a symbolic representation of explicit knowledge
+and logical reasoning, e.g., leveraging expert systems, rule-based systems designed to mimic the
+decision-making capabilities of a human domain expert, logic programming, semantic web tech-
+niques,orplanningandschedulingsystems[152]–[154].
+In contrast to neural networks, which are powerful for learning complex patterns from data but are
+inherently opaque and difficult to interpret, such symbolic AI techniques can provide greater trans-
+parency, explainability, and verifiability and therefore increase trustworthiness. Neuro-symbolic AI
+aims to integrate these two paradigms and combine their respective strengths to provide hybrid
+toolsthatintegratereasoningandlearningfromdatainanefficientandtransparentway[154],[155].
+22
+Thus,theycanprovidemoreexplainableAIapproachesandallowforincorporatingpriorknowledge
+into learning [155]. These properties may be particularly desirable in sensitive applications where
+explainabilityisespeciallyimportant,suchasinprecisionmedicine,orforpolicymakingingeneral.
+As indicated, knowledge-driven modelling is a dominant paradigm in statistics and many areas
+of mathematics and physics. Here, research often builds on a strong body of prior knowledge,
+which is typically reflected in strong modelling assumptions, e.g., in statistics, when pre-specifying
+the structure of a regression model for assessing treatment effects in a clinical trial. Similarly,
+in physics or systems biology, temporal dynamics are typically modelled by differential equations
+that are defined based on domain knowledge, e.g., about the relevant interactions and regulatory
+processes to describe a small set of molecular or cellular quantities [156]. For building on such
+knowledge-drivenmodellingtools,whileallowingforadditionalflexibility,theycanbecombinedwith
+flexible, general-purpose data-driven modelling techniques that require less specific domain knowl-
+edge [157], promising tools that are more data-efficient, and at the same time more interpretable.
+For example, neural differential equations [158], [159] integrate mechanistic knowledge into neu-
+ral networks by combining them with differential equations, thus directly combining data-driven and
+knowledge-driven modelling. More generally, neural networks can be used as components to re-
+place parts of a mechanistic model, such as a system of differential equation systems that cannot
+be fully specified [160], [161]. From a technical perspective, such approaches are often based
+on the paradigm of differentiable programming, which generally allows the integration of modelling
+componentsfromdifferentcommunities,e.g.,machinelearningandscientificcomputing[162].
+When knowledge on a subject of interest is specific enough that it can be phrased in terms of a
+prior distribution for a parameter in a model, statistical modelling provides a rich set of Bayesian
+techniques for model building and evaluation [163]. Yet, when such a precise specification is not
+feasible,butknowledgestillisavailableintheformofmodels,thereareotherwaysforincorporating
+suchknowledge,e.g.,byaugmentingtheoriginaldatawithdatafromthemodel,post-filtering[164],
+domain adaptation [165], or regularization [166]. Pre-existing knowledge can also be incorporated
+based on expert input in the form of probabilistic relationships of variables [167]. Approaches for
+incorporating knowledge into machine learning have been more generally investigated and cate-
+gorisedunderthelabel“informedmachinelearning”[168],alsowithspecificdevelopmentsforother
+applicationdomains,suchasphysics[169].
+4.9 General challenges
+4.9.1 Overfitting
+Training models on limited data incurs the risk of overfitting, i.e., when the model has learned char-
+acteristicsuniquetothelimitedtrainingdataandisalignedtoocloselytoit,butdoesnotgeneralise
+to other datasets. While overfitting can also occur in large datasets, small data settings are partic-
+ularly prone to it due to the limited information available. With fewer data points, there may not be
+enoughdiversitytocoverawiderangeofsituations,makingitmorelikelythatthemodelwillpickup
+noiseorspecificpatternsthatdonotgeneralise[170,p. 108–114].
+23
+Arelatedproblemcanoccurwhentheobservationsfallintoseveralcategories,andsomecategories
+are represented more often than others. For example, in a longitudinal clinical dataset on a severe
+chronic disease, there might be more patients with comorbidities than without, i.e., the presence of
+comorbidities is overrepresented. The model is then biased towards predicting the more prevalent
+class, leadingtooverrepresentation, ormayfailtopredicttheminorityclass, leadingtounderrepre-
+sentation[171]. Insmalldatasettings,theremaysimplynotbeenoughdatapointswithinasingular
+classinordertoproperlyassessit.
+When models are based on historical data, that is, data that was collected in the past, there is no
+guarantee that this data will remain in this form over time, or is the same in other datasets [172].
+Potentiallynecessaryadaptationcouldagainbebasedonapproachesforsimilarityandtransfer.
+4.9.2 Validation
+Whendevelopingamodelonaspecificdatasetofinterest,thedataistypicallysplitintoadatasetfor
+training the model and a second dataset for testing the model [173]. Sometimes, when training the
+model,datafromthetestdatasetisaccidentallyusedduringthetrainingprocess. Thisphenomenon
+is known as data leakage. While this is an issue for both big data and small data, it tends to
+have more pronounced and unpredictable effects on small datasets compared to larger ones [174].
+Becausethedatasetsaresosmall,thiscanleadtoanoverestimationofmodelaccuracy,adecrease
+initsabilitytogeneralisetonewdata(knownasgeneralisability),andtheintroductionofbias.
+After internal validation, models need to go through external validation to see whether the results
+are generalisable to other, similar datasets [175]. In a small data scenario, this might be rather
+challenging to realise if there is no sufficient external data available, or if only dissimilar data is
+available. Assessmentandincorporationofsimilarityisthereforecrucial. Toremovehurdles,policies
+should facilitate streamlined data exchange and recommend the creation of data in accordance
+withtheFAIR(Findable, Accessible, Interoperable, Reusable)principles[176]toenablejointuseof
+similardatasetsforvalidation,oralreadyformodeldevelopment.
+5 Conclusions and future perspectives
+In an increasingly data-centric world, it is important to make full use of new technologies, such as
+AI techniques. As shown, the potential benefits are not limited to big data settings, but in particular
+small data settings can benefit and also need more attention, e.g., to adequately serve underrep-
+resented groups. Novel data analysis and modelling techniques for small data settings can then
+complementtechnicaldevelopments,suchasinassistivetechnologies,torealisetheirfullpotential.
+We have provided a variety of case studies and application settings not only to highlight the broad
+applicability of small data solutions, but also to show the potential from areas where small data
+techniques are more established, e.g., for rare diseases, to those where the potential is apparent
+buttechniquesstillneedtobeestablished.
+24
+However, a wide range of applications, each with contributions from many stakeholders and aca-
+demic disciplines, runs the risk of confusing newcomers and reinventing the wheel. To enable
+sufficient communication across disciplines, a shared language is needed as a first step towards
+a joint small data framework. This motivated us to jointly present ideas from different disciplines,
+such as the ‘average man’ from the social sciences, transfer learning from computer science, and
+thequantificationofsimilarityanduncertaintyfromstatisticsandmathematics.
+As the common themes of similarity, transfer, and uncertainty may be more generally useful for
+structuringthefieldofsmalldatamethods,wehaveprovidedanoverviewofhowthesethemesare
+approached by the different disciplines, including links between them. Hopefully, this will stimulate
+thefusionofknowledge-drivenapproaches,astraditionallyusedinstatisticsandmathematics,and
+data-drivenapproaches,asnowprominentlyestablishedwithdeeplearningtechniquesincomputer
+science. Such a fusion could be the key to unlocking AI techniques for small data settings. As
+method development in different disciplines is currently rather siloed, further investment may be
+warranted to gain commitment from different disciplines and allow for the development of common
+methods,aswellasanalysisofbarrierstointerdisciplinarysmalldataresearch.
+As an example of a specific technique that could be considered a starting point for such endeav-
+ours,foundationmodels,suchasLLMs,appeartobeaparticularlypromisingapproachforbringing
+additionalinformationtosmalldatasets. Asdescribed,thereiscurrentlyavibrantcommunitydevel-
+opingfoundationmodelsfordifferentfields,andtraining/fine-tuningapproachesthatcanincorporate
+many different types of data and models. This flexibility could also offer an avenue for contributions
+fromdifferentdisciplines, wheredisciplines focusedonknowledge-drivenapproachescould, forex-
+ample, provide knowledge in the form of synthetic data that can then be ingested by data-driven
+approaches. Ofcourse,thiswillalsodependonestablishingasharedlanguageandaforumwhere
+differentdisciplinescandevelopacommonunderstandinginordertomakethebestuseofdifferent
+expertise.
+Developments in the methods community must be accompanied by a strong push to expand its
+application across more fields. So far, many assume that fields which cannot offer big data are cut
+off from novel methods, such as AI. Therefore, it is of prime importance to raise awareness for the
+opportunities of small data. One way this could be achieved is through dedicated initiatives that
+bring together all stakeholders. This would also be critical for ensuring feedback from the specific
+application fields into the broader methodological community, for steering the small data field in the
+rightdirection,andforrealisingthefullpotentialofsmalldataineverydaylife.
+Acknowledgments
+This work was funded by the Deutsche Forschungsgemeinschaft (DFG, German Research Foun-
+dation) – Project-ID 499552394 – SFB 1597. We gratefully acknowledge support from the Royal
+Society,whichcontributedtothesuccessfulcompletionofthisresearchaspartofthedevelopment
+oftheDisabilityTechnologyreport.
+25
+References
+[1] J. J. Faraway and N. H. Augustin, “When small data beats big data,” Statistics & Probability
+Letters,vol.136,pp.142–145,2018.
+[2] H. Chahal, H. Toner, and I. Rahkovsky, “Small data’s big AI potential,” Center for Security
+andEmergingTechnology,2021.
+[3] S.Ehrenberg-Silies,“Beyondbigdata,”BürofürTechnikfolgen-AbschätzungbeimDeutschen
+Bundestag(TAB),2019.
+[4] E. Strickland, “Andrew Ng, AI minimalist: The machine-learning pioneer says small is the
+newbig,”IEEESpectrum,vol.59,no.4,pp.22–50,2022.
+[5] I. H. Rather, S. Kumar, and A. H. Gandomi, “Breaking the data barrier: A review of deep
+learning techniques for democratizing AI with small datasets,” Artificial Intelligence Review,
+vol.57,no.9,p.226,2024.
+[6] A. R. Ferguson, J. L. Nielson, M. H. Cragin, A. E. Bandrowski, and M. E. Martone, “Big
+data from small data: Data-sharing in the ‘long tail’ of neuroscience,” Nature Neuroscience,
+vol.17,no.11,pp.1442–1447,2014.
+[7] E. B. Hekler, P. Klasnja, G. Chevance, N. M. Golaszewski, D. Lewis, and I. Sim, “Why we
+needasmalldataparadigm,”BMCMedicine,vol.17,pp.1–9,2019.
+[8] S. Shilo, H. Rossman, and E. Segal, “Axes of a revolution: Challenges and promises of big
+datainhealthcare,”NatureMedicine,vol.26,no.1,pp.29–38,2020.
+[9] S.Leonelli,“Data—fromobjectstoassets,”Nature,vol.574,no.7778,pp.317–320,2019.
+[10] Z. Li, H. Yao, and F. Ma, “Learning with small data,” in International Conference on Web
+SearchandDataMining,2020,pp.884–887.
+[11] T.ShaikhinaandN.A.Khovanova,“Handlinglimiteddatasetswithneuralnetworksinmedical
+applications: A small-data approach,” Artificial Intelligence in Medicine, vol. 75, pp. 51–63,
+2017.
+[12] B.Dou,Z.Zhu,E.Merkurjev, L.Ke,L.Chen,J.Jiang, etal.,“Machinelearningmethods for
+small data challenges in molecular science,” Chemical Reviews, vol. 123, no. 13, pp. 8736–
+8780,2023.
+[13] P.Kokol,M.Kokol,andS.Zagoranski,“Machinelearningonsmallsizesamples:Asynthetic
+knowledgesynthesis,”ScienceProgress,vol.105,no.1,2022.
+[14] L. Faes, D. A. Sim, M. van Smeden, U. Held, P. M. Bossuyt, and L. M. Bachmann, “Artificial
+intelligence and statistics: Just the old wine in new wineskins?” Frontiers in Digital Health,
+vol.4,p.833912,2022.
+[15] J. Bornschein, F. Visin, and S. Osindero, “Small data, big decisions: Model selection in the
+small-dataregime,”2020.arXiv:2009.12583,pre-published.
+[16] L. Manovich, “Trending: The promises and the challenges of big social data,” in Debates in
+theDigitalHumanities,UniversityofMinnesotaPress,2012,pp.460–475.
+26
+[17] D.BoydandK.Crawford,“Criticalquestionsforbigdata:Provocationsforacultural,techno-
+logical,andscholarlyphenomenon,”Information,CommunicationandSociety,vol.15,no.5,
+pp.662–679,2012.
+[18] V. Mayer-Schönberger and K. Cukier, Big Data: A Revolution That Will Transform How We
+Live,WorkandThink.London:Murray,2013,242pp.
+[19] T. H. Davenport and J. Dyché, “Big data in big companies,” International Institute for Analyt-
+ics,2013.[Online].Available:https://www.iqpc.com/media/7863/11710.pdf.
+[20] M. Hillyer. “Here’s how technology has changed the world since 2000,” World Economic
+Forum.(2020),[Online].Available:https://www.weforum.org/stories/2020/11/heres-
+how-technology-has-changed-and-changed-us-over-the-past-20-years/.
+[21] E.A.Ashley,“Towardsprecisionmedicine,”NatureReviewsGenetics,vol.17,no.9,pp.507–
+522,2016.
+[22] J. Lee, E. Lapira, B. Bagheri, and H.-a. Kao, “Recent advances and trends in predictive
+manufacturingsystemsinbigdataenvironment,”ManufacturingLetters,vol.1,no.1,pp.38–
+41,2013.
+[23] J.Stirnemann,N.Belmatoug,F.Camou,C.Serratrice,R.Froissart,C.Caillaud,etal.,“Are-
+viewofGaucherdiseasepathophysiology,clinicalpresentationandtreatments,”International
+JournalofMolecularSciences,vol.18,no.2,p.441,2017.
+[24] H.C.Andersson,J.Charrow,P.Kaplan,P.Mistry,G.M.Pastores,A.Prakesh-Cheng,etal.,
+“Individualization of long-term enzyme replacement therapy for Gaucher disease,” Genetics
+inMedicine,vol.7,no.2,pp.105–110,2005.
+[25] J. Treviranus, “The value of being different,” in International Web for All Conference, 2019,
+pp.1–7.
+[26] D. Tafreshi, “Adolphe Quetelet and the legacy of the “average man” in psychology.,” History
+ofPsychology,vol.25,no.1,p.34,2022.
+[27] G. Marsden, A. Maunder, and M. Parker, “People are people, but technology is not technol-
+ogy,” Philosophical Transactions of the Royal Society A: Mathematical, Physical and Engi-
+neeringSciences,vol.366,no.1881,pp.3795–3804,2008.
+[28] G. J. Downey, Closed Captioning: Subtitling, Stenography, and the Digital Convergence of
+TextwithTelevision.Baltimore:JohnsHopkinsUniversityPress,2008,387pp.
+[29] E.SteinfeldandJ.Maisel,UniversalDesign:CreatingInclusiveEnvironments.Hoboken,NJ:
+JohnWiley&Sons,Inc,2012,382pp.
+[30] WebAccessibility:AFoundationforResearch.SpringerLondon,2019.
+[31] A. Pradhan, K. Mehta, and L. Findlater, ““Accessibility came by accident”: Use of voice-
+controlledintelligentpersonalassistantsbypeoplewithdisabilities,”inConferenceonHuman
+FactorsinComputingSystems,AssociationforComputingMachinery,2018,pp.1–13.
+[32] K.EllisandG.Goggin,“Disability,locativemedia,andcomplexubiquity,”inUbiquitousCom-
+puting,ComplexityandCulture,Routledge,2015,pp.272–287.
+27
+[33] O.Vinyals,C.Blundell,T.Lillicrap,K.Kavukcuoglu,andD.Wierstra,“Matchingnetworksfor
+one shot learning,” in Advances in Neural Information Processing Systems, 2016. [Online].
+Available:https://proceedings.neurips.cc/paper_files/paper/2016/hash/90e1357
+833654983612fb05e3ec9148c-Abstract.html.
+[34] R. Bommasani, D. A. Hudson, E. Adeli, R. Altman, S. Arora, S. von Arx, et al., “On the
+opportunitiesandrisksoffoundationmodels,”2022.arXiv:2108.07258,pre-published.
+[35] “Back to the building blocks: A path toward secure and measurable software,” White House
+OfficeoftheNationalCyberDirector,2024.[Online].Available:https://bidenwhitehouse
+.archives.gov/wp-content/uploads/2024/02/Final-ONCD-Technical-Report.pdf.
+[36] Department of Homeland Security, “The case for memory safety roadmaps,” Cybersecurity
+Infrastructure andSecurity Agency, 2023.[Online]. Available: https://www.cisa.gov/sit
+es/default/files/2023-12/The-Case-for-Memory-Safe-Roadmaps-508c.pdf.
+[37] R. Khoury, A. R. Avila, J. Brunelle, and B. M. Camara, “How secure is code generated by
+ChatGPT?,”2023.arXiv:2304.09655,pre-published.
+[38] H. Stewart and J. Jürjens, “Data security and consumer trust in FinTech innovation in ger-
+many,”Information&ComputerSecurity,vol.26,no.1,pp.109–128,2018.
+[39] A. Torno, D. R. Metzler, and V. Torno, “Robo-what?, robo-why?, robo-how? – a systematic
+literaturereviewofrobo-advice,”PacificAsiaConferenceonInformationSystems,2021.[On-
+line].Available:https://aisel.aisnet.org/pacis2021/92.
+[40] L. Wewege, J. Lee, and M. C. Thomsett, “Disruptions and digital banking trends,” Journal of
+AppliedFinance&Banking,vol.10,no.6,pp.1–2,2020.[Online].Available:https://idea
+s.repec.org//a/spt/apfiba/v10y2020i6f10_6_2.html.
+[41] L. Piwek, D. A. Ellis, S. Andrews, and A. Joinson, “The rise of consumer health wearables:
+Promisesandbarriers,”PLoSmedicine,vol.13,no.2,2016.
+[42] HandbookofMixedMethodsinSocialandBehavioralResearch.ThousandOaks,California:
+SAGEPublications,2003.
+[43] A.RamachandranandA.Karuppiah,“Asurveyonrecentadvancesinwearablefalldetection
+systems,”BioMedResearchInternational,vol.2020,pp.1–17,2020.
+[44] R.Igual,C.Medrano,andI.Plaza,“Challenges,issuesandtrendsinfalldetectionsystems,”
+BioMedicalEngineeringOnLine,vol.12,no.1,p.66,2013.
+[45] C.Medrano,I.Plaza,R.Igual,A.Sánchez,andM.Castro,“Theeffectofpersonalizationon
+smartphone-basedfalldetectors,”Sensors,vol.16,no.1,p.117,2016.
+[46] L.Martínez-Villaseñor,H.Ponce,J.Brieva,E.Moya-Albor,J.Núñez-Martínez,andC.Peñafort-
+Asturiano,“UP-Falldetectiondataset:Amultimodalapproach,”Sensors,vol.19,no.9,p.1988,
+2019.
+[47] E.HüllermeierandW.Waegeman,“Aleatoricandepistemicuncertaintyinmachinelearning:
+An introduction to concepts and methods,” Machine Learning, vol. 110, no. 3, pp. 457–506,
+2021.
+28
+[48] National Research Council (US), Toward Precision Medicine: Building a Knowledge Net-
+workforBiomedicalResearchandaNewTaxonomyofDisease.Washington(DC):National
+Academies Press (US), 2011. [Online]. Available: http://www.ncbi.nlm.nih.gov/books
+/NBK91503/.
+[49] F.Ciardiello,D.Arnold,P.G.Casali,A.Cervantes,J.-Y.Douillard,A.Eggermont,etal.,“De-
+liveringprecisionmedicineinoncologytodayandinfuture—thepromiseandchallengesof
+personalised cancer medicine: A position paper by the european society for medical oncol-
+ogy(ESMO),”AnnalsofOncology,vol.25,no.9,pp.1673–1678,2014.
+[50] I.Villalón-García,M.Álvarez-Córdoba,J.M.Suárez-Rivero,S.Povea-Cabello,M.Talaverón-
+Rey,A.Suárez-Carrillo,etal.,“Precisionmedicineinrarediseases,”Diseases,vol.8,no.4,
+p.42,2020.
+[51] J. Banerjee, J. N. Taroni, R. J. Allaway, D. V. Prasad, J. Guinney, and C. Greene, “Machine
+learninginraredisease,”NatureMethods,vol.20,no.6,pp.803–814,2023.
+[52] S. McDonald, F. Quinn, R. Vieira, N. O’Brien, M. White, D. W. Johnston, et al., “The state of
+the art and future opportunities for using longitudinal n-of-1 methods in health behaviour re-
+search:Asystematicliteratureoverview,”HealthPsychologyReview,vol.11,no.4,pp.307–
+323,2017.
+[53] R. Mirza, S. Punja, S. Vohra, and G. Guyatt, “The history and development of n-of-1 trials,”
+JournaloftheRoyalSocietyofMedicine,vol.110,no.8,pp.330–340,2017.
+[54] N. B. Gabler, N. Duan, S. Vohra, and R. L. Kravitz, “N-of-1 trials in the medical literature: A
+systematicreview,”MedicalCare,vol.49,no.8,pp.761–768,2011.
+[55] D. R. Zucker, R. Ruthazer, and C. H. Schmid, “Individual (n-of-1) trials can be combined to
+givepopulationcomparativetreatmenteffectestimates:Methodologicconsiderations,”Jour-
+nalofClinicalEpidemiology,vol.63,no.12,pp.1312–1323,2010.
+[56] K. T. Schmidt, C. H. Chau, D. K. Price, and W. D. Figg, “Precision oncology medicine: The
+clinical relevance of patient-specific biomarkers used to optimize cancer treatment,” The
+JournalofClinicalPharmacology,vol.56,no.12,pp.1484–1499,2016.
+[57] M. J. Walker, J. Bourke, and K. Hutchison, “Evidence for personalised medicine: Mecha-
+nisms,correlation,andnew kindsofblackbox,”TheoreticalMedicineandBioethics,vol.40,
+pp.103–121,2019.
+[58] A.AamodtandE.Plaza,“Case-basedreasoning:Foundationalissues,methodologicalvari-
+ations,andsystemapproaches,”AICommunications,vol.7,no.1,pp.39–59,1994.
+[59] C.Dussart,P.Pommier,V.Siranyan,G.Grelaud,andS.Dussart,“Optimizingclinicalpractice
+with case-based reasoning approach,” Journal of Evaluation in Clinical Practice, vol. 14,
+no.5,pp.718–720,2008.
+[60] T. W. Liao, Z. Zhang, and C. R. Mount, “Similarity measures for retrieval in case-based rea-
+soningsystems,”AppliedArtificialIntelligence,vol.12,no.4,pp.267–288,1998.
+29
+[61] R. Weber, “Fuzzy set theory and uncertainty in case-based reasoning,” Engineering Intelli-
+gentSystemsforElectricalEngineeringandCommunications,vol.14,no.3,p.121,2007.
+[62] N. Löw, J. Hesser, and M. Blessing, “Multiple retrieval case-based reasoning for incomplete
+datasets,”JournalofBiomedicalInformatics,vol.92,p.103127,2019.
+[63] D. W. Aha, M. Molineaux, and G. Sukthankar, “Case-based reasoning in transfer learning,”
+inCase-BasedReasoningResearchandDevelopment,Springer,2009,pp.29–44.
+[64] A.Tricoli,N.Nasiri,andS.De,“Wearableandminiaturizedsensortechnologiesforpersonal-
+ized and preventive medicine,” Advanced Functional Materials, vol. 27, no. 15, p. 1605271,
+2017.
+[65] L.Lu,J.Zhang,Y.Xie,F.Gao,S.Xu,X.Wu,etal.,“Wearablehealthdevicesinhealthcare:
+Narrativesystematicreview,”JMIRmHealthanduHealth,vol.8,no.11,e18907,2020.
+[66] S. Feng, M. ki, A. Dhir, and H. Salmela, “How self-tracking and the quantified self promote
+health and well-being: Systematic review,” Journal of Medical Internet Research, vol. 23,
+no.9,e25171,2021.
+[67] E. Covi, E. Donati, X. Liang, D. Kappel, H. Heidari, M. Payvand, et al., “Adaptive extreme
+edgecomputingforwearabledevices,”FrontiersinNeuroscience,vol.15,2021.
+[68] X. Wang, Y. Han, V. C. M. Leung, D. Niyato, X. Yan, and X. Chen, “Convergence of edge
+computing and deep learning: A comprehensive survey,” IEEE Communications Surveys &
+Tutorials,vol.22,no.2,pp.869–904,2020.
+[69] A.Ferrari,D.Micucci,M.Mobilio,andP.Napoletano,“Deeplearningandmodelpersonaliza-
+tioninsensor-basedhumanactivityrecognition,”JournalofReliableIntelligentEnvironments,
+vol.9,no.1,pp.27–39,2023.
+[70] European Parliament, Regulation (EU) 2016/679 of the European Parliament and of the
+Council of 27 April 2016 on the protection of natural persons with regard to the processing
+of personal data and on the free movement of such data, and repealing Directive 95/46/EC
+(GeneralDataProtectionRegulation),2016.[Online].Available:https://eur-lex.europa
+.eu/legal-content/EN/TXT/?uri=CELEX%3A32016R0679.
+[71] J. Dexe, U. Franke, K. Söderlund, N. van Berkel, R. H. Jensen, N. Lepinkäinen, et al., “Ex-
+plaining automated decision-making: A multinational study of the GDPR right to meaningful
+information,”TheGenevaPapersonRiskandInsurance-IssuesandPractice,vol.47,no.3,
+pp.669–697,2022.
+[72] I. Sanchez-Rola, M. Dell’Amico, P. Kotzias, D. Balzarotti, L. Bilge, P.-A. Vervier, et al., “Can
+I opt out yet?: GDPR and the global illusion of cookie control,” in ACM Asia Conference on
+ComputerandCommunicationsSecurity,2019,pp.340–351.
+[73] M. Kosinski, D. Stillwell, and T. Graepel, “Private traits and attributes are predictable from
+digitalrecordsofhumanbehavior,”NationalAcademyofSciences,vol.110,no.15,pp.5802–
+5805,2013.
+30
+[74] A. Ramesh, M. Pavlov, G. Goh, S. Gray, C. Voss, A. Radford, et al., “Zero-shot text-to-
+imagegeneration,”inInternationalConferenceonMachineLearning,2021,pp.8821–8831.
+[Online].Available:https://proceedings.mlr.press/v139/ramesh21a.html.
+[75] A.Ramesh,P.Dhariwal,A.Nichol,C.Chu,andM.Chen,“Hierarchicaltext-conditionalimage
+generationwithCLIPlatents,”2022.arXiv:2204.06125,pre-published.
+[76] Y.-S.HuangandY.-H.Yang,“Popmusictransformer:Beat-basedmodelingandgenerationof
+expressive pop piano compositions,” in ACM International Conference on Multimedia, 2020,
+pp.1180–1188.
+[77] D. Yang, J. Tian, X. Tan, R. Huang, S. Liu, X. Chang, et al., “UniAudio: An audio foundation
+modeltowarduniversalaudiogeneration,”2024.arXiv:2310.00704,pre-published.
+[78] C.Wu,S.Yin,W.Qi,X.Wang,Z.Tang,andN.Duan,“VisualChatGPT:Talking,drawingand
+editingwithvisualfoundationmodels,”2023.arXiv:2303.04671,pre-published.
+[79] H. Xu, Q. Ye, M. Yan, Y. Shi, J. Ye, Y. Xu, et al., “mPLUG-2: A modularized multi-modal
+foundation model across text, image and video,” in International Conference on Machine
+Learning, 2023, pp. 38728–38748. [Online]. Available: https://proceedings.mlr.press
+/v202/xu23s.html.
+[80] H.-K. Ko, G. Park, H. Jeon, J. Jo, J. Kim, and J. Seo, “Large-scale text-to-image genera-
+tion models for visual artists’creative works,” in International Conference on IntelligentUser
+Interfaces,2023,pp.919–933.
+[81] W.HouandZ.Ji,“AssessingGPT-4forcelltypeannotationinsingle-cellRNA-seqanalysis,”
+NatureMethods,pp.1–4,2024.
+[82] D.Peng,L.Zheng,D.Liu,C.Han,X.Wang,Y.Yang,etal.,“Large-languagemodelsfacilitate
+discoveryofthemolecularsignaturesregulatingsleepandactivity,”NatureCommunications,
+vol.15,no.1,p.3685,2024.
+[83] J. Chang and J. C. Ye, “Bidirectional generation of structure and properties through a single
+molecularfoundationmodel,”NatureCommunications,vol.15,no.1,p.2323,2024.
+[84] N. McKenna, T. Li, L. Cheng, M. J. Hosseini, M. Johnson, and M. Steedman, “Sources of
+hallucination by large language models on inference tasks,” 2023. arXiv: 2305.14552, pre-
+published.
+[85] T.B.Brown,B.Mann,N.Ryder,M.Subbiah,J.Kaplan,P.Dhariwal,etal.,“Languagemodels
+arefew-shotlearners,”2020.arXiv:2005.14165,pre-published.
+[86] C. J. E. Metcalf and J. Lessler, “Opportunities and challenges in modeling emerging infec-
+tiousdiseases,”Science,vol.357,no.6347,pp.149–152,2017.
+[87] T. Alarcón, H. M. Byrne, and P. K. Maini, “A cellular automaton model for tumour growth in
+inhomogeneous environment,” Journal of Theoretical Biology, vol. 225, no. 2, pp. 257–274,
+2003.
+31
+[88] S. Friedrich, G. Antes, S. Behr, H. Binder, W. Brannath, F. Dumpert, et al., “Is there a role
+for statistics in artificial intelligence?” Advances in Data Analysis and Classification, vol. 16,
+pp.823–846,2022.
+[89] J. N. Kather, N. Ghaffari Laleh, S. Foersch, and D. Truhn, “Medical domain knowledge in
+domain-agnosticgenerativeAI,”npjDigitalMedicine,vol.5,no.1,pp.1–5,2022.
+[90] T. Dash, S. Chitlangia, A. Ahuja, and A. Srinivasan, “A review of some techniques for in-
+clusion of domain-knowledge into deep neural networks,” Scientific Reports, vol. 12, no. 1,
+p.1040,2022.
+[91] J.Nie,J.Jiang,Y.Li,H.Wang,S.Ercisli,andL.Lv,“Dataanddomainknowledgedual-driven
+artificial intelligence: Survey, applications, and challenges,” Expert Systems, vol. 42, no. 1,
+e13425,2025.
+[92] J.C.M.Darwin,G.Mendel,R.Franklin,J.Watson,etal.,“Poolingthestrengthsofdataand
+models,”NatureBiomedicalEngineering,vol.5,no.4,pp.291–292,2021.
+[93] P.C.Austin,“Theperformanceofdifferentpropensityscoremethodsforestimatingmarginal
+oddsratios,”StatisticsinMedicine,vol.26,no.16,pp.3078–3094,2007.
+[94] P.C.AustinandE.A.Stuart,“Movingtowardsbestpracticewhenusinginverseprobabilityof
+treatment weighting (IPTW) using the propensity score to estimate causal treatment effects
+inobservationalstudies,”StatisticsinMedicine,vol.34,no.28,pp.3661–3679,2015.
+[95] O.Borgan,L.Goldstein,andB.Langholz,“Methodsfortheanalysisofsampledcohortdata
+in the cox proportional hazards model,” Annals of Statistics, vol. 23, no. 5, pp. 1749–1778,
+1995.
+[96] V. Weyer and H. Binder, “A weighting approach for judging the effect of patient strata on
+high-dimensionalriskpredictionsignatures,”BMCBioinformatics,vol.16,p.294,2015.
+[97] J. Richter, K. Madjar, and J. Rahnenführer, “Model-based optimization of subgroup weights
+forsurvivalanalysis,”Bioinformatics,vol.35,no.14,pp.i484–i491,2019.
+[98] C.Loader,LocalRegressionandLikelihood.NewYork,NY:SpringerNewYork,1999,290pp.
+[99] R.J.Samworth,“Optimalweightednearestneighbourclassifiers,”AnnalsofStatistics,vol.40,
+no.5,pp.2733–2763,2012.
+[100] W. Liu, F. Bretz, A. J. Hayter, and H. P. Wynn, “Assessing nonsuperiority, noninferiority, or
+equivalencewhencomparingtworegressionmodelsoverarestrictedcovariateregion,”Bio-
+metrics,vol.65,no.4,pp.1279–1287,2009.
+[101] H.Dette,K.Möllenhoff,S.Volgushev,andF.Bretz,“Equivalenceofregressioncurves,”Jour-
+naloftheAmericanStatisticalAssociation,vol.113,no.522,pp.711–729,2018.
+[102] N. Binder, K. Möllenhoff, A. Sigle, and H. Dette, “Similarity of competing risks models with
+constantintensitiesinanapplicationtoclinicalhealthcarepathwaysinvolvingprostatecancer
+surgery,”StatisticsinMedicine,vol.41,no.19,pp.3804–3819,2022.
+32
+[103] N. Binder, H. Dette, J. Franz, D. Zöller, R. Suarez-Ibarrola, C. Gratzke, et al., “Data mining
+in urology: Understanding real-world treatment pathways for lower urinary tract systems via
+explorationofbigdata,”EuropeanUrologyFocus,vol.8,no.2,pp.391–393,2022.
+[104] K. G. M. Moons, A. P. Kengne, D. E. Grobbee, P. Royston, Y. Vergouwe, D. G. Altman, et
+al.,“Riskpredictionmodels:II.externalvalidation,modelupdating,andimpactassessment,”
+Heart,vol.98,no.9,pp.691–698,2012.
+[105] V. M. T. de Jong, K. G. M. Moons, M. J. C. Eijkemans, R. D. Riley, and T. P. A. Debray,
+“Developing more generalizable prediction models from pooled studies and large clustered
+datasets,”StatisticsinMedicine,vol.40,no.15,pp.3533–3559,2021.
+[106] G. R. Klein, J. B. Greenhouse, B. D. Stein, and H. J. Seltman, “Characterizing patterns of
+care using administrative claims data: ADHD treatment in children,” Health Services and
+OutcomesResearchMethodology,vol.11,no.3,pp.115–133,2011.
+[107] Z. Huang, W. Dong, H. Duan, and H. Li, “Similarity measure between patient traces for clin-
+ical pathway analysis: Problem, method, and applications,” IEEE Journal of Biomedical and
+HealthInformatics,vol.18,no.1,pp.4–14,2014.
+[108] W. Ren, Y. Tang, Q. Sun, C. Zhao, and Q.-L. Han, “Visual semantic segmentation based
+on few/zero-shot learning: An overview,” IEEE/CAA Journal of Automatica Sinica, pp. 1–21,
+2023.
+[109] B. M. Mathisen, A. Aamodt, K. Bach, and H. Langseth, “Learning similarity measures from
+data,”ProgressinArtificialIntelligence,vol.9,no.2,pp.129–143,2020.
+[110] J. Wu, H. Shen, Y.-D. Li, Z.-B. Xiao, M.-Y. Lu, and C.-L. Wang, “Learning a hybrid similarity
+measureforimageretrieval,”PatternRecognition,vol.46,no.11,pp.2927–2939,2013.
+[111] K. Liu, A. Bellet, and F. Sha, “Similarity learning for high-dimensional sparse data,” in In-
+ternational Conference on Artificial Intelligence and Statistics, 2015, pp. 653–662. [Online].
+Available:https://proceedings.mlr.press/v38/liu15.html.
+[112] C. H. Grønbech, M. F. Vording, P. Timshel, C. K. Sønderby, T. H. Pers, and O. Winther, “sc-
+VAE:Variationalauto-encodersforsingle-cellgeneexpressiondata,”Bioinformatics,vol.36,
+no.16,pp.4415–4422,2020.
+[113] M. Hackenberg, P. Harms, M. Pfaffenlehner, A. Pechmann, J. Kirschner, T. Schmidt, et al.,
+“Deep dynamic modeling with just two time points: Can we still allow for individual trajecto-
+ries?”BiometricalJournal,2022.
+[114] H. S. Jomaa, L. Schmidt-Thieme, and J. Grabocka, “Dataset2Vec: Learning dataset meta-
+features,”DataMiningandKnowledgeDiscovery,vol.35,no.3,pp.964–985,2021.
+[115] A. Nikolakopoulou, D. Mavridis, and G. Salanti, “Planning future studies based on the preci-
+sion of network meta-analysis results,” Statistics in Medicine, vol. 35, no. 7, pp. 978–1000,
+2016.
+[116] C. Kreutz, “An easy and efficient approach for testing identifiability,” Bioinformatics, vol. 34,
+no.11,pp.1913–1921,2018.
+33
+[117] J. K. H. Franke, G. Köhler, N. Awad, and F. Hutter, “Neural architecture evolution in deep
+reinforcementlearningforcontinuouscontrol,”2020.arXiv:1910.12824,pre-published.
+[118] F. Wenzel, J. Snoek, D. Tran, and R. Jenatton, “Hyperparameter ensembles for robust-
+nessanduncertaintyquantification,”inAdvancesinNeuralInformationProcessingSystems,
+2020,pp. 6514–6527.[Online]. Available:https://papers.neurips.cc/paper_files/pa
+per/2020/hash/481fbfa59da2581098e841b7afc122f1-Abstract.html.
+[119] B. Bischl, M. Binder, M. Lang, T. Pielok, J. Richter, S. Coors, et al., “Hyperparameter op-
+timization: Foundations, algorithms, best practices, and open challenges,” Wiley Interdisci-
+plinaryReviews:DataMiningandKnowledgeDiscovery,vol.13,no.2,e1484,2023.
+[120] Y.Yuan,“Onthepoweroffoundationmodels,”inInternationalConferenceonMachineLearn-
+ing,2023,pp.40519–40530.[Online].Available:https://proceedings.mlr.press/v202
+/yuan23b.html.
+[121] D. Hendrycks, M. Mazeika, S. Kadavath, and D. Song, “Using self-supervised learning can
+improve model robustness and uncertainty,” in Advances in Neural Information Processing
+Systems, 2019. [Online]. Available: https://proceedings.neurips.cc/paper_files/pa
+per/2019/file/a2b15837edac15df90721968986f7f8e-Paper.pdf.
+[122] H. Wang, T. Fu, Y. Du, W. Gao, K. Huang, Z. Liu, et al., “Scientific discovery in the age of
+artificialintelligence,”Nature,vol.620,no.7972,pp.47–60,2023.
+[123] A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. N. Gomez, et al., “Attention
+is all you need,” in Advances in Neural Information Processing Systems, 2017. [Online].
+Available:https://proceedings.neurips.cc/paper_files/paper/2017/hash/3f5ee24
+3547dee91fbd053c1c4a845aa-Abstract.html.
+[124] M.Stern,N.Shazeer,andJ.Uszkoreit,“Blockwiseparalleldecodingfordeepautoregressive
+models,” in Advances in Neural Information Processing Systems, 2018. [Online]. Available:
+https://proceedings.neurips.cc/paper_files/paper/2018/hash/c4127b9194fe856
+2c64dc0f5bf2c93bc-Abstract.html.
+[125] L. Zhao, Z. Zhang, T. Chen, D. Metaxas, and H. Zhang, “Improved transformer for high-
+resolution gans,” in Advances in Neural Information Processing Systems, 2021, pp. 18367–
+18380.[Online].Available:https://proceedings.neurips.cc/paper/2021/hash/98dce
+83da57b0395e163467c9dae521b-Abstract.html.
+[126] Y. Jiang, S. Chang, and Z. Wang, “TransGAN: Two pure transformers can make one strong
+GAN,andthatcanscaleup,”inAdvancesinNeuralInformationProcessingSystems,2021,
+pp.14745–14758.[Online].Available:https://proceedings.neurips.cc/paper/2021/h
+ash/7c220a2091c26a7f5e9f1cfb099511e3-Abstract.html.
+[127] C.-H. Lin, E. Yumer, O. Wang, E. Shechtman, and S. Lucey, “ST-GAN: Spatial transformer
+generative adversarial networks for image compositing,” in IEEE/CVF Conference on Com-
+puterVisionandPatternRecognition,2018,pp.9455–9464.
+34
+[128] X. Li, V. Metsis, H. Wang, and A. H. H. Ngu, “TTS-GAN: A transformer-based time-series
+generative adversarial network,” in Artificial Intelligence in Medicine, Springer International
+Publishing,2022,pp.133–143.
+[129] A. Radford, J. Wu, R. Child, D. Luan, D. Amodei, and I. Sutskever, “Language models are
+unsupervised multitask learners,” OpenAI Blog, 2019. [Online]. Available: https://cdn.op
+enai.com/better-language-models/language_models_are_unsupervised_multitask
+_learners.pdf.
+[130] T.Wu,S.He,J.Liu,S.Sun,K.Liu,Q.-L.Han,etal.,“AbriefoverviewofChatGPT:Thehis-
+tory, status quo and potential future development,” IEEE/CAA Journal of Automatica Sinica,
+vol.10,no.5,pp.1122–1136,2023.
+[131] J. Devlin, M.-W. Chang, K. Lee, and K. Toutanova, “BERT: Pre-training of deep bidirec-
+tionaltransformersforlanguageunderstanding,”inConferenceoftheNorthAmericanChap-
+ter of the Association for Computational Linguistics: Human Language Technologies, 2019,
+pp.4171–4186.
+[132] R. Chowdhury, N. Bouatta, S. Biswas, C. Floristean, A. Kharkar, K. Roy, et al., “Single-
+sequence protein structure prediction using a language model and deep learning,” Nature
+Biotechnology,vol.40,no.11,pp.1617–1623,2022.
+[133] K. Han, Y. Wang, H. Chen, X. Chen, J. Guo, Z. Liu, et al., “A survey on vision transformer,”
+IEEETransactionsonPatternAnalysisandMachineIntelligence,vol.45,no.1,pp.87–110,
+2022.
+[134] S.Khan,M.Naseer,M.Hayat,S.W.Zamir,F.S.Khan,andM.Shah,“Transformersinvision:
+Asurvey,”ACMComputingSurveys(CSUR),vol.54,pp.1–41,10s2022.
+[135] S. Müller, N. Hollmann, S. P. Arango, J. Grabocka, and F. Hutter, “Transformers can do
+Bayesianinference,”inInternationalConferenceonLearningRepresentation,2022.[Online].
+Available:https://openreview.net/pdf?id=KSugKcbNf9.
+[136] N.Hollmann,S.Müller,K.Eggensperger,andF.Hutter,“TabPFN:Atransformerthatsolves
+small tabular classification problems in a second,” in International Conference on Learning
+Representations, 2022. [Online]. Available: https://openreview.net/forum?id=cp5Pvc
+I6w8_.
+[137] N. Hollmann, S. Müller, L. Purucker, A. Krishnakumar, M. Körfer, S. B. Hoo, et al., “Accu-
+rate predictions on small data with a tabular foundation model,” Nature, vol. 637, no. 8045,
+pp.319–326,2025.
+[138] P.Lewis,E.Perez,A.Piktus,F.Petroni,V.Karpukhin,N.Goyal,etal.,“Retrieval-augmented
+generation for knowledge-intensive NLP tasks,” in Advances in Neural Information Process-
+ing Systems, 2020, pp. 9459–9474. [Online]. Available: https://proceedings.neurips.c
+c/paper/2020/hash/6b493230205f780e1bc26945df7481e5-Abstract.html.
+[139] Y. Gao, Y. Xiong, X. Gao, K. Jia, J. Pan, Y. Bi, et al., “Retrieval-augmented generation for
+largelanguagemodels:Asurvey,”2024.arXiv:2312.10997,pre-published.
+35
+[140] J. Chen, H. Lin, X. Han, and L. Sun, “Benchmarking large language models in retrieval-
+augmented generation,” Conference on Artificial Intelligence, vol. 38, no. 16, pp. 17754–
+17762,2024.
+[141] L. Wang, Q. Li, Y. Zhong, and J. Zhu, “Few-shot continual learning: A brain-inspired ap-
+proach,”2021.arXiv:2104.09034,pre-published.
+[142] X.Sun,B.Wang,Z.Wang,H.Li,H.Li,andK.Fu,“Researchprogressonfew-shotlearning
+for remote sensing image interpretation,” IEEE Journal of Selected Topics in Applied Earth
+ObservationsandRemoteSensing,vol.14,pp.2387–2402,2021.
+[143] J.Deng,W. Dong,R.Socher, L.-J.Li,K. Li,and L.Fei-Fei,“ImageNet: Alarge-scalehierar-
+chical image database,” in IEEE Conference on Computer Vision and Pattern Recognition,
+IEEE,2009,pp.248–255.
+[144] X.Wang,Y.Peng,L.Lu,Z.Lu,M.Bagheri,andR.M.Summers,“ChestX-ray8:Hospital-scale
+chestx-raydatabaseandbenchmarksonweakly-supervisedclassificationandlocalizationof
+commonthoraxdiseases,”inIEEEConferenceonComputerVisionandPatternRecognition,
+IEEE,2017.
+[145] F. Shakeri, M. Boudiaf, S. Mohammadi, I. Sheth, M. Havaei, I. B. Ayed, et al., “FHIST: A
+benchmark for few-shot classification ofhistological images,” 2022. arXiv: 2206.00092, pre-
+published.
+[146] N.C.F.Codella,D.Gutman,M.E.Celebi,B.Helba,M.A.Marchetti,S.W.Dusza,etal.,“Skin
+lesionanalysistowardmelanomadetection:Achallengeatthe2017internationalsymposium
+on biomedical imaging (ISBI), hosted by the international skin imaging collaboration (ISIC),”
+inIEEEInternationalSymposiumonBiomedicalImaging,2018,pp.168–172.
+[147] M. Samiei, T. Würfl, T. Deleu, M. Weiss, F. Dutil, T. Fevens, et al., “The TCGA meta-dataset
+clinicalbenchmark,”2019.arXiv:1910.08636,pre-published.
+[148] C.Finn,P.Abbeel,andS.Levine,“Model-agnosticmeta-learningforfastadaptationofdeep
+networks,”inInternationalConferenceonMachineLearning,2017,pp.1126–1135.[Online].
+Available:http://proceedings.mlr.press/v70/finn17a.html.
+[149] I. Loshchilov and F. Hutter, “Decoupled Weight Decay Regularization,” presented at the In-
+ternationalConferenceonLearningRepresentations,2018.[Online].Available:https://op
+enreview.net/forum?id=Bkg6RiCqY7.
+[150] J. Vanschoren, “Meta-learning,” in Automated Machine Learning: Methods, Systems, Chal-
+lenges,Cham:SpringerInternationalPublishing,2019,pp.35–61.
+[151] S. Jadon and A. Jadon, “An overview of deep learning architectures in few-shot learning
+domain,”2023.arXiv:2008.06365,pre-published.
+[152] P.HitzlerandM.K.Sarker,Neuro-SymbolicArtificialIntelligence:TheStateoftheArt.Ams-
+terdamBerlinWashington,DC:IOSPress,2022,408pp.
+[153] P.Hitzler,A.Eberhart,M.Ebrahimi,M.K.Sarker,andL.Zhou,“Neuro-symbolicapproaches
+inartificialintelligence,”NationalScienceReview,vol.9,no.6,nwac035,2022.
+36
+[154] A. d’Avila Garcez and L. C. Lamb, “Neurosymbolic AI: The 3rd wave,” Artificial Intelligence
+Review,vol.56,no.11,pp.12387–12406,2023.
+[155] A. Sheth, K. Roy, and M. Gaur, “Neurosymbolic artificial intelligence (why, what, and how),”
+IEEEIntelligentSystems,vol.38,no.03,pp.56–62,2023.
+[156] F. J. Bruggeman and H. V. Westerhoff, “The nature of systems biology,” Trends in Microbiol-
+ogy,vol.15,no.1,pp.45–50,2007.
+[157] R. Li, L. Li, Y. Xu, and J. Yang, “Machine learning meets omics: Applications and perspec-
+tives,”BriefingsinBioinformatics,vol.23,no.1,pp.1–22,2022.
+[158] R. T. Q. Chen, Y. Rubanova, J. Bettencourt, and D. Duvenaud, “Neural ordinary differential
+equations,”2019.arXiv:1806.07366,pre-published.
+[159] G. Köber, S. Pooseh, H. Engen, A. Chmitorz, M. Kampa, A. Schick, et al., “Individualizing
+deep dynamic models for psychological resilience data,” Scientific Reports, vol. 12, no. 1,
+p.8061,2022.
+[160] C.Rackauckas,Y.Ma,J.Martensen,C.Warner,K.Zubov,R.Supekar,etal.,“Universaldif-
+ferentialequationsforscientificmachinelearning,”2021.arXiv:2001.04385,pre-published.
+[161] J. H. Lagergren, J. T. Nardini, R. E. Baker, M. J. Simpson, and K. B. Flores, “Biologically-
+informedneuralnetworksguidemechanisticmodelingfromsparseexperimentaldata,”PLOS
+ComputationalBiology,vol.16,no.12,e1008462,2020.
+[162] M.Innes,A.Edelman,K.Fischer,C.Rackauckas,E.Saba,V.B.Shah,etal.,“Adifferentiable
+programmingsystemtobridgemachinelearningandscientificcomputing,”2019.arXiv:190
+7.07587,pre-published.
+[163] R.vandeSchoot,S.Depaoli,R.King,B.Kramer,K.Märtens,M.G.Tadesse,etal.,“Bayesian
+statisticsandmodelling,”NatureReviewsMethodsPrimers,vol.1,no.1,pp.1–26,2021.
+[164] Y. Ba, G. Zhao, and A. Kadambi, “Blending diverse physical priors with neural networks,”
+2019.arXiv:1910.00201,pre-published.
+[165] J. A. Gongora, H. P. Marshall, C. Hase, T. Bradberry, and S. Ballerini, “Applications of deep
+learning and domain adaptation to the study of mountain snow,” American Geophysical
+Union, vol. 2019, 2019. [Online]. Available: https://ui.adsabs.harvard.edu/abs/20
+19AGUFM.H33L2110G.
+[166] M.Raissi,“Deephiddenphysicsmodels:Deeplearningofnonlinearpartialdifferentialequa-
+tions,”JournalofMachineLearningResearch,vol.19,p.25,2018.[Online].Available:http
+s://www.jmlr.org/papers/volume19/18-046/18-046.pdf.
+[167] L. von Rueden, S. Houben, K. Cvejoski, C. Bauckhage, and N. Piatkowski, “Informed pre-
+trainingonpriorknowledge,”2022.arXiv:2205.11433,pre-published.
+[168] L.vonRueden,S.Mayer,K.Beckh,B.Georgiev,S.Giesselbach,R.Heese,etal.,“Informed
+machine learning – a taxonomy and survey of integrating prior knowledge into learning sys-
+tems,” IEEE Transactions on Knowledge and Data Engineering, vol. 35, no. 1, pp. 614–633,
+2023.
+37
+[169] G. E. Karniadakis, I. G. Kevrekidis, L. Lu, P. Perdikaris, S. Wang, and L. Yang, “Physics-
+informedmachinelearning,”NatureReviewsPhysics,vol.3,no.6,pp.422–440,2021.
+[170] I. Goodfellow, Y. Bengio, and A. Courville, Deep Learning. MIT Press, 2016. [Online]. Avail-
+able:http://www.deeplearningbook.org.
+[171] M.M.RahmanandD.N.Davis,“Addressingtheclassimbalanceprobleminmedicaldatasets,”
+InternationalJournalofMachineLearningandComputing,pp.224–228,2013.
+[172] S. Vollmer, B. A. Mateen, G. Bohner, F. J. Király, R. Ghani, P. Jonsson, et al., “Machine
+learning and artificial intelligence research for patient benefit: 20 critical questions on trans-
+parency,replicability,ethics,andeffectiveness,”BMJ,vol.368,2020.
+[173] M. K. Uçar, M. Nour, H. Sindi, K. Polat, et al., “The effect of training and testing process on
+machinelearninginbiomedicaldatasets,”MathematicalProblemsinEngineering,vol.2020,
+2020.
+[174] M. Rosenblatt, L. Tejavibulya, R. Jiang, S. Noble, and D. Scheinost, “Data leakage inflates
+prediction performance in connectome-based machine learning models,” Nature Communi-
+cations,vol.15,no.1,p.1829,2024.
+[175] Q.-Y.Li,B.-H.Tang,Y.-E.Wu,B.-F.Yao,W.Zhang,Y.Zheng,etal.,“Machinelearning:Anew
+approach for dose individualization,” Clinical Pharmacology & Therapeutics, vol. 115, no. 4,
+pp.727–744,2024.
+[176] M.D.Wilkinson,M.Dumontier,I.J.Aalbersberg,G.Appleton,M.Axton,A.Baak,etal.,“The
+FAIR guiding principles for scientific data management and stewardship,” Scientific Data,
+vol.3,no.1,pp.1–9,2016.
+38

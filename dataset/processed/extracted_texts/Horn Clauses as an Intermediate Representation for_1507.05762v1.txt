@@ -1,0 +1,707 @@
+5102
+luJ
+12
+]LP.sc[
+1v26750.7051:viXra
+ToAppearinTheoryandPracticeofLogicProgramming (TPLP),ProceedingsofICLP2015 1
+Horn Clauses as an Intermediate Representation
+for Program Analysis and Transformation∗
+GRAEME GANGE
+Department of Computing and Information Systems
+The University of Melbourne, Victoria 3010, Australia
+(e-mail: gkgange@unimelb.edu.au)
+JORGE A. NAVAS
+NASA Ames Research Center, Moffet Field CA
+(e-mail: jorge.a.navaslaserna@nasa.gov)
+PETER SCHACHTE, HARALD SØNDERGAARD, PETER J. STUCKEY
+Department of Computing and Information Systems
+The University of Melbourne, Victoria 3010, Australia
+(e-mail: {schachte,harald,pstuckey}@unimelb.edu.au)
+Abstract
+Many recent analyses for conventional imperative programs begin by transforming programs
+intologic programs, capitalising on existing LPanalyses and simple LP semantics. Wepropose
+using logic programs as an intermediate program representation throughout the compilation
+process. With restrictions ensuring determinism and single-modedness, a logic program can
+easily be transformed to machine language or other low-level language, while maintaining the
+simplesemanticsthatmakesit suitableasalanguage forprogram analysisandtransformation.
+We present a simple LP language that enforces determinism and single-modedness, and show
+that it makes a convenientprogram representation for analysis and transformation.
+KEYWORDS:compilers,controlflowgraphs,intermediaterepresentation,programanalysisand
+transformation, SSA
+1 Introduction
+Most compilers, regardless of the programming language(s) and paradigms supported,
+usesomeIntermediateRepresentation (IR)betweenparsingtheinputprogramandemit-
+ting the object code. Use of an IR has the significant advantage of allowing a compiler
+to target multiple CPU architectures, and even multiple programming languages, with-
+out duplicating the bulk of the compiler, which operates exclusively onthe IR. Overthe
+courseofthecompilation,thisrepresentationwillbeanalysedfordifferentcharacteristics
+andtransformedin varioussemantics-preservingways,in preparationforefficient object
+code generation. Thus it is important for an IR to make program analysis and transfor-
+mationassimpleandconvenientaspossible.Three-address code hasbeenapopularform
+∗This work was supported by the Australian Research Council through Discovery Project Grant
+DP140102194.
+2 G. Gange et al.
+Prog → Func∗ Head → Name(Var∗)
+Func → Head Block Block∗ Prim → Var =Val
+Block → BlockID :Prim∗BlockExit | Var =Val ⊙Val
+BlockExit → returnVal | Name(Val∗)
+| if Test BlockID BlockID Test → Val <Val
+| gotoBlockID Val → Var |Const
+Fig. 1. A three-address code language
+Block → BlockID :Phi∗Prim∗BlockExit
+Phi → Var =ϕ(Var∗)
+Fig. 2. Changes to three-address language to produce SSA
+forthispurposeformanyyears.Figure1presentsathree-addresscodelanguage.Herewe
+assumewearegivenName,thesetofallpossiblefunctionnames;Var,thesetofvariable
+names;andConst,thesetofallprimitiveconstantvalues.WeletPrimval =Var∪Const.
+To simplify exposition, we let ⊙ stand for all primitive arithmetic and logical operators,
+and < stand for all primitive binary comparison operators.
+Eachbasic block ofafunctionisasequenceoffunctioncallsandprimitiveinstructions,
+ending with a control transfer to another basic block. Once control enters a basic block,
+it is guaranteed to reach its end (unless some exceptional circumstance arises). This
+guarantee makes analysis of each basic block straightforward.
+Apopularvariantofthree-addresscodeisStaticSingleAssignment (SSA)form(Alpern et al. 1988;
+Cytron et al. 1991; Lattner and Adve 2004). SSA was proposed as a way to generalize
+value numbering,atechniqueusedtoremoveredundantcomputation.InSSAform,each
+variable is assigned at most once in its scope. Where a variable would be reassigned, a
+new variable is instead introduced. Since each variable is only assigned once, it is not
+necessary to consider the program point when referring to a variable, only the function
+it appears in. This makes many analyses simpler and more efficient, because a single
+abstract value can be associated with each variable name in a function, and the set of
+variable names of interest is limited and easily determined.
+A basic block with multiple predecessors presents a complication for SSA: a variable
+use in such a block may refer to definitions of those variables in any of the predecessor
+blocks. To give such a variable a single definition, SSA introduces the concept of a ϕ
+node: the variable is assigned the result of a “fake” function that takes as input the
+version of the variable from each predecessor block. A block with multiple predecessors
+will contain as many ϕ nodes as it has variables with alternative definitions in earlier
+blocks. Figure 2 presents the changes to three-address syntax needed to transform to
+SSA: eachblock may begin with ϕ nodes.Consider,forexample, the C code to compute
+the greatest common divisor shown in Figure 3 (left side). This code can be converted
+into SSA form as shown in Figure 3 (right).
+Severalresearchershavepresentedprogramanalysesthatworkbyfirsttransformingan
+imperative source program (e.g., Spoto et al. (2010) and Albert et al. (2012)), or Java
+bytecode(e.g.,Benton and Fischer (2007))intoanabstractformbasedontheconstructs
+oflogicprogramming,andthenanalysingthisresult.Others(e.g.,Whaley et al. (2005))
+haveusedlogicprogramstorepresentprogramanalyses.Insomecasesthisbenefitsfrom
+Relational IR 3
+int gcd(int a, int b) {
+entry: tail:
+while (b != 0) {
+br header returna1
+int t = b;
+b = a % t;
+body:
+a = t;
+t0=b1 header:
+}
+b0=a1mod t0 b1=ϕ(b,b0)
+return a;
+a0=t0 a1=ϕ(a,a0)
+}
+br header if (b16=0) body tail
+Fig. 3. The gcd function in C (left) and LLVM-style SSA form (right)
+existing logic program analyses, but the greater benefit derives from the simple, tradi-
+tional TP semantics for logic programs, and hence simpler and more powerful analyses.
+Logic programs have none of the limitations of SSA form that we detail below.
+In this paper we propose representing an imperative source program as a logic pro-
+gram throughout the compilation process. It may be surprising to think of compiling C
+programs by translation to Prolog, rather than the reverse, but we show that placing a
+few limitations on the generated logic programs leaves low-level programs suitable for
+high-levelanalysisandtransformation,andalsoforfinaltranslationtomachinelanguage.
+In Section 2 we discuss problematic aspects of SSA and related forms, together with
+suggestedwaysofaddressingtheproblem.InSection3weintroduce“LogicProgramming
+(LP) Form” and we show how to translate a three-address code to it. In Sections 4 and
+5 we give example analyses for LP form. In Section 6 we discuss related work. Finally,
+Section 7 reviews what has been achieved with the proposed LP form, and concludes.
+2 SSA and Allied Forms: Problems and Solutions
+While SSA form does simplify a number of common
+program analyses, it has significant limitations that
+entry:
+interfere with others. Most of these problems can be
+if (x<0) left right
+solved, at the cost of further complicating the SSA
+form.Inthissectionwewillconsidertheselimitations.
+left: right:
+y0=−x y1=x
+2.1 Path obliviousness
+z0=x z1=−x
+Basicblocks do notindicate the constraintsthat must br tail br tail
+be satisfied for them to be entered. These constraints
+appear in predecessor blocks. In a forward analysis,
+tail:
+this means constraints must be propagated from con-
+y2=ϕ(y0,y1)
+ditional branches to their target blocks. A backward
+z2=ϕ(z0,z1)
+analysis is clumsier: it must peek backward into each
+t=z2−1
+predecessor block to see what conditions hold.
+u=y2 mod t
+Consider, for example, forward interval analysis of
+the code shown in Figure 4. The blocks left and right
+bothreferto “x”sothereis nostraightforwardwayto
+Fig. 4. SSA and branching
+4 G. Gange et al.
+separate the reasoning that needs to be done under different assumptions about x. The
+next section considers the use of different names for x in the separate branches, which
+wouldhelp in this example. However,as it stands, we cannot assignnon-trivialintervals
+to y2 and z2 in the absence of path constraints that record how control reached tail.
+To solve the path obliviousness problem, Ballance et al. (1990) have proposed the use
+of Gated Single-Assignment form (GSA). SSA’s ϕ nodes are replaced by different types
+of gating functions. These capture the control conditions that determine which of the
+various definitions that reach the node should provide its value. One gating function,
+γ, is in essence an if-then-else function. For example we might translate ϕ(x1,x2) to
+γ(P,x1,x2), where P is some branch condition from elsewhere in the program. Flow of
+definitions inside loops are managedby additional gating functions to handle initial and
+loop-carriedvalues (µ nodes) as well as loop-exiting values (η nodes).
+This form makes information flow more transparent, but it is extremely complex,
+comparedto SSA. The form we propose has greater uniformity, as it does not introduce
+avarietyofdifferentmechanismsforthe“joining”or“merging”ofinformation.Moreover,
+GSA, as SSA, does not readily lend itself to backward analysis, as discussed next.
+2.2 Forward bias
+The ϕ nodes of SSA are convenient when analysing each basic block, as they clearly
+indicatewhichvariablesofwhichotherblocksprovidevaluestothevariablesoftheblock.
+However, this assumes forward analysis. In this direction, where execution paths join,
+each variable with alternative sources is indicated by a ϕ node specifying the different
+names for each alternative, and because each variable is only defined once per function,
+it naturally receives only one abstract value during forward analysis.
+Fora backwardanalysis,however,there isnonode dualtoa ϕto indicatethe alterna-
+tive destinations that may use each variable following a branch instruction. (While the
+branch indicates alternative destinations, it does not specify the variables that may be
+usedthere).Importantly,thealternativedestinationsforabranchallhavethesamename
+for each variable.In a backwardanalysis,then, different blocks of a function may deter-
+mine different abstract values for the same variable name: the virtue of SSA that each
+variable has a unique definition in each function does not apply to backwardanalysis.
+ConsiderFigure 4 andsuppose we wish to verify whether the divisionis safe, i.e. that
+t cannot be 0. In a fixed-width integer context (as we assume here), it is convenient to
+use “wrapped intervals” (Gange et al. 2015) as an abstractdomain, as these allow us to
+capture both intervals and complemented intervals. Reasoning backwards, we find the
+following sufficient safety condition for the tail block: z0,z1 6∈ [1,1]. For x, this then
+translates to x6∈[1,1] (for left), and x6∈[−1,−1] (for right). This allows us to conclude
+that all will be well if x6∈[−1,1], but that is insufficient to prove safety.
+Toaddressthisproblem,Ananian (1999)hasproposedaddingσ nodestoSSAformto
+createStatic Single Information (SSI) form.Where SSAformhasaϕnode atthe topof
+eachblock indicating where the value of eachvariablein the block comes from,SSI adds
+a σ node at the bottom of each branching block indicating where each variable’s value
+goes to. This permits reasoning in both directions and provides (variable) names for all
+relevantpieces ofinformation.However,itdoesnotaddressanumberofotherproblems,
+as we now explain.
+Relational IR 5
+2.3 Lack of ϕ node compositionality
+Foranon-relationalvalueanalysis,whichassignseachvariableasingleabstractvalue,aϕ
+nodeconvenientlyspecifiesthattheabstractvalueforavariableisthejoinoftheabstract
+values of the input variables. For a relational analysis, however,a ϕ node does not have
+such a simple interpretation. Consider an octagon analysis (Min´e 2006) of the program
+snippetinFigure4.Forthetwotransitionstothetailblock,wehavex−z0=0∧y0+z0=
+0andx−y1=0∧y1+z1=0.Or,assumingSSI,wehavex0≥0∧x0−z0=0∧y0+z0=0
+and x1<0∧x1−y1=0∧y1+z1=0. In either case,there is no meaningful (abstract)
+interpretation of the statement y2 = ϕ(y0,y1) in isolation that does not throw away
+most of these relationships. In particular, we lose the fact that y2+z2 = 0. The two ϕ
+nodes must be treated together to prevent this loss of precision. What is really needed
+is a single node that conveys the information of (y2,z2)=ϕ((y0,z0),(y1,z1)).
+SSIdoesnothelpwiththisproblemandinfacttheremediesdiscussedsofarappearto
+address particular symptoms rather than a more fundamental cause which, in our view,
+is an insufficiently abstract view of name management.
+2.4 Name management
+The ϕ and σ nodes of SSA and SSI form require special treatment during analysis. A
+ϕ node v = ϕ(v1,v2,...), cannot be treated like a function call, because the variables
+mentionedcomefromalternativeblocks—thatis,theycannotexistatthesametime.For
+example, when analysing a basic block beginning with v6=ϕ(v3,v5), we must find the
+analysis results for the two predecessorblocks, rename v3 to v6 in the first and v5 to v6
+in the second, and then find the join of the two and project away other variables in the
+originatingblocks.Inessence,allϕ(andσ)nodesinablockmustbetreatedsimilarlyto
+thewayafunctioncallistreated:informationaboutactualparametersmustberenamed
+to match formal parameters (or vice-versa for backward analysis), information about
+variables not conveyed in the call must be projected away, and the join of all incoming
+calls must be taken.
+Appel (1992) and Kelsey (1995) observed similarities between SSA and continuation-
+passing style in functional programming. Later Appel (1998) observed that SSA is in a
+sense equivalent to functional programming without continuations, and he presented a
+transformationfromSSAtofunctionalprogram(FP)form.Thisformmitigatesthename
+management problem, using parameter passing to serve the purpose of ϕ nodes: where
+SSA form would have a block with a ϕ node for each variable defined in predecessor
+blocks, the FP form has a function with a parameter for each variable defined outside.
+Likewise, FP form uses function calls in place of jumps between blocks. Since SSA form
+supports function call and return in addition to ϕ nodes and jumps between blocks,
+FP form is notably simpler than SSA. So while analyses for SSA form are often only
+intra-procedural,analyses for FP form will naturally be inter-procedural as well.
+Appel’snote“SSAisfunctionalprogramming”(Appel 1998)conveysthesepointsvery
+clearly.But a corollaryis that functional form also preservesforwardbias. We share the
+enthusiasm for a declarative formalism but we also point out that a relational view can
+offer greater flexibility than a functional view.
+6 G. Gange et al.
+Prog → Proc∗ Goal → ⊙(Val∗;Var∗)
+Proc → Clause∗ | <(Val,Val;)
+Clause → Head ←Goal∗ | Name(Val∗;Var∗)
+Head → Name(Var∗;Var∗) Val → Var |Const
+Fig. 5. An LP form language
+2.5 Input/output asymmetry
+While each input parameter of a function has a unique name apparent in the function
+header,the return value cannot be determined without scanning all the function blocks.
+In fact, there may be many alternative variables returned by different blocks. This is
+inconvenient for any summarising analysis, which ultimately must project the analysis
+result for the function onto the function inputs and output. For example, in Figure 3,
+one knows that a1 and b1 are input to the function (this is omitted from the figure to
+savespace),but mustexamineallthe blocks ofthe functionto seethat a1is the output.
+Infact, a function with morethan one returnmayhave manydifferent output variables.
+These problems can be avoided by first transforming the function replacing all return
+statements with jumps to a distinguished new final block containing a ϕ node joining
+all return values into a new variable, which is then returned. If the function header is
+augmentedtorecordthisfinalvariablenamealongwiththefunctionparameters,itwould
+not be necessary to scan all blocks to find the unique return variable. This extra step is
+not difficult, but is unnecessary for LP form.
+Arelatedinconvenienceisthefactthatfunctionscanonlyreturnasingleresult.If,for
+example, two functions compute different values through similar computations, and the
+two are often called together, it may be desirable to fuse the two functions into a single
+one that returns two values. Of course, this may be done by returning a tuple, but in
+this case a structure is returned instead of two separate values, which may thwartmany
+analyses. This can be solved by allowing functions to return multiple separate values.
+2.6 Implicit variable scoping
+Whiletheϕnodesofablockindicatesomeofthedefinedvariablesonentrytotheblock,
+they donotindicate allofthem. Infact,ablockwith onlyonepredecessorwillgenerally
+not have any ϕ nodes at all, and so no indication at all of which variables are defined
+on entry. Neither does SSA form provide any indication of which variables of one block
+are communicated to its successors.For analyses whose efficiency depend on minimising
+the number of variables under consideration, knowing which variables enter and leave a
+block would allow irrelevant variables to be projected away.
+3 LP Form
+SSA is a small refinement of three-address code. We argue that a larger refinement, to a
+restrictedform of logic programming,provides the single-assignmentbenefits of SSA for
+ease of analysis while avoiding the problems outlined in Section 2.
+Relational IR 7
+Figure 5 presents a restricted Logic Programming language suitable for representing
+low-levelprograms.1 In addition to fitting this grammar,LP form requires that for each
+guard (i.e., <) in each clause, there must be at least one other clause for the same
+procedure that is identical up to that guard, followed by the complementary guard, and
+any two clauses for a procedure must contain complementary guards, up to which they
+2
+areidentical. Furthermore,allclauseheadsforagivenproceduremustbeidentical.This
+tames the nondeterminism of logic programming, ensuring that exactly one clause will
+succeed for each set of inputs, and makes analysis of procedures with multiple clauses
+simpler.Thatis,onlyoneclauseofeachprocedurewillbeexecuted,andnobacktracking
+will be necessary.
+This form also tames the multiple modes of a logic programby explicitly dividing the
+argumentsintoinputsfollowedbyoutputs,separatedbyasemicolon.Incallstoprimitive
+as well as user defined procedures, an input argument must be either a variable or a
+constantvalue,andanoutputargumentmustbe avariable.Allparametersinprocedure
+heads must be variables. This ensures that variables are free until they are assigned,
+after which they are ground. As in Mercury (Somogyi et al. 1996), no dereferencing is
+ever needed.
+LP form differs from SSA form in the following ways:
+• Insteadofblocks,LPformhasclauses;aprocedurecomprisesone ormoreclauses,
+exactly one of which will be executed.
+• Insteadofconditionalconstructsandcomputedjumps,LPformhasguards,instruc-
+tions that can either succeed or fail, determining which clause will be executed.
+• It replaces unconditional branches with procedure calls, and loops with recursion.
+• All registers (variables) in a clause are either parameters to that procedure or are
+defined in that clause, thus it has no need for ϕ nodes.
+• It uses parameters to pass data out of, as well as into, procedures, thus it has no
+return instruction.
+• Itexplicitlymodelschangestodatastructuresandinput/outputoperations,allow-
+ing pure functions to be recognisedandoptimised.SSA coulddo this, but, atleast
+in the LLVM implementation, does not.
+• Where SSA form has four different control transfer operations, plus ϕ nodes, LP
+form has only procedure calls and multiple clauses, so LP form is simpler.
+Onedisadvantageofthisrepresentationisthatthecommoninitialpartsoftheclausesare
+duplicatedfor eachclause,leading to duplicated analysiseffort.Ourcurrentpreliminary
+implementationfactorsouttheduplicatedcode,representingaprocedurebodyasatree,
+with a sequence of goals at each node, and optionally a guard and two child nodes.
+This not only avoids duplicated analysis work, but also ensures that the clauses remain
+mutually exclusive and exhaustive through any programtransformations.
+1 Details such as handling of type information and symbol tables are outside the scope of this paper.
+Ourhandlingofthemissimilartothatofother IRs.
+2 Note that, inLPformconstructed directlyfromthree-address code, therewillbe atmostoneguard
+inaclause;however,inliningcanproduceclauseswithmultipleguards.
+8 G. Gange et al.
+v=vars(B0,..B n) hB0,v,idi⇒hB 0 ′,C0,θ0i ··· hB n ,v,idi⇒hB n ′,C n ,θ ni
+H =f(p,st;ret,stθ0) H0=f B0 (v,st;ret,stθ0)) ··· H n=f Bn (v,st;ret,stθ n))
+f(p)B0,...B n =⇒ (H ←H0)∧(H0←B 0 ′)∧C0∧···∧(H n ←B n ′)∧C n
+hΠ,v,θi⇒hΦ,C1,θ′i hΞ,v,θ′i⇒hΘ,C2,θ′′i r∈Primval newvar v′ θ′ =θ[v7→v′]
+hΠ;Ξ,v,θi⇒hΦ∧Θ,C1∧C2,θ′′i hv=r,v,θi⇒hv′=rθ,true,θ′i
+newvar v′ θ′ =θ[v7→v′] a′=aθ newvar v′,st′ θ′ =θ[v7→v′,st7→st′] a′=aθ
+hv=⊙(a),v,θi⇒h⊙(a′;v′),true,θ′i hv=g(a),v,θi⇒hg(a′,st;v′,st′),true,θ′i
+newvar st′ θ′ =θ[st7→st′]
+hreturnv,v,θi⇒hret=vθ,true,θi hgotoB,v,θi⇒hf B(v,st;ret,st′),true,θ′i
+newproc ν C
+t
+=ν(v,st;ret,st′)←v
+i
+<v j∧f
+Bt
+(v,st;ret,st′)
+C
+f
+=ν(v,st;ret,st′)←¬v
+i
+<v j∧f
+Bf
+(v,st;ret,st′)
+hif (v
+i
+<v j)B
+t
+B
+f
+,v,θi⇒hν(v,st;ret,st′),C t∧C
+f
+,θi
+Fig. 6. Translation from three-address code to LP form
+3.1 Translation to LP form
+Tosimplify exposition,we assumethe sourceprogramispresentedinthree-addresscode
+form.3 We denote by v a sequence of the 0 or more variables comprising the set v.
+To track side-effects, our translation uses the distinguished variable st to denote the
+stateofthecomputation,includingtheheapandinput/outputstate.Thisensuresopera-
+tionsthatmayhaveside-effectswillbeexecutedinthecorrectorder,whileallowingpure
+operations to be reordered. We also use ret to hold the value returned by the function.
+Figure6presentsourtranslation.HerethenotationΦ=⇒Ψindicatesthatthefunction
+definition Φ is transformed to the clauses Ψ. In the remaining transforms, the notation
+hΦ,v,θi⇒hΨ,C,θ′ i means that, in the context of substitution θ and variables v, state-
+ments Φ are translated to goals Ψ, with extra clauses C and resulting substitution θ′ .
+Thesubstitutionsareusedtoensureeachvariablehasasingleassignment,andtheextra
+clausesareforauxiliarypredicatesgeneratedtoimplementconditionals.We letnewvarx
+and newproc x specify that x is a fresh variable or procedure name, respectively.
+Asindicatedbythefirsttransform,eachbasicblockistransformedintoasingleclause
+procedure, with one extra clause to invoke the first. For simplicity, each of these clauses
+takesallthe variablesappearinginthe function, plus the statevariable st asinputs, and
+thereturnvaluevariableretandthestate,asmodifiedbytheblockbody,asoutputs.The
+final transform produces a two-clause procedure for each conditional primitive. Because
+these transforms are idempotent and non-overlapping,confluence is assured.
+Figure7showsthegcdfunctionofFigure3translatedtoLPform.Thetransformation
+israthersimple-minded,threadingeveryvariabletoeachclause.However,theneededness
+analysis described in Section 5 allows the removal of unnecessary variable threading,
+3 BecausevariablesinLPformarescopedtoasingleclause,ratherthantoalltheblocksofafunction
+body,translationfromSSAisactuallyless convenient thanfromthree-addresscode.
+Relational IR 9
+gcd(a,b,st;ret,st′)←gcd (a,b,t,st;ret,st′)
+header
+gcd
+header
+(a,b,t,st;ret,st′)←gcdν(a,b,t,st;ret,st′)
+gcdν(a,b,t,st;ret,st′)←b6=0∧gcd
+body
+(a,b,t,st;ret,st′)
+gcdν(a,b,t,st;ret,st′)←b=0∧gcd
+tail
+(a,b′,t,st;ret,st′)
+gcd (a,b,t,st;ret,st′)←t′=b∧mod(a,t′;b′)∧a′=t′∧gcd (a′,b′,t′,st;ret,st′)
+body header
+gcd (a,b,t,st;ret,st)←ret=a
+tail
+Fig. 7. The gcd program translated to LP form
+gcd(a,b;ret)←b6=0∧mod(a,b;b′)∧gcd(b,b′;ret)
+gcd(a,b;ret)←b=0∧ret=a
+Fig. 8. The translated gcd program of Figure 7 after simplification
+and a simple inlining heuristic can remove unnecessary procedures. Figure 8 shows the
+translated gcd programafter these transformations.
+3.2 Translation from LP form to machine language
+TheMercuryproject(Somogyi et al. 1996)hasdemonstratedthatlogicprogramscanbe
+translatedtoveryefficientexecutablecodebytrackingpredicatedeterminismatcompile-
+timeandeliminatingvariabledereferencing.LPformlikewiseeschewsunificationof“logic
+variables” and the need for dereferencing, but goes further, eliminating nondeterminism
+and the need for choicepoints and a machine register to track them. Since LP form is
+designedtobesuitableforanylanguage,itdoesnotprovideitsownmemorymanagement
+solution, and so does not need a register to control memory allocation.
+Infact,LPformissurprisinglyclosetothemachinelanguageofcommoncomputers.Its
+ability to expressoperations with multiple outputs better reflects CPUcapabilities than
+thefunctionalrestrictionimposedbycommonthree-addresslanguages.Forexample,the
+x86architecture’sIDIVinstructionproducesbothaquotientandaremainderinseparate
+registers,andnumerousinstructionsmodifyflagsinadditiontootherregisters;theseare
+better abstracted in LP form than in three-address code.
+As mentioned above,our implementation actually factorsout the commoninitial part
+ofalltheclausesforaprocedure.Thatis,eachprocedureisrepresentedasabody,which
+isalistofgoalsoptionallyendingwithatesttoselectbetweentwo(ormore)subsequent
+bodies. This representation closely matches the structure of the code to be generated:
+some straight-line code ending with a conditional branch to one alternative and a fall
+through to the other.
+The end of each clause is also easily translated through last call optimisation: if the
+final operation in a clause is a procedure call, that call is changed to an unconditional
+branchtothedestination.Ifitisaprimitive,itisfollowedbyareturninstruction.Other
+than this, machine code generationfor LP form is similar to SSA or three-address code.
+10 G. Gange et al.
+p(x,u)←x<0∧negate(x,y)∧z =x∧p1(y,z,u)
+p(x,u)←x≥0∧y=x∧negate(x,z)∧p1(y,z,u)
+p1(y,z,u)←sub(z,1,t)∧mod(y,t,u)
+Fig. 9. Example of Fig 4 in LP form
+4 LP form analysis and transformation
+InthissectionweshowthatLPformdoesnotsharetheflawsdiscussedinSection2,and
+discussits other benefits. Consideragainthe example programofFigure4.After simpli-
+fication through inlining of simple procedures and elimination of unnecessary dataflow,
+this would be expressed in LP form as shown in Figure 9.4 When performing a forward
+interval analysis on this code, the x < 0 condition in the first clause gives the interval
+[−∞,−1] for x, [1,∞] for y, and [−∞,−1] for z prior to the call to p1. For the second
+clause, we infer [0,∞] for x, [0,∞] for y, and [−∞,0] for z. Computing the join of the
+abstract states for the two calls to p1, we have y ∈ [0,∞]∧z ∈ [−∞,0], so analysing
+p1 gives us y ∈ [0,∞]∧z ∈ [−∞,0]∧t ∈ [−∞,−1] on reaching the first call to mod,
+allowing us to certify the safety of the mod operation. The path-awareness of LP form
+gives us stronger analysis results without any extra effort.
+Since eachLP formclause is logicallyan unorderedconjunction, it is equally adept at
+forwardandbackwardanalysis.ConsiderabackwardanalysisoftheprogramofFigure9
+todeterminethesafetyofmodulo(division)operations.Thiswillstartwiththeconstraint
+t 6= 0 at the end of p1, which implies z 6= 1 on entry to p1. Analysing the first clause
+of p backwards from its call to p1, we deduce z 6= 1∨x 6= 1∨y 6= −1 before reaching
+the x < 0 goal. Handling this goal gives us x < 0 → z 6= 1∨x 6= 1∨y 6= −1 ≡ True,
+meaning we have nothing else to prove for that clause. Turning to the second clause of
+p, we derive x ≥ 0 → z 6= 1∨x 6= −1∨y 6= −1 ≡ True, and again the proof obligation
+is discharged.
+RelationalanalysesdonotpresentanydifficultyforLPform,becauseithasnoartificial
+ϕ nodes to separately combine alternative versions of variables.This is handled through
+conventional procedure calls, where the least upper bound is used to combine results
+for multiple calls. Consider an octagon analysis (Min´e 2006) of Figure 9. Much like the
+analysis discussed in Section 2.3, analysis derives y +x = 0∧z −x = 0∧y +z = 0
+leadingto the callto p1 fromclause 1,andy−x=0∧x+z =0∧y+z =0 forclause 2.
+Procedurecallsarehandledbyprojectingtheabstractstateontothevariablesappearing
+in the call, and computing the least upper bound of the states. In this case, this yields
+y+z =0⊔y+z =0≡y+z =0,preservingthestrongresultsobtainedforbothclauses.
+The other issues for SSA and FP form discussed in Section 2 are trivially addressed
+by LP form. Lacking ϕ nodes, LP form has no issue with name management. Because
+LP form is relational, it has no issue with input/output asymmetry. And because each
+clause has its own scope, the scope of each variable is obvious.
+4 Since the definition of p1 is so simple, in practice it would be inlined, but that would only give us
+strongeranalysisresults.
+Relational IR 11
+5 Specialised analyses for LP form
+Liveness analysis is a standard program analysis used to determine for each program
+point the set of variables whose values may be needed later. The single assignment
+property enjoyed by SSA, FP, and LP forms somewhat simplifies this analysis: because
+each variable is assigned only once, it is not necessary to take account of variable re-
+assignment.Within a single block (clause) of SSA (LP form) code, this is easily done by
+traversing the statements backward, noting the first encountered use of each variable,
+whichwillbethelastuseonforwardexecution,andeachvariableassignment,whichwill
+bethedefinitionofthatvariable.Tohandlelivenessforawholefunction,analysisresults
+must be propagated backward between blocks.
+Deadcode eliminationis atransformationto removeunnecessarycode.Any codethat
+assignsonly dead variablescan be removed,but doing so may removevariable uses, and
+produce stronger results for liveness analysis. Thus it is beneficial to perform liveness
+analysisand deadcode eliminationsimultaneously.If this is extended beyond individual
+functionstoanentiremoduleorevenawholeprogram,moredeadcodecanbeeliminated.
+We present a two-phase interprocedural neededness analysis, which combines liveness
+and dead code elimination. The first phase computes neededness dependencies, conjunc-
+tions of implications of the form x → y signifying that if variable x is needed on com-
+pletion of a goal, then y is needed on entry. This analysis can be performed bottom-up
+over a module’s call graph, one strongly connected component (SCC) at a time, which
+ensures that all callers of a given procedure, except those in the same SCC, will be ana-
+lyzed before the procedure itself. A fixed point must be computed for each SCC, but no
+iterationis necessarybetweenSCCs. This reduces the number ofproceduresanalyzedin
+each fixed point iteration, since SCCs are typically fairly small.
+Formally,wedefineourneedednessdependencydomainN asthesetofconjunctionsof
+variable→variableimplications,whereanindividualimplicationx→y indicatesthatif
+variablexisneeded,thensoisy.We letS denotethe Goal −→N neededness dictionary
+function space, specifying neededness dependencies for many procedures. We define our
+analysis with the following functions:
+∗
+Pd ::P(Proc)−→S Cd ::Goal −→S −→N
+Dd ::Proc −→S Gd ::Goal −→P(Var)−→S −→N
+Here Pd gives the neededness dictionary for all the procedures in the module; Dd yields
+thedictionaryforasingleprocedure;Cd producestheneedednessofasingleclausegiven
+a neededness dictionary; and Gd gives the neededness of a single goal given the set of
+variables needed later in the clause body and a neededness dictionary.
+As shown in Figure 10, the neededness analysis of a module is the least fixed point of
+thecombinationofresultsforallproceduresinthemodule,andtheresultforaprocedure
+is just the conjunction of the neededness of all its clauses, which is the conjunction of
+results for all goals in each clause. The analysis result for a primitive operation is the
+conjunction of x → y implications for each output x and each input y. For a primitive
+comparison operation, it is the conjunction of x→y for each variable x defined later in
+the clause (determined by the defs function) and each input y of the comparison. Since
+primitivecomparisonsareguards,theyareonlyneededtodetermineifthefollowingcode
+is executed, so they are only needed if some variable defined later is needed.
+12 G. Gange et al.
+P S =lfp D d
+d d
+!
+d∈S
+G
+D
+d
+[p(v i;v o)←(B1,∨···∨B n)] A=λp(v i;v o) . ∃(Var\v i\v o) . C
+d
+B
+k
+A
+ 
+1≤k≤n
+^
+ 
+C
+d
+(g1∧···∧g n) A= G
+d
+g
+k
+defs(g k+1∧···∧g n) A
+1≤k≤n
+^
+G
+d
+⊙(v i;v o) V A= y→x
+x
+^
+∈viy
+^
+∈vo
+G <(x,y) V A= (v→x∧v→y)
+d
+v∈V
+^
+G
+d
+p(v i;v o) V A=A p(v i;v o)
+Fig. 10. Neededness abstract interpretation
+The second analysis phase uses these dependencies to determine which procedure in-
+puts and outputs are actually used, beginning by marking all parameters of public (ex-
+ported)functions asneeded.This analysisthenproceedstop-downbySCCs throughthe
+programcallgraph,witheachSCC processeduntil a fixed pointis reached.In eachiter-
+ation, each clause in the SCC is processed with a needed variable formula, initially the
+conjunction of the set of output variables of that procedure that are marked as needed.
+Processingof a clause proceeds from last goalto first. If any output of a goalis in the
+needed variable formula, the goal is marked as needed, and the called procedure has its
+needed outputs markedfor when it is processed.Then the neededness dictionary for the
+called procedure is conjoined with the current needed variable formula, and the goal’s
+output variables are projected out, to produce the new needed variable formula. This
+formula then comprises the live variable set for that goal. Primitive goals are simpler: if
+anyoutputisintheneededvariableformula,itismarkedasneeded,itsinputsareadded
+totheneededvariableformula,anditsoutputs areprojectedout.Onceafixedpointhas
+been reached, any goal or parameter not marked as needed can be removed.
+6 Related Work
+ManyvariantsofSSAhavebeenproposed(Ballance et al. 1990;Gerlek et al. 1995;Chow et al. 1996;
+Ananian 1999) and much work has been concerned with how to generate (compact)
+SSAanditsvariantsefficiently(Cytron et al. 1991;Tu and Padua 1995;Ananian 1999).
+In Section 2 we mentioned the work on FP form by Kelsey (1995) and Appel (1998).
+Appel (1998) in fact sketches two translations to FP form, one producing a “flat” se-
+quence of function definitions, the other producing nested definitions. The latter uses
+fewerfunctionsandvariablesandAppelpointsoutthatthestructureoffunctionnesting
+makesthe dominancepropertiesofthe originalcontrol-flowgraphexplicit. Appel (1998)
+also uses the equivalent of SSI’s “σ nodes” as a pedagogic tool; the σ nodes are in fact
+pushed into successor blocks and become mere “renaming” ϕ nodes.
+Relational IR 13
+Peralta and Cruz-Carlo´n(2006) briefly sketched a translation from SSA to CLP, but
+providedno formal definition of the translation.From their examples it is clear that the
+translation differs from the one suggested here. Peralta et al. (1998) showed how to use
+CLP analysis tools to analyse imperative programs. Their approach is based on having
+aninterpreter, written in CLP, for the imperative languageand then translating (small)
+imperative programs through partial evaluation of the interpreter.
+Spoto et al. (2010) implement a terminationanalyzerfor Javabytecode by expressing
+path-length reasoning as a CLP programand leveragingfrom existing CLP termination
+analysis tools. The resulting analyzer is robust and entirely automatic, covering the full
+language of Java bytecode. Albert et al. (2012) use a similar approachto cost analysis.
+Morales et al. (2015) explore the use of a logic programming language for the imple-
+mentation of efficient abstract machines and runtime systems. To this end they use a
+Prologvariantwith certainimperativefeatures (mutable variables)thatenablestransla-
+tionintoefficientC-stylecodewhilestillallowingforhigh-levelprogramtransformations,
+such as partial evaluation of instruction definitions.
+CLPhasbeenalsousedasthebasisforsoftwaremodelchecking(Delzanno and Podelski 1999;
+Flanagan 2003)ofconcurrentsystems andits use insoftwareverificationtoolsis rapidly
+growing.Forexample,ithasbeenadoptedinThreader(Gupta et al. 2011),UFO(Albarghouthi et al. 2012),
+SeaHorn(Gurfinkel et al. 2015),HSF(Grebenshchikov et al. 2012),VeriMAP(De Angelis et al. 2014),
+Eldarica(Ru¨mmer et al. 2013), andTRACER(Jaffar et al. 2012). The task ofencoding
+verificationconditionsis differentto ouraimofprovidinga platformforprogramcompi-
+lation, although both require a convenientrepresentationfor reasoningabout programs.
+7 Conclusions
+WehavedescribedStaticSingleAssignmentform,anddiscussedanumberofproblemsit
+causesforsophisticatedanalyses.Manyoftheseproblemshavebeenpreviouslyaddressed,
+but no previous work has addressedall of them. One approachthat addressedseveralof
+these problems re-conceives a low-level programas a functional program.
+We propose going further and viewing a low-level program as a logic program, and
+have suggested a simple, deterministic, strongly moded logic programming language as
+a compiler intermediate representation.The language is fully declarative; many existing
+analyses for logic programming languages will apply directly. We have presented a pow-
+erfulanalysisandtransformationforthisform.BecauseLPformusesprocedurecallsfor
+allcontroltransfer,operationsthatcrossblockboundariesarenaturallyinter-procedural.
+Owingto determinism andsingle-mode restrictions,LP formis surprisinglycloseto ma-
+chinelanguage,sofinalcodegenerationisnotdifficult.ThusLPformisasuitablechoice
+for a compiler’s intermediate code representation.
+We are currently developing an implementation of LP form, which we call LPVM.
+This is being used as intermediate representation for a compiler we are developing for a
+language combining the benefits of declarative and imperative programming. Since the
+procedures of the language support multiple outputs, that facility in LP form is par-
+ticularly important. Rather than duplicating the extensive work of the LLVM project
+in producing high-quality, peep-hole optimised assembly language for multiple architec-
+tures, we plan to do all program analysis and transformation in LP form, and finally
+translate to LLVM for final code generation.
+14 G. Gange et al.
+References
+Albarghouthi, A., Li, Y., Gurfinkel, A., and Chechik, M. 2012. Ufo: A framework for
+abstraction-andinterpolation-basedsoftwareverification. InProc. 24rd Int. Conf.Computer
+AidedVerification,P.MadhusudanandS.A.Seshia,Eds.LectureNotesinComputerScience,
+vol. 7358. Springer, 672–678.
+Albert, E., Arenas, P., Genaim, S., Puebla, G., and Zanardini, D. 2012. Cost analysis
+of object-oriented bytecodeprograms. Theoretical Computer Science 413, 142–159.
+Alpern,B.,Wegman,M.N.,andZadeck,F.K.1988. Detectingequalityofvariablesinpro-
+grams. InProc.15thACMSIGPLAN-SIGACTSymp.PrinciplesofProgrammingLanguages.
+ACM, 1–11.
+Ananian, C. S. 1999. The static single information form. M.S. thesis, Princeton University.
+Appel, A. W. 1992. Compiling with Continuations. Cambridge University Press.
+Appel, A. W. 1998. SSAis functional programming. SIGPLAN Notices 33, 4, 17–20.
+Ballance, R. A., Maccabe, A. B., and Ottenstein, K. J. 1990. The program depen-
+denceweb: A representation supportingcontrol-, data-, and demand-driveninterpretation of
+imperative languages. In Proc. ACM SIGPLAN Conf. Programming Language Design and
+Implementation. ACM, 257–271.
+Benton, W. C.andFischer, C. N.2007. Interactive,scalable, declarativeprogram analysis:
+From prototype to implementation. In Proc. 9th ACM SIGPLAN Int. Conf. Principles and
+Practice of Declarative Programming. ACM, 13–24.
+Chow, F., Chan, S., Liu, S.-M., Lo, R., and Streich, M. 1996. Effective representation of
+aliasesandindirectmemoryoperationsinSSAform. InCompilerConstruction,T.Gyimo´thy,
+Ed. Lecture Notes in Computer Science, vol. 1060. Springer, 253–267.
+Cytron, R., Ferrante, J., Rosen, B. K., Wegman, M. N., and Zadeck, F. K. 1991.
+Efficiently computingstatic single assignment form andthecontroldependencegraph. ACM
+Transactions on Programming Languages and Systems 13, 4, 451–490.
+DeAngelis, E.,Fioravanti, F.,Pettorossi, A.,andProietti, M.2014. VeriMAP:Atool
+forverifyingprogramsthroughtransformations. InProc.20thInt.Conf.ToolsandAlgorithms
+for the Construction and Analysis of Systems, A. A´braha´m and K. Havelund, Eds. Lecture
+Notes in Computer Science, vol. 8413. Springer, 568–574.
+Delzanno, G.andPodelski, A.1999. ModelcheckinginCLP. InProc. 5th Int. Conf. Tools
+and Algorithmsforthe Construction and AnalysisofSystems,W.R.Cleaveland,Ed.Lecture
+Notes in Computer Science, vol. 1579. 223–239.
+Flanagan,C.2003.AutomaticsoftwaremodelcheckingusingCLP.InProgrammingLanguages
+and Systems: Proc. 12th European Symp. Programming, P. Degano, Ed. Lecture Notes in
+Computer Science, vol. 2618. Springer, 189–203.
+Gange,G.,Navas, J.,Schachte, P.,Søndergaard,H.,andStuckey, P. J.2015. Interval
+analysis and machine arithmetic: Why signedness ignorance is bliss. ACM Transactions on
+Programming Languages and Systems 37, 1, 1:1–1:35.
+Gerlek, M. P.,Stolz, E.,andWolfe, M. 1995. Beyond inductionvariables: Detectingand
+classifying sequences using a demand-driven SSA form. ACM Transactions on Programming
+Languages and Systems 17, 1, 85–122.
+Grebenshchikov, S.,Lopes, N. P.,Popeea, C.,andRybalchenko, A. 2012. Synthesizing
+software verifiers from proof rules. In Proc. ACM SIGPLAN Conf. Programming Language
+Design and Implementation. ACM, 405–416.
+Gupta,A.,Popeea,C.,andRybalchenko,A.2011.Threader:Aconstraint-basedverifierfor
+multi-threadedprograms. InProc.23rdInt.Conf.ComputerAidedVerification,G.Gopalakr-
+ishnanandS.Qadeer,Eds.LectureNotesinComputerScience,vol.6806.Springer,412–417.
+Gurfinkel, A., Kahsai, T., and Navas, J. A. 2015. SeaHorn: A framework for verifying
+C programs (competition contribution). In Proc. 21st Int. Conf. Tools and Algorithms for
+Relational IR 15
+the Construction and Analysis of Systems, C. Baierand C.Timelli, Eds.Vol.9035. Springer,
+447–450.
+Jaffar, J., Murali, V., Navas, J. A., and Santosa, A. E. 2012. TRACER: A symbolic
+executiontoolforverification. InProc. 24th Int. Conf. Computer Aided verification, P.Mad-
+husudan and S. A. Seshia, Eds. Lecture Notes in Computer Science, vol. 7358. Springer,
+758–766.
+Kelsey, R. A. 1995. A correspondence between continuation passing style and static single
+assignment form. SIGPLAN Notices 30, 3, 13–22.
+Lattner,C.andAdve,V.2004.LLVM:Acompilationframeworkforlifelongprogramanalysis
+andtransformation. InProc. Int.Symp.CodeGeneration andOptimization(CGO’04).IEEE
+Comp. Soc., 75–86.
+Min´e, A. 2006. Theoctagon abstract domain. Higher-Order and Symbolic Computation 19, 1,
+31–100.
+Morales, J. F., Carro, M., and Hermenegildo, M. 2015. Description and optimization
+of abstract machines in a dialect of Prolog. Theory and Practice of Logic Programming. To
+appear.
+Peralta, J. C.andCruz-Carlo´n, J. A.2006. Fromstaticsingle-assignment formtodefinite
+programs and back. In Pre-Proceedings of 16th International Symposium on Logic Based
+Program Synthesis and Transformation (LOPSTR 2006), G. Puebla, Ed. 79–84.
+Peralta, J. C., Gallagher, J. P., and Sag˘lam, H. 1998. Analysis of imperative programs
+through analysisof constraint logic programs. InStatic Analysis,G.Levi,Ed.LectureNotes
+in Computer Science, vol. 1503. Springer,246–261.
+Ru¨mmer, P., Hojjat, H., and Kuncak, V. 2013. Disjunctive interpolants for Horn-clause
+verification. InProc.25rdInt.Conf.ComputerAidedVerification,N.SharyginaandH.Veith,
+Eds. LectureNotes in ComputerScience, vol. 8044. 347–363.
+Somogyi,Z.,Henderson,F.,andConway,T.1996. TheexecutionalgorithmofMercury:An
+efficientpurelydeclarativelogicprogramminglanguage. JournalofLogicProgramming 29,1–
+3, 17–64.
+Spoto,F.,Mesnard,R.,andPayet,E´.2010. AterminationanalyzerforJavabytecodebased
+on path-length. ACM Transactions on Programming Languages and Systems 32, 8:1–8:70.
+Tu, P. andPadua, D.1995. Efficientbuildingandplacing ofgating functions. InProc. ACM
+SIGPLAN Conf. Programming Language Design and Implementation. ACM, 47–55.
+Whaley, J., Avots, D., Carbin, M., and Lam, M. S. 2005. Using Datalog with binary
+decisiondiagramsforprogramanalysis. InProc. ThirdAsianSymp.Programming Languages
+and Systems, K. Yi,Ed. Lecture Notes in Computer Science, vol. 3780. Springer, 97–118.

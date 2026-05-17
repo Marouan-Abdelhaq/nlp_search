@@ -1,0 +1,294 @@
+L’informatique pour débutants
+Etre à l’aise face à son ordinateur
+Découvrir les clefs de l’informatique
+Devenir un internaute averti
+Espace Public Numérique
+http://bibliotheque.nimes.fr
+bibliotheque.ecm@ville-nimes.fr
+Tél. : 04.66.76.35.96
+Sommaire
+L’informatique pour débutants Page 1
+Sommaire Page 2
+Qu’est-ce qu’un ordinateur ? Page 3
+Le matériel : schéma général de l’ordinateur Page 4
+Notre conseil Page 5
+Le matériel : schéma général de l’unité centrale Page 6
+Système d’exploitation et logiciels Page 7
+Les périphériques Page 8
+Le bureau de l’ordinateur et ses icônes Page 9
+Les icônes essentielles Page 10
+Présentation de la souris Page 11
+Apprivoiser la souris Page 12
+Le clavier Page 13
+Les touches raccourcis Page 14
+Ouverture d’un logiciel : arborescence des fichiers Page 15
+Expérimenter Page 16
+Le site de Carré d’Art Bibliothèques Page 17
+Les informations sur les formations Page 18
+Le netvibes de l’espace numérique de la bibliothèquee Page 19
+Le quizz informatique Page 20
+Conclusion et sources Page 21
+2
+Qu’est-ce qu’un ordinateur ?
+Un ordinateur est une machine qui permet de travailler
+avec des informations (nombres, mots, images, sons)
+appelées données.
+Les ordinateurs peuvent traiter très vite de grandes
+quantités de données, les stocker et les afficher.
+Le premier ordinateur fut imaginé dans les années 1830
+par un inventeur britannique, Charles Babbage.
+En 1971 apparaît le premier micro-ordinateur.
+Notre conseil
+Lorsque vous aurez acquis les bases (maniement de la souris, ouvrir-fermer des fichiers, etc),
+il vous faudra pratiquer pour avancer. Vous êtes en situation d’apprentissage comme un
+nouveau conducteur.
+En route, pour découvrir l’informatique et là, ne soyez pas prudents !!! N’hésitez pas à cliquer.
+Sourire de l’informatique cliquez sur le lien ci-dessous
+http://ac-nancy-metz.fr/petitspoetes/html/labotechno/laboclin.html
+L’informatique, c’est comme l’arithmétique.
+J’ai des tics quand je clique.
+L’informatique, c’est un tic-tac de plus,
+Quand je l’éteins, ça fait clac !
+Quand je l’allume, ça fait clic !
+Et quand je joue
+Ça fait clic ! clac !
+(Ahmed Ouannoughi – CM2)
+3
+Le matériel : schéma général de l'ordinateur
+Les indispensables
+L’unitécentrale
+L’écran
+Le clavier
+La souris
+En complément :
+Connexion internet
+Imprimante
+Enceintes acoustiques ou haut-parleurs
+Webcam
+Disque dur externe
+Manette de jeu
+Un système informatique a besoin de matériel et de logiciels.
+Le matériel est constitué par les éléments physiques de la machine.
+4
+Notre conseil :
+Vous n'avez pas encore d'ordinateur ; votre intention est de faire
+simplement du traitement de texte et de surfer occasionnellement
+sur Internet, un ordinateur d’entrée de gamme vous conviendra.
+Pour faire votre choix, regardez alors :
+- les périphériques fournis et leur ergonomie (moniteur ou écran, enceintes,
+webcam, imprimante),
+- la logithèque fournie (suite bureautique, logiciel antivirus, encyclopédie,
+jeux),
+- les possibilités d’évolution (carte graphique, carte son, augmentation
+mémoire disque dur).
+Si vous avez fait le choix d’un ordinateur portable, les indispensables sont intégrés.
+5
+Le matériel : schéma général de l’unité centrale
+Tous les ordinateurs ont le même matériel de base. Le microprocesseur est leur «cerveau». Il gère
+les informations qui entrent et sortent de l’ordinateur.
+La mémoire stocke les programmes et les données pendant leur utilisation.
+Les programmes et les données sont conservés de façon permanente sur des dispositifs de
+stockage. La plupart des ordinateurs sont ainsi équipés d’un disque dur qui stocke les données sur
+un disque métallique, dans l’ordinateur. Dans certains dispositifs de stockage (CD, DVD), les
+données sont placées sur des disques qui peuvent passer d’une machine à l’autre.
+Ces supports facilitent le partage des données.
+6
+Système d’exploitation et logiciels
+Les logiciels sont les programmes, ou instructions, qui indiquent au matériel ce qu’il faut faire.
+Il y a 2 types de logiciels : les systèmes d’exploitation et les logiciels d’application.
+Le système d’exploitation contrôle le fonctionnement des différents éléments matériels.
+Un logiciel d’application donne à l’ordinateur des instructions pour qu’il réalise des tâches
+spécifiques (traitement de texte, jeu, par exemple).
+Utiliser un ordinateur, c'est utiliser un système d'exploitation.
+Vous achetez un ordinateur en 2011, le système d’exploitation est Windows Seven ou 7.
+Pour un utilisateur, ce sont les logiciels ou programmes qui sont intéressants.
+On retrouve :
+les logiciels de bureautique (Word, Excel, PowerPoint) ou Open office gratuit à télécharger.
+les logiciels pour accéder à internet (Exemple : Pour accéder à internet, il faut cliquer sur un
+logiciel de navigation (Internet Explorer ou Mozilla Firefox, Google Chrome (ne pas confondre
+avec le moteur de recherche Google) ou Safari.)
+les logiciels de traitement d'image (Photofiltre, Adobe Photoshop, ...)
+les logiciels de gestion informatique, dessin technique, etc.
+7
+Les périphériques
+Les périphériques d’entrée et de sortie sont un autre matériel.
+Les périphériques d’entrée (clavier, souris, par exemple) permettent à l’utilisateur de saisir des
+données ou des commandes dans l’ordinateur.
+Les périphériques de sortie (écran, imprimante, haut-parleurs, par exemple) permettent à
+l’utilisateur de voir ou d’entendre les résultats produits par l’ordinateur.
+Les ordinateurs sont souvent reliés à des périphériques de communication, ou périphériques
+réseau.
+Ces matériels permettent d’envoyer des données entre machines et de se connecter à Internet.
+Les modems transmettent des données par les câbles du téléphone ou de la télévision. Certains
+périphériques de communication sans fil (wi-fi) envoient des données par voie aérienne à l’aide
+d’une petite antenne.
+Découvrir l’ordinateur et ses périphériques :
+En savoir plus :
+http://www.cite-sciences.fr/carrefour-
+numerique/ressources/tutoriel/ordinateur/cyberbase09_home.html
+8
+Le bureau de l’ordinateur et ses icônes
+A la découverte de Windows Seven ou 7
+Afin de mieux comprendre l’ordinateur, il faut comparer
+celui-ci à un classeur de dossiers « papier ». Chez vous,
+vous classez vos factures, courriers dans des dossiers.
+Les équivalents pour l’ordinateur sont : poste de travail,
+corbeille, mes documents, applications internet,
+bureautique, photo, etc…
+Le Bureau est la zone d’écran principale qui s’affiche une
+fois que vous avez allumé l’ordinateur et ouvert une
+session Windows.
+Tout comme la surface d’un vrai bureau, cette zone sert
+de plan de travail.
+Lorsque vous ouvrez des programmes ou des dossiers,
+ceux-ci s’affichent sur le bureau.
+Vous pouvez également placer des éléments sur le
+bureau, tels que des fichiers ou des dossiers et les
+organiser selon les préférences.
+Important
+Pour éteindre l’ordinateur, il faut cliquer sur Arrêter
+Sauf en cas de blocage complet, il est déconseillé
+d’arrêter l’ordinateur en appuyant sur le bouton
+de mise en route.
+9
+Les icônes essentielles
+Sur le bureau :
+3 icônes essentielles :
+le Poste de travail ou ordinateur : permet d'accéder au contenu du disque dur (C:),
+au lecteur de cd-rom, au lecteur DVD ou lecteur de clé USB,
+le dossier Mes documents ou le nom de l’utilisateur : sert à ranger les fichiers personnels.
+Exemple : dossier mes images, dossier ma musique, dossier mes vidéos,
+la Corbeille : contient tous les fichiers qui ont été supprimés. Mais, si on clique sur l’icône Corbeille,
+on peut restaurer - récupérer des documents ou vider définitivement la corbeille.
+10
+Présentation de la souris
+Pour se servir de l’ordinateur, la souris est l'outil indispensable.
+La souris vous permet de piloter votre ordinateur.
+Elle sélectionne, déplace, manipule des éléments présents dans votre ordinateur.
+Elle est constituée de deux boutons :
+- clic gauche,
+- clic droit,
+et souvent d’une mollette.
+Clic gauche
+Le clic : appui bref sur le bouton gauche de la souris
+Permet de sélectionner un objet, de valider un choix. C’est le clic le plus utilisé.
+Le double clic : 2 appuis brefs sur le bouton gauche de la souris
+Permet principalement d’ouvrir un élément que vous avez sélectionné
+exemple : l’icône de Mozilla Firefox – pour ouvrir l’application d’internet.
+CClliiccddrrooiitt
+Il affiche un menu dit contextuel.
+Ce menu est différent en fonction de l’endroit ou de l’élément sur lequel est effectué
+le clic droit. Ce menu vous propose des actions simples et plus rapides.
+LLaa mmoolllleettttee((aauu cceennttrree))
+EEllllee ppeerrmmeettddee ssee ddééppllaacceerrvveerrttiiccaalleemmeenntt..
+11
+Apprivoiser la souris
+Lorsque vous déplacez la souris sur l’écran, son pointeur se déplace dans la même direction sur votre
+écran. Le pointeur peut prendre les formes suivantes :
+Pointeur de souris C’est lui que Indicateur de lien web Témoin d’occupation
+classique vous déplacez Ex : en cliquant sur le Le sablier indique qu’il
+en forme de flèche lien, le site web faut attendre.
+à l’intérieur
+s’ouvre.
+d’un texte
+Cliquez sur le lien ci-dessous pour visualiser un support de formation de la Cité des Sciences en ligne
+« Apprivoiser la souris ».
+http://www.cite-sciences.fr/carrefour-numerique/ressources/tutoriel/cyberbase05/souris_home.swf
+12
+Le clavier
+Le clavier est un périphérique qui permet la saisie des informations en direction de l’ordinateur.
+Les bases du clavier sont nécessaires pour « travailler» sur l’ordinateur.
+Les touches de fonction : ex : F5 pour visualiser un diaporama.
+Les touches
+numériques
+permettent de
+saisir rapidement
+les chiffres.
+Penser à activer le
+verrouillage clavier
+pour accéder aux
+chiffres.
+Les touches alphanumériques comprennent les lettres, les ponctuations et les Fonctions essentielles pour rédiger un
+texte.
+Les touches directionnelles permettent de se déplacer rapidement dans un texte.
+Pour taper les caractères €, @ (arobase), #, il faut maintenir appuyée la touche Alt Gr et la touche désirée.
+Apprendre le clavier en s’amusant :
+http://www.cite-sciences.fr/carrefour-numerique/ressources/tutoriel/cyberbase03/decouverte_home.swf
+13
+Les touches raccourcis
+Votre ordinateur se bloque, pas de panique, cela arrive !!!
+Vous appuyez sur la touche fenêtre Windows.
+Une fenêtre apparaît et vous pouvez soit fermer
+la session de travail soit arrêter l’ordinateur.
+Touche Echap ou Esc : annule la tâche en cours.
+Raccourcis clavier généraux
+* Ctrl+C (Copier)
+* Ctrl+X (Couper)
+* Ctrl+V (Coller)
+* Ctrl+Z (Annuler)
+* Suppr (Supprimer)
+* Ctrl + P (Imprimer)
+Pour connaître plus de touches raccourcis, cliquez sur ce lien :
+http://www.pcastuces.com/pratique/windows/clavier/page1.htm
+14
+Ouverture d’un logiciel
+- arborescence des fichiers
+Pour accéder à vos dossiers (documents, images, musique), cliquez pour ouvrir,
+une fenêtre apparaît. Quelle que soit l’application (traitement de texte, internet, photos),
+la procédure est identique.
+La fenêtre
+La barre de
+tâches
+De haut en bas
+- Barre de titre
+- Barre des menus
+- Barre d’outils
+- Barre d’adresse
+Les trois icônes situées à l’extrême droite de la barre de titre
+Réduire : le document n’est pas fermé, il est placé en bas de la fenêtre dans la barre de tâches,
+il faut cliquer pour le réafficher.
+Agrandir/restaurer : agrandit ou réduit la fenêtre
+Fermer : ferme la fenêtre
+15
+Expérimenter
+Vous voilà initié(e) à l’informatique, découvrez le site des bibliothèques de Nîmes
+http://bibliotheque.nimes.fr/
+Indicateur de lien web
+Ex : (en cliquant sur ce lien, le
+site web s’ouvre. )
+16
+Le site de Carré d’Art Bibliothèques
+Vous avez ouvert le site de la bibliothèque de Nîmes, cliquez pour le découvrir
+http://bibliotheque.nimes.fr
+17
+Les informations sur les formations
+Pour trouver la page sur les formations numériques,
+cliquez sur la rubrique Infos pratiques,
+puis sur l’onglet Se former.
+http://www.nimes.fr/index.php?id=1727
+18
+Le « Netvibes » de l’espace numérique Carré d’Art
+Pour vous aider dans votre apprentissage de l’informatique, nous avons repéré des sites de
+formations en ligne. Pour vous guider, nous avons créé une page web dite « enrichie ».
+C’est comme un tableau de bord qui rassemble des liens, iI suffit notamment de cliquer sur
+l’onglet “Je me forme” pour accéder aux sites.
+http://www.netvibes.com/carredartmultimedia#Accueil
+19
+Testez vos connaissances en jouant
+Le quizz informatique
+http://ebookenherbe.free.fr/lecoininformatiq/index.html#bv000002
+20
+Et pour conclure
+Entraînez-vous régulièrement dans cette première étape de découverte de l’informatique pour acquérir
+de solides bases.
+D’autres initiations vous attendent : Internet, traitement de texte, messagerie électronique…
+Sources :
+Carrefour numérique Cité Sciences et de l’industrie
+Aide Windows de Microsoft
+PC astuces
+Comment ça marche
+Ybet
+Universalis Junior
+Support de formation réalisé par Ginette Mérisse, formatrice multimédia.
+Espace numérique Bibliothèque Carré d’Art – Mai 2011
+21

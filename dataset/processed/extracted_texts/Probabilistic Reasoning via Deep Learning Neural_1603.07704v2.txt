@@ -1,0 +1,935 @@
+Probabilistic Reasoning via Deep Learning: Neural Association Models
+QuanLiu†,HuiJiang‡,AndrewEvdokimov‡,Zhen-HuaLing†,XiaodanZhu(cid:96),SiWei§,YuHu†§
+†NationalEngineeringLaboratoryforSpeechandLanguageInformationProcessing
+UniversityofScienceandTechnologyofChina,Hefei,Anhui,China
+‡DepartmentofElectricalEngineeringandComputerScience,YorkUniversity,Canada
+(cid:96)NationalResearchCouncilCanada,Ottawa,Canada
+§iFLYTEKResearch,Hefei,China
+emails:quanliu@mail.ustc.edu.cn,hj@cse.yorku.ca,ae2718@cse.yorku.ca,zhling@ustc.edu.cn
+xiaodan@cse.yorku.ca,siwei@iflytek.com,yuhu@iflytek.com
+Abstract probabilitiesbetweentwoassociatedeventsarecalculatedas
+posteriorprobabilitiesaccordingtoBayestheorem,withall
+In this paper, we propose a new deep learning approach,
+possibleeventsbeingmodeledbyapre-definedgraphstruc-
+calledneuralassociationmodel(NAM),forprobabilisticrea-
+ture.However,thesemethodsquicklybecomeintractablefor
+soninginartificialintelligence.Weproposetouseneuralnet-
+mostpracticaltaskswherethenumberofallpossibleevents workstomodelassociationbetweenanytwoeventsinado-
+main.Neuralnetworkstakeoneeventasinputandcomputea isusuallyverylarge.
+conditionalprobabilityoftheothereventtomodelhowlikely In recent years, distributed representations that map dis-
+these two events are to be associated. The actual meaning crete language units into continuous vector space have
+of the conditional probabilities varies between applications gainedsignificantpopularityalongwiththedevelopmentof
+anddependsonhowthemodelsaretrained.Inthiswork,as
+neural networks (Bengio et al. 2003; Collobert et al. 2011;
+twocasestudies,wehaveinvestigatedtwoNAMstructures,
+Mikolovetal.2013).Themainbenefitofembeddingincon-
+namelydeepneuralnetworks(DNN)andrelation-modulated
+tinuousspaceisitssmoothnessproperty,whichhelpstocap-
+neuralnets(RMNN),onseveralprobabilisticreasoningtasks
+turethesemanticrelatednessbetweendiscreteevents,poten-
+inAI,includingrecognizingtextualentailment,tripleclassifi-
+cationinmulti-relationalknowledgebasesandcommonsense tiallygeneralizabletounseenevents.Similarideas,suchas
+reasoning. Experimental results on several popular datasets knowledgegraphembedding,havebeenproposedtorepre-
+derived from WordNet, FreeBase and ConceptNet have all sent knowledge bases (KB) in low-dimensional continuous
+demonstratedthatbothDNNsandRMNNsperformequally space (Bordes et al. 2013; Socher et al. 2013; Wang et al.
+wellandthey can significantlyoutperformtheconventional 2014;Nickeletal.2015).UsingthesmoothedKBrepresen-
+methodsavailableforthesereasoningtasks.Moreover,com- tation,itispossibletoreasonovertherelationsamongvar-
+paredwithDNNs,RMNNsaresuperiorinknowledgetrans-
+iousentities.However,human-likereasoningremainsasan
+fer,whereapre-trainedmodelcanbequicklyextendedtoan
+extremelychallengingproblempartiallybecauseitrequires
+unseenrelationafterobservingonlyafewtrainingsamples.
+the effective encoding of world knowledge using powerful
+To further prove the effectiveness of the proposed models,
+models.MostoftheexistingKBsarequitesparseandeven
+inthiswork,wehaveappliedNAMstosolvingchallenging
+Winograd Schema (WS) problems. Experiments conducted recentlycreatedlarge-scaleKBs,suchasYAGO,NELLand
+onasetofWSproblemsprovethattheproposedmodelshave Freebase, can only capture a fraction of world knowledge.
+thepotentialforcommonsensereasoning. Inordertotakeadvantageofthesesparseknowledgebases,
+thestate-of-the-artapproachesforknowledgegraphembed-
+ding usually adopt simple linear models, such as RESCAL
+Introduction
+(Nickel, Tresp, and Kriegel 2012), TransE (Bordes et al.
+Reasoning is an important topic in artificial intelligence
+2013) and Neural Tensor Networks (Socher et al. 2013;
+(AI), which has attracted considerable attention and re-
+Bowman2013).
+search effort in the past few decades (McCarthy 1986;
+Although deep learning techniques achieve great pro-
+Minsky 1988; Mueller 2014). Besides the traditional logic
+gresses in many domains, e.g. speech and image (LeCun,
+reasoning, probabilistic reasoning has been studied as an-
+Bengio, and Hinton 2015), the progress in commonsense
+other typical genre in order to handle knowledge uncer-
+reasoning seems to be slow. In this paper, we propose to
+taintyinreasoningbasedonprobabilitytheory(Pearl1988;
+use deep neural networks, called neural association model
+Neapolitan2012).Theprobabilisticreasoningcanbeusedto
+(NAM),forcommonsensereasoning.Differentfromtheex-
+predict conditional probability Pr(E |E ) of one event E
+2 1 2 isting linear models, the proposed NAM model uses multi-
+givenanothereventE .State-of-the-artmethodsforproba-
+1 layernonlinearactivationsindeepneuralnetstomodelthe
+bilisticreasoningincludeBayesianNetworks(Jensen1996),
+association conditional probabilities between any two pos-
+MarkovLogicNetworks(RichardsonandDomingos2006)
+sibleevents.IntheproposedNAMframework,allsymbolic
+and other graphical models (Koller and Friedman 2009).
+eventsarerepresentedinlow-dimensionalcontinuousspace
+Taking Bayesian networks as an example, the conditional
+and there is no need to explicitly specify any dependency
+Copyright2015-2016. structure among events as required in Bayesian networks.
+6102
+guA
+3
+]IA.sc[
+2v40770.3061:viXra
+Deepneuralnetworksareusedtomodeltheassociationbe- all typical associations between events. However, we need
+tweenanytwoevents,takingoneeventasinputtocomputea to recognize that the task of modeling event association is
+conditionalprobabilityofanotherevent.Thecomputedcon- not identical to performing classification. In classification,
+ditional probability for association may be generalized to wetypicallymapaneventfromitsfeaturespaceintooneof
+modelvariousreasoningproblems,suchasentailmentinfer- pre-definedfinitecategoriesorclasses.Ineventassociation,
+ence,relationallearning,causationmodellingandsoon.In weneedtocomputetheassociationprobabilitybetweentwo
+thiswork,westudytwomodelstructuresforNAM.Thefirst arbitraryevents,eachofwhichmaybeasamplefromapos-
+model is a standard deep neural networks (DNN) and the siblyinfiniteset.Themappingrelationshipsineventassoci-
+second model uses a special structure called relation mod- ationwouldbemany-to-many;e.g.,notonlyplayingbasket-
+ulatedneuralnets(RMNN).Experimentsonseveralproba- ballcouldsupportustomakemoney,someonewhomakes
+bilisticreasoningtasks,includingrecognizingtextualentail- stocktradingcouldmakemoneyaswell.Morespecifically,
+ment,tripleclassificationinmulti-relationalKBsandcom- the association relationships between events include cause-
+monsensereasoning,havedemonstratedthatbothDNNsand effect,spatial,temporalandsoon.Thispapertreatsthemas
+RMNNscanoutperformotherconventionalmethods.More- ageneralrelationconsideringthesparsenessofusefulKBs.
+over, the RMNN model is shown to be effective in knowl-
+edge transfer learning, where a pre-trained model can be
+quickly extended to a new relation after observing only a
+win
+fewtrainingsamples.
+Furthermore, we also apply the proposed NAM models
+tomorechallengingcommonsensereasoningproblems,i.e.,
+the recently proposed Winograd Schemas (WS) (Levesque, injured
+Davis,andMorgenstern2011).TheWSproblemshasbeen
+viewedasanalternativetotheTuringTest(Turing1950).To
+supportthemodeltrainingforNAM,weproposeastraight-
+make money
+forwardmethodtocollectassociatedcause-effectpairsfrom play basketball
+largeunstructuredtexts.Thepairextractionprocedurestarts
+fromconstructingavocabularywiththousandsofcommon
+be coached
+verbs and adjectives. Based on the extracted pairs, this pa- stock trading drink water
+perextendstheNAMmodelstosolvetheWinogradSchema
+problems and achieves a 61% accuracy on a set of cause-
+effectexamples.Undoubtedly,torealizecommonsenserea-
+Figure1:Exampleofassociationbetweenevents.
+soning,thereisstillmuchworkbedoneandmanyproblems
+tobesolved.Detaileddiscussionswouldbegivenattheend
+ofthispaper.
+Inthispaper,webelievethatmodelingthetheassociation
+relationshipsbetweeneventsisafundamentalworkforcom-
+Motivation:AssociationbetweenEvents
+monsense reasoning. If we could model the event associa-
+This paper aims to model the association relationships be- tionsverywell,wemayhavetheabilitytosolvemanycom-
+tweeneventsusingneuralnetworkmethods.Tomakeclear monsense reasoning problems. Considering the main char-
+our main work, we will first describe the characteristics acteristics of discrete event and event association, two rea-
+of events and all the possible association relationships be- sonsaregivenfordescribingourmotivation.
+tweenevents.Basedontheanalysisofeventassociation,we
+present the motivation for the proposed neural association • Theadvantageofdistributedrepresentationmethods:rep-
+models. In commonsense reasoning, the main characteris- resentingdiscreteeventsintocontinuousvectorspacepro-
+ticsofeventsarethefollowing: videsagoodwaytocapturethesimilaritiesbetweendis-
+• Massive:Inmostnaturalsituations,thenumberofevents creteevents.
+ismassive,whichmeansthattheassociationspacewewill
+modelisverylarge. • The advantage of neural network methods: neural net-
+works could perform universal approximation while lin-
+• Sparse: All the events occur in our dialy life are very
+ear models cannot easily do this (Hornik, Stinchcombe,
+sparse.Itisaverychallengingtasktoideallycapturethe
+andWhite1990).
+similaritiesbetweenallthosedifferentevents.
+Atthesametime,associationbetweeneventsappearsev- Atthesametime,thispapertakesintoaccountthatboth
+erywhere. Consider a single event play basketball for ex- distributed representation and neural network methods are
+ample, shown in Figure 1. This single event would asso- data-hungry.InArtificialIntelligence(AI)research,mining
+ciatewithmanyotherevents.Apersonwhoplaysbasketball largesizesofusefuldata(orknowledge)formodellearning
+wouldwinagame.Meanwhile,hewouldbeinjuredinsome is always challenging. In the following section, this paper
+cases.Thepersoncouldmakemoneybyplayingbasketball presentsapreliminaryworkondatacollectionandthecor-
+as well. Moreover, we know that a person who plays bas- respondingexperimentswehavemadeforsolvingcommon-
+ketballshouldbecoachedduringaregulargame.Thoseare sensereasoningproblems.
+NeuralAssociationModels(NAM) thenextwordwthattakesoneoutofKvalues.Incausalrea-
+Inthispaper,weproposetouseanonlinearmodel,namely soning, E 1 and E 2 represent cause and effect respectively.
+neural association model, for probabilistic reasoning. Our Forexample,wehaveE 1 =“eatingcheesycakes”andE 2 =
+main goal is to use neural nets to model the association “beinghappy”,wherePr(E 2 |E 1 )indicateshowlikelyitis
+probabilityforanytwoeventsE 1 andE 2 inadomain,i.e., thatE 1 maycausethebinary(trueorfalse)eventE 2 .Inthe
+Pr(E |E ) of E conditioning on E . All possible events samemodel,wemayaddmorenodestomodeldifferentef-
+2 1 2 1
+in the domain are projected into continuous space without fectsfromthesameE 1 ,e.g.,E 2 (cid:48) =“growingfat”.Moreover,
+specifying any explicit dependency structure among them. wemayadd5softmaxnodestomodelamulti-valuedevent,
+Inthefollowing,wefirstintroduceneuralassociationmod- e.g., E 2 (cid:48)(cid:48) = “happiness” (scale from 1 to 5). Similarly, for
+els(NAM)asageneralmodelingframeworkforprobabilis- knowledge triple classification of multi-relation data, given
+ticreasoning.Next,wedescribetwoparticularNAMstruc- one triple (e i ,r k ,e j ), E 1 consists of the head entity (sub-
+turesformodelingthetypicalmulti-relationaldata. ject)e i andrelation(predicate)r k ,andE 2 isabinaryevent
+indicatingwhetherthetailentity(object)e istrueorfalse.
+j
+NAMingeneral Finally,intheapplicationsofrecognizinglexicalortextual
+entailment, E and E may be defined as premise and hy-
+1 2
+pothesis. More generally, NAMs can be used to model an
+Deep Neural Networks
+infinite number of events E , where each point in a con-
+2
+Event E Event E tinuous space represents a possible event. In this work, for
+1 2
+simplicity, we only consider NAMs for a finite number of
+Vector Vector binaryeventsE 2 buttheformulationcanbeeasilyextended
+space space tomoregeneralcases.
+Association in DNNs Compared with traditional methods, like Bayesian net-
+Pr(E 2 |E 1 ) works,NAMsemployneuralnetsasauniversalapproxima-
+tor to directly model individual pairwise event association
+Figure2:TheNAMframeworkingeneral. probabilities without relying on explicit dependency struc-
+ture. Therefore, NAMs can be end-to-end learned purely
+Figure2showsthegeneralframeworkofNAMforasso- from training samples without strong human prior knowl-
+ciatingtwoevents,E 1 andE 2 .InthegeneralNAMframe- edge,andarepotentiallymorescalabletoreal-worldtasks.
+work, the events are first projected into a low-dimension
+continuous space. Deep neural networks with multi-layer
+nonlinearity are used to model how likely these two events Learning NAMs Assume we have a set of N d observed
+are to be associated. Neural networks take the embedding examples (event pairs {E 1 ,E 2 }), D, each of which is de-
+ofoneeventE 1 (antecedent)asinputandcomputeacondi- noted as x n . This training set normally includes both pos-
+tionalprobabilityPr(E |E )oftheothereventE (conse- itive and negative samples. We denote all positive sam-
+2 1 2
+quent). If the event E 2 is binary (true or false), the NAM ples (E 2 = true) as D+ and all negative samples (E 2 =
+models may use a sigmoid node to compute Pr(E |E ). false) as D−. Under the same independence assumption
+2 1
+If E takes multiple mutually exclusive values, we use a as in statistical relational learning (SRL) (Getoor 2007;
+2
+few softmax nodes for Pr(E |E ), where it may need to Nickel et al. 2015), the log likelihood function of a NAM
+2 1
+usemultipleembeddingsforE (onepervalue).NAMsdo modelcanbeexpressedasfollows:
+2
+not explicitly specify how different events E are actually
+2
+related; they may be mutually exclusive, contained, inter- L(Θ)= (cid:88) lnf(x+;Θ)+ (cid:88) ln(1−f(x−;Θ))
+sected. NAMs are only used to separately compute condi- n n
+tionalprobabilities,Pr(E
+2
+|E
+1
+),foreachpairofevents,E
+1
+x+ n∈D+ x− n∈D−
+(1)
+andE ,inatask.Theactualphysicalmeaningofthecondi-
+2 where f(x ;Θ) denotes a logistic score function derived
+tional probabilities Pr(E |E ) varies between applications n
+2 1 by the NAM for each x , which numerically computes the
+and depends on how the models are trained. Table 1 lists a n
+conditional probability Pr(E |E ). More details on f(·)
+fewpossibleapplications. 2 1
+willbegivenlaterinthepaper.Stochasticgradientdescent
+(SGD)methodsmaybeusedtomaximizetheabovelikeli-
+Application E E
+1 2
+hoodfunction,leadingtoamaximumlikelihoodestimation
+languagemodeling h w
+(MLE)forNAMs.
+causalreasoning cause effect
+knowledgetripleclassification {e ,r } e In the following, as two case studies, we consider two
+i k j
+lexicalentailment W W NAM structures with a finite number of output nodes to
+1 2
+textualentailment D D modelPr(E |E )foranypairofevents,wherewehaveonly
+1 2 2 1
+afinitenumberofE andeachE isbinary.Thefirstmodel
+2 2
+Table1:SomeapplicationsforNAMs. isatypicalDNNthatassociatesantecedentevent(E )atin-
+1
+putandconsequentevent(E )atoutput.Wethenpresentan-
+2
+In language modeling, the antecedent event is the repre- othermodelstructure,calledrelation-modulatedneuralnets,
+sentationofhistoricalcontext,h,andtheconsequenteventis whichismoresuitableformulti-relationaldata.
+Tail entity vector
+Tail entity vector 0
+B(L+1)
+B(L+1) f B(L+1) f Association at here f
+f Score function
+out: z(L)
+o I u n t : : a z ( ( L L ) ) … B(L) W(L) … … Transfering … B(L) W(L) … … W(L)… o I u n t : : a z ( ( L 2 ) )
+B(L) W(L) … … B(2) W(2) … B(2) W(2) W(2) In: a(2)
+…
+out: z(1)
+… out: z(2) In: a(1)
+… In: a(2)
+B(2) W(2)
+B(1) W(1) B(1) W(1) W(1)
+Relation vector Head entity vector
+0 0
+out: z(1)
+In: a(1) S V(head) V(head) S V(head) V(head)
+B(1) W(1) Existed Relations Head entity vector Tail entity vector New Relation Head entity vector Tail entity vector
+Relation code (S) Head entity vector
+Deep Neural Networks
+DNNforNAMs
+Event E1 Event E2 Tail entity vector
+The first NAM structure is a traditional DNN as shown in
+Vector Vector B(L+1)
+Figure3.Herewe
+sp
+u
+ac
+s
+e
+emulti-relationaldatainKBfosrpaiclelus- f Association at here
+tration. Given a KB triple x = (e ,r ,e ) and its corre-
+n Associatioin in DkNNsj out: z(L)
+spondinglabely n (trueorfalse),wPe(Ec 2|Ea 1)stE 1 = (e i ,r k )and In: a(L)
+E =e tocomputePr(E |E )asfollows.
+B(L)
+2 j 2 1 W(L)…
+…
+out: z(2)
+In: a(2)
+Tail entity vector 0
+Tail entity vector B(2) W(2)
+out: z(1)
+B(L+1) B(L+1) f B(L+1) f Association at here f B(1) In: a(1)
+f Score function
+out: z(L)
+W(1)
+o I u n t : : a z ( ( L L ) ) … B(L) W(L) … … Transfering … B(L) W(L) … … W(L)… o I u n t : : a z ( ( L 2 ) ) Relation vector Head entity vector
+B(L) W(L) … … B(2) W(2) … B(2) W(2) W(2) In: a(2) Figure4:Therelation-modulatedneuralnetworks(RMNN).
+…
+out: z(1)
+… out: z(2) In: a(1)
+… In: a(2)
+B(2) W(2)
+B(1) W(1) B(1) W(1) W(1)
+Asshownlater,thisstructureissuperiorinknowledgetrans-
+Relation vector Head entity vector
+0 0 ferlearningtasks.Therefore,foreachlayerofRMNNs,in-
+out: z(1)
+In: a(1) S V(head) V(head) S V(head) V(head) steadofusingeq.(2),itslinearactivationsignaliscomputed
+B(1) W(1) Existed Relations Head entity vector Tail entity vector New Relation Head entity vector Tail entity vector Figure3:TheDNNstructureforNAMs. fromthepreviouslayerz((cid:96)−1) andtherelationcodec(k) as
+follows:
+Firstly, we represent head entity phrase e and tail en-
+i
+Relation code (S) Head entity vector tityphrasee bytwoembeddingvectorsv(1)(∈ V(1))and a((cid:96)) =W((cid:96))z((cid:96)−1)+B((cid:96))c(k), ((cid:96)=1···L) (5)
+Deep Neural Networks j i
+Event E1 Event E2 v j (2)(∈ V(2)). Similarly, relation r kTiasil eantlistyo vecrteorpresented by where W((cid:96)) and B(cid:96) represent the normal weight matrix
+Vector Vector alow-dimensionalve B c (L t + o 1) rc k ∈ C,whichwecallarelation and the relation-specific weight matrix for layer (cid:96). At the
+space space codehereafter.Secondly,wecomf bAisnsoeciatthioen aet mherbeeddingsofthe topmost layer, we calculate the final score for each triple
+Associa P t ( i E on 2| E in 1 ) DNNs h la e y a e d r e D n N ti N ty a e s i i a n n p d ut t . h T e h r e el D at N io N n c r o k n t s o is f ts e o e Io u n d t : : f a z ( ( L Li L) ) nt r o ec a t n ifi ( e L d + lin 1 ea ) r - x n =(e i ,r k ,e j )usingtherelationcodeas:
+( z R (0 e ) L = U) [v h i ( i 1 d ) d , e c n k ] l . ay D e u r r s … B B i ( ( n L 2 ( ) ) N g a th ir e a f n e d ed H W W fo ( (i 2 L ) )n r … w to a n r o Id u n 2 t : : a 0 z p( ( 2 2 ) 1 ) ro 0 c ). es T s h , e w i e n h p a u v t e is In th f e ( s x a n m ; e Θ w ) a = y, σ al (cid:16) l z R (L M ) N ·v N j (2 p ) a + ram B e ( t L e + rs 1 , ) i · n c c ( lu k) d (cid:17) in . g Θ (6 = )
+a((cid:96)) =W((cid:96)) B z (1 ( ) (cid:96)−1)+b(cid:96) ((cid:96)= o I u n t :1 : a z (, ( 1 1 ) ) ··· ,L) (2) {W,B,V(1),V(2),C},canbejointlylearnedbasedonthe
+W(1) abovemaximumlikelihoodestimation.
+(cid:16) (cid:17) (cid:16) (cid:17)
+zR(e(cid:96)l)ati=on vhectora((cid:96)) =max 0,a((cid:96)) Head( (cid:96)ent=ity v1ec,to·r·· ,L) (3) The RMNN models are particularly suitable for knowl-
+edge transfer learning, where a pre-trained model can be
+whereW((cid:96))andb(cid:96)representtheweightmatrixandbiasfor quickly extended to any new relation after observing a few
+layer(cid:96)respectively. samples from that relation. In this case, we may estimate a
+Finally,weproposetocalculateasigmoidscoreforeach newrelationcodebasedontheavailablenewsampleswhile
+triple x = (e ,r ,e ) as the association probability using keepingthewholenetworkunchanged.Duetoitssmallsize,
+n i k j
+thelasthiddenlayer’soutputandthetailentityvectorv(2): thenewrelationcodecanbereliablyestimatedfromonlya
+j small number of new samples. Furthermore, model perfor-
+(cid:16) (cid:17) manceinalloriginalrelationswillnotbeaffectedsincethe
+f(x ;Θ)=σ z(L)·v(2) (4)
+n j modelandalloriginalrelationcodesarenotchangedduring
+transferlearning.
+whereσ(·)isthesigmoidfunction,i.e.,σ(x)=1/(1+e−x).
+All network parameters of this NAM structure, repre- Experiments
+sentedasΘ={W,V(1),V(2),C},maybejointlylearned
+In this section, we evaluate the proposed NAM models for
+bymaximizingthelikelihoodfunctionineq.(1).
+various reasoning tasks. We first describe the experimental
+setupandthenwereporttheresultsfromseveralreasoning
+Relation-modulatedNeuralNetworks(RMNN)
+tasks, including textual entailment recognition, triple clas-
+Particularly for multi-relation data, following the idea in sification in multi-relational KBs, commonsense reasoning
+(Xueetal.2014),weproposetousetheso-calledrelation- andknowledgetransferlearning.
+modulatedneuralnets(RMNN),asshowninFigure4.
+TheRMNNusesthesameoperationsasDNNstoproject Experimentalsetup
+all entities and relations into low-dimensional continuous Here we first introduce some common experimental set-
+space. As shown in Figure 4, we connect the knowledge- tingsusedforallexperiments:1)Forentityorsentencerep-
+specificrelationcodec(k)toallhiddenlayersinthenetwork. resentations, we represent them by composing from their
+word vectors as in (Socher et al. 2013). All word vectors NAMmodelachievesconsiderableimprovementsovervar-
+are initialized from a pre-trained skip-gram (Mikolov et al. ious traditional methods. This indicates that we can better
+2013) word embedding model, trained on a large English modelentailmentrelationshipinnaturallanguagebyrepre-
+Wikipediacorpus.Thedimensionsforallwordembeddings sentingsentencesincontinuousspaceandconductingprob-
+are set to 100 for all experiments; 2) The dimensions of abilisticreasoningwithdeepneuralnetworks.
+all relation codes are set to 50. All relation codes are ran-
+domly initialized; 3) For network structures, we use ReLU Tripleclassificationinmulti-relationalKBs
+asthenonlinearactivationfunctionandallnetworkparam- In this section, we evaluate the proposed NAM models on
+etersareinitializedaccordingto(GlorotandBengio2010). twopopularknowledgetripleclassificationdatasets,namely
+Meanwhile,sincethenumberoftrainingexamplesformost WN11andFB13in(Socheretal.2013)(derivedfromWord-
+probabilistic reasoning tasks is relatively small, we adopt NetandFreeBase),topredictwhethersomenewtriplerela-
+the dropout approach (Hinton et al. 2012) during the train- tionsholdbasedonothertrainingfactsinthedatabase.The
+ingprocesstoavoidtheover-fittingproblem;4)Duringthe WN11datasetcontains38,696uniqueentitiesinvolving11
+learning process of NAMs, we need to use negative sam- differentrelationsintotalwhiletheFB13datasetcovers13
+ples, which are automatically generated by randomly per- relationsand75,043entities.Table3summarizesthestatis-
+turbing positive KB triples as D− = {(e i ,r k ,e (cid:96) )|e (cid:96) (cid:54)= ticsofthesetwodatasets.
+e ∧(e ,r ,e )∈D+}.
+j i k j
+For each task, we use the provided development set to Dataset #R #Ent #Train #Dev #Test
+tuneforthebesttraininghyperparameters.Forexample,we WN11 11 38,696 112,581 2,609 10,544
+have tested the number of hidden layers among {1, 2, 3}, FB13 13 75,043 316,232 5,908 23,733
+the initial learning rate among {0.01, 0.05, 0.1, 0.25, 0.5},
+dropout rate among {0, 0.1, 0.2, 0.3, 0.4}. Finally, we se- Table3:ThestatisticsforKBstripleclassificationdatasets.
+lectthebestsettingbasedontheperformanceonthedevel- #R is the number of relations. #Ent is the size of the entity
+opment set: the final model structure uses 2 hidden layers, set.
+and the learning rate and the dropout rate are set to be 0.1
+and0.2,respectively,foralltheexperiments.Duringmodel The goal of knowledge triple classification is to predict
+training, the learning rate is halved once the performances whether a given triple x = (e ,r ,e ) is correct or not.
+n i k j
+inthedevelopmentsetdecreases.BothDNNsandRMNNs We first use the training data to learn NAM models. After-
+aretrainedusingthestochasticgradientdescend(SGD)al- wards,weusethedevelopmentsettotuneaglobalthreshold
+gorithm.WenoticethattheNAMmodelsconvergequickly T to make a binary decision: the triple is classified as true
+after30epochs. if f(x ;Θ) ≥ T; otherwise it is false. The final accuracy
+n
+is calculated based on how many triplets in the test set are
+RecognizingTextualEntailment classifiedcorrectly.
+Experimental results on both WN11 and FB13 datasets
+Understandingentailmentandcontradictionisfundamental
+aregiveninTable4,wherewecomparethetwoNAMmod-
+tolanguageunderstanding.Hereweconductexperimentson
+els with all other methods reported on these two datasets.
+apopularrecognizingtextualentailment(RTE)task,which
+TheresultsclearlyshowthattheNAMmethods(DNNsand
+aimstorecognizetheentailmentrelationshipbetweenapair
+RMNNs) achieve comparable performance on these triple
+of English sentences. In this experiment, we use the SNLI
+classification tasks, and both yield consistent improvement
+datasetin(Bowmanetal.2015)toconduct2-classRTEex-
+over all existing methods. In particular, the RMNN model
+periments (entailment or contradiction). All instances that
+yields3.7%and1.9%absoluteimprovementsoverthepop-
+arenotlabelledas“entailment”areconvertedtocontradic-
+ular neural tensor networks (NTN) (Socher et al. 2013) on
+tioninourexperiments.TheSNLIdatasetcontainshundreds
+WN11andFB13respectively.BothDNNandRMNNmod-
+ofthousandsoftrainingexamples,whichisusefulfortrain-
+elsaremuchsmallerthanNTNinthenumberofparameters
+ingaNAMmodel.Sincethisdatasetdoesnotincludemulti-
+andtheyscalewellasthenumberofrelationtypesincreases.
+relational data, we only investigate the DNN structure for
+Forexample,bothDNNandRMNNmodelsforWN11have
+thistask.ThefinalNAMresult,alongwiththebaselineper-
+about 7.8 millions of parameters while NTN has about 15
+formanceprovidedin(Bowmanetal.2015),islistedinTa-
+millions. Although the RESCAL and TransE models have
+ble2.
+about4millionsofparametersforWN11,theirsizegoesup
+quicklyforothertasksofthousandsormorerelationtypes.
+Model Accuracy(%)
+In addition, the training time of DNN and RMNN is much
+EditDistance(Bowmanetal.2015) 71.9
+shorter than that of NTN or TransE since our models con-
+Classifier(Bowmanetal.2015) 72.2
+vergemuchfaster.Forexample,wehaveobtainedatleasta
+LexicalResources(Bowmanetal.2015) 75.0
+5timesspeedupoverNTNinWN11.
+DNN 84.7
+CommonsenseReasoning
+Table2:ExperimentalresultsontheRTEtask.
+Similartothetripleclassificationtask(Socheretal.2013),
+in this work, we use the ConceptNet KB (Liu and Singh
+From the results, we can see the proposed DNN based 2004) to construct a new commonsense data set, named as
+Model WN11 FB13 Avg.
+SymbolOf
+SME(Bordesetal.2012) 70.0 63.7 66.9 DesireOf
+TransE(Bordesetal.2013) 75.9 81.5 78.7 CreatedBy
+HasLastSubevent
+TransH(Wangetal.2014) 78.8 83.3 81.1 Desires
+TransR(Linetal.2015) 85.9 82.5 84.2 CausesDesire
+ReceivesAction
+NTN(Socheretal.2013) 86.2 90.0 88.1
+MotivatedByGoal
+DNN 89.3 91.5 90.4 Causes
+HasProperty
+RMNN 89.9 91.9 90.9
+HasPrerequisite
+HasSubevent NTN
+Table4:TripleclassificationaccuracyinWN11andFB13. CapableOf RMNN
+UsedFor
+60 65 70 75 80 85 90 95 100
+CN14 hereafter. When building CN14, we first select all Figure5:AccuracyofdifferentrelationsinCN14.
+facts in ConceptNet related to 14 typical commonsense re-
+lations, e.g., UsedFor, CapableOf. (see Figure 5 for all 14
+88.00
+relations.)Then,werandomlydividetheextractedfactsinto
+86.00
+three sets, Train, Dev and Test. Finally, in order to create
+84.00
+a test set for classification, we randomly switch entities (in 82.00
+thewholevocabulary)fromcorrecttriplesandgetatotalof 80.00
+2×#Testtriples(halfarepositivesamplesandhalfarenega- 78.00
+tiveexamples).ThestatisticsofCN14aregiveninTable5. 76.00 DNN
+74.00 RMNN
+72.00
+Dataset #R #Ent. #Train #Dev #Test 70.00
+5% 10% 15% 20% 25% 50% 75%100%
+CN14 14 159,135 200,198 5,000 10,000
+Figure 6: Accuracy (in %) on the test set of a new rela-
+Table5:ThestatisticsfortheCN14dataset. tion CausesDesire is shown as a function of used training
+samplesfromCausesDesirewhenupdatingtherelationcode
+The CN14 dataset is designed for answering common- only.(Accuracyontheoriginalrelationsremainsas85.7%.)
+sensequestionslikeIsacamelcapableofjourneyingacross
+desert? The proposed NAM models answer this question
+bycalculatingtheassociationprobabilityPr(E |E )where knowledgetransferlearningscenario,whereweadaptapre-
+2 1
+E = {camel,capableof}andE = journeyacrossdesert. trained model to an unseen relation with only a few train-
+1 2
+Inthispaper,wecomparetwoNAMmethodswiththepop- ingsamplesfromthenewrelation.Herewerandomlyselect
+ularNTNmethodin(Socheretal.2013)onthisdatasetand a relation, e.g., CausesDesire in CN14 for this experiment.
+theoverallresultsaregiveninTable6.Wecanseethatboth This relation contains only 4800 training samples and 480
+NAM methods outperform NTN in this task, and the DNN testsamples.Duringtheexperiments,weusealloftheother
+andRMNNmodelsobtainsimilarperformance. 13 relations in CN14 to train baseline NAM models (both
+DNN and RMNN). During the transfer learning, we freeze
+Model Positive Negative total allNAMparameters,includingallweightsandentityrepre-
+NTN 82.7 86.5 84.6
+sentations,andonlylearnanewrelationcodeforCausesDe-
+sirefromthegivensamples.Atlast,thelearnedrelationcode
+DNN 84.5 86.9 85.7
+(alongwiththeoriginalNAMmodels)isusedtoclassifythe
+RMNN 85.1 87.1 86.1
+newsamplesofCausesDesireinthetestset.Obviously,this
+Table6:Accuracy(in%)comparisononCN14. transfer learning does not affect the model performance in
+theoriginal13relationsbecausethemodelsarenotchanged.
+Figure6showstheresultsofknowledgetransferlearningfor
+Furthermore,weshowtheclassificationaccuracyofall14
+the relation CausesDesire as we increase the training sam-
+relations in CN14 for RMNN and NTN in Figure 5, which
+plesgradually.TheresultshowsthatRMNNperformsmuch
+showthattheaccuracyofRMNNvariesamongdifferentre-
+better than DNN in this experiment, where we can signifi-
+lationsfrom80.1%(Desires)to93.5%(CreatedBy).Weno-
+cantlyimproveRMNNforthenewrelationwithonly5-20%
+tice some commonsense relations (such as Desires, Capa-
+ofthetotaltrainingsamplesforCausesDesire.Thisdemon-
+bleOf) are harder than the others (like CreatedBy, Causes-
+strates that the structure to connect the relation code to all
+Desire).RMNNovertakesNTNinalmostallrelations.
+hidden layers leads to more effective learning of new rela-
+tion codes from a relatively small number of training sam-
+KnowledgeTransferLearning
+ples.
+Knowledgetransferbetweenvariousdomainsisacharacter- Next,wealsotestamoreaggressivelearningstrategyfor
+istic feature and crucial cornerstone of human learning. In this transfer learning setting, where we simultaneously up-
+this section, we evaluate the proposed NAM models for a date all the network parameters during the learning of the
+new relation code. The results are shown in Figure 7. This and 2500 adjective words. The procedure for constructing
+strategy can obviously improve performance more on the thisvocabularyisstraightforward.Wefirstextractallwords
+new relation, especially when we add more training sam- andphrases(dividedbypart-of-speechtags)fromWordNet
+ples. However, as expected, the performance on the origi- (Miller1995).Afterconductingpart-of-speechtaggingona
+nal13relationsdeteriorates.TheDNNimprovestheperfor- largecorpus,wethengettheoccurrencefrequenciesforall
+manceonthenewrelationasweusealltrainingsamples(up thosewordsandphrasesbyscanningoverthetaggedcorpus.
+to 94.6%). However, the performance on the remaining 13 Finally, we sort those words and phrases by frequency and
+originalrelationsdropsdramaticallyfrom85.6%to75.5%. thenselectthetopNresults.
+Once again, RMNN shows an advantage over DNN in this
+transferlearningsetting,wheretheaccuracyonthenewre- Set Category Size
+lation increases from 77.9% to 90.8% but the accuracy on 1 Verbwords 3000
+the original 13 relations only drop slightly from 85.9% to 2 Verbphrases 2000
+82.0%. 3 Adjectivewords 2500
+100.00 100.00 Table7:Commonvocabularyconstructedforminingcause-
+DNN
+95.00 95.00 RMNN effecteventpairs.
+90.00 90.00
+85.00 85.00
+Query Generation Based on the common vocabulary,
+80.00 DNN 80.00 weVgoceanberate search queries by pairing any two words (or
+75.00 RMNN 75.00 phrases). Currently we only focus on extracting the asso-
+70.00 70.00 ciationrelationshipsbetweenverbsandadjectives.REesvultesnfor
+5% 10% 15% 20% 25% 50% 75%100% 5% 10% 15% 20% 25% 50% 75%100% Text corpus
+thissmallvocabulSaernyte,nctehsesearchspaceisverylarge(7.5Kby
+7.5Kleadstotensofmillionspairs).Inthiswork,wedefine
+severalpatternsforeachwordorphrasebasedontwopop-
+Figure 7: Transfer learning results by updating all network
+ular semantic dimensions: 1) positive-negative, 2) active-
+parameters.Theleftfigureshowsresultsonthenewrelation
+passive (Osgood 1952). Using the verbs rob and arrest for
+whiletherightfigureshowsresultsontheoriginalrelations.
+example,eachofthemcontains4patterns,i.e.(active,posi-
+tive),(active,negative),(passive,positive)and(passive,neg-
+ative).Therefore,thequeryformedbyrobandarrestwould
+ExtendingNAMsforWinogradSchema
+contain 16 possible dimensions, as shown in Figure 8. The
+DataCollection task of mining the cause-effect relationships for any two
+wordsorphrasesthenbecomesthetaskofgettingthenum-
+In the previous experiments sections, all the tasks already
+berofoccurrencesforallthepossiblelinks.
+contained manually constructed training data for us. How-
+ever,inmanycases,ifwewanttorealizeflexiblecommon-
+sense reasoning under the real world conditions, obtaining Association Links
+thetrainingdatacanalsobeverychallenging.Morespecif-
+Active, Positive Active, Positive
+ically,sincetheproposedneuralassociationmodelisatyp-
+ical deep learning technique, lack of training data would
+Active, Negative Active, Negative
+make it difficult for us to train a robust model. Therefore,
+“rob” “arrest”
+in this paper, we make some efforts and try to mine use-
+Passive, Positive Passive, Positive
+fuldataformodeltraining.Asaveryfirststep,wearenow
+workingoncollectingthecause-effectrelationshipsbetween
+Passive, Negative Passive, Negative
+asetofcommonwordsandphrases.Webelievethistypeof
+knowledgewouldbeakeycomponentformodelingtheas-
+sociationrelationshipsbetweendiscreteevents. Figure8:Typical16dimensionsforatypicalquery.
+Thissectiondescribestheideaforautomaticcause-effect
+paircollectionaswellasthedatacollectionresults.Wewill
+firstintroducethecommonvocabularywecreatedforquery AutomaticCause-EffectPairCollection
+generation.Afterthat,thedetailedalgorithmforcause-effect
+Basedonthecreatedqueries,inthissection,wepresentthe
+paircollectionwillbepresented.Finally,thefollowingsec-
+procedures for extracting cause-effect pairs from large un-
+tionwillpresentthedatacollectionresults.
+structuredtexts.Theoverallsystemframeworkisshownin
+CommonVocabularyandQueryGeneration Figure9.
+To avoid the data sparsity problem, we start our work by Query Searching The goal of query searching is to find
+constructing a vocabulary of very common words. In our allthepossiblesentencesthatmaycontaintheinputqueries.
+currentinvestigations,weconstructavocabularywhichcon- Since the number of queries is very large, we structure all
+tains 7500 verbs and adjectives. As shown in Table 7, this the queries as a hashmap and conduct string matching dur-
+vocabulary includes 3000 verb words, 2000 verb phrases ingtextscanning.Indetail,thesearchingprogramstartsby
+Corpus #Resultpairs
+Gigaword(Graffetal.2003) 117,938
+Vocab
+Novels(Zhuetal.2015) 129,824
+CBTest(Hilletal.2015) 4,167
+Results BNC(Burnard1995) 2,128
+Text corpus
+Sentences
+Table8:Datacollectionresultsondifferentcorpora.
+Figure9:Automaticpaircollectionsystemframework.
+WinogradSchemaChallenge
+Basedonalltheexperimentsdescribedintheprevioussec-
+conductinglemmatizing,part-of-speechtagginganddepen- tions, we could conclude that the neural association model
+dency parsing on the source corpus. After it, we scan the has the potential to be effective in commonsense reason-
+corpus from the begining to end. When dealing with each ing. To further evaluate the effectiveness of the proposed
+sentence,wewilltrytofindthematchedwords(orphrases) neural association model, in this paper, we conduct ex-
+usingthehashmap.Thisstrategyhelpustoreducethesearch periments on solving the complex Winograd Schema chal-
+complexity to be linear with the size of corpus, which has lenge problems (Levesque, Davis, and Morgenstern 2011;
+beenprovedtobeveryefficientinourexperiments. Morgenstern, Davis, and Ortiz Jr 2016). Winograd Schema
+is a commonsense reasoning task proposed in recent years,
+Association Links
+Subject-ObjectMatching Basedonthedependencypars- which has been treated as an alternative to the Turing Test
+Active, Positive Active, Positive
+ing results, once we find one phrase of a query, we would (Turing 1950). This is a new AI task and it would be very
+check whether that phrase is associated with at least one interestingtoseewhetherneuralnetworkmethodsaresuit-
+subject or objeAccttivien, NetghaetivecorrespondingAcstiveen, Nteegnatcivee or not. At ableforsolvingthisproblem.Thissectionthendescribesthe
+thesam“robe”time,werecordwhetherthephrasewasposit“iavrreest”or
+progresswehavemadeinattemptingtomeettheWinograd
+negative, activePaossrivep, aPosssitiivvee. Moreover,Pfaossriveh, ePolspitiivneg us to de- SchemaChallenge.Formakingclearwhatisthemaintask
+cidethecause-effectrelationships,wewouldcheckwhether oftheWinogradSchema,wewillfirstlyintroduceitatahigh
+thephraseislinPkasesidve,w NeigtahtivseomeconnectPivasesivwe, Noergdatsiveornot.Typ- level. Afterwards, we will introduce the system framework
+icalconnectivewordsusedinthisworkarebecauseandif. aswellasallthecorrespondingmodulesweproposedtoau-
+Tofinallyextractthecause-effectpairs,wedesignasimple tomatically solve the Winograd Schema problems. Finally,
+subject-object matching rule, which is similar to the work experiments and discussions on a human annotated cause-
+of (Peng, Khashabi, and Roth 2015). 1) If the two phrases effectdatasetanddiscussionwillbepresented.
+in one query share the same subject, the relationship be-
+tweenthemisthenstraightforward;2)Ifthesubject ofone WinogradSchema
+phraseistheobjectoftheotherphrase,thenweneedtoap- TheWinogradSchema(WS)evaluatesasystem’scommon-
+ply the passive pattern to the phrase related to the object. sense reasoning ability based on a traditional, very diffi-
+Thissubject-objectmatchingideaissimilartotheworkpro- cult natural language processing task: coreference resolu-
+posedin(Peng,Khashabi,andRoth2015).Usingquery(ar-
+tion(Levesque,Davis,andMorgenstern2011;Saba2015).
+rest, rob) as an example. Once we find sentence “Tom was The Winograd Schema problems are carefully designed to
+arrestedbecauseTomrobbedtheman”,weobtainitsdepen-
+beataskthatcannotbeeasilysolvedwithoutcommonsense
+dencyparsingresultasshowninFigure10.Theverbarrest
+knowledge. In fact, even the solution of traditional coref-
+and rob share a same subject, and the pattern for arrest is erence resolution problems relies on semantics or world
+passive,wewilladdtheoccurrenceofthecorrespondingas- knowledge (Rahman and Ng 2011; Strube 2016). For de-
+sociation link, i.e. link from the (active,positive) pattern of scribing the WS in detail, here we just copy some words
+robtothe(passive,positive)patternofarrest,by1.
+from(Levesque,Davis,andMorgenstern2011).AWSisa
+small reading comprehensiontest involving a single binary
+question.Herearetwoexamples:
+• Thetrophywouldnotfitinthebrownsuitcasebecauseit
+wastoobig.Whatwastoobig?
+– Answer0:thetrophy
+Figure10:Dependencyparsingresultofsentence“Tomwas
+– Answer1:thesuitcase
+arrestedbecauseTomrobbedtheman”.
+• Joan made sure to thank Susan for all the help she had
+given.Whohadgiventhehelp?
+DataCollectionResults – Answer0:Joan
+– Answer1:Susan
+Table8showsthecorporaweusedforcollectingthecause-
+effectpairsandthecorrespondingdatacollectionresults.We Thecorrectanswers hereareobviousfor humanbeings. In
+extractapproximately240,000pairsfromdifferentcorpora. eachofthequestions,thecorrespondingWShasthefollow-
+ingfourfeatures:
+1. Twopartiesarementionedinasentencebynounphrases. inthecorrespondingNAMmodels.Currentlyweusethe
+They can be two males, two females, two inanimate ob- RMNNstructureforNAM.
+jectsortwogroupsofpeopleorobjects.
+2. A pronoun or possessive adjective is used in the sen- relation
+tenceinreferencetooneoftheparties,butisalsoofthe Neural
+right sort for the second party. In the case of males, it is Association effect
+“he/him/his”;forfemales,itis“she/her/her”forinanimate Model
+cause
+objectitis“it/it/its,”andforgroupsitis“they/them/their.”
+3. Thequestioninvolvesdeterminingthereferentofthepro-
+nounorpossessiveadjective.Answer0isalwaysthefirst Figure12:ThemodelframeworkforRelationVec-NAM.
+party mentioned in the sentence (but repeated from the
+sentenceforclarity),andAnswer1isthesecondparty.
+TrainingtheNAMmodelsbasedonthesetwoconfigura-
+4. There is a word (called the special word) that appears tionsisstraightforward.Allthenetworkparameters,includ-
+in the sentence and possibly the question. When it is re- ingtherelationvectorsandthNeeulrianl eartransformationmatri-
+placedbyanotherword(calledthealternateword),every- ces,caarueselearnedTrabnysfothrmestanAdsasrodciasttioocn hasticTragnrsafdorimentdesecffeenctd
+thingstillmakesperfectsense,buttheanswerchanges. algorithm. Model
+Solving WS problems is not easy since the required com-
+Experiments
+monsense knowledge is quite difficult to collect. In the
+following sections, we are going to describe our work on In this section, we will introduce our current experiments
+solvingtheWinogradSchemaproblemsvianeuralnetwork onsolvingtheWinogradSchemaproblems.Wewillfirstse-
+methods. lectacause-effectdatasetconstructedfromthestandardWS
+dataset.Subsequently,experimentalsetupwillbedescribed
+SystemFramework
+in detail. After presenting the experimental results, discus-
+Inthispaper,weproposethatthecommonsenseknowledge sionswouldbemadeattheendofthissection.
+requiredinmanyWinogradSchemaproblemscouldbefor-
+Cause-Effect Dataset Labelling In this paper,
+mulizedassomeassociationrelationshipsbetweendiscrete
+based on the WS dataset available at http:
+events.Usingsentence“JoanmadesuretothankSusanfor
+//www.cs.nyu.edu/faculty/davise/papers/
+allthehelpshehadgiven”asanexample,thecommonsense
+WinogradSchemas/WS.html, we labelled 78 cause-
+knowledgeisthatthemanwhoreceiveshelpshouldthankto
+effect problems among all 278 available WS questions for
+the man who gives help to him. We believe that by model-
+our experiments. Table 9 shows some typical examples.
+ing the association between event receive help and thank,
+For each WS problem, we label three verb (or adjective)
+give help and thank, we can make the decision by com-
+phrasesforthecorrespondingtwoparitiesandthepronoun.
+paring the association probability Pr(thank|receivehelp)
+In the labelled phrases, we also record the corresponding
+and Pr(thank|givehelp). If the models are well trained,
+patterns for each word respectively. Using word lift for
+we should get the inequality Pr(thank|receivehelp) >
+example, we will generate lift for its active and positive
+Pr(thank|givehelp).Followingthisidea,weproposetouti-
+pattern, not lift for its active and negative pattern, be lifted
+lize the data constructed from the previous section and ex-
+for its passive and positive pattern, and not be lifted for
+tend the NAM models for solving WS problems. Here we
+its passive and negative pattern. For example, in sentence
+designtrwelaotiofnrameworksfortrainingNAMmodels.
+“Themancouldn’tlifthissonbecausehewassoweak”,we
+• TransMat-NAM: We dNeesuigranl to apply four linear trans-
+identify weak, not lift and not belifted for he, the manand
+Association effect
+formation matrices, i.e., matrices of (active, positive),
+Model sonresspectively.Thecommonsenseisthatsomebodywho
+(activeca,unseegative), (passive, positive) and (passive, nega-
+is weak would more likely to has the effect not lift rather
+tive),fortransformingboththecauseeventandtheeffect
+than not be lifted. The main work of NAM for solving this
+event. After it, we then use NAM for model the cause-
+problem is to calculate the association probability between
+effectassociationrelationshipbetweenanycauseandef-
+thesephrases.
+fectevents.
+Experimental setup The setup for NAM on this cause-
+effect task is similar to the settings on the previous tasks.
+Neural For representing the phrases in neural association models,
+cause Transform Association Transform effect we use the bag-of-word (BOW) approach for composing
+Model
+phrases from pre-trained word vectors. Since the vocabu-
+lary we use in this experiment contains only 7500 com-
+monverbsandadjectives,therearesomeout-of-vocabulary
+Figure11:ThemodelframeworkforTransMat-NAM.
+(OOV)wordsinsomephrases.BasedontheBOWmethod,a
+phrasewouldbeuselessifallthewordsitcontainsareOOV.
+• RelationVec-NAM: On the other hand, in this configura- Inthispaper,weremoveallthetestingsampleswithuseless
+tion,wetreatallthetypical16dimensionsshowninFig- phraseswhichresultsin70testingcause-effectsamples.For
+ure8asdistinctrelations.Sothereare16relationvectors network settings, we set the embedding size to 50 and the
+Schematexts Verb/Adjective1 Verb/Adjective2 Verb/Adjective3
+Themancouldn’tlifthissonbecausehewassoweak weak notlift notbelifted
+Themancouldn’tlifthissonbecausehewassoheavy heavy notlift notbelifted
+Thefishatetheworm.itwastasty tasty eat beeaten
+Thefishatetheworm.itwashungry hungry eat beeaten
+MarytuckedherdaughterAnneintobed,sothatshecouldsleep tuckintobed betuckedintobed sleep
+MarytuckedherdaughterAnneintobed,sothatshecouldwork tuckintobed betuckedintobed work
+Tomthrewhisschoolbagdowntorayafterhereachedthetopofthestairs reachtop throwdown bethrowndown
+Tomthrewhisschoolbagdowntorayafterhereachedthebottomofthestairs reachbottom throwdown bethrowndown
+JacksonwasgreatlyinfluencedbyArnold,thoughhelivedtwocenturiesearlier liveearlier influence beinfluenced
+JacksonwasgreatlyinfluencedbyArnold,thoughhelivedtwocenturieslater livelater influence beinfluenced
+Table9:ExamplesoftheCause-EffectdatasetlabelledfromtheWinogradSchemaChallenge.
+dimensionofrelationvectorsto50.Weset2hiddenlayers • Paul tried to call George on the phone, but he wasn’t
+fortheNAMmodelsandallthehiddenlayersizesaresetto available.Whowasnotavailable?
+100.Thelearningrateissetto0.01foralltheexperiments.
+– Paul:Pr(notavailable|call)=0.6859
+At the same time, to better control the model training, we
+– George:Pr(notavailable|becalled)=0.8306
+set the learning rates for learning all the embedding matri-
+cesandtherelationvectorsto0.025. – Answer:George
+Negative sampling is very important for model training For these testing examples, we find our model can
+for this task. In the TransMat-NAM system, we generate answer the questions by correctly calculating the associa-
+negative samples by randomly selecting different patterns tion probabilities. The probability Pr(notsuccessful|call)
+with respect to the pattern of the effect event in the posi- is larger than Pr(notsuccessful|becalled) while the
+tivesamples.Forexample,ifthepositivetrainingsampleis probability Pr(notavailable|call) is smaller than
+“hungry (active, positive) causes eat (active, positive)”, we Pr(notavailable|becalled). Those simple inequality
+may generate negative samples like “hungry (active, pos- relationships between the association probabilities are
+itive) causes eat (passive, positive)”, or “hungry (active, very reasonable in our commonsense. Here are some more
+positive) causes eat (active, negative)”. In the RelationVec- examples:
+NAM system, the negative sampling method is much more
+• Jim yelled at Kevin because he was so upset. Who was
+straightforward,i.e.,wewillrandomlyselectadifferentef-
+upset?
+fecteventfromthewholevocabulary.Intheexampleshown
+here, the possible negative sample would be “hungry (ac- – Jim:Pr(yell|beupset)=0.9296
+tive, positive) causes happy (active, positive)”, or “hungry – Kevin:Pr(beyelled|beupset)=0.8785
+(active,positive)causestalk(active,positive)”andsoon.
+– Answer:Jim
+Results The experimental results are shown in Table 10. • Jim comforted Kevin because he was so upset. Who was
+From the results, we find that the proposed NAM mod- upset?
+els achieve about 60% accuracy on the cause-effect dataset
+– Jim:Pr(comfort|beupset)=0.0282
+constructedfromWinogradSchemas.Morespecifically,the
+RelationVec-NAM system performs slightly better than the – Kevin:Pr(becomforted|beupset)=0.5657
+TransMat-NAMsystem. – Answer:Kevin
+This example also conveys some commonsense knowl-
+Model Accuracy(%)
+edge in our daily life. We all know that somebody who is
+TransMat-NAM 58.6(41/70)
+upset would be more likely to yell at other people. Mean-
+RelationVec-NAM 61.4(43/70)
+while,itisalsomorelikelythattheywouldbebecomforted
+byotherpeople.
+Table10:ResultsofNAMsontheWinogradSchemaCause-
+Effectdataset.
+Conclusions
+Inthetestingresults,wefindtheNAMperformswellon In this paper, we have proposed neural association models
+sometestingexamples.Forinstance,inthecallphonesce- (NAM)forprobabilisticreasoning.Weuseneuralnetworks
+nario,theproposedNAMgeneratesthecorrespondingasso- to model association probabilities between any two events
+ciationprobabilitiesasfollows. in a domain. In this work, we have investigated two model
+• PaultriedtocallGeorgeonthephone,buthewasn’tsuc- structures, namely DNN and RMNN, for NAMs. Experi-
+cessful.Whowasnotsuccessful? mental results on several reasoning tasks have shown that
+bothDNNsandRMNNscanoutperformtheexistingmeth-
+– Paul:Pr(notsuccessful|call)=0.7299
+ods.Thispaperalsoreportssomepreliminaryresultstouse
+– George:Pr(notsuccessful|becalled)=0.5430 NAMsforknowledgetransferlearning.Wehavefoundthat
+– Answer:Paul the proposed RMNN model can be quickly adapted to a
+newrelationwithoutsacrificingtheperformanceintheorig- [Graffetal.2003] Graff,D.;Kong,J.;Chen,K.;andMaeda,
+inal relations. After proving the effectiveness of the NAM K. 2003. English gigaword. Linguistic Data Consortium,
+models, we apply it to solve more complex commonsense Philadelphia.
+reasoningproblems,i.e.,theWinogradSchemas(Levesque,
+[Hilletal.2015] Hill, F.; Bordes, A.; Chopra, S.; and We-
+Davis, and Morgenstern 2011). To support model training ston,J. 2015. Thegoldilocksprinciple:Readingchildren’s
+in this task, we propose a straightforward method to col- bookswithexplicitmemoryrepresentations. arXivpreprint
+lectassociativephrasepairsfromtextcorpora.Experiments arXiv:1511.02301.
+conducted on a set of Winograd Schema problems have in-
+[Hintonetal.2012] Hinton, G. E.; Srivastava, N.;
+dicatedtheneuralassociationmodeldoessolvesomeprob-
+Krizhevsky, A.; Sutskever, I.; and Salakhutdinov,
+lems successfully. However, it is still a long way to finally
+R. R. 2012. Improving neural networks by prevent-
+achievingautomaticcommonsensereasoning.
+ing co-adaptation of feature detectors. arXiv preprint
+arXiv:1207.0580.
+Acknowledgments
+[Hornik,Stinchcombe,andWhite1990] Hornik, K.; Stinch-
+We want to thank Prof. Gary Marcus of New York Univer- combe, M.; and White, H. 1990. Universal approximation
+sity for his useful comments on commonsense reasoning. ofanunknownmappinganditsderivativesusingmultilayer
+WealsowanttothankProf.ErnestDavis,Dr.LeoraMorgen- feedforwardnetworks. Neuralnetworks3(5):551–560.
+sternandDr.CharlesOrtizfortheirwonderfulorganizations [Jensen1996] Jensen, F. V. 1996. An introduction to
+for making the first Winograd Schema Challenge happen. Bayesiannetworks,volume210. UCLpressLondon.
+This paper was supported in part by the Science and Tech-
+[KollerandFriedman2009] Koller, D., and Friedman, N.
+nologyDevelopmentofAnhuiProvince,China(GrantsNo.
+2009. Probabilisticgraphicalmodels:principlesandtech-
+2014z02006),theFundamentalResearchFundsfortheCen-
+niques. MITpress.
+tralUniversities(GrantNo.WK2350000001)andtheStrate-
+gic Priority Research Program of the Chinese Academy of [LeCun,Bengio,andHinton2015] LeCun, Y.; Bengio, Y.;
+Sciences(GrantNo.XDB02070006). and Hinton, G. 2015. Deep learning. Nature
+521(7553):436–444.
+References [Levesque,Davis,andMorgenstern2011] Levesque, H. J.;
+Davis,E.;andMorgenstern,L. 2011. Thewinogradschema
+[Bengioetal.2003] Bengio, Y.; Ducharme, R.; Vincent, P.; challenge. InAAAISpringSymposium:LogicalFormaliza-
+andJanvin,C.2003.Aneuralprobabilisticlanguagemodel. tionsofCommonsenseReasoning.
+TheJournalofMachineLearningResearch3:1137–1155.
+[Linetal.2015] Lin,Y.;Liu,Z.;Sun,M.;Liu,Y.;andZhu,
+[Bordesetal.2012] Bordes, A.; Glorot, X.; Weston, J.; and X. 2015. Learning entity and relation embeddings for
+Bengio,Y. 2012. Jointlearningofwordsandmeaningrep- knowledgegraphcompletion. InProceedingsofAAAI.
+resentationsforopen-textsemanticparsing. InProceedings
+[LiuandSingh2004] Liu,H.,andSingh,P. 2004. Concept-
+ofAISTATS,127–135.
+net:apracticalcommonsensereasoningtoolkit. BTtechnol-
+[Bordesetal.2013] Bordes, A.; Usunier, N.; Garcia-Duran, ogyjournal22(4):211–226.
+A.; Weston, J.; and Yakhnenko, O. 2013. Translating em-
+[McCarthy1986] McCarthy, J. 1986. Applications of cir-
+beddingsformodelingmulti-relationaldata. InProceedings
+cumscriptiontoformalizingcommon-senseknowledge. Ar-
+ofNIPS,2787–2795.
+tificialIntelligence28(1):89–116.
+[Bowmanetal.2015] Bowman,S.R.;Angeli,G.;Potts,C.;
+[Mikolovetal.2013] Mikolov, T.; Chen, K.; Corrado, G.;
+and Manning, C. D. 2015. A large annotated corpus
+andDean,J. 2013. Efficientestimationofwordrepresenta-
+for learning natural language inference. arXiv preprint tionsinvectorspace. arXivpreprintarXiv:1301.3781.
+arXiv:1508.05326.
+[Miller1995] Miller, G. A. 1995. Wordnet: a lexi-
+[Bowman2013] Bowman, S. R. 2013. Can recursive neu- cal database for english. Communications of the ACM
+raltensornetworkslearnlogicalreasoning? arXivpreprint 38(11):39–41.
+arXiv:1312.6192.
+[Minsky1988] Minsky, M. 1988. Society of mind. Simon
+[Burnard1995] Burnard, L. 1995. Users reference guide andSchuster.
+britishnationalcorpusversion1.0.
+[Morgenstern,Davis,andOrtizJr2016] Morgenstern, L.;
+[Collobertetal.2011] Collobert, R.; Weston, J.; Bottou, L.; Davis,E.;andOrtizJr,C.L. 2016. Planning,executing,and
+Karlen,M.;Kavukcuoglu,K.;andKuksa,P. 2011. Natural evaluating the winograd schema challenge. AI Magazine
+languageprocessing(almost)fromscratch. TheJournalof 37(1):50–54.
+MachineLearningResearch12:2493–2537.
+[Mueller2014] Mueller, E. T. 2014. Commonsense Rea-
+[Getoor2007] Getoor, L. 2007. Introduction to statistical soning:AnEventCalculusBasedApproach. MorganKauf-
+relationallearning. MITpress. mann.
+[GlorotandBengio2010] Glorot, X., and Bengio, Y. 2010. [NairandHinton2010] Nair, V., and Hinton, G. E. 2010.
+Understanding the difficulty of training deep feedforward Rectified linear units improve restricted boltzmann ma-
+neuralnetworks. InProceedingsofAISTATS,249–256. chines. InProceedingsofICML,807–814.
+[Neapolitan2012] Neapolitan,R.E.2012.Probabilisticrea-
+soning in expert systems: theory and algorithms. CreateS-
+paceIndependentPublishingPlatform.
+[Nickeletal.2015] Nickel, M.; Murphy, K.; Tresp, V.; and
+Gabrilovich,E. 2015. Areviewofrelationalmachinelearn-
+ingforknowledgegraphs.arXivpreprintarXiv:1503.00759.
+[Nickel,Tresp,andKriegel2012] Nickel,M.;Tresp,V.;and
+Kriegel, H.-P. 2012. Factorizing YAGO: scalable machine
+learningforlinkeddata. InProceedingsofWWW,271–280.
+ACM.
+[Osgood1952] Osgood, C. E. 1952. The nature and mea-
+surementofmeaning. Psychologicalbulletin49(3):197.
+[Pearl1988] Pearl,J. 1988. Probabilisticreasoninginintel-
+ligentsystems:Networksofplausiblereasoning.
+[Peng,Khashabi,andRoth2015] Peng, H.; Khashabi, D.;
+and Roth, D. 2015. Solving hard coreference problems.
+Urbana51:61801.
+[RahmanandNg2011] Rahman, A., and Ng, V. 2011.
+Coreferenceresolutionwithworldknowledge. InProceed-
+ingsofthe49thAnnualMeetingoftheAssociationforCom-
+putational Linguistics: Human Language Technologies-
+Volume1,814–824.AssociationforComputationalLinguis-
+tics.
+[RichardsonandDomingos2006] Richardson, M., and
+Domingos, P. 2006. Markov logic networks. Machine
+learning62(1-2):107–136.
+[Saba2015] Saba,W. 2015. Onthewinogradschemachal-
+lenge.
+[Socheretal.2013] Socher, R.; Chen, D.; Manning, C. D.;
+and Ng, A. 2013. Reasoning with neural tensor networks
+for knowledge base completion. In Proceedings of NIPS,
+926–934.
+[Strube2016] Strube, M. 2016. The (non) utility of se-
+mantics for coreference resolution (corbon remix). In
+NAACL 2016 workshop on Coreference Resolution Beyond
+OntoNotes.
+[Turing1950] Turing, A. M. 1950. Computing machinery
+andintelligence. Mind59(236):433–460.
+[Wangetal.2014] Wang, Z.; Zhang, J.; Feng, J.; and Chen,
+Z. 2014. Knowledge graph embedding by translating on
+hyperplanes. InProceedingsofAAAI,1112–1119. Citeseer.
+[Xueetal.2014] Xue, S.; Abdel-Hamid, O.; Jiang, H.; Dai,
+L.;andLiu,Q.2014.Fastadaptationofdeepneuralnetwork
+based on discriminant codes for speech recognition. Au-
+dio, Speech, and Language Processing, IEEE/ACM Trans.
+on22(12):1713–1725.
+[Zhuetal.2015] Zhu, Y.; Kiros, R.; Zemel, R.; Salakhutdi-
+nov, R.; Urtasun, R.; Torralba, A.; and Fidler, S. 2015.
+Aligning books and movies: Towards story-like visual ex-
+planationsbywatchingmoviesandreadingbooks. InPro-
+ceedingsoftheIEEEInternationalConferenceonComputer
+Vision,19–27.

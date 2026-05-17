@@ -1,0 +1,3229 @@
+Programmation Java
+Notes de cours
+uairiA
+enahpétS
+L3 Informatique – MIDO
+Année 2018–2019
+Introduction
+JAVA estunlangageinformatique:c’estunlangagepourparleràunemachine.Pourpouvoirécriredans
+celangage,ilfautdoncapprendresonvocabulaireetsagrammaireafindepouvoircommuniqueravecla
+machine.
+CecoursdemiseàniveaunesupposeaucuneconnaissanceparticulièredeJAVA .L’objectifducours
+estdevoirunegrandepartiedesfonctionalitésdecelangage.Lecourssedéroulesur15havecunepartie
+decoursetunepartiedetravauxdirigés.Cetempsn’estpassuffisantpourmaîtrisertouteslessubtilités
+dulangage,maisilestsuffisantpourpouvoirréaliserdesprojetsquipeuventdéjàsemontrerrelativement
+complexes.
+Pourcecours,onferal’hypothèsequedesnotionsalgorithmiquesdebasesontacquises.Ainsi,onne
+vapass’intéresseràl’implémentationd’algorithmespourrésoudredesproblèmesparticuliersetévaluer
+leurs performances d’un point de vue théorique (déterminer le nombre d’opérations pour mener à bien
+uncalcul,oubienévaluerlesdemandesenmémoire,etc).Ainsi,onnes’intéresserapasàdesexemples
+classiques comme le problème de tri d’un ensemble fini ou le calcul du chemin minimum entre deux
+noeuds d’un graphe. Le but du cours est de connaître les fonctionalités du langage. Par exemple, si on
+possède une implémentation d’un algorithme qui tri des nombres entiers, comment est-il possible de
+modifier ce code (et a-t-on besoin de modifier ce code) pour trier des étudiants selon leur moyenne ou
+selonleurpointuredechaussures.
+Lorsqu’on implémente un projet dans un langage, il faut non seulement continuer à avoir ces exi-
+gencesalgorithmiques,maisilfautaussipenseràd’autresaspects,parexemple
+— lisibilité : il faut toujours avoir en tête que chaque ligne de code écrite sera lu par quelqu’un
+d’autre : par un autre programmeur qui travaille sur le même projet, par quelqu’un qui va amé-
+liorerleprojet,oubienparvous-mêmequelquessemainesaprèsavoirécritlecode.Ilfautdonc
+écrire du code qui soit compréhensible par un lecteur : il faut penser à commenter, c’est à dire
+laisseruntextequidonneuneintuition,unejustification,desexplicationssurleslignesdecodes
+quisuivent.Lechoixdunomdesvariablesparticipeégalementàlalisibilitéducode.
+— ré-utilisation/abstraction:mêmesichaqueprojetàunbutprécis,despartiesducode,oulepro-
+jet lui-même peuvent être utilisés à d’autres fins. On peut donc ré-utiliser des parties de code et
+ne pas ré-inventer la roue à chaque projet. Par exemple, on implémente un code pour trier des
+entiers. Si on a besoin de trier des nombres réels, faut-il vraiment faire une autre implémenta-
+tion?L’algorithmeayantsimplementbesoind’unoutilpourcomparerdeuxéléments,ondevrait
+pouvoir utiliser le même algorithme et seulement changer l’outil pour effectuer la comparaison.
+Si on veut écrire le classement des participants du tour de France, on devrait toujours pouvoir
+utiliser le même algorithme en précisant que l’outil pour comparer est la comparaison entre les
+tempstotaux.Ceciestparticulièrementvraipourlaprogrammationorientéeobjet:onpeutavoir
+entêtelaquestion:est-cequejepeuxécrirequelquechosedeplusgénéral,deplusabstrait?
+— laisser des possibilités/prévoir l’évolution du code dans le futur : autre exemple, on a besoin de
+programmer un serveur qui communique avec un client. On peut choisir une solution qui fait
+i
+exactementcela.Onpeutaussipenserqu’unjouronvoudracommuniqueravecplusieursclients
+à la fois, et on peut donc choisir une solution qui permettra de faire ce changement facilement
+(avecdesimplesmodifications).
+De même que lorsque l’on résout des problèmes algorithmiques avec un papier et un crayon, un
+projetprogrammédansunlangageorientéobjetseprépareaussiavecunpapieretuncrayon:différentes
+solutionssontpossiblesetlechoixfinalferasûrementdescompromisentreperformances,ré-utilisation
+du code et possibilités pour faire évoluer le code dans le futur. Le langage JAVA vous donne beaucoup
+d’outils, ce qui offre autant de choix pour construire un projet. Ce cours a pour but de passer en revue
+unebonnepartiedecesoutilsenévoquantleurspossiblesutilisations.
+Table des matières
+1 Elémentsdebase 1
+1 EcrireduJAVA . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1
+1.1 Oùécrire?Extension.java . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1
+1.2 Instructionsetcommentaires . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1
+1.3 Unpremierprogrammeetaffichagedanslaconsole . . . . . . . . . . . . . . . . 2
+2 Variables . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+2.1 Nom . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+2.2 Déclarationd’unevariable . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+2.3 Typesélémentaires . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+2.4 Exemplesd’affectationavecvaleurs . . . . . . . . . . . . . . . . . . . . . . . . 5
+2.5 Conversion . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+3 Opérationsarithmétiques . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+3.1 Typed’uneexpression . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+4 Décision . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+4.1 Branchements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+4.2 Itérations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+4.3 Visibilitéd’unevariabledansunbloc . . . . . . . . . . . . . . . . . . . . . . . 12
+5 Méthodes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13
+5.1 Déclaration . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13
+5.2 uneméthodeparticulière:laméthodemain . . . . . . . . . . . . . . . . . . . . 15
+6 Unestructurededonnées:déclareretutiliserdestableaux . . . . . . . . . . . . . . . . 16
+2 Compilation,exécution,machinevirtuelle 19
+1 Compilation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+2 Exécution . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+3 Programmationorientéeobjet 21
+1 Variablesd’instance . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+2 Méthodesd’instance . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+3 Constructeursetcréationd’unobjet . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23
+4 Destructiond’unobjet . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+5 Manipulationderéférences:passageparvaleur,final,égalité . . . . . . . . . . . . . . . 25
+6 Variables&méthodesdeclasse . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 27
+6.1 Variablesdeclasse . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 27
+6.2 Méthodesdeclasse . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 28
+7 Retoursurlaportée:Encapsulation . . . . . . . . . . . . . . . . . . . . . . . . . . . . 28
+iii
+4 Héritage 31
+1 Polymorphisme . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
+2 instance of . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 32
+3 Lesmembresprotégés–protected . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
+4 Redéfinitiondesméthodeshéritées . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
+4.1 Constructeur . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 34
+4.2 Recherchedynamiqued’unmembre . . . . . . . . . . . . . . . . . . . . . . . . 34
+5 lemot-cléfinal . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 36
+6 LaclasseObject . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 36
+6.1 toString . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 37
+6.2 hashCode . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 37
+6.3 equals . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 37
+6.4 clone . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 38
+6.5 finalize . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 38
+6.6 getClass . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 38
+7 Classesetméthodesabstraites . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 38
+8 Interfaces . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 39
+8.1 Quelquesdétails . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 41
+8.2 Expressionslambda . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 42
+8.3 Référencesdeméthode . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 43
+9 Enumération . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 43
+9.1 Créeretutiliseruntypeénuméré . . . . . . . . . . . . . . . . . . . . . . . . . . 43
+9.2 LaclasseEnum . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 44
+9.3 Faireplusavecuntypeénuméré . . . . . . . . . . . . . . . . . . . . . . . . . . 45
+10 Informationdurantl’exécution . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 46
+10.1 LaclasseClass . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 47
+5 Exceptions 49
+1 Captureruneexception:lebloctry ... catch . . . . . . . . . . . . . . . . . . . . . . . 50
+2 Déléguerlacaptured’uneexception:throws . . . . . . . . . . . . . . . . . . . . . . . 51
+3 CréersapropreException . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 51
+6 Entréetsortie,fichiers,sauvegarde 53
+1 Liredepuislaconsole,affichersurlaconsole . . . . . . . . . . . . . . . . . . . . . . . 54
+2 Lecture/Ecritured’unfichier . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 55
+3 Lecture/Ecritured’unobjet:lasérialisation . . . . . . . . . . . . . . . . . . . . . . . . 57
+7 NotiondetypesparamétrésetCollections 59
+1 Typeparamétré . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 59
+1.1 Exemple . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 59
+1.2 Typesparamétrés . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 62
+2 Collections . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 62
+2.1 Méthodesdel’interfaceCollection . . . . . . . . . . . . . . . . . . . . . . . . . 63
+2.2 Parcourirunecollection . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 64
+2.3 Implémentations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 65
+2.4 Ordre . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 65
+8 ClassesInternes 67
+1 Classesinternesd’instance . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 67
+2 Classesinternesstatic . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 68
+3 Interfacesinternesouimbriquées . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 68
+9 Gestiondesclassesàl’aidedePackages(espacesdenoms) 71
+1 Déclarationd’uneclasse . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 71
+2 Utiliseruneclassed’unespacedenoms . . . . . . . . . . . . . . . . . . . . . . . . . . 72
+3 Librairiesdeclasses . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 72
+4 CompilationetExécution . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 73
+10 Générerdeladocumentation:l’outiljavadoc 75
+1 Commentairespourlesclasses . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 76
+2 Commentairespourlesméthodes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 76
+3 Commentairespourlesvariablesd’instanceoudeclasse . . . . . . . . . . . . . . . . . 76
+4 Autrescommentaires . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 77
+5 Commentairepourlespackages . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 77
+6 Générerladocumentation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 77
+11 Archivagedeclasses 79
+1 Utiliserunfichierjar . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 79
+12 Annotations 81
+1 Lasyntaxedesannotations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 81
+2 Exempled’utilisationdesannotations:TestsunitairesetJUnit . . . . . . . . . . . . . . 82
+2.1 Premièresolution(àbannir):Faireuneméthodemainpourtesterlaclasse. . . . 83
+2.2 Bonnepratique:écrireuneclassedetestspourchaqueclassedéveloppée . . . . 83
+2.3 Exemple . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 86
+2.4 Exécutiondestests . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 88
+Chapitre 1
+Eléments de base
+Cechapîtres’adressesurtoutàunpublicquin’ajamaisprogramméenJAVA .Ilcontientunbonnombre
+d’inexactitudes pour permettre une compréhension assez basique du langage et nous seront plus précis
+dansleschapîtresquisuivent.
+1 Ecrire du JAVA
+1.1 Oùécrire?Extension.java
+Le langage JAVA est un langage orienté objet. La plupart du temps, on manipulera des objets en leur
+faisant faire des opérations. Un classe definit ce qu’un objet peut faire. Ceci deviendra plus clair dans
+le chapître 3, mais l’important pour le moment est qu’on va écrire du code JAVA s’écrit dans un fichier
+texte quipossède l’extension.java. Par convention,le nom d’une classeest une chaînede lettres (sans
+espace) qui commence toujours par une lettre majuscule, par exemple MaPremiereClasse. Cette classe
+seraécritedanslefichierMaPremiereClasse.java.
+Note: Fichiers
+On a indiqué que MaPremiereClasse.java est un fichier dit fichier texte. De façon abstraite, un fichier
+est un espace mémoire du disque dur composé de 0 et de 1 qui encodent de l’information. Selon le type
+de fichier, on utilisera différentes méthodes pour décoder le fichier. Un fichier texte est un fichier dont le
+contenu représente seulement une suite de caractères (i.e., la suite de 0 et 1 encode une suite de caractères
+qui peuvent être lus et compris par un humain). Par exemple, les fichiers .doc ou .xls ne sont pas des
+fichiers textes, ils encodent un contenu plus riche qui sera décodé par les applications Word ou Excel. Les
+fichiers .html sont des fichiers textes mais qui seront affichés facilement par un navigateur internet.
+1.2 Instructionsetcommentaires
+JAVA estunlangage,ilpossèdedoncunegrammairepourécriredesphrasesdontlasyntaxeestcorrecte.
+LagrammairedeJAVA estassezsimpleetnousallonsl’introduiredefaçoninformelledanslasuite.Pour
+que le code soit compréhensible par la machine, on utilisera un programme appelé compilateur qui va
+traduire le code JAVA que vous avez écrit en un code compréhensible par la machine. Cette étape de
+traductionestappeléecompilation,nousenparleronssuccinctementplustard.Lorsdelacompilationla
+premièreétapeesttoujoursdevérifiersilagrammairedulangageestrespectée.Lorsdelasecondeétape,
+lecompilateurvérifiesitouteslesinstructionsontunsens,parexemplesiunevariableutiliséeabienété
+déclarée,siunefonctionestappeléeaveclebonnombred’argumentsetlesbonstypes,etc.
+1
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+Dansuncodeen JAVA ,onauradeuxgrandstypesde«phrase»:
+— soitonauneinstructionen JAVA quidoitsuivrelagrammairedulangageettoujoursseterminer
+parunpoint-virgule ;quicorrespondaupointàlafind’unephrase1.
+— soit un commentaire, i.e. un texte qui va aider à expliquer le code (par exemple, il peut jouer le
+rôledetitrepourunepartiedecodeouexpliquerlebutducodequisuit).Uncommentairepeut
+décrirelecode,oubienjustifierlesinstructions(i.e.donnerunargumentquiprouvequelecode
+estcorrect).
+Ilyadeuxgrandesmanièred’écriredescommentaires:
+— commentairesurlerestedelaligne:
+1 // la suite est un commentaire
+— commentairesurplusieursligne:ilcommencepar/*etseterminepar*/.
+1 /* ceci est un commentaire
+2 sur plusieurs
+3 lignes */
+— il exite ensuite un petit langage spécial qui sert à générer automatiquement de la documenta-
+tion (des pages html) à l’aide de JAVADOC. Dans ce cas, le commentaire commence par /**, le
+commentaireluimêmedoitsuivreunformatparticulieretlecommentaireseterminepar*/.
+1.3 Unpremierprogrammeetaffichagedanslaconsole
+Legrandclassique:faireafficherlachaîneHello Worlddanslaconsole.
+1 package introjava;
+2
+3 // The classic!
+4
+5 public class HelloWorld {
+6 public static void main(String[] args){
+7 System.out.println(’’ Hello World!’’);
+8 }
+9 }
+Nousallonsdécryptercecodedemanièregrossière,nousverronsendétailchaquepointunpeuplus
+tard.
+La première ligne indique que la classe fait partie du package appelé introjava. Pour le moment,
+onindiquerasimplementqu’unpackagepermetderassemblerunensembledeclasses.Celapermetentre
+autre d’avoir plusieurs classes de même nom dans plusieurs packages différents. Le nom complet de
+notreclasseestenfaitintrojava.HelloWorld.
+Enligne3,onpeutdoncvoiruncommentaire.
+main est une méthode, c’est à dire une fonction déclarée à l’intérieur d’une classe. La ligne 3 est la
+déclarationdelaméthode:onvaytrouversonnom,sielleretournequelquechoseounon,sesarguments.
+Lecodeexécutéparl’appeldelaméthode,cequel’onappeleralecorpsdelaméthode,setrouveentre
+lesdeuxaccolades.Icilecorpsdelaméthodeselimiteàuneseuleinstructionligne7.
+mainestuneméthodeparticulière,c’estlapremièreméthodeappeléequandunprogrammeestexécuté.
+1. Onverraaussiqueladéfinitiondeclassesoudefonctionsneseterminentpasparunpointvirgule;
+2
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+∼$ javac introjava/HelloWorld.java
+∼$ java introjava/HelloWorld
+Hello World!
+∼$
+FIGURE1.1–CompilationetExcécutionenlignedecommande
+Lemotcléstaticindiquequelaméthoden’opèresuraucunobjet(aumomentdel’appeldemain,iln’y
+a pas encore d’objet). La méthode ne retourne rien, ce qui est indiqué par le mot clé void. Finalement,
+on indique la visibilité de la méthode : ici, elle est public, ce qui veut dire que tout autre objet pourra
+utilisercetteméthode.Onverraqu’onpourradéfinirlavisibilitédeplusieursélémentsenJAVA .
+Entre parenthèse après le nom de la méthode on trouve la liste des arguments (les paramètres d’entrée
+de la méthode). Ici, il n’y a qu’un seul paramètre : il a pour nomargs et c’est un tableau contenant des
+String (on le verra plus tard [] signifie un tableau, et ce qui précède [] est le type des éléments du
+tableau,iciils’agitdutypeStringquireprésenteunechaînedecaractères).
+Le corps de la méthode est donc une seule instruction : cette instruction est d’afficher un message dans
+l’objetSystem.out,unobjetquireprésentela«sortiestandard»duprogramme(laconsole).
+Note: Ecrire dans la console
+Pour écrire sur la console de sortie (pour écrire quelque chose dans une fenêtre spéciale de l’écran), on
+utilise cette syntaxe
+1 System.out.println( <chaîne de caractères> );
+Pour l’instant cette expression semble très bizarre. On appelle la méthode println qui écrit dans la
+console le texte passé en paramètre. Cette méthode se trouve dans la classe out qui gère les sorties. Cette
+classe fait elle-même partie d’une classe nommée System qui gère l’entrée et la sortie standard, i.e. la
+saisie au clavier et l’affichage à l’écran. Nous reviendrons plus tard sur les entrées et sorties en JAVA (voir
+Section 6). Pour le moment, quand on utilisera ce code, cela affichera à l’écran le texte passé en paramètre.
+L’exécutiond’unprogrammevas’effectuerendeuxétapes.
+1. Tout d’abord, on va compiler le code source, c’est à dire on va traduire le code dans un lan-
+gage intermédiare appelé le byte code et on va sauvegarder dans un fichier avec l’extension
+.class. Si la traduction se passe bien, on aura deux fichiers pour notre classe : notre fichier
+HelloWorld.javaetlatraductionenbytecodeHelloWorld.class.
+2. Ensuiteonvalancerlamachinevirtuellequivachargerlefichier.classetexécuterlebytecode.
+Une fois compilé, le byte code peut tourner sur n’importe quelle machine virtuelle (sur un PC sous
+Windows,OsX,Linux,survotretéléphoneoutablette,etc...).«writeonce,runanywhere».
+Si vous utilisez un environnement de programmation comme Eclipse, ces deux étapes sont trans-
+parentes:lorsquevousappuyezsurleboutond’exécution,l’environnementlanceralacompilationpuis
+le lancement de la machine virtuelle. Si vous utilisez un éditeur de texte et un terminal, la compulation
+s’effectue avec le programme javac (java compilator). Le lancement de la machine virtuelle se fait à
+l’aidedelacommandejava(cdFigure1.1)
+3
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+2 Variables
+2.1 Nom
+Le nom d’une variable (il en est de même poru une méthode ou une classe), doit commencer par
+une lettre. Le nom peut contenir des lettres, des chiffres, ainsi que les symboles _ et $. A priori, π ou
+déjàVue) sont des noms valides (le compilateur saura les utiliser). Cela dit, pour échanger des codes
+sources (les fichiers .java), si des encodages différents sont utilisés, cela risque de poser problèmes,
+doncenpratique,utilisezdescaractèresnonaccentués.
+2.2 Déclarationd’unevariable
+Achaquefoisqu’onutiliseunevariable,parexempletoto,lecompilateurJAVA doitsavoirlanature
+delavariable,c’estcequ’onappellesontype.Est-cequetotoestunevaleurentière,oubienunevariable
+quidésigneunfichier?Danscertainslangage,lesvariablespeuventchangerdetypeouonn’apasbesoin
+d’explicitement déclarer le type de chaque variable. Il n’en est pas ainsi pour JAVA : en JAVA , toute
+variable doit être déclarée avant de pouvoir être utilisée, ce qui est bien normal, sinon le compilateur
+ne sait pas ce qu’il manipule! Une variable ne peut pas changer de type. Pour ces raisons, on dit que
+le langage JAVA est fortement typé. Dans ce qui suit, on utilise la notation <chose> pour indiquer que
+danslecodeilfaudraunmotquireprésenteunechose.Parexemple<type>devraêtreremplacéparun
+typeJAVA ,<nom>seraremplacéparlenomd’unevariable,etc.Lesymbole|serautilisépourdécrireun
+choixpossible:parexemple
+<variable> | <expression>veutdirequ’ilfaudrasoitécrirelenomd’unevariable,soituneexpression
+JAVA complète.
+Ilyaplusieursvariantespourdéclarerdesvariables:
+— déclarationsimple:<type> <nom>;
+elle permet de déclarer une variable en indiquant tout d’abord son type puis son nom. Avec
+JAVA ,iln’yapasdevaleurpardéfaut,toutevariabledoitdoncêtreinitialiséeavantutilisation!
+En utilisant cette variante de déclaration, il faudra dans le code initialisée la variable, ce que le
+compilateurdeJAVA vérifiera.
+— déclarationavecaffectation:
+<type> <nom> = <valeur dans le type> | <variable> | <expression>;
+On peut aussi déclarer une variable et l’initialiser en une seule instruction. Pour l’initialisation,
+onalechoixentredonnerdirectementunevaleur(quibiensûrdoitavoirlebontype),utiliserla
+valeurd’uneautrevariable,utiliseruneexpressiondontl’évaluationauralebontype.
+— déclarationmultiple:<type> <nom1>, <nom2>, ... , <nomk>;
+onpeutdéclarerplusieursvariablesquiontlemêmetypedanslamêmeinstruction.
+— déclarationmultipleavecaffectionpartielle:<type> <nom1>, <nom2>= <valeur dans le type>,
+...
+, <nomk>;
+lorsd’unedéclarationmultiple,onpeutinitialisercertainesvariables(pasforcémenttoutes).
+Danscequiprécède,letypepeutêtresoituntypeélémentaireprésentéci-dessous,soitdetypecomplexe
+oudesobjets.Onparleradecesobjetsplustard.
+4
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+2.3 Typesélémentaires
+JAVA fournithuittypesélémentairesquepeuventprendredesvariables.Lorsqu’unevariableestdéclarée
+à l’aide d’un de ces types, un espace (de taille correspondant au type) est automatiquement réservé en
+mémoire.Dansletableauquisuit,onindiquelataillemémoireenbits2 occupéeparlavariable.
+type
+nombredebits intervaldevaleurs
+élémentaire
+boolean 1 deuxvaleurstrueetfalse
+byte 8 unentiercomprisentre-128et127
+short 16 unentiercomprisentre-215 =−32768et215 −1=32767
+int 32 unentiercomprisentre-231 ≈ −2.1·109 et231 −1 ≈ 2.1·109
+long 64 unentiercomprisentre-263 ≈ −9.2·1018 et263 −1 ≈ 9.2·1018
+char 16 caractèreunicode,ilya65536codes
+float 32 nombreflottantnorme IEEE
+double 64 nombreflottantnorme IEEE
+2.4 Exemplesd’affectationavecvaleurs
+1 short population;
+2 population = 30000;
+Ici,ondéclareunentiercourt(auplus32,767)appelépopulationetonl’initialiseavec30,000.Quese
+passe-t-ilsionutilisel’exemplesuivant?
+1 short population = 1000000;
+Ici,lecompilateurvousindiqueraque1,000,000estunentier,maispasunshortetvousobtiendrezune
+erreur.Maintenant,quelestleproblèmeavecl’exemplesuivant?
+1 long nbParticules = 10000000;
+Apriori10,000,000,000peutbienêtreencodéparunlong,maispasparunint.Cependant,cetteligne
+n’estpascorrecte.Leproblèmequiseposeestcommentlecompilateurdoit-ilinterpréter10,000,000,000?
+Enfait,larèglepour JAVA estqu’ilinterprèteunnombretapécommeunint.Lecompilateurcomprend
+ce nombre seulement comme un entier, mais il n’y parvient pas. Pour indiquer qu’il s’agit d’un long, il
+fautajouterlalettre’L’àlafindunombrecommesuit:
+1 long nbParticules = 10000000L;
+demêmepourlesfloatsetlesdoubles,onpeutterminerunnombreavec’f’pourunfloatetavec’d’
+pourundouble.
+Pour les caractères, on doit utiliser les apostrophes comme suit (attention, un char correspond à un
+seul caractère, nous verrons plus tard comment faire une chaîne de caractères). JAVA utilise l’encodage
+UTF-16,uncharestdoncuncodedecetencodage.Dansl’exemplesuivant,onutiliselalettre’c’quiala
+valeur 99 en décimal (63 en hexadécimal), que l’on peut donc aussi écrie "\u0063". Vous pouvez donc
+utiliserdessymbolesplusexotiques(ex"\u23F0"estunréveilmatin,\uD83D \uDC19unepieuvre).
+(cid:127)
+Ilyaquelquescodesutiles:’’estleretouràlaligne,’’estunetabulation.
+2. unbitestunespacemémoirequipeutprendredeuxvaleurs:0ou1.Ilfaut8bitspourfaireunoctet
+5
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+1 char lettre = ’c’;
+Finalement,letypebooleancontientseulementdeuxvaleurstrueetfalse,cesdeuxmotssontdes
+motsréservésdulangage.
+1 boolean test = true;
+2 test = false;
+2.5 Conversion
+Onaditquechaquevariableavaituntypeetqu’unevariablenepouvaitpaschangerdetype.Cepen-
+dant,onpeututiliserunevariabled’untypepourinitialiserunevariabled’unautretypecommensurable.
+Ondéclareavecaffectationunepremièrevariableetonval’utiliserpourinitialiserunesecondevariable.
+Si les variables ont le même type, il n’y a pas de problème, mais JAVA nous permet d’utiliser des types
+commensurables. Par exemple, on devrait pouvoir initialiser un double à l’aide d’un int. On pourrait
+aussi faire l’inverse, initialiser un int à l’aide un float en faisant une opération de conversion ou cast.
+On a donc la situation suivante ou l’on affecte une variable d’un certain type et où l’on utilise cette
+premièrevariablepourréaliserl’affectationd’unesecondevariable:
+1 <type1> <nom1> = <valeur1>;
+2 <type2> <nom2> = <nom1>;
+Laconversionoucastpeutresterimplicitesile<type1>est«moinsfort»quele<type2>:le<type2>va
+utilisertoutel’informationdu<type1>sansperte.Parexemplesile<type1>estunintetle<type2>est
+undouble,ledoubleutiliseralavaleurdel’entier(etlapartieaprèslavirguleestinitialiséàzéro).Dans
+cecas,laligne2ducodeci-dessousn’entraineraaucuneerreurdelapartducompilateur.
+1 int valeurEntiere = 17;
+2 double valeurFlottante = valeurEntiere;
+La conversion doit devenir explicite si le <type1> est «strictement plus fort»que le <type2> : il faut
+indiqueraucompilateurd’effectuerlaconversion.Pourforcerlaconversion,ilfautindiquerletypecible
+delaconversionentreparanthèsescommesuit:
+2 <type2> <nom2> = (<type2>) <nom1>;
+Lavaleurdutype«plusfort»esttronquéepourpouvoirprendreletype«plusfaible».Parexemple,pour
+convertir un double ou un float en un int, JAVA tronque la partie derrière la virgule. Dans l’exemple
+ci-dessous,lavaleurdevaleurEntiereserade3.
+1 double valeurFlottante = 3.141592;
+2 int valeurEntiere = (int) valeurFlottante;
+3 Opérations arithmétiques
+Lestableauxci-dessouscontiennentlesdifférentsopérateursdeJAVA .Lestableauxincluslapriorité
+del’opérateurpourquelesexpressionsnesoientpasambigues.Onpeutbiensûrajouterdesparenthèses
+pourqu’uneexpressioncomplexesoitpluslisible.
+6
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+Opérateur priorité action exemples
++ 1 signepositif +a; +7
+- 1 signenégatif -a; -(a-b); -7
+! 1 négationlogique !(a<b);
+++ assignementetincrémentde1 n++;++n;
+-- assignementetincrémentde1 n++; --i;
+Opérateursunaires
+Opérateur priorité action exemples
+* 2 multiplication a * i
+/ 2 division n/10
+% 3 restedeladivisionentière k%n
++ 3 addition 1+2
+- 3 soustraction x-5
+< 5 strictementinférieur i<n
+<= 5 inférieurouégal i <= n
+> 5 strictementsupérieur i < n
+>= 5 supérieurouégal i >= n
+== 6 égalité i==j
+!= 6 différent i!=j
+& 7 conjonction(etlogique) (i<j) & (i<n)
+| 9 disjonction(oulogique) (i<j) | (i<n)
+&& 10 conjonctionoptimisée (i<j) && (i<n)
+|| 11 disjonctionoptimisée (i<j) || (i<n)
+Opérateursbinaires
+L’affectation d’une variable peut être fait à l’aide d’une expression. Pour certaines expressions très
+utilisées(incrémenteunentierd’uneunitéparexemple),JAVA proposedesraccourcis:
+— ++xincrémentexde1puisutilisesavaleurpourl’expression
+— x++utiliselavaleurdexpourl’expressionpuisincrémentex
+— i += 5estleraccourcidei = i+5
+1 int i=2, j = i++;
+2 i=2;
+3 j= ++i;
+Aprèsl’exécutiondelaligne1,ivaut3etjvaut2.Aprèsl’exécutiondelaligne3,ietjvalent3.
+Une erreur très classique est l’utilisation du symbole = à la place de == pour l’égalité. Pour JAVA ,
+l’expression i=k a bien un sens car c’est l’affectation de la variable i avec le contenu de la variable
+j. Etonnement, cette expression a aussi une valeur : c’est un int qui est positif si l’affectation se dé-
+roulebien,etnégatifsinon.Unintpouvantêtreinterprétécommeunboolean,JAVA faituneconversion
+implicite.Ainsi,unelignedecode(i=j)peutêtreinterprétéecommeunbooléen.
+Ilexisteunopérateurconditionnelternairequiaffectelavaleurd’unevariableenfonctiond’untest:
+1 result = someCondition ? value1 : value2;
+Siletest(uneexpressionbooléenne)someConditionestvérifié,alorslavariableresultprendlavaleur
+value1,sinonelleprendlavaleurvalue2.Dansl’exempleci-dessous,absXprendpourvaleurcelledela
+valeurabsoluedex.
+7
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+1 absX = (x > 0)? x : -x;
+3.1 Typed’uneexpression
+Lorsque les opérandes d’une expression ne sont pas du même type, il faut savoir quel est le type de la
+valeurdel’expression.Laméconnaissancedecesrèglesentrainedenombreuxbugs.
+1 int i = 5,j;
+2 double x = 5.0;
+3 j=i/2;
+4 j=x/2;
+5 double z = i/2;
+L’affectation de la ligne 3 est bien correcte : i/2 est une division entre deux int, c’est donc un int, et
+donc, on peut se servir de la valeur pour l’affectation de l’int j. L’affectation de la ligne 4 est quant à
+elleincorrecte:x/2estunedivisionentreundoubleetunint,c’estdoncundouble.Commeonessaye
+d’affecterlavaleurd’unint,ilfaututiliserletranstypageexplicite.Laligne5estcorrecte,maisquelle
+est la valeur de z? i est un int, 2 aussi, donc on a une division entre deux int dont le résultat est un
+int!Onadoncladivisionentièreentre5et2,dontlerésultatest2.Cettevaleurestdoncstockéedansle
+doublez,donczapourvaleur2.0.Sionvoulaitobtenir2.5,uneastuceestdeforcerunedivisionentre
+unentieretundoubleparexempleenutilisantl’expression:
+5 double z = i/2.0;
+Le transtypage explicite peut être vu comme un opérateur unaire qui a une priorité haute. Lors des
+opérations de transtypage explicite, il faut bien faire attention à la portée du transtypage, i.e. sur quelle
+expressionporteletranstypage.
+1 double x = 2.75;
+2 int y = (int) x * 2;
+3 int z = (int) (x * 2);
+La valeur de y après l’exécution de la ligne 2 sera 4 car la conversion porte simplement sur x, et donc
+la multiplication s’opère entre int. La valeur de z après exécution sera 5 car la conversion porte sur le
+résultatdelamultiplicationentreundoubleetunint,quiestundouble.
+4 Décision
+JAVA proposedesstructurestrèsclassiquespoureffectuercertainesinstructionsenfonctiondelavaleur
+decertainesvariables.
+4.1 Branchements
+Condition
+Lastructureif ... then ... else
+Cettestructurepermetdechoisird’exécuteruncodedifférentselonunecondition:siunecondition
+estremplie,onexécuteunblocd’instructions,sinononexécuteunautreblocd’instructions.Lastructure
+estlasuivante:
+8
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+1 if ( <expression booléenne> )
+2 <bloc d’instructions à exécuter si la condition est satisfaite>
+3 else
+4 <bloc d’instruction à exécuter si la condition n’est pas satisfaite>
+Lapartie«sinon».i.e.leelseetleblocd’instructionquisuitestoptionnel,onpeutjustedoncavoirune
+structuresiuneconditionestremplie,alorsonexécuteunblocd’instructions.
+Danslastructureprésentéeci-dessus,onutilisedesblocsd’instructions,doncaprioriaprèslacondi-
+tion, on ouvre une accolade pour le bloc d’instruction et on le ferme juste avant le else. Si un bloc est
+composéd’uneseuleinstruction,onn’apasbesoind’utiliserlesaccolades.
+1 int gains,payment,encaissement;
+2 ...
+3 // opérations qui modifient la variable gains
+4 ...
+5 if (gains>0)
+6 encaissement = gains;
+7 else
+8 payment = gains;
+On peut imbriquer une autre structure de condition dans une structure existente, de cette façon, on peut
+utiliserplusieurstests:siuneconditionestsatisfaite,onfaitcela,sinonsiuneautreconditionestsatis-
+faire,onfaitceci,etc.
+1 int gains,payment,encaissement,investissement;
+2 ...
+3 // opérations qui modifient la variable gains
+4 ...
+5 if (gains<0)
+6 payment = gains;
+7 else if (gains > 10) {
+8 encaissement = 10;
+9 investissement = gains-10;
+9 }
+10 else
+11 encaissement = gains;
+On a simplement indiqué que la condition devait être une expression bouléenne. Dans l’exemple ci-
+dessus, elle est simple et formée d’une seule condition. Bien sûr, on peut écrire des conditions plus
+complexes à l’aide de conjonctions («et» logique représenté par &&) et de disjonctions («ou» logique
+représenté par ||). Attention, le compilateur vérifiera seulement si la condition est une expression boo-
+léenne, pas si votre test à un sens (par exemple vous écrivez une tautologie ou un test qui sera toujours
+faux!).
+choixmultiples
+Sivous voulezexécuter unblocde codedifférent selonlesvaleurs d’unevariable, vouspouvezuti-
+liserunestructureappeléeswitch.Parexemple,pensezaumenuquandvousappelezunesociété:tapez
+1 si vous voulez ceci, tapez 2 si vous voulez cela, etc. La structure se présente comme dans l’exemple
+9
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+ci-dessous:
+1 int choix;
+2 ...
+3 // l’utilisateur modifie la valeur de choix
+4 ...
+5 switch(choix) {
+6 case 1 :
+7 //instructions pour le choix 1
+8 ...
+9 break;
+10 case 2 :
+11 //instructions pour le choix 2
+12 ...
+13 break;
+14 default
+15 // instruction dans le reste des cas
+16 ...
+17 }
+On indique après le mot clé switch la variable sur laquelle on va faire le choix. Dans l’exemple, c’est
+la variable choix. Ensuite, chaque cas commence par le mot clé case suivi d’une valeur. Ici, on a deux
+cas selon si la variable choix a pour valeur 1, 2, et le cas defaut indique ce que l’on doit faire dans
+tous les autres cas. Chaque cas se termine par le mot clé break. L’instruction break permet de sortir de
+l’expression en cours. Ici, utilisée à l’intérieur du switch, elle permet de sortir du switch lorsqu’un des
+choix correspond au cas en cours. Si vous oubliez le break, plusieurs cas vont être exécutés au lieu du
+seulcasquiconvient!!
+Onpeutfaireunswitchsurdeuxtypesdevariables:soitsurunintcommedansl’exemple,soitsur
+unchar.Depuislaversion7de JAVA ,onpeutaussiutiliserunechaînedecaractères,quenousverrons
+plustard.
+4.2 Itérations
+Onprésentemaintenanttroismoyensdefairedesboucles.
+bouclefor
+Une boucle «for»est généralement utilisée lorsque l’on sait combien de fois on va réaliser l’itération.
+Lastructuredelaboucleestcommesuit:
+1 for (<initialisation>; <condition de poursuite>; <mise à jour des valeurs>)
+2 <bloc d’instructions>
+S’ilyauneseuleinstructiondanslaboucle,onpeutomettrelesaccolades.Ilestbond’indentersoncode
+pour voir clairement le code qui sera itéré. Attention, il n’y a pas de point-virgule juste à la fin du (for
+... )! Dans la partie d’initialisation, on peut avoir plusieurs déclarations et initialisations de variables.
+La condition de fin est une expression booléenne (par exemple, on peut avoir des conjonctions ou des
+disjonctions d’expressions de tests). On peut mettre à jour plusieurs valeurs à la fois. Ci-dessous voici
+quelquesexemples:
+10
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+1 for (;; ){
+2 // some instructions
+3 }
+Q:Quesepassera-t-il?
+L’exempleleplusclassiqueestlesuivant:
+0 int n=10;
+1 for (int i=0; i< n; i++ ){
+2 // some instructions
+3 }
+On rappelle que i++ est équivalent à i=i+1. Si par exemple on a un tableau de taille de dimension 1 et
+de taille n, on peut utiliser une boucle comme celle-ci pour faire une opération sur chaque élément du
+tableau.
+0 int n=10;
+1 for (int i=0, j=n; j< i; i++; i-- ){
+2 // some instructions
+3 }
+Danscetexemple,onutilisedeuxvariablespourlaboucle.
+Onverraunpeuplustarduneautresyntaxepourlesbouclesfor(Section2.2)
+bouclewhile
+Cettestructureestgénéralementutiliséequandonnesaitpascombiendefoisondoititérer,lecoeurdela
+boucleestdoncletestd’arrêtdelaboucle.Lastructuresecomprendscommesuit:tantquelacondition
+d’arrêtestsatisfaite,oncontinuel’itération.Laboucles’écritcommesuit:
+1 while(<condition de fin>)
+2 <bloc d’instructions>
+Voici un exemple qui va essayer de déterminer une approximation de la valeur de la limite de la suite
+convergenteu : n → 0.75n :
+1 double epsilon = 0.0000001;
+2 double r = 0.75, u=1;
+3 while( u - u* r > epsilon)
+4 u = u * r;
+boucledowhile
+La structure de cette boucle est similaire à une boucle while. Au lieu de débuter par tester la condition
+d’arrêtavantd’effectueruneitération,oncommenceiciparfaireuneitérationavantdetesterlacondition
+d’arrêt.Laboucleestnaturellelorsqu’onpeutexprimerlecodeparunephrasecomme«onfaitcebloc
+d’instructionstantquelaconditionestvérifiée».Lastructuredelaboucleestcommesuit:
+1 do
+2 <bloc d’instructions>
+3 while(<condition de fin>);
+11
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+Attentiondenepasoublierlepoint-virguleàlafinduwhile.Onpeutdoncécrirel’exempledelaboucle
+whileàl’aidedelaboucledo ... while ().
+1 double epsilon = 0.0000001;
+2 double r = 0.75, u=1;
+3 do
+4 u = u * r;
+5 while ( u - u* r > epsilon);
+Quellebouclechoisir?
+Selonlescasunedesstructureestplusélégantequelesautres.Sivousconnaissezlenombred’itérations
+nécessaires, généralement une boucle for est préférable. Sinon utilisez une boucle while ou do ...
+while.
+Onpeututiliserl’instructionbreakpoursortirdel’instructioncourante,doncpoursortird’uneboucle
+for. Certains utilisateurs utilisent donc cette fonctionalité pour écrire une boucle for là où une boucle
+whileseraitplusadéquate.Jerecommanded’utiliserunebouclewhilecarlaconditiondefinestmiseen
+valeur.Commecetteconditionestunesourced’erreurs,elleestbienplusfacileàidentifier.Aucontraire,
+si quelqu’un lit un code et voit une boucle for sans chercher à lire exactement le bloc d’instructions, il
+peutpenserquelecodeseraitéréunnombredefoisprécis,alorsquecen’estpaslecasàcausedubreak.
+Dansl’exemplesuivant,onveutcherchersiunélémentksetrouvedansuntableaud’entier,etsioui,
+detrouversonindexdansletableau.Lecodesuivantestcorrect.
+1 int[] tableau = new int[10];
+2 // remplissage du tableau
+3 for ( int index = 0; i< tableau.length;index++) {
+4 if(tableau[index] == k)
+5 break;
+6 }
+ime
+Cependant,onnesaitpasaprioricombiendefoisonvaitérerletest«est-cequelei élémentestégal
+àk»,onpeutdoncutiliserunebouclewhilecommesuit:
+1 int[] tableau = new int[10];
+2 // remplissage du tableau
+3 int index = 0;
+4 while(index < 10 && tableau[index] != k)
+5 index++;
+Ces deux codes sont équivalents au niveau de la performance. Peut-être que le second est plus facile à
+relire.
+4.3 Visibilitéd’unevariabledansunbloc
+Onpeutdélimiterdesblocsd’instructionsenlesdélimitantpar{et}.Ainsi,onpeutavoirdesblocs
+imbriquéslesunsdanslesautres.Onverradesutilisationsparticulièresdeblocsdanslasectionsuivante.
+Mais ce qu’il est important de savoir est que les variables déclarées dans un bloc interne ne sont pas
+connuesdansunblocplusexterne!C’estparfoispratiquelorsqu’onutilisedesvariablesauxiliairespour
+faireuncalcul.
+12
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+1 int a,b=10;
+2 {
+3 int d=2*b;
+4 {
+5 int e=b+d; aetbsontconnuspartout
+5 a=e*d; destconnuseulementdanslapartierouge
+6 { eestconnuseulementdanslapartirblue
+5 int g= b+ d*e; gestconnuseulementdanslapartieverte
+6 }
+6 }
+7 }
+5 Méthodes
+Dans un projet, on a souvent de faire les mêmes opérations. On peut donc choisir de mettre le code
+correspondant dans une fonction. En JAVA , on ne parle pas de fonctions, mais de méthodes. L’intérêt
+d’utiliserdesfonctionsestdouble:
+— enappelantlafonction,ondiminuelatailleducodeetlecodedevientpluslisible.
+— si on veut modifier le code (par exemple changer l’implémentation pour améliorer les perfor-
+mances),iln’yaplusqu’unseulendroitàchanger.
+5.1 Déclaration
+On parlera beaucoup plus de méthodes dans la partie de programmation orientée objet. Dans cette
+section,onvaprésenteruntypedeméthodesquisuitlastructuresuivante:
+1 public static <type de retour> <nom>( <liste de paramètres>) {
+2 corps de la méthode : suite d’instructions
+3 }
+Onexpliquerapublicetstaticunpeuplustard.
+Uneméthodepeutretournerunevaleur,commeunefonctionenmathématique.Ilfautdoncindiquer
+le type de valeurs qui est retournée par la méthode. Cela peut être un type simple ou un type complexe
+commeunobjet.Silaméthodeneretournerien,onindiquealorsquelaméthoderetournevoid.
+Uneméthodeabiensûrunnometc’estcenomquiserautilisélorsdel’appeldelaméthode.Lorsque
+vouslechoississez,soyezcréatifpourdonneunnomadéquatquidonneradusensquandvousappelerez
+laméthode.
+Enfin,onplaceentreparenthèseslalistesdesargumentsdelaméthode.Cesontlesparamètresdontla
+méthodeabesoinpourremplirsatâche.Iln’yapasdelimitedunombredeparamètres,etonpeutaussi
+avoir des méthodes sans paramètres (dans ce cas, il faut quand même écrire les parenthèses ouvrante
+et fermante). L’ordre des arguments joue un rôle important et doit être respecté lors de l’appel de la
+méthode.
+Le nom de la méthode et la liste ordonnée des arguments constituent la signature de la méthode.
+Cette signature doit être unique, i.e., on ne peut pas avoir une autre fonction avec le même nom et la
+mêmelisted’arguments3.
+3. Cecin’estpascomplètementexact.Onverraqu’aveclesespacesdenoms(Section9)onpeutavoirdeuxméthodesavec
+13
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+Finalement,aprèscettedéclarationdelaméthodesuitleblocquicontientlecorpsdelaméthode,i.e.
+lesinstructionsquidoiventêtreexécutées.Silaméthoderetourneunevaleur,laméthodedoitseterminer
+paruneinstructionreturnquivarenvoyerlavaleurquisuit.
+k return <val>;
+Attention, une fois que cette instruction est exécutée, on va quitter la méthode et les instructions qui
+pourraientsetrouverendessousdel’expressionreturnneserontpasexécutées.
+Dans l’exemple ci dessous, on va écrire une fonction qui va chercher l’élément maximum d’un ta-
+bleaudeint,ellevadoncretournerunintetvaprendrecommeparamètresuntableaudeint.
+1 public static int max( int[] tableau) {
+2 int m= tableau[0];
+3 for (int i=1;i<tableau.length; i++){
+4 if (tableau[i] > m)
+5 m = tableau[i];
+6 }
+7 return m;
+8 }
+On peut avoir une fonction avec le même nom mais une liste d’arguments différents. Par exemple,
+on peut facilement faire une autre fonction max qui retourne le maximum d’un tableau de double. Cela
+s’appelle surcharger une méthode. Lors de l’exécution, JAVA choisira la méthode appropriée selon le
+typedesarguments.
+Pourappelerlafonction,ilsuffitsimplementd’utilisersonnometderemplirlalistedesarguments
+en respectant bien l’ordre des arguments et leurs types. Par exemple dans l’exemple suivant, on appelle
+laméthodemaxquel’onvientdecréer.
+1 int tab = {7, 12, 15, 9, 11, 10, 17, 9, 13};
+2 int m = max(tab);
+En JAVA ,lesargumentssonttoujourspassésparvaleurs.Pourlestypesprimitifs,cepassagesefait
+par copie, c’est à dire que si on utilise une variable comme argument dans une méthode, la valeur de la
+variable est copiée en paramètre. La variable elle même ne sera pas affectée par l’appel de la méthode.
+Pouruntypecomplexe,i.e.,pourunobjetouuntableau,lepassagesefaitparréférence,onpourradonc
+modifier un objet en utilisant une méthode. Dans l’exemple suivant, après l’exécution de la ligne 10,
+chaqueentréedutableautabcontient0,parcontrelavaleurdeaseratoujoursde100.
+dessignaturesidentiques,maissansquecelaposedesproblèmesd’ambiguïté.
+14
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+1 public static void zeros( int[] tableau, int a) {
+2 for (int i=0;i<tableau.length; i++){
+3 tableau[i] =0;
+4 a = 0;
+5 }
+6
+7 public static void main(String[] arg){
+8 int[] tab = {10, 20, 30, 40, 50};
+9 int a = 100;
+10 zeros(tab,a);
+11 }
+SivousavezdéjàcodéenC,vouspouvezdéjàcoderbeaucoupdechosesenutilisantlasyntaxeJAVA présentée
+jusqu’ici. Dans le chapître suivant, on va commencer à présenter la particularité du langage JAVA :
+l’orientationobjet.
+5.2 uneméthodeparticulière:laméthodemain
+Pourexécuteruneapplicationouunprojet,ilfautappeleruneméthodespéciale:laméthodemain.Ainsi,
+dans l’ensemble des classes d’un projet, il faut au moins avoir défini une méthode main qui lancera le
+projet.Sasignatureestfixéecommesuit(sivousnerespectezpasparfaitementcettesignature, JAVA ne
+pourrapascomprendrequecetteméthodeestla«véritable«méthodemain.):
+1 public static void main(String[] args)
+— laméthodeestpubliquecarc’estellequel’onvaappelerpourlancerl’application
+— la méthode est statique. Heureusement, car sinon il faudrait déjà créer une instance, et comme
+mainlancel’application,ilseraitdifficiledecréerunobjetavantcela!
+— la méthode ne renvoie rien, ce qui n’est pas surprenant car on se demande à qui elle renverrait
+uneinformation.
+— mainestlenomdelaméthode
+— elleapourseulargumentuntableaudeString.Eneffet,lorsqu’onlanceunprogrammeenJAVA ,
+ontapeunecommandequilancel’exécution.Onpeutajouterdutexteàlafindelacommandeet
+chaquemotajoutéestinsérédansletableauargs.Cesmotspourrontêtreutiliséscommeoption
+pourl’application.
+Dans le code ci-dessous, l’exécution de la méthode main affichera Bonjour, Hello ou Hola selon le
+premiermotpasséenoption.
+15
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+1 public static void main(String[] args){
+2 switch(args[0]){
+3 case "francais" :
+4 System.out.println("Bonjour");
+5 break;
+6 case "english" :
+7 System.out.println("Hello");
+8 break;
+9 }
+10 }
+L’exempleci-dessousmontredeuxexécutions:
+~$ java introjava/HelloWorld francais
+Bonjour
+~$ java introjava/HelloWorld english
+Hello
+6 Une structure de données : déclarer et utiliser des tableaux
+JAVA
+proposeunestucturededonnéesparticulièrepourfairedestableauxàndimensions.Pourdéclarer
+un tableau, on indique le type du tableau suivi d’autant de [] que le tableau a de dimension. Dans
+l’exemplesuivant,ligneestuntableauàunedimension,rectangleuntableauadeux,etcubeàtrois.
+1 <type> [] ligne;
+2 <type> [][] rectangle;
+3 <type> [][][] cube;
+Pourinitialiseruntableau,ilfautcréécettestructureenmémoire(i.e.,ilfautréserverdel’espacemémoire
+quicontiendraletableau).Onutiliselemotclénewquivaeffectuercettecréation(onverrauneutilisation
+similaire pour créer un nouvel objet), puis on spécifie de nouveau le type et le nombre d’éléments dans
+chaquedimension.Doncàlacréation,ilfautconnaîtrelataillemaximaledutableau!
+1 <type> [] ligne = new <type>[<taille1>];
+2 <type> [][] rectangle = new <type>[<taille2>][<taille3>];
+3 <type> [][][] cube = new <type>[<taille4>][<taille5>][<taille6>];
+Lors de la création d’un tableau, celui-ci est automatiquement initialisé avec une valeur par défaut. La
+valeurpardéfautest
+— 0pourdestableauxcontenantdestypesnumériques(charinclus)
+— falsepouruntableaudeboolean
+— nullpouruntableaucontenantdesobjets
+Pour accéder aux éléments du tableau, on utilise le nom du tableau, et les indexes dans chaque dimen-
+sion.Parexemplerectangle[3][4] + cube[1][2][5];.Onpeutobtenirlatailledutableauenutilisant
+.lengthcommedansl’exemplesuivant:
+1 int n = ligne.length;
+Onpeutavoirentêteque[]s’appliqueàuntypeetque<type>,<type>[],et<type>[][]sontdestypes.
+Donconpeutécrirelecodesuivant:
+16
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+1 int[][][] cube = new int[3][4][5];
+2 int[][] rectangle = cube[2];
+3 int n1 = cube.length;
+4 int n2 = cube[0].length;
+5 int n3 = cube[0][0].length;
+Ainsi,rectangleseraunmoyenpouraccéderauxélémentscube[2][i][j];n1contiendra3,n2contien-
+dra4etn3contiendra5.
+Attention le premier élément d’un tableau a pour index 0, et donc le dernier élément a pour index
+length-1.
+Pourinitialiseruntableau,onpeutaussiécrirelesélémentsdansl’ordreentreaccolades.Danscecas
+là, JAVA réserve l’espace mémoire approprié et effectue l’initialisation (on n’a pas besoin d’utiliser new
+dans ce cas là). Dans l’exemple qui suit, on initialise un tableau à une dimension et un tableau à deux
+dimensions.
+1 1 1 1
+0 1 1 1
+premiers: 2 3 5 7 11 13 17 19 23 triangle:
+0 0 1 1
+0 0 0 1
+1 int[] premiers = {2, 3, 5, 7, 11, 13, 17, 19, 23 };
+2 int[][] triangle = {{1,1,1,1}, { 0,1,1,1}, { 0, 0, 1, 1}, {0, 0, 0, 1} };
+Lorsqu’un nouveau tableau est créé, il occupe un espace mémoire. Dans l’exemple ci-dessous, on
+définit un tableau premier et on déclare une autre variable de type tableau d’entiers. En utilisant l’opé-
+rateur=,ondonneunnouveaunomaumêmeespacemémoire,maisonnefaitpasunecopiedutableau.
+Dansl’exempleci-dessous,iln’yaqu’unseultableauenmémoire,doncàlafindel’exécution,onaura
+premiers[2]=4.
+index valeur
+1 int[] premiers = {2,3,5,7,11]};
+0 2
+2 int[] entiers;
+1 3
+3 entiers= premiers;
+2 54
+4 entiers[2]=4;
+5 System.out.println(premiers[2]); 3 7
+4 11
+OnverraplustardqueJAVA offredesmoyenssimplespourfairedesopérationssurlestableaux.Nous
+présentonsdesexamplesmaintenant,sansexpliquerendétailcequisepasse,celaserafaitSection6.1.
+— Arrays.toStringpermetd’obtenirlareprésentationd’untableauenchaînedecaractères
+— Arrays.sorttrieuntableau
+— Arrays.BinarySearchpermetdechercherunélémentdansuntableau
+1 int[] tab = {4, 7, 3, 1, 2};
+2 System.out.println("tab : " + tab);
+3 System.out.println("tab : " + Arrays.toString(tab) + "(toString)");
+4 Arrays.sort(tab);
+5 System.out.println("trie : " + Arrays.toString(tab));
+6 System.out.println("index de 4 : " + Arrays.binarySearch(tab,4));
+L’exécutionducodeci-dessusproduiralerésultatsuivant:
+17
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+tab : [I@7852e922
+tab : [4, 7, 3, 1, 2](toString)
+trie : [1, 2, 3, 4, 7]
+index de 4 : 3
+Ce qui est affiché lors du premier affichage est en fait l’adresse mémoire du tableau (on peut com-
+prendre l’ambiguité : tab désigne-t-il la première case mémoire du tableau ou le tableau en entier). On
+peutdoncappelerlaméthodeArrays.toStringpourafficherlesvaleurscontenuesdansletableau.
+18
+Chapitre 2
+Compilation, exécution, machine virtuelle
+JAVA dispose d’outils pour générer et exécuter du code. En particulier, le JRE (JAVA Runtime environ-
+ment)proposeentreautresdesbibliothèquesdeclassesetunemachinevirtuelledontnousparleronsplus
+bas.LeJDK(JAVA DevelopmentKit)contientleJREetcontientenpluslecompilateuretdesoutilspour
+débugger.
+Ce cours traite de la programmation en JAVA . Pour pouvoir exécuter le code en JAVA , il faut tout
+d’abord transformer le code écrit par le programmeur, qu’on appelle le code source, en un code qui est
+utilisableparlamachine. JAVA utiliseunestratégiedemachinevirtuelle:lecodesourceesttraduitnon
+dans un langage directement utilisable par la machine mais dans un language spécial appelé bytecode.
+Pour l’exécution, on utilise une machine virtuelle JAVA qui dépend de la machine d’exécution et qui va
+interpréterlecodeenbytecodedanslelangagedelamachine.Nousallonsparlertrèssuccinctementde
+cesdeuxphasesrésuméesdanslediagrammeci-dessous.
+CodeSource.java
+s w o
+d
+wi
+n Compilationjavac
+s u
+o
+s
+Bytecode.class
+souslinux s o u
+s
+m
+a
+c
+O
+S
+machine
+Exécutionjava
+virtuelle
+machinewindows machinelinux machineapple portableandroid
+FIGURE2.1–Ducodesourceàl’utilisationd’uneapplicationJava
+19
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+1 Compilation
+Pour créer un programme, un développeur écrit un ensemble de classes. Chaque classe <MaClasse> est
+enregistréedansunfichier<MaClasse>.java:ilportelemêmenomquelaclasseetpossèdel’extension
+.java.
+Ensuite,ledéveloppeurdoitcompiler l’ensembledeclassesàl’aided’unprogrammeappeléjavac.
+Lebutducompilateurestdetraduirelecodeécritparledéveloppeurenunautrelangagequipourraêtre
+exécutéparunemachine.DanslecasdeJAVA ,uncompilateurproduituncodedanslelangagebytecode.
+Lerésultatdelacompilationd’uneclasse<MaClasse>seraunfichiernommé<MaClasse>.class,i.e.,il
+porteaussilenomdelaclasse,maissonextensionest.class.
+Poursimplifier,ilyadeuxétapeslorsdelacompilation:
+— analyse syntaxique : le code est lu, on construit une réprésentation du code à l’aide d’un arbre
+syntaxique.C’estdanscettephasequ’onvérifielasyntaxedevotrecode,i.e.onvérifielagram-
+maireducodeJAVA (pourcela,ilsuffitd’étudierl’arbresyntaxiquecréé).Lecours«Automates,
+Langagesetapplication»donnelesoutilspourfairecettevérification.
+— analysesémantique:l’arbresyntaxiqueestanalyséettraduitenbytecode.Pendantl’analyse,les
+références à des classes extérieures sont vérifiées (on cherche si la classe existe bien, si elle a
+besoind’êtrecompilée,etc).Lelangagebycodeestunlangageplussimple(plusbasniveau).
+2 Exécution
+Unefoisquelesfichiersenbytecodesontécrits,onpeutexécuterleprogramme.Danscertainslangages
+deprogrammationcommeleCouleC++lacompilationgénèreunfichierquiseradirectementexécutable
+par la machine : le code machine «natif» dépendra donc du système d’exploitation et de l’architecture
+de la machine (processeur). JAVA utilise une stratégie différente : le bytecode est un code qui peut être
+exécuté non par la machine directement, mais par un programme appelée une machine virtuelle. Pour
+chaquesystèmeopératoire(windows,linux,macintosh,etc...),JAVA fournitunemachinevirtuellequiva
+interpréter lebytecodedanslelangagedelamachinepourl’exécuter.Cettesolutionpossèdeplusieurs
+avantages:
+— le code est portable : On peut écrire le code source sur une machine, compiler sur une machine
+d’architecturedifférente,etexécutersurunetroisièmearchitecture(cdFigure2.1).Onpeututili-
+serlesmêmesfichiers.classquellequesoitl’architecturedelamachine(ordinateur,téléphone
+mobile,caisseenregistreuse,etc).
+— lamachinevirtuellepermetdepartagerd’unemanièresécuriséeunemachine
+— lecodeestgénéralementpluscompact(pasbesoind’inclurelesbibliothèquescommeceseraitle
+casenCouC++).
+— lamachinevirtuelledonnel’impressionquel’ondisposed’unemachineentière(c’estlamachine
+réellequidonnedutempsprocesseuràlamachinevirtuelle).
+L’inconvénient majeur est que le coût en ressource de la machine virtuelle : comparé à un code
+exécutédirectementencodenatif,l’exécutiond’uncode JAVA seragénéralementpluslente.Cependant,
+lamachinevirtuelleJAVA esttrèsefficaceetlaperteenperformanceestassezminime.
+20
+Chapitre 3
+Programmation orientée objet
+JAVA estunlangagedeprogrammationorientéobjet.Danscettesection,onvadoncparlerd’objetsetde
+classes.
+Unobjetsedéfinitparsesétats(onpeutaussiparlerdesescaractéristiques)etsoncomportement.Par
+exemple,unevoitureadesétats:samarque,sonmodèle,sacouleur,etc.Elleaaussidescomportements:
+ellepeutaccélerer,passerunevitesse,tourner,consommerducarburant,etc.
+Une classe peut être comprise comme étant un plan ou un moule pour fabriquer des objets. Une
+classevadécrirelesétatspossiblesetlescomportementspossiblesd’unobjet.Lesétatsd’unobjetvont
+être représentés par des variables et les comportements d’un objet seront representés par des méthodes.
+Un objet est une instance d’une classe, i.e. à l’aide du plan ou du moule qu’est une classe, on fabrique
+unobjetquipossèdesonétatpropreetsoncomportementpropre.Parexemple,onpeutcréeruneclasse
+Personnage(NB:lorsqu’onnommeuneclasse,laconventionsuiviepartousestdecommencerlenom
+de la classe par une lettre capitale). Lorsqu’on instantie la classe Personnage, on crée un objet de type
+Personnage.
+Ladéfinitionplusformelled’uneclasseestuntypeabstraitcaractérisépardespropriétés(attributset
+méthodes)communesàunensembled’objetsetpermettantdecréerdesobjetsayantcespropriétés.Un
+objetouuneinstancedeclassepossèdeuncomportementetunétatquinepeutêtremodifiéqueparles
+actionsducomportement.
+JAVA propose déjà un bon nombre de classes. Par exemple JAVA propose une classe pour manipuler
+les chaînes de caractères appelée String. On peut donc voir cette classe comme étant un moule pour
+fabriquer des chaînes de caractères et ce moule décrit un ensemble de comportements qui nous aidera
+à manipuler ces chaînes de caractères. Ainsi, la classe String possède toute sorte de méthodes pour
+ime
+manipulerleschaînesdecaractères(parexempleuneméthodepourretournerlei caractère,unemé-
+thodepourcomparerlachaîneavecuneautre,uneméthodepourconnaitrelalongueurdelachaîne,pour
+concaténerlachaîneavecuneautre,etc).CréerunevariabledetypeStringestsynonymed’instantierla
+classeStringetdecréezunobjetdetypeString:unechaînedecaractèresestcrééeetonvapouvoirla
+manipuler.
+On va illustrer les concepts de ce chapitre à l’aide d’un exemple. Imaginons que l’on veut créer
+une scène d’un film d’animation. On va donc devoir manipuler les personnages du film. On veut donc
+commencer avec une classe Personnage. On note une nouvelle fois l’utilisation de la convention de
+nommaged’uneclasse:sonnomcommenceavecunemajuscule.Onvadoncécrirelecodesuivantdans
+lefichierPersonnage.java
+21
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+1 public class Personnage {
+2
+3 }
+lemotcléclasseindiquequel’oncréeuneclasse,ilestsuiviparlenomdelaclasseetlecodedelaclasse
+setrouveraentreleslesaccolades{et}.
+1 Variables d’instance
+Ladescriptiondel’étatd’unobjetsefaitpardesvariablesqu’onappellevariablesd’instance(ellessont
+aussi appelées attributs). Ces variables définissent les caractéristiques de l’objet. Par exemple pour la
+classePersonnage,chaquepersonnagedoitavoirunnom.
+1 public class Personnage {
+2 private int age;
+3 private String name;
+4 }
+Lecodeci-dessusimpliquequechaqueobjetouinstancedePersonnageauracesdeuxvariables.
+Noteziciqu’onaindiquéquecesdeuxvariablesétaientprivées,cequiveutdirequeseulementdes
+méthodes de la classe Personnage peuvent utiliser ces variables. Il y a plusieurs motivations pour cela.
+Une première est que vous décidez de la partie du code qui contrôle la modification d’une variable :
+ici, un autre objet ne peut pas directement changer la valeur de nom. Une autre motivation est que le
+programmeurgardelecontrôledelareprésentationinterne:tantquelecomportementdel’objetrestele
+même,vouspouvezchangertoutlecode.
+Demanièreplusinformelle,lesétatsd’unobjetspeuventêtreconnusdetousoupeuventêtrecachés.
+La voiture de James Bond n’est pas une Aston Martin grand publique, elle possède des comportements
+qui ne sont pas accessibles au conducteurs normaux. Ainsi, chaque variable d’instance ou de classe et
+chaqueméthodespeuventavoiruneportée.Sitoutlemondepeutaccéderàlavariableouàlaméthode,
+la portée est publique et on la déclare en utilisant public. Si une variable ou une méthode ne peut être
+accédée que depuis l’intérieur de la classe, la portée est privée et on la déclare en utilisant le mot clé
+private.Nepasrendreaccessibleàl’extérieurpermetdecacherunmécanismeinterneoupermetdele
+protégerdel’extérieur.
+2 Méthodes d’instance
+Onvamaintenantpouvoirimplémenterlesméthodesquipermettentdemodifierl’étatd’unobjet.On
+appelle ces méthodes les méthodes d’instance : ces méthodes modélise le «comportement» de l’objet.
+Dansl’exempleci-dessous,onadeuxméthodesd’instancequiontpournomgetNameetbirthday.Dela
+mêmefaçonquepourlesvariablesd’instance,lesméthodesontuneportée,etici,lesdeuxméthodessont
+publiques. La méthode getName n’a pas de paramètre et retourne une chaîne de caractères. La méthode
+birthdayquantàelleretourneunentier(int)etn’apasnonplusdeparamètres.
+Il est souvent plus naturel que la portée soit publique, mais pas toujours. On fera une différence
+entre des méthodes qui ne modifie pas l’objet et des méthodes qui les modifient (en anglais on parle
+d’un «accessor» et de «mutator»). La méthode getName ne modifie pas l’objet alors que la méthode
+birthdaymodifiel’âgedupersonnage.
+22
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+Vous ne devez laisser publique que les méthodes pertinentes pour l’utilisateur de la classe et cacher
+toutes les autres méthodes (surtout si elles sont dépendentes des détails d’implémentation : si l’implé-
+mentationchange,vouspourrezchangerouenleverdesméthodesprivéessansdangerpourl’utilisateur).
+1 public class Personnage {
+2
+3 private String name;
+4 public int age;
+5
+6 public String getName(){
+7 return name;
+8 }
+9
+10 public void birthday(){
+11 age++;
+12 }
+13 }
+SiasterixestuneinstancedelaclassePersonnage,vouspourrezdoncappelerlesméthodescomme
+suit:
+System.out.println(asterix.getName());
+asterix.birthday();
+Si la méthode n’a pas de paramètres, il faut quand même utiliser les parenthèses ( et ) (cela permet de
+bienfaireladifférenceavecunevariable).Notezquepourlemoment,nousn’avonspasdemoyenpour
+afficherl’âgedupersonnage,ilfaudraitparexemplecréeruneméthodegetAge.
+Commeonl’avudanslaSection5,onpeutdéfinirplusieursfoislamêmeméthodeavecdessigna-
+turesdifférentes.Parexemple,onpeutavoirplusieursversionsenchangeantlalistedesarguments.Par
+exemple si on veut modéliser une ellipse de plusieurs années dans notre scenario, on voudrait pouvoir
+ajouterd’uncoupplusieursannéesànotrepersonnage.Onauradoncuneméthodeaveclasignaturesui-
+vante:
+public int birthday(int inc)
+Si besoin est, vous pouvez utiliser le mot clé this pour faire référence à l’objet courant. Dans
+l’exempleci-dessous,leparamètredelaméthodesetAgeportelemêmenomquelavariabled’instance
+age. Pour éviter toute confusion, on peut dans ce cas préciser que this.age correspond à la variable
+d’instanceetqueagecorrespondauparamètredelaméthode.
+14 public void setAge(int age){
+15 this.age = age;
+16 }
+3 Constructeurs et création d’un objet
+Une classe sert de plan ou de moule pour fabriquer un objet, ce qu’on appelle instancier un objet. Des
+méthodes spéciales, appelée des constructeurs, sont utilisées pour fabriquer un objet en mémoire. Ces
+méthodesserventdoncàréserverdel’espacemémoirepourl’objetetàinitialiserlesvariablesdel’objet.
+23
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+Un constructeur est une méthode qui porte le nom de la classe et qui n’a pas de type de retour. Le
+constructeursansarguments,aussiappeléconstructeurpardéfautauradonclaformesuivante:
+1 public class <nom classe> {
+2 // déclaration des variable d’instances et variables de classe
+3
+4 // constructeur par défaut
+5 public <nom classe>(){
+6 // corps de la méthode
+7 }
+8 }
+Comme les autres méthodes, on peut surcharger ce constructeur par défaut et avoir des constructeurs
+avecdessignaturesdifférentes.PouruneclassePersonnage,onpeutdoncécrire:
+1 public class Personnage {
+2 public String name;
+3
+4 // constructeurs
+5
+6 // constructeur par défaut
+7 public Personnage(){
+8 name="unknown";
+9 }
+10 public Personnage(String name){
+11 nom = name;
+12 }
+13
+Si la valeur d’une variable d’instance n’est pas fixée explicitement dans le constructeur, elle aura
+automatiquementunevaleurpardéfaut(0pourunnombre,falsepourunbouléen,nullpourunobjet).
+Lorsque l’on déclare une variable d’instance, on peut lui donner une valeur par défaut lors de la
+déclarationcommedansl’exemplequisuitoùlavariablenameestaffectéeàlachaine«unknown».Cette
+affectationesteffectuéeavantl’appelduconstructeur.Unconstructeurpourradoncmettreàjourlavaleur
+pardéfaut.
+1 public class Personnage {
+2 public String name = ’’unknown’’;
+3
+4 // constructeur
+5
+6 public Personnage(String name){
+7 nom = name;
+8 }
+9
+Vousn’êtespasobligéd’implémenterunconstructeur:danscecas, JAVA sechargededonnerauto-
+matiquementunconstructeurpardéfaut:celui-ciinitialiseratouteslesvariablesàleurvaleurpardéfaut
+(doncsoit0,falseounullselonletype).Attentioncependant,sivousavezdéjàdéfiniunconstructeur
+avec des arguments, JAVA ne mettra pas à votre disposition un constructeur par défaut : si vous voulez
+24
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+aussiavoirunconstructeurpardéfaut,ilfaudraalorsledéfinirvous-mêmes.
+Onavuquepourcréerunevariabledetypeprimitif(commeunint,unchar,etc.),ondevaitdéclarer
+letypedelavariableetensuite,éventuellement,onpouvaitinitialiserlavariable.Pourcréerunevariable
+de type complexe, i.e. un objet, on doit aussi la déclarer. Pour créer et initialiser l’objet, il faut appeler
+le constructeur grâce au mot-clé new. Ainsi, pour créer un objet de type Personnage on écrit le code
+suivant:
+1 Personnage asterix = new Personnage("Astérix");
+4 Destruction d’un objet
+La destruction des objets est prise en charge par JAVA avec un “garbage collector” (GC), en français
+litéral,c’estunmécanismederamassaged’ordures.LeGCdétruitlesobjets(i.e.effacelamémoire)qui
+ne sont référencés par aucun autre objet. Les destructions sont asynchrones et il n’y a pas de garantie
+que les objets soient détruits. Si un objet à une méthode finalize, celle-ci est appelée lorsque l’objet
+estdétruit.Ellepeutparexemples’assurerquedesfichiersoudesconnexionssontbienferméesavantla
+destructiondel’objet.
+5 Manipulation de références : passage par valeur, final, égalité
+Commençonsparl’exemple suivantoùoncrée unpersonnageappeléAstérixen ligne1.Enligne 2,on
+déclareunevariablequiestuneinstancedePersonnageetonl’affecteàasterix.
+1 Personnage asterix = new Personnage("Astérix");
+2 Personnage gaulois = asterix;
+3 asterix.setAge(30);
+4 gaulois.birthday();
+5 System.out.println(asterix.getAge());
+Ici,onadoncunseulobjetetdeuxvariablespouraccéderàcetobjet.Cesvariablessontdeuxréférences
+au même objet. On peut les voir comme deux noms donnés au même objet. Si on exécute le code ci-
+dessus, l’affichage sera donc bien de 31. En fait, on ne manipule jamais l’objet lui-même, on manipule
+toujoursuneréférenceàunobjet.
+Dans la Section 5, on a dit que le passage des arguments d’une méthode se faisait par valeur. C’est
+toujourslecas.Supposonsqu’onaitlaméthodesuivante:
+public static void centenaire(Personnage p){
+p = new Personnage(p.getName());
+p.setAge(100);
+}
+etsupposonsqu’onappellecetteméthodesurunPersonnage.
+1 Personnage asterix = new Personnage("Astérix");
+2 asterix.setAge(30);
+3 Personnage.centenaire(asterix);
+4 System.out.println(asterix.getAge());
+25
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+Lorsdel’exécutiondelaméthodecentenaire,onfaitbienunecopiedelavariableasterixquiest
+uneréférenceàl’objetAstérix:onacopiélaréférenceseulement.Danslaméthode,cettecopiechange
+et fait référence à un nouvel objet créé dans la méthode. La méthode se termine, la variable p est donc
+détruite.L’objetcrééneseradoncréférencéparpersonne!Surtout,aprèsl’exécutiondelaligne3,l’objet
+référencéparlavariableasterixn’adoncpaschangé!L’affichageseradoncbien"30".
+Parcontre,changeonsquelquepeunotreméthodecentenaire.
+public static void centenaire(Personnage p){
+p.setAge(100);
+}
+Considéronsl’appelsuivant
+Personnage.centenaire(asterix);
+System.out.println(asterix.getAge());
+Ici, la référence asterix est copiée dans la variable paramètre p. L’objet est donc a ce moment là
+référencé par deux noms : asterix et p. L’objet est modifié avec l’appel de la méthode setAge. Après
+l’exécutionducode,l’objetauradonc100commevaleurpourl’attributage,l’affichageseradonc"100".
+Onpeutdéclarerunevariabled’instancecommefinal:àlafindel’exécutionduconstructeur,ilne
+seraalorspluspossibledechangerlavaleurdelavariable.Parexemple,onpourraitfixercommefinal
+lavariablenamedelaclassePersonnage.Pouruntypeprimitif,onnepourradoncpluschangerlavaleur
+delavariable.Lorsqu’onaunobjet,c’estdenouveausurlaréférencequ’estappliquélefinal.Eneffet,
+onpourramodifierl’objetàl’aidedeméthodesquimodifientl’objet,maisonnepourrapasmodifierla
+référence(parexemplechangerl’objetàlaquelleelleestassociéeouchangerpourlaréférencenull).
+Finalement, un autre élément où la manipulation de références joue un grand rôle est sur l’égalité :
+il faut bien faire attention si on veut l’égalité entre deux objets ou entre deux références. Considérons
+l’exemplesuivant:
+1 Personnage asterix = new Personnage( ” Astérix ” );
+2 Personnage asterixBis = new Personnage( ” Astérix ” );
+3 Personnage hero = asterix;
+4 if (asterix == hero) ...
+5 if (asterix == asterixBis) ...
+Lesvariablesquisontdéclaréesnecontiennentpasunobjetmaisuneréférenceverscetobjet.Letest
+àl’aidedusymbole==permetdetestersilesvariablesréférencentlemêmeobjet.
+Dans l’exemple ci-dessus, asterix et hero pointent donc sur le même objet, ainsi, le test de la
+ligne 4 sera positif. Par contre, la variable asterixBis pointe sur un objet différent, même s’il a les
+mêmes propriétés que l’objet asterix, donc, même si les objets asterix et asterixBis ont les mêmes
+propriétés,letestdelaligne5seranégatif.
+Pourtesterl’égalitéentrelespropriétésdedeuxobjets,ondoitutiliseruneméthode
+boolean equals(Object o)
+de la classe de l’objet. Dans le cadre de l’exemple, il faudra donc ajouter à la classe Personnage cette
+méthodeetdéfinirdansquellesconditionsdeuxpersonnagessontégaux.
+Nousreviendronssurleproblèmedel’égalitédanslechapîtresuivant(Section6.3).
+26
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+6 Variables & méthodes de classe
+Les variables d’instance sont spécifiques à chaque instance de la classe. Mais parfois, il serait bon
+d’avoirunevariabledontlavaleursoitcommuneàtouteslesinstancesd’unemêmeclasse.Parexemple,
+sionconçoituneclassecercleetqu’onabesoindelavaleurdeπ,ilseraitbonqu’iln’yaitqu’unevaleur
+deπenmémoireetquetouteslesinstancespartagentcettevaleur.C’estl’idéederrièrelemotcléstatic.
+Nous l’avons déjà rencontré dans le chapitre?? à propos de méthodes et nous avions alors dit que ces
+méthodesn’opèrentsuraucunobjet.
+6.1 Variablesdeclasse
+Si une variable est une variable de classe, alors il n’y a qu’une seule variable qui sera partagée par
+touteslesinstancesdecetteclasse.Pourdéclarerunevariabledeclasse,onutiliselemotcléstatic.Par
+exemple,onvaajouterlavariabledeclassecptPersonnage:
+1 public class Personnage {
+2
+3 public static int cptPersonnages;
+4 private final String name;
+5 public int age;
+6
+7 public Personnage(String name){
+8 this.name = name;
+9 }
+Pouravoiraccèsàcettevariable,ilnefautmêmepasavoiruneinstancedelaclasse!Eneffet,pour
+accéderàlavaleurd’unevariabledeclasse,ilsuffitdeconcaténerlenomdelaclasse,lecaractèrepoint
+«.»etlenomdelavariabledeclasse(commedansl’exemplesuivant):
+System.out.println(Personnage.cptPersonnages);
+Une utilisation possible ici est de donner un numéro d’identification unique à chaque personnage.
+Pourcefaire,àchaquefoisquel’onvacréerunnouveaupersonnage,onvaincrémenterlecompteurde
+personnages.Ainsichaquepersonnageauraunnumérounique1.
+1 public class Personnage {
+2
+3 public static int cptPersonnages;
+4 private final int id;
+5 private final String name;
+6 public int age;
+7
+8 public Personnage(String name){
+9 id = cptPersonnages++;
+10 this.name = name;
+11 }
+1. Ceci,enfaisantl’hypothèsequ’iln’yaqu’unthreadquipuissecréerdespersonnages,sionestdansunesituationde
+programmationconcurrente,ilfaudraremédieràceproblème.
+27
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+Commepourlesvariablesd’instance,onpeutaussiavoirdesvariablesdeclassequisontconstantes
+àl’aidedumotcléfinal.Unexempleintuitifestuneconstantemathématiquecommeπ oue.Unautre
+exemple est l’utilisation d’un générateur de nombres aléatoires : au lieu de créer plusieurs instances du
+générateur de nombres aléatoires de JAVA (c’est la classe Random), il est préférable de n’utiliser qu’une
+seuleinstancedelaclasseRandom2.Onpourraitdoncavoirlecodesuivant:
+1 public class Personnage {
+2
+3 public static int cptPersonnages;
+4 private final int id;
+5 private final String name;
+6 private static final Random generator = new Random();
+S’il y a besoin de faire des calculs pour initialiser des variables static, sachez qu’il existe de blocs
+d’initialisationstatiques.
+6.2 Méthodesdeclasse
+Demême,onadesméthodesdeclasse:cesméthodesnemodifientpasl’étatinterned’unobjet.On
+peut se servir de méthodes de classes comme des méthodes utilitaires pour manipuler des objets de la
+classeenquestion.
+Un exemple de la classe Math est le calcul de la puissance : Math.pow(x,a). Ici, il n’y a pas besoin
+degénéreruneinstancedeMath,onpeutappelerlaméthodedeclassepowquicalculexa
+.
+On a en fait déjà vu un exemple de méthode de classe dans le chapitre ?? dans la section sur les
+tableaux(Section6).OnpeututiliserdesméthodesdeclassedelaclasseArrayspourfairedesopérations
+(commeletri,larecherchebinaire,etc)surdestableaux.
+Une utilisations des méthodes de classe est ce qu’on appelle les méthodes usines («Factory me-
+thods»)quiretournentdesnouvellesinstancesdeclasses.
+7 Retour sur la portée : Encapsulation
+Onavuques’ilonutiliselemot-clépublic,unevariableouuneméthodeétaitaccessiblepartouteautre
+classe. Parfois, c’est très pratique, mais cela peut aussi être dangereux. Par exemple on peut changer le
+nomd’unpersonnagetrèsfacilement!
+1 Personnage asterix = new Personnage(Astérix);
+2 asterix.name = ” César ” ;
+Parfois on veut donc éviter une modification directe par l’utilisateur des composants de l’objet. Par
+exemple avec l’exemple ci-dessus, on se dit qu’il faudrait que l’attribut name de la classe personnage
+devienneprivate.L’utilisateurestdoncprivéd’unaccèsdirectaux(ouàcertains)attributs.Alaplace,
+onvaproposerdesméthodespouraccéderauxvariables.Ainsi,onpeutpenserqu’unobjetestuneboite
+noirequirenddesservicesàl’utilisateur:l’utilisateuraunaccèsdirectàuncertainnombredeméthodes
+et de variables qui vont lui rendre service. Le programmeur peut donc choisir de faire évoluer le code
+sansdommagepourl’applicationtantquelesservicessontidentiques.
+Par exemple pour un projet, on a besoin de manipuler des nombres complexes. Les méthodes vont
+donc être re(), im(), rho(), theta() qui donnent la partie réelle, imaginaire, le module et l’angle du
+2. Eneffet,cequiestaléatoire,c’estlasuitedesnombres
+28
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+nombre complexe et des méthodes pour faire des opérations sur des complexes (addition, soustraction,
+multiplication, division, homothétie, rotation). Comment est représenté le nombre complexe dans l’im-
+plémentationestsansimportancepourl’utilisateur.Ainsi,unprogrammeurpeutfaireunepremièrever-
+sion en utilisant une représentation cartésienne en utilisant private double partie_re, partie_im;
+commevariablesd’instancesetécriretouteslesméthodesàpartirdecettereprésentation.
+Sileprogrammeurserendcomptequel’applicationfaitbeaucoupdecalculsimpliquantlesrotations,
+la représentation polaire sera plus efficace. Il peut changer l’implémentation de la classe complexe et
+écrirelesmêmesméthodesenutilisantlareprésentationpolaire.Pourlerestedel’application,iln’yaura
+aucun changement, le changement est tout à fait transparent. Si toutefois la portée des variables d’ins-
+tance partie_re et partie_im avait été laissée public, on aurait pu directement utiliser ces variables
+en dehors de la classe complexe, ce qui rendrait le passage à une implémentation en représentation po-
+laire beaucoup plus compliqué puisqu’il faudrait modifier tout le code utilisant directement partie_re
+etpartie_im.
+29
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+30
+Chapitre 4
+Héritage
+L’héritagepermetàunobjetd’acquérirlespropriétésd’unautreobjet.Sionconsidèrenotreexemplede
+personnage, un romain est un type de personnage, un gaulois un autre. Pour coder une classe Gaulois,
+il semble inutile de coder de nouveau tout ce qui a été codé dans la classe Personnage. De plus, si
+on veut plus tard modifier la classe Personnage, on ne voudrait pas qu’on ait à changer quelque chose
+dans la classe Gaulois. La solution est donc de dire que la classe Gaulois hérite des propriétés de
+la classe Personnage. On peut ainsi factoriser les connaissances : la classe mère (ou classe de base)
+est plus générale et contient les propriétés commune à toutes les classes filles (ou classe dérivée ou
+héritée). Les classes filles ont des propriétés plus spécifiques. On peut ainsi avoir une hierarchie de
+classes.Defait,touslesobjetsenJAVA dériventpardéfautdelaclassejava.lang.Object.Celaimplique
+que tous les objets possèdent déjà à leur naissance un certains nombre d’attributs et de méthodes qui
+dériventd’Object.Pourexprimerqu’uneclasseestuneclassefilled’uneautreclasse,onutiliselemot-
+cléextendscommesuit:
+1 class <nom classe fille> extends <nom classe mère>
+JAVA supporte seulement un seul héritage : il n’est pas possible d’hériter de plusieurs parents (un
+langagecommeC++permetuntelhéritagemultiple).
+1 Polymorphisme
+Pardéfinition,unobjetestuneinstanced’uneclasse.Dansl’exemplequisuit,ondéfinitquatreclasses.
+Toutd’abord,laclassePersonnageestlaclasselaplusgénérale.Ensuite,ondéfinitlesclassesGaulois
+etRomainquisontdeuxclassesquihéritentdePersonnage:unromainouungauloisseraunpersonnage
+particulier.Finalement,ondéfinitunetroisièmeclassequihéritedeGaulois:ils’agitdelaclasseIrre-
+ductibleGaulois.Unirréductiblegauloisestpardéfinitionungaulois,maisc’estaussiunpersonnage.
+On voit donc bien que désormais, un objet peut avoir plusieurs types. Quand un objet peut appartenir à
+plusieurstypes,onparledepolymorphisme.
+1 public class Personnage { ... }
+2 public class Gaulois extends Personnage { ... }
+3 public class IrreductibleGaulois extends Gaulois { ... }
+4 public class Romain extends Personnage { ... }
+31
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+Lepolymorphismeetletranstypageimplicitenouspermettentdemanipulerdesobjetsquisontissus
+de classes différentes, mais qui partagent un même type parent : il est toujours possible d’utiliser une
+référencedelaclassemèrepourdésignerunobjetd’uneclassedérivée(fille,petite-filleettoutelades-
+cendance).
+1 Personnage asterix = new Gaulois( ” Astérix ” );
+On utilise alors le transtypage implicite de la classe dérivée vers la classe mère. Dans l’exemple précé-
+dent, la variable asterix est déclarée comme un Personnage. Mais cette variable fait référence à un
+Gaulois,celaestlogiquecarunGauloisestbienunPersonnage.
+A quoi cela peut bien servir? Lorsqu’on veut utiliser une structure qui rassemble plusieurs objets,
+cela peut s’avérer très utile. Pour le moment, vous ne connaissez que les tableaux (on verra plus tard
+d’autresstructurescommeleslistes,tas,etc).Dansl’exemplequisuit,onveutavoiruntableaucontenant
+tous les personnages connus. On veut donc un tableau de Personnages, mais on ne veut pas s’interdire
+d’avoirdesinstancesdesousclassesdePersonnagecommedesGaulois.Ici,onpourradoncutiliserune
+bouclepourécrirelenomdechaquepersonnage.
+1 Gaulois obelix = new Gaulois( ” Obélix ” );
+2 Gaulois asterix = new Gaulois( ” Astérix ” );
+3 Personnage cleopatre = new Personnage( ” Cléopâtre ” );
+3 Personnage[] distribution= new Personnage[3];
+4 distribution[0]= asterix;
+5 distribution[1]= obelix;
+6 distribution[2]= cleopatre;
+7 for (int i=0;i<3;i++)
+8 System.out.println(distribution[i].getName());
+Evidemment, si on utilise un type de base comme référence pour un type dérivé, on ne peut pas
+utiliserlesméthodesspécialiséesdutypedérivé.End’autrestermes,sionadéclaréqu’unevariableest
+dutypeParent,onn’aaccèsqu’auxméthodesetattributsdelaclasseParent.Mêmesileprogrammeur
+peutsavoirqu’enfait,cetobjetestdetypeEnfant,ilnepeutappeleruneméthodespécifiquedelaclasse
+Enfant.
+Dans notre exemple, on va supposer que la classe Gaulois possède une méthode boisPotionMa-
+gique()quin’existepaspourlaclassePersonnage.Onnepourradoncpasfairel’appel
+distribution[0]. boisPotionMagique().
+En effet, même si distribution[0] contient l’objet asterix qui est un Gaulois, distribution[0] est
+déclarécommeunPersonnage,doncseulementlesméthodesdelaclassePersonnagepeuventêtreutili-
+sées.
+2
+instance of
+Onpeututiliserlemotcléinstance ofpourvérifiersiunobjetestbienuneinstanced’uneclasseous’il
+estuneinstanced’unesousclasse.Aveclepolymorphisme,unobjetpeutapparteniràplusieursclasses,
+etainsi,ilpourraretournerTrueàdesappelsdifférentsdeinstanceof.Parexemple,aprèsl’exécutiondu
+code ci-dessous, on obtiendra true, true et false car Astérix est un Personnage, plus précisemment,
+c’estbienunGaulois,maiscen’estpasunRomain.
+32
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+5 ...
+6 IrreductibleGaulois asterix = new IrreductibleGaulois();
+7 System.out.println( asterix instance of Personnage);
+8 System.out.println( asterix instance of Gaulois);
+9 System.out.println( asterix instance of Romain);
+3 Les membres protégés –
+protected
+Onavudeuxportéespourlesvariablesetlesméthodes:publicetprivate.Uneclassefillepeutaccéder
+auxélémentspublic(évidemment,commetouteslesautresclasses),maismalheureusement,ellenepeut
+pasaccéderdirectementauxélémentsprivésetlesmanipulertelsquels.L’idéeiciestquesilaclassemère
+possède des attributs, c’est à cette classe d’offrir tous les outils pour travailler avec ces attributs. Si le
+développeurachoisidecacherdesdétailsd’implémentation(defaçonàpouvoirleschangeraubesoin),
+ces details resteront cachés pour les classes filles (et donc un changement de détails d’implémentation
+n’affecterapaslesclassesfilles).
+Cependant, dans certains cas, on voudrait bien avoir une portée qui permette aux classes dérivées
+d’avoiraccèsàunélément,maispasàdesclassesétrangères.Ilexistedoncuneportéeappeléeprotected
+qui permet précisemment cela : seules les classes dérivées peuvent accéder à des variables et méthodes
+protégées.Ilvautveilleràn’utiliserprotectedquelorsqu’onenavraimentbesoin.
+4 Redéfinition des méthodes héritées
+L’héritage permet d’ajouter des fonctionalités particulières qui ne se trouve pas dans la classe mère.
+Mais quant est-il pour les méthodes de la classe mère? La classe dérivée hérite des méthodes public
+ou protected de sa classe mère. Ainsi, si le comportement est exactement le même que celui de la
+classe mère, on peut/doit omettre la ré-écriture de cette méthode. Si le comportement est différent, on
+peut ré-écrire la méthode avec la même signature et changer le corps de la méthode : on appelle cela la
+redéfinition.
+Pour aider à faire la distinction entre une classe et sa classe mère, il existe deux références pour
+parcourirlahierarchie:
+— this:estuneréférencesurl’instancedelaclasse.
+— super:estuneréférencesurl’instancemère.
+Dansl’exempleplusbas,laméthodepresentation()delaclasseGauloisajouteàlaprésentationdela
+classePersonnagelefaitquelepersonnageestGaulois.
+Lorsqu’on redéfinit une méthode, la liste des arguments doit forcément rester la même que dans la
+classemère(sinon,oneffectuelacréationd’unenouvelleméthodeetnonlarédifinitiond’uneméthodede
+laclassemère).Pourcela,onpeut/doitajouteruneannotation@Overridequipermettraaucompilateurde
+vérifiersic’estbienunerédéfinition.Parcontre,ilestpermisdemodifierletypederetourdelaméthode.
+Par exemple, dans la classe Romain, on pourrait ajouter une méthode public Romain getSuperior().
+Maintenant, si on veut faire une classe Centurion qui hérite de Romain, on peut redéfinir la méthode
+getSuperior de façon à indiquer qu’un centurion n’a pas pour supérieur un simple soldat romain, il ne
+peut rendre des comptes qu’à un autre centurion. On peut donc utiliser la signature @Override public
+Centurion getSuperior().
+33
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+4.1 Constructeur
+Leconstructeurestuncasparticulier.Ondoitfaireappelauconstructeurdelaclassemèreàl’aidede
+super.L’appelauconstructeurdelaclassedebaseestlapremièreinstructionduconstructeurdelaclasse
+dérivée.Ici,superindiquel’appelauconstructeurdelaclassemèrecommedansl’exempleci-dessous.
+Onpeutéventuellementsepasserdel’appelauconstructeurdelaclassemère,maisseulementdans
+lecasoùlaclassemèrepossèdeunconstructeurpardéfaut(i.e.sansarguments).Donc,quecesoitd’une
+manière explicite ou non, tout constructeur d’une classe fille fait obligatoirement appel au constructeur
+delaclassemère.
+1 public class Personnage {
+2
+3 private String nom;
+4
+5 public Personnage(String name){
+6 this.nom = name;
+7 }
+8
+9 public String presentation(){
+10 return ” Je m’appelle ” + name;
+11 }
+12 }
+1 public class Gaulois extends Personnage {
+2
+3 public Gaulois(String name){
+4 super(name);
+5 }
+6
+7 public String presentation(){
+8 return super.presentation() + ” je suis un gaulois ” ;
+9 }
+10 }
+11
+12 public static void main(String[] args){
+13 Gaulois asterix = new Gaulois( ” Astérix ” );
+14 System.out.println( asterix.presentation());
+15 }
+4.2 Recherchedynamiqued’unmembre
+Siuneméthodeestredéfiniedansuneclassefille,onpeutsedemanderquelleméthodeesteffectivement
+appeler.Commençonsparl’exemplesuivant:
+34
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+1 public class Personnage {
+2 ...
+3 public String presentation(){
+4 return ” je m’appelle ” +nom;
+5 }
+6 }
+1 public class Gaulois extends Personnage {
+2 public Gaulois(String name){ super(name);}
+3 @Overridea
+4 public String presentation(){
+5 return super.presentation() + ” je suis un gaulois ” ;
+6 }
+7 public void frappeRomains(){
+8 System.out.println( ” Qu’est-ce qu’on s’amuse ” );
+9 }
+7 }
+a. @Override est une annotation. Elle est une indication destinée au compilateur pour lui signifier qu’il s’agit d’une
+redéfinition de méthode. Le compilateur vigilant vérifiera que c’est bien le cas.
+1 public class Romain extends Personnage {
+2
+3 public Romain(String name){ super(name);}
+4 @Override
+5 public String presentation(){
+6 return super().presentation() + ” et je ne suis pas fou ” ;
+7 }
+1 ...
+2 public static void main(String[] args){
+3 Random generator = new Random();
+4 Personnage mystere;
+5 if (generator.nextBoolean())
+6 mystere = new Gaulois( ” Astérix ” );
+7 else
+8 mystere = new Romain( ” Jules ” );
+9 System.out.println( mystere.presentation());
+10 }
+On trouve dans cet exemple une implémentation de la méthode presentation() dans chacune des
+classes.Danslaméthodemain,onappellelaméthodepresentation()d’unobjetquiestdéclarécomme
+un Personnage, mais qui est en fait soit un Gaulois soit un Romain1. Quelle méthode va être appelée?
+Puisqu’onutiliseunévènementaléatoire,onnepeutpasdéduireaumomentdelacompilationlevéritable
+typedel’objetmystere. JAVA déterminelaméthodeàutiliseraumomentdel’exécutionduprogramme,
+i.e., c’est une liasion dynamique. Lors de l’appel d’une méthode, JAVA remonte la hiérarchie de classes
+1. Ici,onutiliselaclasseRandomquisetrouvedansl’APIdeJAVA .Cetteclassegèrelacréationdeséquenced’évènements
+pseudoaléatoire.Danscetexemple,laméthodenextBooleanchoisitdemanièreuniformeentretrueetfalse.
+35
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+jusqu’àtrouverlaméthodedontlasignaturecorrespondàl’appel.Doncdansl’exemple,JAVA vautiliser
+laméthodepresentation()delaclasseGauloissimystereestunGaulois,etcelledelaclasseRomain
+simystereestunRomain.
+Attention!Aumomentdelacompilation,onvavérifiersilaméthodeappliquéeàunPersonnageest
+bienuneméthodedelaclassePersonnageoudesesparentes.Dansl’exemple,ilestvraiquelavariable
+mystere fait référence à une instance de Gaulois ou Romain, néanmoins, on ne pourrait pas appeler
+mystere.frappeRomains()carlaméthodefrappeRomains()n’estdéfiniequepourlaclasseGauloiset
+nonpourlaclassePersonnage.
+5 le mot-clé
+final
+Ilestaussipossibled’indiquerqu’uneméthodeneserapasredéfiniedansunesousclasse.Celaéviteraà
+JAVA defairelarecherchedelabonneméthodeàutiliser.Poursefaire,onpeututiliserlemot-cléfinal.
+Ce mot-clépeut aussiêtre utilisépour ladéfinition d’uneclasse. Il indiquealors quecette classene
+peutavoirdeclassesfilles.CertainesclassesdeJAVA sontd’ailleursdéclaréescommefinal,commepar
+exemplelaclasseString.Lebutesticid’ordredelasécurité:onveutêtresûrquequandonmanipuleun
+String,onmanipulebienunStringfournieparJAVA etnonuneinstanced’unesousclassequipourrait
+fairedesopérationsnonvoulues.
+Enfin, le mot-clé final peut aussi être utilisé pour déclarer un paramètre d’une méthode ou une
+variable locale d’une méthode. Cette qualification impose que le paramètre ou la variable ne sera pas
+modifiée (évidemment pour la variable, il faudra qu’elle soit initialisée avant la fin de l’exécution du
+constructeur).
+6 La classe
+Object
+EnJAVA ,quecesoitd’unefaçondirecteounon,touteclassehéritedelaclasseObject.Cetteclasse
+se trouve donc en haut de la hiérarchie des classes. La conséquence est qu’on pourra appeler n’importe
+quelleméthodedéfiniedanslaclasseObjectsurn’importequelobjet.Danslasuite,nousallonsregarder
+plusieurs méthode de la classe Object. Ci-dessous, voici une partie du résumé des méthodes que l’on
+trouvedansladocumentationJAVA .
+ModifierandType MethodDescription
+protected Object clone()
+Createsandreturnsacopyofthisobject.
+boolean equals(Object obj)
+Indicateswhethersomeotherobjectis"equalto"thisone.
+protected void finalize()
+Called by the garbage collector on an object when garbage collection de-
+terminesthattherearenomorereferencestotheobject.
+Class<?> getClass()
+ReturnstheruntimeclassofthisObject.
+int hashCode()
+Returnsahashcodevaluefortheobject.
+String toString()
+Returnsastringrepresentationoftheobject.
+36
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+6.1 toString
+La méthode toString permet de retourner une réprésentation de l’objet avec une chaîne de carac-
+tères.
+Comme c’est une méthode de la classe Object, on pourra donc toujours avoir une représentation
+d’un objet. L’implémentation dans la classe Object retourne le nom de la classe et le code de hachage
+(c’estunnombrequiidentifiedemaniereuniqueunobjet,voirlasectionquisuitsurhashCode()).
+Une manière un peu standard d’imprimer un objet est d’indiquer le nom de la classe suivie entre
+crochetsdelalistedesvariabled’instance.
+Les tableaux héritent aussi de la classe Object. Lorsque l’on utilise la méthode toString, on a
+une représentation quelque peu archaique, quelque chose comme ’’[I@7852e922]’’. Ici I[ désigne un
+tableau de int. Pour avoir une représentation plus standard, vous pouvez utiliser la méthode toString
+delaclasseArraysdupackagejava.util.
+1 import java.util.Arrays;
+2 public class TableauInt {
+3
+4 public static void main(String[] args){
+5 int[] chiffres = 0,1,2,3,4,5,6,7,8,9;
+6 System.out.println(chiffres.toString());
+7 System.out.println(Arrays.toString(chiffres));
+8 }
+9
+10 }
+L’exécutionducodeci-dessusaurapourrésultat:
+[I@7852e922
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+6.2 hashCode
+Un code de hachage est une empreinte servant à identifier rapidement, bien qu’incomplètement, un
+objet. Idéalement, on voudrait un code unique, mais cela pourrait prendre un peu de temps de calculer
+un code unique pour une instance d’une classe. Comme on veut une méthode rapide, on va sacrifier
+l’unicité : si deux objets ont un code de hachage différent, la probabilité que les objets soient différents
+esttrèshaute.
+JAVA utilise un entier. Object.hasCode() dérive un code de hachage qui peut utiliser la position en
+mémoire,unnombreassociéàl’objet,ouunecombinaison.
+La chose qui est importante est que deux objets égaux doivent avoir le même code de hachage. La
+méthodehashCode()doitdoncêtrecohérenteaveclaméthodeequals().
+6.3 equals
+L’égalité entre deux objets fait apparaître une subtilité. La méthode equals implémentée dans la
+classeObjectdetermineseulementsilesréférencessontidentiques.Pourbeaucoupdecas,c’estexacte-
+mentcequel’ondésire.
+Par contre, parfois, on peut vouloir vérifier que deux objets ont le même contenu. Par exemple, on
+peutavoirdeuxinstancesdelaclasseString(quiaurontdoncdesréférencesdifférentes),maisquiseront
+37
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+composés de la même chaîne de caractères. Dans ce cas, on voudra redéfinir la méthode equals pour
+comparerlecontenudesobjets.AttentionalorsdanscecasquelaméthodehashCode()restecohérente
+aveclaméthodeequalsainsiredéfinie.
+6.4 clone
+La méthode clone est aussi subtile, et pas forcément souvent nécessaire. Ne redéfinissez pas cette
+méthodesivousn’avezpasunebonneraisondelefaire.
+Le but du clonage est de faire une nouvelle instance qui ait le même état que l’objet original. Si un
+desobjetsestmodifié,l’autredevraitresterinchangé.
+La méthode est déclarée comme protected, vous devez donc si vous voulez que les utilisateurs de
+votreclassepuisseclonerdesinstances.
+L’implémentation de la classe Object fait une copie superficielle : elle copie toutes les variables
+d’instancedel’objetoriginal.Pourlesvariablesprimitives,celaestparfait.Cependant,pourlesvariables
+quisontdesobjets,JAVA vasimplementcopierlaréférence.
+Prenons un exemple. On a une classe Episode qui contient un tableau de Personnage. Supposons
+qu’onaunpremierépisodeavecdeuxpersonnagesAstérixetObélix.Onclonecepremierepisodepour
+en faire un second. On ajoute au second épisode le personnage d’Idéfix. Avec un clone superficiel, le
+tableaun’estpasdupliqué:chaqueépisoderéfereaumêmetableauenmémoire.Ainsi,lesdeuxépisodes
+auronttroispersonnages:Astérix,ObélixetIdéfix!
+6.5 finalize
+Cette méthode sert lorsque «garbage collector» détruit l’objet (voir Section 4). Si on veut ajouter
+untraitementparticulierlorsdeladestructiondel’objet,onpeutajouterlecodedanscetteméthode.Par
+exemple si l’objet est utilisé pour de la communication, l’appel de cette méthode peut servir à terminer
+proprementlescommunications.
+Laméthodefinalize()delaclasseObjectnefaitenfaitrien,lessousclassespeuventrédéfinirun
+comportementplusparticulier.
+6.6 getClass
+Cette méthode permet de récupérer un objet de type Class qui est automatiquement généré par la
+machinevirtuellede JAVA .Achaquecréationd’objet,lamachinevirtuellecréeunobjetdetypeClass
+associéquipeutpermettred’apprendrebeaucoupsurl’objetinitial.
+7 Classes et méthodes abstraites
+Prenonsl’exempledenotreclassePersonnage.Lorsquel’onvautilisernotreprogramme,onn’utilisera
+jamais d’objet de la classe Personnage : à chaque fois, on utilisera une classe plus précise (Romain,
+Gaulois,Egyptien,Chien,etc.).LaclassePersonnageestnéanmoisutilecommeracinedelahiérarchie
+etpourlesméthodesquetoutessesclassesfillespossèderont.Pourcertainesméthodes,l’implémentation
+dans la classe Personnage sera donc inutile si toutes les classes filles redéfinissent cette méthode. On
+voudrait déclarer ces méthodes dans Personnage mais sans fournir leur implémentation, et forcer à ce
+quel’implémentationsoitfourniedanslesclassesfilles.C’estexactementcequeproposelesclassesou
+lesméthodesditesabstraites.
+38
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+Une méthode abstraite est une méthode qui ne possède pas de corps, seulement la signature de la
+méthode est donnée. Ainsi, une telle méthode doit être obligatoirement implémentée dans toutes les
+classes filles. L’intérêt est que l’on pourra appeler la méthode de la même façon pour tous les objets
+dérivés.
+Uneclasseabstraiteestuneclassequicontientaumoinsuneméthodeabstraite.Uneclasseabstraite
+nepeutêtreinstanciéedirectement(i.e.,onnepeutpasécrirenew),ellen’estutiliséequ’àtraverssades-
+cendance.Uneclassedérivéed’uneclasseabstraiteetquineredéfinitpastouteslesméthodesabstraites
+estelle-mêmeabstraite.
+Pour la syntaxe, les classes et les méthodes abstraites doivent être précédées du mot-clé abstract.
+Pournotreexemple,onpeutfairedelaclassePersonnageuneclasseabstraite.Lorsqu’onveutinstancier
+unvraipersonnage,cepersonnageaurauntypeplusprécis(i.e.,ceseraungaulois,unromain,ungoth,
+etc). Mais tous les sous-types devront implémenter un même ensemble de méthode. Ainsi quand on
+voudramanipulerlespersonnagesengénéral,onpourrautiliserletypePersonnage.
+1 public abstract class Personnage {
+2 public Personnage(String name);
+3 public abstract presentation();
+4 }
+8 Interfaces
+Commencons par un exemple. Parmi les personnages, certains sont des combattants, d’autres non.
+Parexemplescertainsgauloisvontallercombattre,maispastous(ledruideparexemplenecombatpas),
+demêmechezlesromains,certainsromainssontdansl’administrationetnecombattentpas.
+UnepremieresolutionseraitdefairedessousclassesdeRomainetGauloisetd’ajouterdesméthodes
+pour combattre. Mais on sent bien qu’on va sûrement dupliquer du code. On serait tenté de faire un
+classeCombattantetondéserireraitquecertainsromainshéritentàlafoisdeCombattantetdeRomain.
+Malheureusement,JAVA permetseulementunhéritagesimple:onnepeuthériterqued’uneseuleclasse.
+Les interfaces vont nous permettre de traiter ce probleme. Les interfaces offrent un mécanisme pour
+réaliserunesorted’héritagemultiple.
+Une interface est un ensemble de déclarations de méthodes et de constantes qui ressemble à une
+classe abstraite. C’est une sorte de standard qu’une classe peut suivre : dans notre exemple, l’interface
+combattant va définir toutes les méthodes qu’un combattant doit posséder. Pour suivre le standard, une
+classe doit posséder les méthodes déclarées dans l’interface. Dans ce cas, on dit que la classe implé-
+mente l’interface. Une autre façon de dire est que l’on indique ce qui doit être implémenté sans donner
+l’implémentation.
+Une classe peut suivre à la fois plusieurs standard, i.e. une classe peut implémenter plusieurs inter-
+facesenmêmetemps.
+Une interface peut être implémentée par plusieurs classes : dans notre exemple, l’interface Com-
+battant peut être implémentée par les classes IrréductiblesGaulois, Pirate ou SoldatRomain. Ces
+classes seront bien sûr différentes, mais elles ont en commun qu’elles suivent toutes le standard des
+combattants. On pourra donc "voir" des instances des classes IrréductiblesGaulois, Pirate ou Sol-
+datRomaincommedescombattants.Onauradoncledroitd’écrireCombattant c = new SoldatRomain.
+L’objet c est en réalité un SoldatRomain, mais il est simplement déclaré comme un Combattant. On
+pourradoncexécutertouteslesméthodesdel’interfaceCombattant.Parcontre,étantdéclarécommeun
+Combattant, on ne pourra pas appeler des méthodes qui sont dans la classe SoldatRomain mais qui ne
+39
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+sontpasdanslaclasseCombattant.
+Pourdéclareruneinterface,onpeututiliserlemodèleci-dessous:
+1 [public] interface <nom interface> [extends <nom interface 1> <nom interface 2> ... ] {
+2 // méthodes ou des attributs static
+3 }
+Doncparexemple,sionveutimplémenternotreinterfaceCombattant,onécrira:
+1 public interface Combattant {
+2 public void attack(Personnage p);
+3 public void defense(Combattant c);
+4 public default void runAway(){goHome();}
+5 }
+Dansl’exemple,onaindiquéquel’interfaceCombattantpossède3méthodes:attack,defense,et
+runAway.Notezqu’iln’yapasd’implémentationpourlesdeuxpremières.Ilsuffitd’écrirelasignaturede
+laméthodes.Toutsepassecommesilaméthodeestabstraiteetchaqueméthodedevraêtreimplémentée
+partouteclassequiimplémentel’interface.
+Danslesanciennesversionsde JAVA ,lesméthodesd’uneinterfaceétaittoujoursabstraites:aucune
+n’avaituncorpsetchaqueclassequiimplémentaitl’interfacedevaitavoirsonimplémentationdechacune
+desméthodesdel’interface. JAVA offredésormaislapossibilitéd’avoirdesimplémentations:onpourra
+ainsi trouver des méthodes static et des méthodes par défaut (comme c’est le cas pour la méthode
+runAway). Les méthodes static seront par exemple des méthodes "outils" (comme pour les méthodes
+staticdansdesclassesiln’yapasbesoindecréerunobjetpourappelercesméthodes).Lesméthodes
+par défaut devront avoir le mot clé default. Dans l’exemple ci-dessous, deux méthodes devront être
+implémentéesparlesclassesquiimplémenterontl’interface(attacketdefense)etlaméthoderunAway
+possèdeuneimplémentationpardéfaut.
+Toutattributestimplicitementdéclarécommepublic,staticetfinal.Eneffet,unattributnepeut
+êtreunattributdeclasse,puisqu’onsetrouvedansuneinterface!L’interfacespécifieuncomportement,
+etn’estpasfaitpourgérerunétat.C’estdansladéfinitiond’uneclassequel’onpeutavoirladéfinition
+d’unétat!Alarigueurdansuneinterface,unattributserautilisécommeuneconstante,doncilestnaturel
+qu’ilsoitpublicetfinal.
+1 public class IrreductibleGaulois implements Combattant {
+2 ...
+3 public void attaque(Personnage p){
+4 gourdePotionMagique.bois();
+5 while(p.isDebout())
+6 coupsDePoing(p);
+7 }
+8
+9 public void defend(Combattant c){
+10 esquive();
+11 attaque(c);
+12 }
+13 }
+L’utilisation d’interfaces s’inscrit dans la notion de polymorphisme. Un objet d’une classe qui implé-
+menteuneinterfacepossèdeaussile«type»del’interface.OnpeutdoncavoiruntableaudeCombattants
+40
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+quicontiendradoncdesobjetsquiimplémententl’interfaceCombattant,qu’ilssoientdesSoldatRomains
+ou des IrreductiblesGaulois. Il n’y a aucun problème pour l’appel de la méthode, puisque la signa-
+tureestspécifiéedansl’interface.Lorsdel’exécutiondelaméthode,l’implémentationutiliséeseracelle
+qui se trouve dans les classes correspondantes! Dans notre exemple, ceci permet d’avoir des méthodes
+spécialisées pour chaque type de combattants : les Romains n’auront évidemment pas accès à la potion
+magiquepourcombattre!
+Onserépète:unobjetesttoujoursuneinstanced’uneclasse.Cependant,onpeututiliseruneinter-
+face pour déclarer un objet, et dans certains cas, c’est même recommandé. Dans l’exemple ci-dessous,
+onadéclaréccommeunCombattant,maisenfait,oncréebienuneinstancedelaclasseSoldatRomain,
+quisetrouveêtreuncombattant.Unefoisl’objetccréé,ayantétédéclarécommeunCombattant,ona
+accèsàtouteslesméthodesetattributsdel’interfaceCombattant,enparticulierici,àlaméthodeattack.
+De la même manière que pour l’héritage, lorsque la méthode attack est appelée, JAVA va exécuter la
+méthodequisetrouvedans"bonne"classe.Celatombebiencarl’implémentationdelaméthodeattack
+nesetrouvepasdansl’interfaceCombattant,maisbiendanslaclassequiimplémentel’interface,donc
+icidanslaclasseSoldatRomain.
+Combattant c = new SoldatRomain();
+c.attack();
+On a dit qu’il pouvait être bon d’utiliser une interface pour déclarer des objets. Une des raisons est
+de travailler/raisonner à la bonne granularité. Par exemple, supposons que l’on veuille gérer une liste
+de Combattants. On verra plus tard ce que JAVA nous offre pour cela. En informatique, on a plusieur
+structurededonnéepourreprésenteruneliste:parexempleleslistessimplementchainées,doublement
+chainées, les tableaux, etc... Si on veut manipuler une liste, on pourra donc utiliser une interface List.
+Lorsdelacréationdel’objetliste,ondevrachoisiruneimplémentation(àbasedetableauparexemple).
+Ensuite, on pourra voir la liste comme une boite noire : les opérations vont fonctionner, les détails en
+interneimportentalorspeu!Evidemment,laméthodeaddd’unelistechainéenefonctionnepasdutout
+commecelled’unelisteàbasedetableaux,maispourl’utilisationdelaliste,onveutsimplementqu’un
+élémentsoitajouté!Evidemment,lechoixdel’implémentation(listchainéeouàbasedetableauxpour
+notreexemple)pourraavoirdesrépercussionssurletempsd’exécutionducodeparlasuite.
+8.1 Quelquesdétails
+Castetinstanceof
+Comme pour les classes, on peut utiliser le transtypage (ou cast) et l’opérateur instanceof pour
+vérifierlesiunobjetestbiend’uncertaintype.
+Héritage
+On peut également avoir une hierarchie d’interface. Une sous interface ajoutant donc des méthodes
+àlaclassemère.
+Conflits
+Notez qu’une classe pouvant implémenter plusieurs interfaces, il peut y avoir un conflit entre mé-
+thodes.Lecompilateurindiquerauneerreuretilfaudraleverl’ambiguité.Dansl’exempleci-dessous,on
+appellel’implémentationpardéfautdel’interfaceIdentified.
+41
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+1 public interface Person {
+2 String getName();
+3 default int getId() { return 0; }
+4 }
+1 public interface Identified {
+2 default int getId() { return Math.abs(hashCode()); }
+3 }
+1 public class Employee implements Person, Identified {
+2 public int getId() {
+3 return Identified.super.getId();
+4 }
+5 ...
+6 }
+Interfacesfonctionnelles
+Onpeutavoirdesinterfacesquinecontiennentqu’uneseuleméthode.
+8.2 Expressionslambda
+Parfois, il serait intéressant de permettre qu’un paramètre soit une fonction. Par exemple, lorsqu’on
+trieuneliste,onpourraitvouloirdonnerlafonctiondecomparaisonenparamètre(sionveuttrieruneliste
+de gaulois dans l’ordre alphabétique de leurs noms ou en fonction du nombre de sangliers consommés
+paran).JAVA étantunlangageorientéobjet,toutestobjet.MaisJAVA offredésormaisunesyntaxesimple
+pourcréerdesinstancesquijouerontlerôledefonction.
+Lasyntaxeressemblefortàlasyntaxepourécrireunefonctionenmathématique.Parexemple,pour
+lafonctioncarré,onécritx → x2 enmathématique;pourJAVA ,onécrira(Double x) -> x*x,etvoila!
+Larèglegénéraleestdedonnerlesparamètresd’entréeetleursdomainesentreparenthèse.S’ilyena
+plusieurs,ilssontséparésparunevirgule.Ensuitelesdeuxcaractères->indiquequ’onpassemaintenant
+àlaformulationdelafonction.Ensuite,onaunblocdecodequicalculelerésultatdelafonction.
+SiletypedesparamètrespeutêtreinféréparJAVA ,onpeutmêmelesomettre!Silafonctionpossède
+unseulparamètreetqu’ilpeutêtreinféré,onpeutmêmeomettrelesparenthèses!
+Certaines méthodes ont comme argument une instance d’une classe qui implémente une interface
+ditefonctionnelle,carellenepossèdequ’uneseuleméthode.Danscecas,onpeutfourniràlaplaceune
+expressionlambda.
+Parexemple,laméthodepourtrieruntableauattenduneinstanced’uneclassequiimplémentel’in-
+terface Comparator, et cette interface ne contient qu’une méthode compare. On pourra donc utiliser di-
+rectementuneexpressionpourindiquercommentcomparerdeuxinstances!Dansl’exempleci-dessous,
+on peut inférer le type des arguments a et b car ce seront des éléments du tableau monTableau dont le
+typeestconnu.
+String[] monTableau = new String[100];
+...
+Arrays.sort( monTableau, (a,b) -> a.length()-b.length());
+42
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+JAVA permet cette syntaxe, mais JAVA effectuera la transformation de cette syntaxe en un objet qui
+implémentel’interfaceComparator<String>.
+8.3 Référencesdeméthode
+Onveututiliseruneexpressionlambda,maisons’aperçoitparfoisqu’ilexisteexactementlaméthode
+que l’on désire. Au lieur de taper l’expression lambda, on peut se contenter de mettre la référence à la
+méthode.Voiciquelquesexemples:
+list.removeIf( x -> x == null);
+list.removeIf( x -> Objects.isNull());
+list.removeIf(Objects : :isNull);
+list.forEach( x -> System.out.println(x));
+list.removeIf(System.out : :println);
+Onpeutfairepasmaldechosestechniqueavectoutcela,maisonsecontenteradecelapourcecours!
+9 Enumération
+Parfois, on a besoin d’une liste de valeurs possibles, par exemple, les tailles des vêtements sont
+souvent le valeurs suivantes : XS, S, M, L, et codeXL. On pourrait évidemment utiliser ces symboles et
+leur associer une valeur (par exemple un int (on verra même plus tard comment on pourrait s’assurer
+quelavaleurassociéenepuisseêtrechangée).Mais JAVA offreunmécanismepourdirectementutiliser
+untypeénuméré.
+Ce mécanisme est intéressant et utile par lui-même. On le présente aussi ici pour illustrer l’utilisa-
+tiondel’héritage,dupolymorphisme,etdesinterfaces.Eneffet,untypeénuméréseraunnouveautype
+JAVA et il hérite d’une classe existente dans JAVA . De plus, cette classe implémente l’interface Compa-
+rable. Ce qui implique qu’une notion d’ordre par défaut existe pour tout type énuméré. On va donc
+pouvoirutiliserl’implémentationexistentedelaclassemère,oubienredéfinircesméthodes.
+9.1 Créeretutiliseruntypeénuméré
+Untypeénuméréestunenouvelleclasse,onvadoncécrirelecodesource,commetouteclasseJAVA ,
+dansunfichierquiportelemêmenomquelaclasse.Commec’estuntypeparticulier,onnevapasutiliser
+lemotcléclassmaislemotcléenumpourdéclarerlaclasse.Ensuite,ilsuffitd’énumérerlessyjmboles
+quel’onutiliserapourl’énumération.Ainsi,pourcréerletypeénuméréSize,onvadoncécriredansle
+fichierSize.javalecodeci-dessous:
+1 public enum Size {
+2 XS,
+3 S,
+4 M,
+5 L,
+6 XL
+7 }
+43
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+MethodSummary
+ModifierandType MethodandDescription
+protected Object clone() ThrowsCloneNotSupportedException.
+int compareTo(E o) Comparesthisenumwiththespecifiedobjectfororder.
+boolean equals(Object other) Returnstrueifthespecifiedobjectisequaltothisenumconstant.
+protected void finalize() enumclassescannothavefinalizemethods.
+Class<E> getDeclaringClass() Returns the Class object corresponding to this enum constant’s
+enumtype.
+int hashCode() Returnsahashcodeforthisenumconstant.
+String name() Returnsthenameofthisenumconstant,exactlyasdeclaredinits
+enumdeclaration.
+int ordinal() Returnstheordinalofthisenumerationconstant(itspositioninits
+enumdeclaration,wheretheinitialconstantisassignedanordinal
+ofzero).
+String toString() Returns the name of this enum constant, as contained in the de-
+claration.
+static <T extends Enum<T>> Returns the enum constant of the specified enum type with the
+T valueOf(Class<T> enumType, specifiedname.
+String name)
+TABLE4.1–LesméthodesdelaclasseEnum
+Après l’introduction de ce fichier, Size sera un nouveau type disponible, comme toute autre classe
+JAVA .Pourl’utilisation,onpourramaintenantutiliserSizecommeuntypedontlesvaleurssontSize.XS,
+Size.S,Size.M,Size.L,etSize.XL.
+9.2 LaclasseEnum
+En fait, tout type énuméré hérite d’une classe existente appelée Enum, et la classe Enum implémente
+l’interface Comparable. Tout type énuméré possède donc les méthodes de la classe Enum, et on pourra
+aussiredéfinircertainesméthodessibesoin.Letableau˜refsummary:enumdonnelerésumédesméthodes
+delaclasseEnum.OnyretrouvedonclesméthodesdelaclasseObject,ainsiquelaméthodecompareTo
+exigéeparl’interfaceComparable.
+Par exemple, on peut utiliser la méthode values() qui retourne la liste de valeurs possibles. Ceci
+permetd’utiliseruneboucle«pourchaque»commesuit:
+1 public class Exemple{
+2 public static void main(String[] args){
+3 Size mySize = Size.M;
+4 for (Size s : Size.values()){
+5 if (s==mySize)
+6 System.out.println("It is my size : "+s);
+7 else
+8 System.out.println(s + " is not my size");
+9 }
+10 }
+11 }
+44
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+L’exécutionducodeprécédentdonnera:
+XS is not my size
+S is not my size
+It is my size : M
+L is not my size
+XL is not my size
+Notezqueletypeénuméréestbienadaptépourfaireunswitch.Apriori,ondevraitpourchacundes
+casutiliserlesymboledechaqueélémentdel’énumération,commeSize.Mparexemple.Ici, JAVA nous
+aide : si on utilise un switch sur une variable d’un type énuméré, le compilateur JAVA va s’attendre à
+desvaleursdutypeénuméré,etonvadoncpouvoirutiliserdirectementlessymboles,parexempleécrire
+simplementMàlaplacedeSize.M.
+1 public class Exemple{
+2 public static void main(String[] args){
+3 Size mySize = Size.M;
+4 double price =0;
+5 switch(mySize){
+6 case S : price = 5; break;
+7 case M : price = 7; break;
+8 case L : price = 9; break;
+9 case XL : price = 10; break;
+10 }
+11 System.out.println("the price is : " + price);
+12 }
+13 }
+La classe Enum implémente l’interface Comparable. L’ordre par défaut est l’ordre dans lequel est
+énuméré les différents symboles. C’est un des rares cas où l’ordre de la déclaration joue un rôle très
+important!Laméthodeordinal()permetdoncdesavoirlapositiond’unevaleurdanslalistedevaleurs
+(enpartantde0).OnpeutbiensûrredéfinirlaméthodecompareTosibesoinest.
+9.3 Faireplusavecuntypeénuméré
+LasignatureduconstructeurdelaclasseEnumestlasuivante:
+protected Enum(String name, int ordinal).
+Ainsi, le constructeur d’un type énuméré est toujours private (ceci pour préserver les valeurs définies
+dansl’enum).Vouspouvezomettrelemotclé(maismettrepublicouprotectedprovoquerauneerreur
+desyntaxe).
+Avecl’héritage,onpeutaussiredéfinirleconstructeur,etainsionpeutajouterdel’information.Voici
+un exemple ou cela peut s’avérer pratique : on veut utiliser comme symbole une abbréviation (comme
+M),maisonveutaussiavoiruneversionlonguedusymbole(MpourMedium).
+Dansl’exemplequisuit,onfaitl’inverse:lesvaleurspossiblesdutypeénumérésontSMALL,MEDIUM,
+LARGE et EXTRA_LARGE. A l’aide du constructeur, on ajoute une abbréviation pour la taille et une chaîne
+qui représente la taille française équivalente. Chaque valeur du type énuméré appelera donc une fois le
+constructeur.Danslaméthodemain,onutilisedonclavaleurMEDIUMetondemandesonabbréviationet
+sataillefrançaiseéquivalente.
+45
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+1 public enum Size {
+2 SMALL("S", "36/38"),
+3 MEDIUM("M", "40/42"),
+4 LARGE("L","44/46"),
+5 EXTRA_LARGE("XL","48/50");
+6
+7 private String abbreviation;
+8 private String eqFrance;
+9
+10 Size(String abbreviation, String eqFrance) {
+11 this.abbreviation = abbreviation;
+12 this.eqFrance = eqFrance;
+13 }
+14
+15 public String getAbbreviation() { return abbreviation; }
+16 public String getEqFrance(){ return eqFrance; }
+17
+18 public static void main(String[] args){
+19 Size mySize = Size.MEDIUM;
+20 System.out.println("my size " + mySize.getAbbreviation()
++ " is equivalent in France to " + mySize.getEqFrance());
+21 }
+22 }
+10 Information durant l’exécution
+Nous avons vu l’instruction instance of qui permet de savoir si un objet est une instance d’une
+classe(voirSection2).Prenonsunnouvelexampleinspirédelasection4.2.
+1 ...
+2 public static void main(String[] args){
+3 Random generator = new Random();
+4 Personnage mystere;
+5 if (generator.nextBoolean())
+6 mystere = new Gaulois( ” Astérix ” );
+7 else
+8 mystere = new Romain( ” Jules ” );
+9 System.out.println( mystere instance of Gaulois);
+10 }
+Notez bien que dans l’example, on ne pouvait pas connaître le type de l’objet au moment de la
+compilation, mais seulement au moment de l’exécution du code. Nous allons voir maintenant d’autres
+moyend’avoirdesinformationsetdelesutiliserpendantl’exécution.
+46
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+10.1 LaclasseClass
+Nous avons vu une méthode de la classe Object qui s’appelait getClass et qui retournait un objet
+de type Class (pour le moment, on va ignore les symboles <?>) qui est associé à la classe de l’objet
+en question. Grâce à cet objet Class, on va pouvoir accéder à beaucoup d’information sur la classe de
+l’objet,parexemple:
+— onpeutconnaîtrelenomdesaclasseaveclaméthodegetName()
+— onpeutconnaîtrelesinterfacesimplémentéesparlaclasse
+— onpeutconnaîtretouteslesméthodes,lesvariablesd’instances,lesconstructeurs
+— onpeutmêmegénérerunenouvelleinstance
+L’exempleci-dessousdonneratouteslesméthodesdelaclasseString.Onnevapasicidonnertous
+lesdétails.Danslaboucleforligne8onitèresurchaqueméthodedéclarée(onremarqueletypeMethod),
+etpourchaqueméthodem,onécritlevisibilité(«modifier».i.e.public,private,ouprotected),letype
+deretour,lenomdelaméthode,etenfinlalistedesarguments.
+1 import java.lang.reflect.*;
+2 import java.util.Arrays;
+3 public class Exemple{
+4 public static void main(String[] args){
+5 String word = "stephane";
+6 Class<?> cl = word.getClass();
+7 while (cl != null) {
+8 for (Method m : cl.getDeclaredMethods()) {
+9 System.out.println(
+10 Modifier.toString(m.getModifiers()) + " " +
+11 m.getReturnType().getCanonicalName() + " " +
+12 m.getName() +
+13 Arrays.toString(m.getParameters()));
+14 }
+15 cl = cl.getSuperclass();
+16 }
+17 }
+18 }
+Lespremiereslignesdel’exécutionsontlessuivantes
+public boolean equals[java.lang.Object arg0]
+public java.lang.String toString[]
+public int hashCode[]
+...
+47
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+48
+Chapitre 5
+Exceptions
+JAVA possèdeunmécanismedegestiondeserreurs,cequipermetderenforcerlarobustesseducode(i.e.
+son abilité à continuer de fonctionner malgré certains problèmes). Vous avez déjà dû voir le résultat de
+l’exécutiond’uneexceptionquandvousavezludesmessagesd’erreur.
+1 int[] tab = new int[5];
+2 tab[5]=0;
+Exception in thread "main" java.lang.ArrayIndexOutOfBoundsException : 5
+at Personnage.main(Personnage.java :20)
+Dansl’exempleci-dessus,letableauestdetaille5,maisonessaied’affecterlasixièmeentréedutableau.
+JAVA indique la présence d’une exception. En fait, lorsqu’une erreur intervient, JAVA va instancier une
+classequicorrespondàl’erreur(onappellecelaleveruneexception),puisvachercheràtraiterl’erreur.
+Dans cet exemple, il s’agit d’une instance de la classe java.lang.ArrayIndexOutOfBoundsException.
+Le traitement de l’erreur est ici d’afficher le nombre 5, qui correspond à l’index du tableau que l’on
+cherche à accéder, mais qui n’existe pas. Ensuite, JAVA indique la méthode dans laquelle l’erreur s’est
+produite(icidanslaméthodemaindelaclassePersonnage.Dansl’exemplesuivant,onfaitunedivision
+par0etonlèveuneexceptiondelaclassejava.lang.ArithmeticException,letraitementdel’exception
+faitsimplementimprimerlemessage/ by zero.
+1 int d=10,t1=5,t2=5;
+2 System.out.println("vitesse :" + d / (t2-t1));
+Exception in thread "main" java.lang.ArithmeticException : / by zero
+at Personnage.main(Personnage.java :21)
+Dans ces exemples, l’application s’est terminée. Le but de la gestion des erreurs est de capturer l’ex-
+ception,latraiteretainsiparfoiséviterl’arrêtducode.Certainesméthodesde JAVA sontsusceptiblesde
+produiredeserreurs,et JAVA exigelapriseencomptedeceserreurspotentielles(lacompilationéchoue
+si on ne le fait pas). Pour se faire, on peut faire appel à deux mécanismes : soit traiter l’exception en
+utilisant ce que l’on appelle un bloc try ... catch qui indique que faire en cas d’erreurs soit déléguer
+lagestiondel’erreuràlaméthodeappelante,danscecasonutiliselemot-cléthrows.Nousallonsvoir
+celaunpeuplusendétail.
+LaclasseThrowabledécritl’ensembledesexceptions:àtouteerreurcorresponduneinstanced’une
+classedérivéedeThrowable.Onpeutavoirdifférentsniveauxdeproblèmes:
+49
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+java.lang.Object
+java.lang.Throwable
+java.lang.Error java.lang.Exception
+java.lang.RunTimeException
+La classe Error représente une erreur grave intervenue dans la machine virtuelle (par exemple Ou-
+tOfMemory). Elle correspond à des erreurs matérielles ou à des erreurs de compilation. L’application
+JAVA s’arrête dès qu’une telle erreur est detectée, autrement dit, c’est la machine virtuelle de JAVA qui
+gèredetelleserreursetleprogrammeurnepeutpaslescontrôler.
+La classe RunTimeException regroupe aussi des exceptions qui ne peuvent être contrôlées par le
+programmeur.
+Les autres exceptions qui dérivent de la classe Exception représentent des erreurs moins graves et
+ledéveloppeuralapossibilitédegérerdetelleserreursetainsiéviterquel’applicationnesetermine,et
+c’estcequivanousoccuperdanscettesection.
+Letraitementd’uneerreursedécomposeentroisétapes.
+— Ladétectiond’uneerreurprovoquel’instanciationd’unobjetquihéritedelaclasseException–
+c’estcequel’onnommeleveruneexception.
+— la propagation (cette notion deviendra plus claire dans la section 2) : l’erreur peut être traitée
+«localement» ou peut être propagée récursivement à une méthode appelante grâce au mot-clé
+throw,i.e.l’erreurvaêtrepropagéeàtraverslapiled’exécutionjusqu’àcequ’ellesoittraitée.
+— letraitement:ilcorrespondàlacapturedel’exception(utilisationdesmots-cléstryetcatch).
+1 Capturer une exception : le bloc ...
+try catch
+On place dans un bloc try le code qui est susceptible de produire des erreurs et on capture l’exception
+crééeaveclebloccatch.Lorsqu’uneerreursurvientdanslebloctry,lasuitedesinstructionsdublocest
+abandonnéeetlepremierbloccatchcorrespondantàl’erreurestexécuté.Sionnemetriendanslebloc
+catch,l’exceptionestignorée,cequin’estpasunebonnepratique!Commeplusieursexceptionspeuvent
+être levées par les instructions du code du bloc try, on peut avoir plusieurs catch correspondants à
+chacunedesexceptionspossibles.Attentioncependant,lesclausescatchseronttestéesséquentiellement.
+Il faut donc veiller à ne pas récuperer l’exception d’une classe et tenter de récupérer l’exception d’une
+classede sadécendance. Unefois quele bloccatchestexécuté, l’exécutiondu codeen dehorsdu bloc
+try ... catchsepoursuit.
+Dansl’exempleci-dessous,onanticipeuneerreurarithmétique(unedivisionpar0).Danscecas,on
+imprimeunmessage.Siuneautreerreurintervient,onaffichelatracedelapiled’exécution.
+50
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+1 int d=10,t1=5,t2=5;
+2 try{
+3 System.out.println("vitesse :" + d / (t2-t1));
+4 }
+5 catch(ArithmeticException e){
+6 System.out.println(” vitesse non valide ”);
+7 }
+5 catch(Exception e){
+6 e.printStackTrace();
+7 }
+Onpeutfairesuivrelesclausescatchparuneclausefinallyquiseratoujoursexécutée,quel’exécution
+sesoitpasséesansproblèmesounon.Ceblocestfacultatif.
+2 Déléguer la capture d’une exception :
+throws
+Lebloctry ... catchpermetdecaptureruneexception.Onpeutaussichoisirdedéléguerlacapturede
+l’exceptionàlaméthodeappelante(elle-mêmepouvantfairedemêmedefaçonrécursive).Onadoncle
+schémasuivant:
+1 principale() {
+2 ...
+3 try{
+4 ... 1 aux() throws ExceptionType {
+5 aux(); 2 ...
+6 ... 3 // appel à une méthode susceptible de lever une
+7 } 4 // exception de type ExceptionType
+8 catch(ExceptionType e){ 5 // ou bien
+9 // traitement exception 6 if(condition_erreur)
+10 } 7 throw new ExceptionType(args);
+11 } 8 }
+Ainsi, après la détection de l’erreur, on a donc bien besoin d’une phase de propagation pour remonter
+à la méthode qui va effectivement traiter l’exception. Evidemment, il faut qu’un méthode se charge de
+traiter l’exception et le compilateur peut vérifier si une telle méthode existe : cette méthode doit traiter
+précisemmentletyped’exceptionoubienuneexceptionparentedel’exceptionquiaétélevée.JAVA nous
+offredoncunchoixdetraiterfinementlesexceptions,oubiendelestraiterplusglobalement.Onpeutpar
+exemple imaginer que la méthode main contient un bloc try ... catch(Exception e). Comme toutes
+lesexceptionsqueleprogrammeurpeuttraiterhéritentdelaclasseException,onaurafaituntraitement
+généraldetoutesleserreurspouvantsurvenir!Onaainsilechoixd’avoiruntraitementassezprécisou
+plutôtgénéraldel’exception.
+3 Créer sa propre Exception
+Pour lever une exception, il suffit d’utiliser le mot-clé throw suivi d’un objet dont la classe dérive de la
+classe Throwable. Il faut alors l’indiquer dans la méthode qui contient l’instruction throw en ajoutant
+à la déclaration de la méthode le mot clé throws suivi du nom de la classe qui gère l’exception. Cette
+51
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+indication à une valeur documentaire, mais aussi aide le compilateur à vérifier que l’exception est prise
+encompteàchaquefoisquecetteméthodeestappelée.
+1 public class PotionMagiqueException extends Exception {
+2 public PotionMagiqueException(){
+3 super();
+4 }
+5 public PotionMagiqueException(String s){
+6 super(s);
+7 }
+8 }
+1 public class GourdePotionMagique {
+2 private int quantite, gorgee=2,contenance=20;
+3 public GourdePotionMagique(){ quantite=0;}
+4
+5 public boolean bois() throws PotionMagiqueException {
+6 if (quantite-gorgee <0)
+7 throw new PotionMagiqueException(” pas assez de potion magique!”);
+8 }
+9 }
+52
+Chapitre 6
+Entré et sortie, fichiers, sauvegarde
+Onappelleentrée/sortietoutéchangededonnéesentreleprogrammeetunesource:
+— entrée:auclavier,lectured’unfichier,communicationréseau
+— sortie:surlaconsole,écritured’unfichier,envoisurleréseau
+L’orientation objet du langage permet de regrouper des opérations similaires. JAVA utilise la notion de
+flux (stream en anglais) pour abstraire toutes ses opérations. Ici, le flux est un flux de données d’une
+sourceversunedestination.Lefluxadoncunedirection,onparletoujourssoitd’unfluxenentrée(qui
+parsd’unesourceetquiarrivedansleprogrammepourêtretraité)soitd’unfluxensortie(donnéestrai-
+téesparleprogrammeetquisontenvoyéesàunedestination).Lanaturedelasourceetdeladestination
+peuventêtretrèsdifférentes:unfichier,laconsole,leréseau.Lenaturedesdonnéesquitransitentdans
+lefluxpeutaussivarier:ondistingueraprincipalementunfluxdebytes(unesuitedehuit0ou1)ouun
+flux de caractères. La Figure 6.1 représente une partie de la hiérarchie de classes qui gère ces entrées/-
+sorties.LaclasseFilecontientdesoutilspouraccéderauxinformationsd’unfichier,onenparleraplus
+tard.Onpeutvoirdeuxclassesabstraitesquimanipulentlesfluxenentrée(InputStream)etlesfluxen
+sortie(OutputStream).Onareprésentédeuximplémentationsdechacunedecesclassesabstraitesselon
+lanatureduflux(fluxvenantousortantd’unfichieroud’unObjet).Finalement,onobservedeuxclasses
+abstraitespourlireetécriredanslesflux(ReaderetWriter).Onareprésentédeuximplémentationsqui
+diffèrentselonlanatureduflux:unfluxdebytespeutêtretraitéparlesclassesInputStreamReaderet
+OutputStreamWriteralorsqu’unfluxdecaractèresesttraitéparlesclassesBufferedReaderetBuffe-
+redWriter.Enrésuméonobtient:
+— DirectionduFlux:
+— objetsquigèrentdesfluxd’entrée:in
+=> InputStream,FileInputStream,FileInputStream
+— objetsquigèrentdesfluxdesortie:out
+=> OutputStream,FileOutputStream,FileOutputStream
+— Sourceduflux:
+— fichiers:onpourraavoirdesfluxversouàpartirdefichiers
+=> FileInputStreametFileOutputStream
+— objets:onpourraenvoyer/recevoirunobjetviaunflux
+=> ObjectInputStreametObjectOutputStream
+On peut considérer que les classes pour lire et écrire sont des outils pour transformer les flux. Un
+53
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+t
+c
+e
+j
+b
+O
+e
+i l InputStream Reader OutputStream Writer
+F
+F i l e I n p u t S O t b r j e e a c m t I n p u t S t r e a m B u f f e r e d R e I a n d p e u r t S t r e a m R e a d e r F i l e O u t p u t O S b t j r e e c a t m O u t p u t S t r e a m B u f f e r e d W O r u i t t p e u r t S t r e a m W r i t e r
+r r
+e e
+d t
+a i
+e r
+R W
+e e
+l l
+i i
+F F
+FIGURE6.1–Fragmentdelahiérarchiedeclassespourlesentrées/sorties
+InputStreamReaderprendenentréeunfluxdebytesetletransformeenunfluxdecaractèreschar.De
+manière inverse, le OutputStreamWriter transforme un flux de caractères en flus de bytes. Lorsqu’on
+a un flux de char en entrée, on peut alors utiliser la classe BufferedReader pour lire, via une mémoire
+tampon, ce qui se trouve dans le flux. De même pour la sortie, on peut écrire en sortie dans Buffered-
+Writer qui utiliser une mémoire tampon et générer le flux de char en sortie. La Figure 6.2 résume ces
+étapes.
+Notez bien que les opérations de lecture et d’écriture peuvent échouer pour des raisons multiples.
+Pourcertaines,onpeutavoiruncontrôle(parexemplelefichiern’existepas,onn’apasd’accèsenlecture
+ou écriture dans le répertoire), d’autres sont en dehors de tout contrôle (mauvais secteur du disque).
+Ainsi,touteslesopérationsdelectureoud’écrituresontsusceptiblesdeleverdesexceptions,qu’ilfaudra
+capturer.Ilexisteunhiérarchied’exceptionsdédiéesauxerreursd’entrée/sortie:cesexceptionshéritent
+delaclasseIOException.
+1 Lire depuis la console, afficher sur la console
+Pour lire, la console peut être accédée via ce que l’on appelle l’entrée «standard»System.in, qui
+est un objet de type InputStream. La classe Scanner est une classe très utile pour récupérer ce qui est
+tapédanslaconsole,enparticulierrécupérerettraduireautomatiquementdesentiersint,desnombresà
+virgule(floatoudouble),deschaînesdecaractères(String).
+54
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+Ecriture
+InputStreamReader BufferedReader
+InputStream
+tamponmémoire
+fluxdebytes fluxdecaractères
+’h’’e’’l’’l’’o’’
+0100101101101 ’h’’e’’l’’l’’o’’\n’
+lecture stockage
+’m’’y’’ ’’n’’a’’
+et dansun
+transformation tampon
+bytes→char
+Ecriture
+BufferedWriter OutputStreamWriter
+écriture OutputStream
+’h’’e’’l’’l’’o’’ fluxdecaractères fluxdebytes
+écriture ’h’’e’’l’’l’’o’’\n’’m’’y’ 0100101101101
+stockage
+’m’’y’’ ’’n’’a’’
+mémoiretampon
+écrituredans
+unfluxdecaractères→char
+FIGURE 6.2 – Encapsulation BufferedReader(InputStreamReader) et BufferedWri-
+ter(OuputStreamWriter)
+1 Scanner scan = new Scanner(System.in);
+2 int n = scan.nextInt();
+3 double x = scan.nextDouble();
+4 String s = scan.nextLine();
+Pourl’écriture,onaccèdelaconsoleviacequiestappeléla«sortiestandard»System.out,quiestde
+typePrintStream(lui-mêmehéritantdeOutputStream).DonclafameuseexpressionSystem.out.println(
+a_string);estsimplementl’écritured’unechaînedecaractèredansunfluxdecharverslasortiestan-
+dard.
+2 Lecture/Ecriture d’un fichier
+La classe File permet d’obtenir des informations diverses sur les fichiers, on donne des exemples
+danslaTable6.1.C’estaussigrâceàcetteclassequ’onpeutlirelecontenud’unfichierouaccéderàce
+fichier pour écrire. Un fichier est une suite de 0 et 1 enregistrée sur le disque. Ainsi, pour écrire ou lire
+dansunfichier,JAVA utiliseunfluxdebytes.Pourécrireoulireunfichieravecdeschar,onutiliseraun
+objetBufferedReaderouBufferedWriter.
+— Enlecture:laclasseFileReadervalirelefichieretplacerlecontenudansunfluxdebytes.
+— Enécriture:laclasseFileWritervaprendreprendreunfluxdebytesenentréeetécrireleflux
+danslefichier
+/
+Dans l’exemple suivant, on va lire le premier octet d’un fichier (i.e., les 8 premières bytes) qui se
+nomme ex.txt. On instancie un objet de type File qui va accéder au fichier ex.txt. On va créer un
+flux en lecture à partir de cet objet. On aurait pu faire cela en deux étapes, mais ici, on le fait en une
+55
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+— nom,cheminabsolu,répertoireparent
+— s’ilexisteunfichierd’unnomdonnéenparamètre
+— droit:l’utilisateura-t-illedroitdelireoud’écriredanslefichier
+— lanaturedel’objet(fichier,répertoire)
+— latailledufichier
+— obtenirlalistedesfichiers
+— effacerunfichier
+— créerunrépertoire
+— accéderaufichierpourlelireoul’écrire
+TABLE6.1–InformationaccessibledepuislaclasseFile
+seule étape en encapsulant l’instance de File. Ensuite, on lit le flux de bytes à l’aide de la méthode
+read.Evidemment,onobtientdesbytesquel’onrangedansuntableau.Unefoislalectureeffectuée,on
+peut traiter l’information, ici, on se contente simplement d’afficher à l’écran la chaîne de caractère qui
+correspondàcetoctet.Onn’oubliebiensûrpasdefermerlefluxaveclaméthodeclose.
+1 FileInputStream fis =
+2 new FileInputStream(new File(” ex.txt”));
+3 byte[] huitLettres = new byte[8];
+4 int nbLettreLues = fis.read(huitLettres);
+5 for(int i=0;i<8;i++)
+6 System.out.println(Byte.toString(huitLettres[i]));
+7 fis.close();
+Notezquedanscecode,onn’apastenucomptedesexceptions:
+— l’instanciation de l’objet FileInputStream peut lever une exception de type FileNotFoundEx-
+ception
+— l’appelàlaméthodereadpeutleveruneexceptiondetypeIOException.
+— lafermeturedufluxaveclaméthodeclosepeutaussileveruneexceptiondetypeIOException.
+Ilfaudraitdoncmodifiercecodepourprendreencomptecesexceptions(soitenutilisantunbloctry ...
+catchsoitendélégantlacapturedel’exceptionàuneméthodeappelante,voirSection5).
+Dans l’exemple suivant, on affiche le contenu d’un fichier sur la console. On accède au fichier en
+instanciantunobjetdetypeFile,onutiliseunfluxdebytepourlirelefichieravecunobjetFileReader,
+etonutiliseunobjetdetypeBufferedReaderpourtransformerlefluxdebytesenfluxdechars.Onlit
+le fichier ligne par ligne en utilisant la méthode readLine(). De nouveau, cet exemple ne prend pas en
+comptelesexceptions.
+1 BufferedReader reader =
+2 new BufferedReader(new FileReader(new File(”ex.txt”)));
+3 String line = reader.readLine();
+4 while(line != null){
+5 System.out.println(line);
+6 line = reader.readLine();
+7 }
+8 reader.close();
+56
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+Ci-dessousoncombinelesdeuxexemplesentraitantlesexceptionsavecunbloctry ... catch.
+1 try {
+2 FileInputStream fis = new FileInputStream(new File("test.txt"));
+3 byte[] buf = new byte[8];
+4 int nbRead = fis.read(buf);
+5 System.out.println("nb bytes read : " + nbRead);
+6 for (int i=0;i<8;i++)
+7 System.out.println(Byte.toString(buf[i]));
+8 fis.close();
+9
+10 BufferedReader reader =
+11 new BufferedReader(new FileReader(new File("test.txt")));
+12 String line = reader.readLine();
+13 while (line!= null){
+14 System.out.println(line);
+15 line = reader.readLine();
+16 }
+17 reader.close();
+18 } catch (FileNotFoundException e) {
+19 e.printStackTrace();
+20 }
+21 catch(IOException e){
+22 e.printStackTrace();
+23 }
+3 Lecture/Ecriture d’un objet : la sérialisation
+Le mécanismede«sérialisation»permetdestockerettransmettreuneinstancedeclasse.Poursefaire,la
+classe en question doit implémenter l’interface Serializable. D’une façon surprenante, cette interface
+n’apasdeméthode.Onpeutconsidérerqu’ellen’aqu’unrôledemarqueur pourindiquerquecetobjet
+peutêtresérialisé.C’est JAVA quisechargedetraduirel’objetdansunformatquin’estpaslisibleparle
+programmeur.Poursefaire:
+— enlecture:unobjetObjectOutputStreamtraduitl’objetsérialisableenunfluxdebytes.
+— enécriture:unobjetObjectInputStreamtraduitunfluxdebytesdansunobjet.
+Dansl’expemplequisuit,onvasérialiserunobjetdetypeIrreductibleGauloispourl’écriredans
+un fichier et le lire par la suite. Pour la l’écriture, on utilise un ObjectOutputStream et on appelle la
+méthode writeObject() pour traduire l’objet. Pour la lecture, on utilise ObjectInputStream et sa mé-
+thod readObject. Notez que lors de la lecture, le compilateur ne peut savoir le type de l’objet qui est
+lu. C’est pour cela qu’on utilise un cast explicite, le programmeur sachant que l’objet est bien du type
+IrreductibleGaulois.
+57
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+1 IrreductibleGaulois panoramix =
+2 new IrreductibleGaulois("Panoramix", 1.75);
+3
+4 ObjectOutputStream oos =
+5 new ObjectOutputStream(
+6 new FileOutputStream(
+7 new File("panoramix.txt")));
+8
+9 oos.writeObject(panoramix);
+10 oos.close();
+11
+12 ObjectInputStream ois =
+13 new ObjectInputStream(
+14 new FileInputStream(
+15 new File("panoramix.txt")));
+16
+17 IrreductibleGaulois copyPanoramix =
+18 (IrreductibleGaulois) ois.readObject();
+19 System.out.println(copyPanoramix.nom);
+20
+21 ois.close();
+Notezquedanscetexemple,lecoden’estpascorrectcarilmanquelagestiondesexceptions.
+Evidemment, pour qu’une classe soit «sérialisable», il serait souhaitable que tous les objets qui la
+composentsoitsérialisable.Or,ilsepeutqu’unattributnelesoitpas.Danscecas,onpeututiliserlemot
+clétransientpourindiquerdenepasenregistrercetattribut.
+58
+Chapitre 7
+Notion de types paramétrés et Collections
+1 Type paramétré
+17 IrreductibleGaulois copyPanoramix = (IrreductibleGaulois) ois.readObject();
+Danslechapitreprécédent,onautilisél’instructionci-dessus:àpartird’unObjectInputStream,onaré-
+cupéréunobjet.Dansl’exemple,onsavaitqu’onallaitrécupérerunobjetdetypeIrreductibleGaulois,
+maisaumomentdelacompilation,onnepeutpastoujoursvérifiercestransformations(pourrappel,on
+appelle cette transformation un transtypage explicite, «cast» en anglais). Ce n’est qu’au moment de
+l’exécutionquel’onvadétecteruneerreur.Pourrenforcerlasécurité, JAVA offrelapossibilitéd’utiliser
+untypeparamétré.
+1.1 Exemple
+Commençons par un exemple dans lequel on nous demande de coder une structure de données très
+simple : la liste chaînée. Pour commencer, on va faire une liste chaînée de String. On veut donc faire
+unelistedanslaquellechaqueStringestencapsulédansunnoeud.Lenoeudcontientlavaleuretunlien
+surlenoeudsuivant.Poursefaire,onécrituneclasseNoeudetuneclasseListeChaineecommesuit
+1 public class Noeud {
+2 String valeur;
+3 Noeud suivant;
+4
+5 public Noeud(String val){
+6 valeur = val;
+7 }
+8
+9 public void setSuivant(Noeud next){
+10 suivant = next;
+11 }
+12 }
+59
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+1 public class ListChainee {
+2 Noeud premier;
+3
+4 public ListeChainee(){
+5 premier = null;
+6 }
+7
+8 public void add(String val){
+9 Noeud nouveau = new Noeud(val);
+10 if (premier == null)
+11 premier = nouveau;
+12 else {
+13 Noeud dernier = premier;
+14 while(dernier.suivant != null)
+15 dernier = dernier.suivant;
+16 dernier.suivant = nouveau;
+17 }
+18 }
+19 }
+Pourimplémenterunelistecontenanttroischaînesdecaractères,parexemple{”Astérix”,”Obélix”,”Panoramix”},
+enmémoire,onauraquatreobjetsquel’onpeutreprésentercommesuit:
+Nœud Nœud Nœud
+ListeChainee
+valeur=”Astérix” valeur=”Obélix” valeur=”Panoramix”
+premier
+suivant suivant suivant=null
+Maintenant,onvoudraitfaireunelistedePersonnagesàlaplaced’unelistedeString.
+— Une possibilité est de faire une nouvelle classe NoeudPersonnage dont les valeurs sont de type
+PersonnageetfairedemêmepouruneclasseListeChaineePersonnages.Ondevraitdoncavoir
+uneclasseNoeudTypeparchaquetypedontonvoudraitfaireuneliste...pastrèspratique.Imagi-
+nezquel’onveuilleensuitemodifierlaclasseNoeud(parexempleajouteruneméthode,oubien
+implémenterunelisteavecuneréférencesurlenoeudprécédent),etilfaudrafairelechangement
+surtouteslesversions...
+— Une autre possibilité est de modifier la classe Noeud et mettre Object à la place de String. On
+pourra mettre tous les types possibles dans un nœud, ce qui fonctionnera bien. Cependant, il
+faudra faire des transtypages explicites pour récupérer la valeur du nœud. Il faudra aussi faire
+bienattentionàcequel’onmetdanslaliste(onpourraitalorsfacilementmélangerdesStrings,
+des Personnages, des Integers, etc... dans une même liste et il faudra un peu de travail utiliser
+soncontenuparlasuite).
+La solution offerte par JAVA est la possibilité d’ajouter un type en paramètre de la classe. Ainsi, on
+va pouvoir avoir une seule implémentation de la classe Noeud qui va prendre en paramètre une classe,
+quel’onvanoterEetonnoteraNoeud<E>.Onvaécrirelesdeuxclassescommesuit.
+60
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+1 public class Noeud<E> {
+2 E valeur;
+3 Noeud<E> suivant;
+4
+5 public Noeud(E val){
+6 valeur = val;
+7 }
+8
+9 public void setSuivant(Noeud<E> next){
+10 suivant = next;
+11 }
+12 }
+1 public class ListChainee<E> {
+2 Noeud<E> premier;
+3
+4 public ListeChainee(){
+5 premier = null;
+6 }
+7
+8 public void add(E val){
+9 Noeud<E> nouveau = new Noeud<E>(val);
+10 if (premier == null)
+11 premier = nouveau;
+12 else {
+13 Noeud<E> dernier = premier;
+14 while(dernier.suivant != null)
+15 dernier = dernier.suivant;
+16 dernier.suivant = nouveau;
+17 }
+18 }
+19
+20 public E get(int index){
+21 int i=0;
+22 Noeud<E> courant=premier;
+23 while(courant.suivant != nll && i<index){
+24 i++;
+25 courant = courant.suivant;
+26 }
+27 if(index == i) // on a trouvé l’élément numéro i
+28 return courant;
+28 else
+29 return null;
+30 }
+31 }
+32 }
+61
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+Avec cette implémentation, on va pouvoir utiliser des listes de Personnages, des listes de String,
+Integer,etc.PourfaireunelistedetroisPersonnages,onpeutécrirelecodesuivant:
+1 IrreductibleGaulois asterix = new IrreductibleGaulois(”Astérix”);
+2 IrreductibleGaulois obelix = new IrreductibleGaulois(”Obélix”);
+3 Gaulois Informatix = new Gaulois(”Informatix”);
+4 ListeChainee<Gaulois> liste = new ListeChainee<Gaulois>();
+5 liste.add(asterix);
+6 liste.add(obelix);
+7 liste.add(informatix);
+Même si Astérix et Obélix sont des irréductibles gaulois, ils sont donc a fortiori des gaulois, et on peut
+donc manipuler une liste de gaulois. Maintenant, puisqu’il n’y a pas besoin de transtypage explicite, le
+compilateurpeutvérifiersilestypessontcorrectementutilisés.
+Si on veut manipuler une liste de Integer, il faut ajouter des objets de type Integer, et quand on
+utiliseunélémentdelaliste,onrécupèreunobjetdetypeIntegeretondoitutiliseruneméthodecomme
+intValue() pour obtenir la valeur de l’Integer. A priori, cela n’est pas très pratique, mais JAVA offre
+unefonctionalitéquifaitautomatiquementlesconversions(cequiestappeléautoboxing).
+1 ListeChainee<Integer> maListe = new ListeChainee<Integer>();
+2 //old style
+3 maListe.add(new Integer(7));
+4 Integer sept = maListe.get(1);
+5 System.out.println(sept.intValue());
+6 //new style
+7 maListe.add(6);
+8 int six = maListe.get(2);
+1.2 Typesparamétrés
+Pourcecours,onenresteraàcetteintroductionpréliminairedestypesparamétrés,carilrestebeau-
+coupàdire.CesujetseravuplusendétaillorsducoursProgrammationJavaAvancée.
+2 Collections
+Leslistes,lesensembles,lespiles,lesfilesd’attentesontdesobjetsquiregroupentplusieursélémentsen
+uneseuleentité.Cesstructurespartagentuncertainnombredechoses.Onpeutposerlemêmegenrede
+questions:est-cequelastructurecontientdeséléments?combien?Certainesopérationssontsimilaires:
+on peut ajouter ou enlever un élément à la structure, on peut vider la structure. On peut aussi parcourir
+lesélémentscontenusdanslastructure.Onpeutavoirdesimplémentationsdifférentesdechacunedeces
+structures,parexempleonavul’exempledelalistechaînée,maisonpourraitavoiruneimplémentation
+baséesuruntableau,ouunlistedoublementchainée(avecuneréférencesurl’élémentprécédent).
+Commentpeut-onmanipulertoutescesstructures?Unesolution–quidevraitparaîtrenaturellemain-
+tenant–estd’utiliserunehiérarchied’interfaces,etc’estcequeJAVA propose.
+62
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+Collection Map
+Set List Queue Deque SortedMap
+SortedSet
+— Collection :Toutenhautdelahiérarchiesetrouvel’interfaceCollection.C’estlepluspetit
+dénominateur commun, une collection rassemble simplement un nombre d’éléments. Certains
+types de collections autoriseront des doublons, pas d’autres, certains types sont ordonnés. On
+retrouvedanscetteinterfacedesméthodesdebasepourparcourir,ajouter,enleverdeséléments.
+— Set:cetteinterfacereprésenteunensembleausensmathématique,etdonc,cetypedecollection
+n’admetaucundoublon.
+— List:cetteinterfacereprésenteuneséquenced’éléments.Ainsi,l’ordredanslequelonajouteou
+onenlèvedesélémentsestimportant.Onpeutavoirdesdoublonsdanslaséquence.
+— Queue : cette interface représente une file d’attente. Dans une file d’attente, l’élément qui est en
+tête est particulièrement important. En fait si important qu’on peut avoir l’image suivante d’une
+file d’attente : il y l’élément en tête et il y a les éléments qui suivent, dont on ne préocuppe pas.
+On a généralement deux types de file d’attente : celle ou le premier entré est en tête de file et
+celuiouledernierentréestceluientêtedefile.L’ordredanslequellesélémentssontajoutésou
+enlevésestimportantetilpeutyavoirdesdoublons.
+— Deque : cette interface ressemble aux files d’attente, mais les éléments importants sont les élé-
+mentsentêteetenqueue.
+— Map:cetteinterfacereprésenteunerelationbinaire(surjective):chaqueélémentestassociéàune
+cléetchaquecléestunique(maisonpeutavoirdesdoublonspourleséléments).
+— SortedSetestlaversionordonnéed’unensemble
+— SortedMapestlaversionordonnéed’unerelationbinaireoulescléssontordonnées.
+On introduira de la notion d’ordre entre des objets plus tard dans ce document, mais elle sera vu
+pendantlecoursProgrammationJavaAvancée.
+Notezquecesinterfacessontgénériques,i.e.onpeutleurdonnerunparamètrepourindiquerqu’on
+aunecollectiondeGaulois,deInteger,deString,etc...
+2.1 Méthodesdel’interfaceCollection
+Toutes les classes qui implémentent l’interface Collection devront redéfinir un certain nombre de
+méthodes parmis lesquelles on retrouve des méthodes pour l’ajout, le retrait d’éléments, des méthodes
+pour savoir si un ou des éléments sont présents dans la collection, une méthode (size) pour connaitre
+le nombre d’éléments contenus dans la collection. On ne va pas expliquer en détail chaque méthode,
+maisvoustrouverezci-dessousuneliste(nonexhaustive)desméthodesdecetteinterface.Notezlapré-
+sencedecertainesméthodesgénériques.Onvaexpliquerdanslasectionsuivantel’utilitédelaméthode
+iterator().
+— boolean add(E e)
+— void clear()
+— boolean contains(Object o)
+— boolean equals(Object o)
+— boolean isEmpty()
+63
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+— Iterator<E> iterator()
+— boolean remove(Object o)
+— int size()
+— Object[] toArray()
+2.2 Parcourirunecollection
+Il y a deux moyens de parcourir une collection : soit en utilisant une boucle «pour chaque élément»,
+qui offre une version différente de la boucle for vue précédemment, soit en utilisant un objet appelé
+iterator.
+En utilisant la généricité, le compilateur va connaître le type des éléments qui sont contenus dans
+la collection. Une collection étant un ensemble d’éléments, JAVA propose une façon simple d’accéder
+à chacun des éléments. Dans l’exemple ci-dessous, on a une collection maCollection qui contient des
+objets de type E. On va accéder à chaque élément de la collection maCollection en utilisant le mot-clé
+for,chaqueélémentserastockédansunevariable<nom>detypeE(évidemment).
+1 Collection<E> maCollection;
+2 ...
+3 for (E <nom> : maCollection)
+4 // block d’instructions
+Par exemple, dans l’exemple suivant, on parcours une liste de Personnages et on appelle la méthode
+presentation().
+1 LinkedList<Personnage> villageois = new LinkedList<Personnage>();
+2 villageois.add(new Gaulois(”Ordralfabétix”));
+3 villageois.add(new Gaulois(”Abraracourcix”));
+4 villageois.add(new Gaulois(”Assurancetourix”));
+5 villageois.add(new Gaulois(”Cétautomatix”));
+6 for (Personnage p : villageois)
+7 p.presentation();
+8
+Uneautresolutionestd’utiliserunobjetdédiéauparcourtd’élémentsdansunecollection:unobjet
+quiimplémentel’interfaceIterator.Pourobtenircetobjet,onpeutappelerlaméthodeiterator()qui
+setrouvedansl’interfaceCollection.L’interfaceIterator,contientlesdeuxméthodessuivantes:
+— hasNext()retourneunbooleanquiindiques’ilrestedesélémentsàvisiter,
+— next()donneaccèsàl’élémentsuivant,etremovepermetd’enleverl’élémentdelacollection.
+1 public interface Iterator<E> {
+2 boolean hasNext();
+3 E next();
+4 void remove(); //optional
+5 }
+En fait, l’utilisation d’une boucle «pour chaque»masque l’utilisation d’un Iterator. En général, l’uti-
+lisation de la boucle «pour chaque»est la plus simple. Vous devez utiliser un Iterator lorsque vous
+voulezenleverunélémentoulorsquevousvoulezparcourirplusieurscollectionsenparallèle.
+64
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+2.3 Implémentations
+Pour chacune des interfaces, il existe plusieurs implémentations. Le diagramme ci-dessous indique les
+principales implémentations. Certaines sont basées sur des tableaux pour stocker les éléments (Array-
+List,ArrayDeque),d’autressurdesarbres(TreeSet,TreeMap),d’autresavecdestablesdeHash(Hash-
+Set,HashMap).Chaqueimplémentationasesproprespropriétés(avecsespropresavantagesetdéfauts).
+Mieux vaut donc lire la documentation pour savoir quelle implémentation est plus appropriée à chaque
+utilisation.Pourdesutilisations«simples»(oùlescollectionsnecontiennentpasuntropgrandnombre
+d’objets)onneverraguèrededifférencesentrelesimplémentations.Nousneprendronspasletempsici
+decomparertoutescesimplémentations.
+Collection Map
+Set SortedSet List Queue Deque
+HashMap TreeMap
+LinkedHashMap
+SortedMap
+HashSe
+L
+t inkedHashSe
+T
+t reeSet ArrayList LinkedList ArrayDequ
+L
+e inkedList
+2.4 Ordre
+La classe Collections (à ne pas confondre avec l’interface Collection) est une classe qui contient
+beaucoup de méthodes statiques pour manipuler des collections passées en paramètres. Par exemple, il
+existeuneméthodesort(List<T> maListe)quivatrierunelistemaListe.Silalistecontientdesdates,
+la méthode va trier en ordre chronologique, si la liste contient des String, la liste sera trier par ordre
+lexicograhique.MaissivousvouleztrierdesGauloisparquantitédesangliersconsommésparan,vous
+pourrezaussifacilementutiliserlaméthodesort!Derrièretoutcela,unenouvelleinterfaceestutilisée:
+l’interfaceComparable.
+Cette interface ne contient qu’une seule méthode : la méthode public int compareTo(T o). Cette
+méthoderetourneunentiernégatifsil’objetestpluspetitquel’objetpasséenparamètre,zéros’ilssont
+égaux,etunentierpositifsil’objetestplusgrandquel’objetpasséenparamètre.
+SivousregardezladocumentationdesclassesString,Integer,Double,Date,GregorianCalendar
+et beaucoup d’autres, vous verrez que ces classes implémentent toutes l’interface Comparable. Ils ont
+doncuneimplémentationdelaméthodecompareTo.
+Vous pouvez donc spécifier votre propre méthode compareTo. Par exemple pour la classe Gaulois,
+onpourraitécrire
+65
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+1 public class Gaulois extends Personnage implements Comparable<Gaulois>{
+2 String nom;
+3 int quantiteSanglier;
+4 ...
+5
+6 public int compareTo(Gaulois ixis) {
+7 return this.quantiteSanglier - ixis. quantiteSanglier;
+8 }
+9 }
+Attention,sivous essayezdetrieruneliste quin’implémentepasl’interfaceComparable,vouspro-
+voquerezuneerreur(ClassCastException).
+66
+Chapitre 8
+Classes Internes
+Jusqu’ici,onatoujoursconsidéréqu’unfichier JAVA contenaitladescriptiond’uneseuleclasse.Enfait,
+ilestpossiblededéfiniruneclasseàl’intérieurd’uneautre!C’estcequ’onappelledesclassesinternes.
+Lesméthodesd’uneclasseontaccèsauxattributsdelaclasse,qu’ilssoientpublicouprivate.Ilen
+estdemêmepouruneclasseinterne,quiestconsidéréecommeunmembredelaclassequilacontient:
+elleaaccèsàtouslesattributs(qu’ilssoientpublicsouprivés)delaclassequilacontient.Cettevisibilité
+peutêtreexploitéeenconsidérantquelaclasseinternesoitunesorted’outilpourlaclassequilacontient.
+Ainsi,elleadéjàaccèsauxattributs.Cettepossibilitépeutdanscertainscassimplifierledéveloppement.
+L’API JAVA utiliseparfoisdesclassesinternes.
+On distingue deux grands types de classes internes selon si la classe est static ou non. Quand la
+classeinternen’estpasstatic,onparledeclasseinterned’instance.
+Dupointdevuedelaclasseenglobante,onpeutdéclarerunobjetdelaclasseinternecommen’im-
+porte quelle autre classe1. Il en est différemment pour des déclarations à l’extérieur de la classe englo-
+bante.Pourdéclarerunobjetdelaclasseinterneàl’extérieurdelaclasseenglobante,onnepeutpasuti-
+lisersimplementlenomseuldelaclasseinterne,parexempleInternecardanscecas,JAVA chercherais
+une classe appelée Interne (et donc définie dans un fichier Interne.java). Mais comme la classe se
+trouve à l’intérieur d’une autre classe, il faut faire référence au nom de la classe englobante. Si cette
+dernières’appelleMaClasse,onutiliseradonclenomMaClasse.Interne.
+1 Classes internes d’instance
+Onnepeutaccéderauxmembresd’uneclasseinternequeparl’intermédiaired’uneinstancedelaclasse
+qui la contient (on dit aussi englobante). Dans l’exemple ci-dessous, on a une classe appelée MaClasse
+quipossèdeune classeinterneappeléeInterne.Pour instantierlaclasseinterne,il fautdoncavoirdéjà
+instantiésaclasseenglobante,doncdansl’exempleoncréeuneinstanceadelaclasseMaClasse.
+Ilrestedoncàinstancierunobjetdelaclasseinterne.Lasyntaxepourlacréationdel’instancedela
+classeinternepeutapparaîtrequelquepeusurprenante:lemotclénewestaccoléàl’instancedelaclasse
+englobante:onadonca.new Interne();.Celaestfinalementassezintuitif:oncréeuneclasseinterne
+àl’objeta.
+1. dansl’espacedenomdelaclasseenglobante,nousverronsplustardlanotiond’espacedenoms
+67
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+1 public class MaClasse {
+2 int nbEtudiants;
+3 public class Interne {
+4 public int nbEtudiantsMax=25;
+5 }
+6 }
+1 MaClasse a = new MaClasse();
+2 MaClasse.Interne b=
+3 a.new Interne();
+Nous allons revenir sur l’exemple de la liste chaînée. Nous avions besoin de deux classes : Lis-
+teChainee<E> et Noeud<E>. La classe Noeud<E> est vraiment une classe outil pour la liste chaînée. En
+dehorscecetteapplication,l’utilisationd’unnoeudn’estpastrèspertinente(parexemplepourreprésen-
+terlenoeudd’ungraphe,onvoudraitpeutêtreavoirunelistedenoeudpourlesuivantaulieud’unseul
+noeud).Donc,ilseraitbonquelaclasseNoeud<E>soitinterneàlaclasseListeChainee<E>.Onaaussi
+vudesclassesquiimplémentaitl’interfaceComparator,parexemplesionutilisecommenotiond’ordre
+la quantité de sangliers consommés par an, il pourrait être bon que cette classe soit interne à la classe
+Gaulois.
+2 Classes internes
+static
+Lacréationd’uneinstanced’uneclasseinternestaticsefaitindépendammentdelaclassecontenante.
+Ainsi, la classe interne n’a accès qu’aux membres non static de la classe contenante. Pour instan-
+cier une classe interne, comme celle-ci est indépendante de la classe englobante, on utilise new Ma-
+Classe.Interne();.
+1 public class MaClasse {
+2 int nbEtudiants;
+3 public static class Interne {
+4 public int nbEtudiantsMax=25;
+5 }
+6 }
+1 MaClasse a = new Externe();
+2 MaClasse.Interne b=
+3 new MaClasse.Interne();
+3 Interfaces internes ou imbriquées
+Il est aussi possible d’avoir des interfaces imbriquées (ou internes) en JAVA . Un exemple qui se trouve
+dans l’API est l’interface Map<K,V> qui modélise une relation binaire : un Map est une collection de
+couples (clé, valeur) ou cle est de type K et valeur est de type V. Pour modéliser les couples,
+JAVA utiliseuneinterfaceimbriquéeMap.Entry.Onadoncl’interfacesuivante:
+68
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+1 public interface Map<K,E> {
+2 interface Entry<K,V> {
+3 K getKey();
+4 V getValue();
+5 V setValue(V value);
+6 }
+7 void clear();
+8 boolean get(K key);
+9 void put(K key, V value);
+10 Collection<V> values();
+11 }
+Contrairement aux interfaces standards, une interface imbriquée peut être déclarée private. Il est
+aussipossibled’avoiruneinterfaceimbriquéeàl’intérieurd’uneclasse.Cesutilisationssontassezavan-
+céesetnousn’entreronspasplusdansledétail.
+69
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+70
+Chapitre 9
+Gestion des classes à l’aide de Packages
+(espaces de noms)
+Un projet en JAVA peut comporter un nombre (parfois important) de classes. De la même façon que
+pour ordonner les fichiers sur un disque, on peut utiliser une structure hiérarchique de répertoires pour
+rendreplusfacilel’accèsauxclasses.Uneautremotivationdesespacesdenomsestdepouvoirgarantir
+l’unicité des noms de classes. Par exemple, deux développeur peuvent avoir l’idée de développer une
+classe Dauphine. Tant que les classes se trouvent dans des espaces de noms différents, cela ne posera
+aucunproblèmeetlesdeuxclassespourrontêtreutilisables.
+1 Déclaration d’une classe
+Poursimplifier,onvafairel’hypothèsequel’ontravaillesurunprojetquisetrouvedanslerépertoire
+ProjetJava du disque dur. Ce répertoire constituera la racine de l’espace de noms. Si on n’utilise pas
+ded’espacesdenoms,touslesfichiers JAVA setrouverontdanscerépertoireetlenom«qualifié»dela
+classeestsimplementsonnom.
+Sinon, on trouvera une hiérarchie de répertoires et de fichiers dans le répertoire ProjetJava. Par
+exemple,supposonsqu’uneclasseMaPremiereClasse.javasetrouvedanslerépertoireProjetJava/im-
+portant/premier/. Cette classe se trouvera dans l’espace de noms important.premier : le réper-
+toire ProjetJava est la racine (que l’on indique pas), ensuite on indique le répertoire qui la contient,
+et on sépare le nom des répertoires par le symbole «.». Le nom qualifié de la classe sera impor-
+tant.premier.MaPremiereClasse. Ce nom qualifié sera alors unique et on pourra toujours utiliser une
+classegraceàsonnomqualifié.
+Attention, en JAVA , les espaces de noms ne s’emboitent pas les uns dans les autres. java.util et
+java.util.functionsontdeuxespacesdenomsdistinctsavecchacunleursclassesetinterfaces.
+Dans le fichier source JAVA , on commence toujours à indiquer à quel espace de noms la classe
+appartient en commençant le fichier par la ligne package <nom_du_package>. Cette information est re-
+dondante si on connait l’emplacement du fichier dans le disque. Cependant, elle peut s’avérer très utile
+lorsqu’onlitlecodedansunéditeursanspouvoirlireleplacementdufichiersurledisque.JAVA vérifiera
+que le fichier se trouve bien dans le répertoire corespondant (i.e. la classe en question devra se trouver
+danslerépertoireProjetJava/nom_du_package/,sinonlecompilateurindiquerauneerreur).
+71
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+2 Utiliser une classe d’un espace de noms
+Pourutiliseruneclassequisetrouvedanslemêmeespacedenoms,ilsuffitd’utilisersonnomsimple.
+Prenonsunexempledanslequell’espacedenomsimportant.premiercontientlesclassesMaPremiere-
+ClasseetMaSecondeClasse.SionabesoindemanipulerunobjetdelaclasseMaPremiereClassedansla
+classeMaSecondeClasse,onpeutsimplementleréférencercommeunobjetdeclasseMaPremiereClasse.
+Pourutiliseruneclasseàl’extérieurdesonespacedenoms,onpeuttoujoursutilisersonnomqualifié.
+Par exemple, on développe une classe MaDixiemeClasse dans l’espace de nom negligeable/remarque
+etonabesoind’unobjetdeclasseMaPremiereClassedel’espaceimportant.premier.Onpeutlaréfé-
+renceravecsoncheminabsoludepuislaracine,i.e.important.premier.MaPremiereClasse.
+Cependant, cela peut être lourd à l’écriture et JAVA propose un mécanisme pour utiliser une classe
+parsonnomsimple:c’estlerôledumotcléimport.Lorsqu’onabesoinplusieursfoisderéférencerune
+classeàl’extérieurdel’espacedenom,onpeutimportersoittouteslesclassesd’unespacedenom,soit
+uneclasseenparticulier:l’importpermetdefairecommesila/lesclasse(s)importée(s)fontpartie(s)de
+l’espacedenomcourant.
+— import important.premierfaitcommesitouteslesclassesdel’espacedenomsimportant.premier.*
+faisaient partie de l’espace de nom courant. On pourra donc maintenant utiliser les classes Ma-
+PremiereClasseetMaSecondeClasse.
+— import important.premier.MaPremiereClasse fait comme si la classe MaPremiereClasse de
+l’espace de nom important.premier faisait partie de l’espace de nom courant. Dans ce cas, la
+classeMaSecondeClassenepeutpasêtreutiliséecommeMaSecondeClasse(ellepeutêtreutilisée
+enfaisantunautreimport,ouenutilisantsoncheminabsoluimportant.premier.MaSecondeClasse).
+L’importsefaittoujoursaudébutdelaclasse.
+Attention,lorsquevousutilisez*,vousimportezseulementlesclasses,paslessousespacesdenoms.
+Ainsi,vousnepouvezpasutiliserimport java.*pourobtenirtouslesespacesdenomsquicommencent
+parjava..
+Attention aussi lorsque vous importez plusieurs espaces de noms (ce qui est fréquent), car il est
+possible d’avoir des conflits de noms si les espaces de noms contiennent deux classes de même nom.
+Si on est intéressé par une seule de ces classes, on peut importer la classe spécifique. Sinon (si on veut
+utiliserlesdeuxclasses),ilfaudrautiliserlenomqualifiécomplet.
+L’utilisation de packages permet alors de désigner sans ambigüité une classe. On peut donc avoir
+deux méthodes avec exactement la même signature tant que ces deux méthodes appartiennent à des
+espacesdenomsdifférents.
+3 Librairies de classes
+Lelangage JAVA possèdelui-mêmeunensembledeclasses.Sansespacedenoms,toutessesclasses
+se trouveraient dans un seul et même répertoire (bonjour la pagaille!). Grâce aux espaces de noms, les
+classessontrangéesdansunehiérarchiecohérente.
+— java.langcontientlesclassesfondamentalesdulangage.
+— java.util contient les classes pour manipuler des collections d’objets, des modèles d’évène-
+ments,desoutilspourmanipulerlesdatesetletemps,etbeaucoupdeclassesutiles.
+— java.iocontientlesclassesrelativesauxentréesetsorties
+— ...
+Par exemple, la classe List est une classe pour gérer des listes d’objets. Elle se trouve dans le package
+java.util,Evidemment,vousn’avezpasàcopieràchaquefoistouteslesclassesdéfiniesparJAVA dans
+72
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+votre répertoire de travail. L’emplacement du répertoire où se trouve l’ensemble de classes de JAVA est
+connudevotresystèmed’exploitation(windows,linuxoumacOS).
+4 Compilation et Exécution
+Pourcompileruneclasse,ilfautindiquersonchemindepuislaracine.
+javac important/premier/MaSecondeClasse.java
+Le compilateur générera le fichier important/premier/MaSecondeClasse.class. Si MaSeconde-
+Classepossèdeuneméthodemain,onlancel’exécutionenspécifiantlenomcompletdelaclasse.Pour
+l’exemple,onlanceraitdonc
+java important.premier.MaSecondeClasse
+73
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+74
+Chapitre 10
+Générer de la documentation : l’outil
+javadoc
+Lorsqu’onécritducode,ilestimportantdebienlecommenteretledocumenter.Celapermetauxautres
+programmeursdecomprendrevotrecode.Celapermetaussidesesouvenirdecertainesastucesutilisée
+ou de justifier certaines opérations. Lorsqu’une méthode est écrite, il est ainsi bon d’expliquer succinc-
+tementcequ’ellefait,quelssontsesarguments,etc.
+L’idée est donc de placer dans le code source des commentaires formatés. Ensuite, JAVA fournit un
+outilquivalirelecodesourceetgénérerautomatiquementdeladocumentation(souslaformedepages
+html) à partir des commentaires : cet outil s’appelle javadoc. La documentation des classes sur le site
+d’oraclen’estriend’autrequelerésultatdejavadocsurlecodesourcedesclassesJAVA .
+Ladocumentationproduiteparjavadocestdestinéeàl’utilisateurfinaldesclasses,etpasforcément
+auxdéveloppeursdecesclasses.Ainsi,pardéfaut,javadocextraitdel’informationsurlesélémentspu-
+blicouprotected.Ainsi,auminimum,vousdevezrédigerdeladocumentationpourtousceséléments:
+— lespackages
+— lesclassesetlesinterfacespublic
+— lesvariablespublicetprotected
+— lesméthodesetlesconstructeurspublicetprotected
+Ilexisteuneoptionpouraussigénérerdeladocumentationpourdesélémentsprivate,cequiseratrès
+utile pour les autres développeurs. En tant que développeur, mieux vaut prendre la bonne habitude de
+commenter tous les éléments avec des commentaires javadoc. On peut utiliser javadoc pour générer
+plusieursdocumentations,unepourlesutilisateurs,l’autrepourlesdéveloppeurs.
+Lecommentairejavadocsedifférencied’uncommentaire«normal»parsabalisededébutdecom-
+mentairequiest/**.Ilsetermineparcontrecommeuncommentairenormalpar*/.
+Un commentaire javadoc donne des informations sur l’élément qui suit dans le code source (ainsi,
+lorsqu’on lit le code source, on peut lire l’explication de l’élément, ce qui doit suffire à comprendre, et
+ensuite,onpeutlirelecodesourcesibesoin).
+Pour chaque commentaire javadoc, la première phrase sera le résumé (et sera vu comme tel par
+javadoc). Cette description sera suivie de différents champs qui varient selon le type d’élément décrit
+(onnedécrirapasdelamêmemanièreuneclasseetuneméthode!).Chacundeceschampsestdéfinipar
+unebalisequicommenceraparlecaractère@(parexemple@author,@param,etc...).
+Comme on génère un code html, on peut utiliser des balises html à l’intérieur du commentaire. Par
+exemple <em> pour l’emphase (italique), <strong> pour le texte en gras, <code> pour du code source,
+on peut même inclure des images, etc. Evidemment, comme l’outil javadoc va gérer la mise en page,
+n’utilisezpasdesbalisespourlestitres(<h1>,<h2>)oupour<hr>pourplacerunebarrehorizontale!
+75
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+1 Commentaires pour les classes
+Aprèsavoirexpliquélerôledelaclassedanslapremièrephrase,deuxchampspeuventêtreutiles:
+— @author : qui est l’auteur du code source (on peut placer plusieurs auteurs en répétant le com-
+mentaire).
+— @version:quelleestlaversiondelaclasse.
+1 /** A <code>Gaulois</code> objet is a Personnage who is a Gaulois
+2 * @author Goscinny
+3 * @author Uderzo
+4 * @version 36.1
+5 */
+6 public class Gaulois extends Personnage {
+7 ...
+8 }
+2 Commentaires pour les méthodes
+Lapremièrephrase,onleredit,résumelerôledelaméthode.Leresteducommentairevaexpliquer
+chaqueélémentdelasignaturedelaméthode:onvaainsidécrirelerôledechaqueparamètre,qu’est-ce
+queretournelaméthode,etc.
+— Chaque paramètre de la méthode doit être expliqué. On commence par la balise @param, suivie
+dunomd’unparamètre,puisonexpliquelerôleduparamètre.
+— Ondécritcequeretournelaméthode(quandellen’estpasvoid)aprèslabalise@return
+— Ondécrittouteexceptionlevéeaprèslabalise@throws
+1 /** tells whether the gaulois thinks whether a fish is fresh
+2 * @param fish the fish in question
+3 * @return true when the gaulois thinks the fish is fresh,
+4 * false otherwise
+4 */
+5 public boolean isFresh(Fish fish){
+6
+7 }
+3 Commentaires pour les variables d’instance ou de classe
+Pour une utilisation par défaut, seules les variables de classes ou d’instance qui sont public seront
+extraites par javadoc1. Dans ce cas, il suffit d’utiliser un commentaire javadoc et aucun autre champ
+n’estdemandé.
+1 /** duration in time of the effect of the magic potion
+2 */
+3 public int magicPotionDuration;
+1. Onrappellequepardéfaut,javadocgénèredeladocumentationpourlesutilisateursdesclasses,paslesdéveloppeurs.
+76
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+4 Autres commentaires
+— @sincedécrirelaversionàpartirdelaquellel’élémentestdisponible
+— @deprecatedindiquequelaclasse,méthodeouvariablenedevraitplusêtreutilisée
+— @see ciblevacréerunlienverslaréférencecible.
+Laciblepeutêtre:
+— uneclasse,uneméthodeouunevariablecommentée
+@see courseExamples.IrreductibleGaulois#fight(Fighter f) va faire un lien avec la
+méthode fight(Fighter f) qui se trouve dans la classe IrreductibleGaulois du package
+courseExamples.
+— unlienhtml
+@see <a href=’’http ://www.asterix.com’’>official webpage</a>
+5 Commentaire pour les packages
+Dans tout ce qu’on a vu jusqu’ici, il suffisait d’écrire des commentaires directement dans le code
+source.Pourlespackages,ilfautécriredansunfichierséparédanschaquerépertoire:
+— unfichierpackage-info.javacontientuncommentairejavadocdécrivantlepackage
+— on peut aussi fournir un fichier “overview” dans un fichier overview.html. Tout ce qui sera à
+l’intérieurdesbalises<body></body>serautiliséparjavadoc.
+6 Générer la documentation
+javadoc -d docDirectory package1 package2
+Lacommandevagénérerladocumentationpourlespackagespackage1,package2etlaplaceradans
+lerépertoiredocDirectory.
+SionveutfairedesliensautomatiquementversladocumentdelalibrairiestandarddeJAVA ,onpeut
+utiliserl’option-link
+javadoc -link https ://docs.oracle.com/javase/8/docs/api/ *.java
+77
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+78
+Chapitre 11
+Archivage de classes
+L’utilitairejarfaitpartidelabibliothèquestandardetpermetdefaireunearchivedeclasses.
+jar cvf bibliotheque.jar monRepertoireJava/mesClasses/*.class
+Cetutilitairefonctionnecommeleprogrammetarsousunix
+c createanarchive
+u miseàjourdel’archive
+x extractiondel’archive
+v verbose
+f usearchivefile
+e pointd’entréepouruneapplicationarchivéedansunfichierjarexécutable
+jar cvfe pro.jar projet.classes.Principale projet/classes/*.class
+1 Utiliser un fichier
+jar
+Lorsqu’onutilisedesfichiersjar,ilfautdireaucompilateuretàlamachinevirtuelleoùsetrouvent
+ces fichiers! Il faut donc spécifier le class path qui indique où sont enregistrés les fichiers utiles pour
+lacompilationetl’exécutionducodeJAVA .Leclass pathpeutcontenir
+— desrépertoirequicontiennentdesfichiers.class
+— lechemindefichiersjar
+— desrépertoirescontenantdesfichiersjar
+Lecompilateuretlamachinevirtuelleontuneoption-classpath(abbrégéeen-cp)
+java -cp . :../libs/lib1.jar projet.classes.Principale
+Le class path aura deux éléments : le repertoire courant . et un fichier jar nommé lib1.jar dans le
+répertoire../libs.
+SousWindows,ilfaututiliserdes;pourséparerleséléments.Sinon,ilfaututiliser :
+Vouspouvezmettreàjourunevariabled’environnementCLASSPATHsousvotresysème.
+79
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+80
+Chapitre 12
+Annotations
+Les annotations sont des balises dans le code JAVA que des outils peuvent utiliser. Ces annotations
+nesontdoncpasdestinéesaucompilateurJAVA ,onpeutlesvoircommedescommentairesparticuliers.
+Parmislesoutilsquiutilisentlesannotations,onpeutciter:
+— JUnit:lesannotationsindiquentdesméthodesquiexécutentuntest(cfsecondepartieducours)
+— JAVA PersistenceArchitecture:relationentredesclassesetdestablesd’unebasededonnées
+— Check Framework : permet par exemple d’ajouter des assertions dans le programme (ex : para-
+mètre est non null) ou qu’une chaîne de caractères contient une expression régulière. Un outil
+d’analysestatiquevérifiesilesassertionssontvalidesdanslecode.
+— outilsdelabibliothèquestandardpourlacompilation
+L’objectif de ce chapitre est d’indiquer la syntaxe pour pouvoir lire un code annoté (au cas où vous
+en rencontriez dans un code déjà écrit). Nous n’entrerons pas dans les détails mais nous verrons une
+applicationavecJunit ,quipermettraderéaliserdestests.
+1 La syntaxe des annotations
+Une annotation commence par le caractère @ qui est suivi par le nom de l’annotation. En option, on
+peutavoirdescouples(clé,valeur)appeléséléments.Lesvaleurspeuventêtre
+— lavaleurd’untypeprimitif
+— unechaînedecaractères
+— unobjetdetypeClass
+— uneinstanced’untypeénuméré
+— uneautreannotation
+— untableaud’undestypesprécédents(saufunautretableau!)
+@BugReport(reportedBy={"Barack", "Michelle"})
+Onpeutdoncannoterdesdéclarations,cesannotationspeuventapparaîtrelorsdeladéclarationde
+— classesetinterfaces
+— méthodes
+— constructeurs
+— variablesd’instances
+— variableslocales
+— paramètresdetype
+— variablesdegénérique
+81
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+— package
+lesannotationsdoiventêtredéclaréesdansuneinterfaced’annotations,maisilexistedesannotations
+standards:
+Annotation Applicableà Buts
+Override Méthode Vérifie que cette méthode redéfinie une méthode
+d’uneclasseparente
+Deprecated toutedéclaration indiquequecetélémentn’estplusapprouvé
+SuppressWarnings toute déclaration Supprimeslesavertissementsd’uncertaintype
+(saufpackages)
+Generated toutedéclaration cetélémentaétégénéréparunoutil
+Ilenexisted’autresquel’ontneverrapasici(@SafeVarargs, @FunctionalInterface, @Resource,
+@Resources, @Target, @Retention, @Documented, @Inherited, @ Repeatable). Utiliser l’annota-
+tion@Overrideestunebonnepratique.
+Unenotesur@SuppressWarnings
+L’annotation @SuppressWarnings supprime des messages d’avertissements pour un certain type de
+warnings. Si on utilise un cast qui ne peut pas être vérifié au moment de la compilation (ex : readOb-
+ject()),lecompilateurJAVA vaécrireunmessaged’avertissementquipeutêtreutile.
+Mais si on peut garantir qu’il n’y aura pas de problèmes, on peut ignorer cet avertissement, d’où
+l’utilisationdel’annotation@SuppressWarnings.Danscecaslà,onpeutparexempleutiliser:
+@SuppressWarnings("unchecked")
+Parfoislagénériciténepermetpasexactementdefairecequel’onveut(oulecoden’apasétémisà
+jourdepuisJAVA 5)etonpeutajouteruneannotationpourconfirmerquecequel’onfaitestcorrect.
+2 Exemple d’utilisation des annotations : Tests unitaires et JUnit
+L’erreur fait partie de notre nature : il faut donc valider tout travail. En plus, on veut éviter que les
+erreurspasséessereproduisent.
+— testsd’intégration:lelogicielfonctionne-t-ildanssonenvironnementd’exécution?
+— testsd’acceptation:leclientaccepte-t-illelogiciel?
+— testsunitaires:vérifierune"unité"dulogiciel
+On va se concentrer sur les tests unitaires dont le but est de tester une «unité» du code. Lorsqu’on
+code une unité, on peut essayer d’imaginer tous les cas de figure et prévoir le comportement correct de
+l’unité.Lorsqu’onveuttesterl’unité,unebonneidéeseraitdetestercesdifférentscasdefigueetregarder
+silecomportementestcorrect.Cecipourraitpermettredansunpremiertempsd’aideràladetectiondes
+bugs. Une fois que l’unité est testée, mais que quelque chose d’autre change, utiliser ces différents cas
+de figure constitue aussi un bon moyen de vérifier que tout continue de fonctionner si on a fait des
+changements.Evidemment,ilseraitidéaldepouvoirautomatiserlestests(etéviterd’avoirdesappelsà
+System.out.println( ... )partout!)
+Mettre en place les tests peut être couteux : réaliser des cas intéressant (quelles sont les entrées et
+quel est/quels sont les comportements corrects) peut prendre du temps. Si aucune erreur n’est detectée,
+on peut avoir l’impression d’avoir perdu du temps (mais réfléchir aux tests peut nous aider à écrire un
+meilleurcode!).D’unautrecôté,trouverunbugpeutprendrebeaucoupdetemps.
+82
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+De toute façon, il est impossible/trop coûteux de garantir qu’un code n’a aucun bug (pour cela,
+il faudrait faire un ensemble de tests qui couvre tous les cas possibles d’utilisation, ce qui n’est pas
+forcémentunproblèmesimple).
+L’idéeest doncderéaliserun minimumdetestsvérifiant unelargepartie descasd’utilisation.Cela
+permettrad’éviterunbonnombredebugssanspourautantperdretropdetempsdedéveloppement.
+2.1 Premièresolution(àbannir):Faireuneméthodemainpourtesterlaclasse.
+C’est l’approche naturelle. Lorsqu’on débute en programmation, on commence par faire des mé-
+thodes main, et on peut tester des cas d’utilisation. Cependant, le test n’est pas forcément documenté/-
+conservépourpouvoirêtreréutiliséparlasuite:onatousécritdesméthodesmaindifférentspourtester
+différentes méthodes, mais soit on les efface souvent au fur et à mesure, soit on les conserve, mais les
+testsnesontplusforcémentcompréhensibleauboutd’uncertaintemps.
+2.2 Bonnepratique:écrireuneclassedetestspourchaqueclassedéveloppée
+Notre but est d’écrire une classe qui va vérifier une large partie des cas d’utilsation. Evidemment,
+passer ces tests ne garantira pas l’absence d’erreurs! Pour réaliser un cas de test, on a besoin de trois
+ingrédients
+— étatinitialquidéfinitl’étatdesvariablesdel’unitédecode
+— étatfinalquidéfinitlecomportementattendu
+— unoutilquivérifielecomportementattenduàceluiobtenuparlecode.
+L’outil Junit va nous aider à exécuter ces tests. Junit ne fait pas partie de la bibliothèque standard
+deJAVA ,c’estunoutildéveloppépourJAVA etquel’onpeuttéléchargersurlesitejunit.org.
+Achaqueclasse,onvaassocieruneclassedetestJunit .C’estbienuneclassedulanguageJAVA mais
+quivaenplusutiliserdesannotationsspécifiquesàJunit .Lesqueletted’uneclasseJunit estlesuivant:
+1. créeruneinstancedelaclasseàtester
+2. générerdescasdetests:
+— générerlesdonnéesenentrée
+— générerlerésultat
+3. appelerlaméthodeetvérifierlerésultat
+Lorsqu’un test échoue, on laisse une explication. Tester le bon comportement d’une unité, c’est aussi
+tester si les exceptions fonctionnent aussi comme attendues. On peut donc aussi tester si les exceptions
+sontbienjetées.
+Définitiondetests
+— uneclassedetestsunitaireestassociéeàuneclasse.
+— onajouteuneannotation@Testpourindiquerletest
+— nomdelaméthodequelconque
+— visibilitépublic
+— retourvoid
+— pasdeparamètre,peutleveruneexception
+...
+if fail
+Laméthodefailfaitéchouerlaméthodedetest(testnonvalidé).
+83
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+static void fail()
+Failsatestwithnomessage.
+static void fail(String message)
+Failsatestwiththegivenmessage.
+Onadesraccourcisd’écritureaveclesméthodesassert.
+assert
+static void assertTrue(boolean condition)
+Asserts that a condition is true.
+static void assertNull(String message, Object object)
+Asserts that an object is null.
+static void assertNotNull(String message, Object object)
+Asserts that an object isnot null.
+static void assertSame(String message, Object expected, Object actual)
+Asserts that two objects refer to the same object.
+static void assertNotSame(String message, Object unexpected, Object actual)
+Asserts that two objects do not refer to the same object.
+static void assertEquals(double expected, double actual, double delta)
+Asserts that two doubles or floats are equal to within a positive delta.
+static void assertEquals(String message, Object expected, Object actual)
+Asserts that two objects are equal.
+@Beforeet@After
+Onpeutexécuteruneméthodeavantchaquetestetaprèschaquetest.
+— @beforeparexemplepourcréerlesinstancesdesétatsinitiauxetfinaux,ouvrirdesfichierspour
+lestests.
+— @afterpourfermerdesresourcesoubieneffacerdesfichierstests.
+@BeforeClass et @AfterClass fonctionnent de la même façon, mais la méthode est exécutée avant
+lepremiertestetaprèslederniertest.
+Testpourvérifierlebonfonctionnementd’exceptions
+Onpeuttestersiuneméthodelancebienuneexception(i.e.silaméthodenelancepasd’exception,
+ilyaunproblème).
+ëoncomplètel’annotationavecunélément
+@Test(expected=ArithmeticException)
+@Test(expected=expected=IllegalArgumentException.class)
+@Test(expected=IllegalStateException.class)
+@Test(expected=NullPointerException.class)
+84
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+85
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+2.3 Exemple
+1 package tds.td3;
+3 import static org.junit.Assert.*;
+5 import java.util.Random;
+7 import org.junit.Test;
+8
+9 public class MyListTest1 {
+10
+11 @Test
+12 public void sizeList() {
+13 MyList l = new MyList();
+14 l.add("toto");
+15 l.add("toto");
+16 assertEquals(2, l.size());
+17 }
+18
+19 @Test
+20 public void sizeList2() {
+21 MyList l = new MyList();
+22 l.addLast("z");
+23 l.add("toto");
+24 l.add("toto");
+25 l.addLast("ez");
+26
+27 assertEquals(4, l.size());
+28 }
+29
+30 @Test
+31 public void printList() {
+32 MyList l = new MyList();
+33 l.add("toto");
+34 l.add("toto");
+35 l.add("titi");
+36 assertEquals("titi, toto, toto", l.toString());
+37 }
+38
+41 @Test
+42 public void addList() {
+43 MyList l = new MyList();
+44 l.add("toto");
+45 l.add("toto");
+46 l.add("titi");
+47 l.addLast("bla");
+48 l.addLast("bli");
+49 l.add("doh");
+50 assertEquals("doh, titi, toto, toto, bla, bli", l.toString());
+51 }
+86
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+53
+54 @Test
+55 public void addList2() {
+56 MyList l = new MyList();
+57 l.addLast("toto2");
+58 l.add("toto");
+59 l.add("titi");
+60 l.addLast("bla");
+61 l.addLast("bli");
+62 l.add("doh");
+63 assertEquals("doh, titi, toto, toto2, bla, bli", l.toString());
+64 }
+65
+66 @Test
+67 public void getList1() {
+68 MyList l = new MyList();
+69 l.addLast("toto2");
+70 l.add("toto");
+71 l.add("titi");
+72 l.addLast("bla");
+73 l.addLast("bli");
+74 l.add("doh");
+75 assertEquals("doh", l.get(0));
+76 }
+77
+78 @Test
+79 public void getList2() {
+80 MyList l = new MyList();
+81 l.addLast("toto2");
+82 l.add("toto");
+83 l.add("titi");
+84 l.addLast("bla");
+85 l.addLast("bli");
+86 l.add("doh");
+87 assertEquals("toto", l.get(2));
+88 }
+89
+90 @Test(expected=IllegalArgumentException.class)
+91 public void getInvalid() {
+92 MyList l = new MyList();
+93 l.addLast("toto2");
+94 l.get(-1);
+95 }
+96
+97 @Test(expected=IllegalArgumentException.class)
+98 public void getInvalid2() {
+99 MyList l = new MyList();
+100 l.addLast("toto2");
+101 l.get(10); 87
+102 }
+LicenceL3MI2E–UniversitéParis-Dauphine ProgrammationJava–2018-2019
+103
+127 @Test(expected=NullPointerException.class)
+128 public void sumNull() {
+129 MyList l = new MyList();
+130 l.add("totoo");
+131 l.add(null);
+132 assertEquals(5, l.sumLetter());
+133 }
+134
+135 @Test(timeout=1000)
+136 public void toStringSpeed() {
+137 MyList l = new MyList();
+138 for(int i=0;i<100000;i++) {
+139 l.add(Integer.toString(i));
+140 }
+141 l.toString();
+142 }
+143 }
+2.4 Exécutiondestests
+LestestssontexécutésenutilisantlaclasseJUnitCore.
+— enlignedecommande
+java org.junit.runner.JUnitCore TestClass [... autres classes de tests ...]
+— depuisuncodeJAVA
+...
+org.junit.runner.JUnitCore.runClasses(TestClass.class, )
+88

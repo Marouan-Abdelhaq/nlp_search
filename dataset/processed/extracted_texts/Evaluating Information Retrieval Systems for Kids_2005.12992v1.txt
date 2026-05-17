@@ -1,0 +1,160 @@
+0202
+yaM
+12
+]RI.sc[
+1v29921.5002:viXra
+Evaluating Information Retrieval Systems for Kids
+AshleeMilton MariaSoledadPera
+ashleemilton@u.boisestate.edu solepera@boisestate.edu
+PIReT–PeopleandInformationResearchTeam PIReT–PeopleandInformationResearchTeam
+BoiseStateUniversity,Boise,Idaho,USA BoiseStateUniversity,Boise,Idaho,USA
+ABSTRACT maybeaccessible,howchildrenjudgeIRSdiffersfromthegeneral
+Evaluationofinformation retrieval systems (IRS)isaprominent population[11–13,24].Weaimatshowcasing(i)issuesthatour-
+topicamonginformationretrievalresearchers–mainlydirectedat selvesandotherresearchersandpractitionersfacewithdata,user
+a general population.Children requireuniqueIRS and by exten- judgments,andframeworks,aswellas(ii)thefactthatevaluation
+siondifferentwaystoevaluatethesesystems,butasalargepop- thatinvolvesprotectedusersisanissuewithbiggerimplications
+ulationthatuseIRShavelargelybeenignoredontheevaluation thatrequiresattentionandmustbeinformedbydifferentareasof
+front. In this position paper, we explore many perspectives that theIRcommunityandbeyond.
+mustbeconsideredwhenevaluatingIRS;wespeciallydiscussprob-
+lemsfacedbyresearcherswhoworkwithchildrenIRS,including
+lackofevaluationframeworks,limitationsofdata,andlackofuser
+2 THETROUBLEWITHFRAMEWORKS
+judgmentunderstanding.
+Existingframeworkshavesetouttomakethebestofthedatathat
+CCSCONCEPTS isavailabletoevaluatechildren’sIRS.Theonepresented in[15]
+•Socialandprofessionaltopics→Children;•Information bringscontexttoevaluatinganddesigning children’ssearchsys-
+systems→Informationretrieval;Evaluationofretrievalresults;• temswiththeirfourpillars:searchstrategy,usergroup,environ-
+Human-centeredcomputing→Userstudies. ment, and task. While originally designed for search systems, it
+isgeneral enoughtobeusedfor contextin otherIR tasks[7,8].
+KEYWORDS However,theproposedframeworkdoesnotexplicitlyaddressthe
+limitationsthatariseduetolackofdata.In[1],theauthorspresent
+InformationRetrieval,Evaluation,Children
+aframeworktoaddresstheissueofrelevancejudgementwithchil-
+drenregardingsearch.Thisframeworkistask-specificandwould
+1 THEISSUE
+needmanipulationtoworkwithotherIRtasksandareas.Ause-
+Evaluationininformationretrieval(IR)remainsacoreresearchin- fulframeworkthatlendsitselftoIRSevaluationandthatdoesnot
+terest.Unlikemostdisciplines,evaluationofinformationretrieval requiredatafromchildrenistheCranfieldparadigm[5].Cranfield
+systems(IRS),includingpopularoneslikerecommendersystems uses known suitable resources as ground truth. However, it has
+and search engines, is not limited to effectiveness, as IR strives beendroppedanddeemedoutdatedwhenevaluatingIRSforgen-
+togiveuserswhatmakesthemhappynotnecessarilywhatthey eralpopulationsinfavorofmorestate-of-the-artalternatives.The
+askedfor[3].IRevaluationisanongoingtopicofinterestamong lattertendtorequirelargeamountsofdatathatisnotalwaysavail-
+researchersandpractitioners,withthefocusbeingonmetricsand ablewithchildrenmakingthemnotpractical.Workslike[23],have
+theirapplicabilityfordifferenttasks(e.g.,multilingualIR),differ- defendedtheCranfieldparadigmasaviableframework,buttheIR
+entdomain(e.g.,medicalandlegal),andapplicabilityconceptslike communityisdividedonthisissue.Intheend,existingframeworks
+biasandfairness[4,14,16,21,22].Thetargetusersoftheseexplo- areahelpfulfoundationbuteachhasconstraintsthatrenderthem
+rationsonevaluationhave beenatraditionaluser[3].Thus,the insufficientfortheIRcommunityatlarge.
+frameworks and benchmarks used to evaluate IRS only account
+forageneraluser,whoarenottheonlystakeholders.
+Itisourstancethatthelackofevaluationframeworksforchil-
+dren’s IRS is a problem that needs to be addressed by not only 3 THEWOESOFDATA
+researchers workingwithchildren buttheIR community.Evalu-
+DuetoprivacylawsliketheChildren’sOnlinePrivacyProtection
+ating IRS for children presents new challenges that have yet to
+Act,FamilyEducationalRightsandPrivacyAct,andGeneralData
+befullyaddressed.Therehavebeenafewevaluationframeworks
+ProtectionRegulation[6,19,20],children’sdataishighlyprotected.
+presented in recent years that attempt to create structureto en-
+Whilethesesafeguardsareoftheupmostimportancetokeepchil-
+ableassessment forkids’IRS[1,15].Unfortunately,theyarenot
+drensafeonline,itmakescollectingorfindingchildren’sdatadiffi-
+alwaysgeneral enoughtobeappliedtothevarying IRSthatare
+cult.Thus,unlessresearchershaveameansofgatheringtheneeded
+availableforchildren.Evenwhentheseframeworkscanbeused,
+datawithintheboundsofthechildprivacylawsthemselves,itis
+thereisanoverlyingissueofdata.Datafromchildrenishardto
+impossibletogetsuchdata.Eventhen,thereareadditionalrules
+getinseveralrespectsincludingcollecting,accessing,andstoring
+astowhatcanbecollected(e.g.,demographics),andhowitmust
+duetolawsprotectingchildren[6,19,20].Eventhoughsomedata
+bestored.Thesestringentrules(i)makeitextremelyburdensome
+tosharedataand(ii)canleadtoinsufficientdataforevaluatingIRS
+"CopyrightÂľ2020forthispaperbyitsauthors.UsepermittedunderCreativeCom-
+monsLicenseAttribution4.0International(CCBY4.0)." forchildren.
+4 THEAMBIGUITYOFJUDGMENT oftheThe19thInternationalConferenceonInteractionDesignandChildren(IDC
+âĂŹ20).AssociationforComputingMachinery,NewYork,NY,USA.
+Existinggroundtruthmaybemisleading–itisnotalwayswhatit
+[9] SergioDuarteTorres,DjoerdHiemstra,andPavelSerdyukov.2010.QueryLog
+seems.Studiesexploringchildren’sbehaviorastheyinteractwith AnalysisintheContextofInformationRetrievalforChildren.InSpecialInterest
+IRSandevaluationstrategiesforkid-friendlyIRS[11,18]revealed GrouponInformationRetrieval.ACM,847–848.
+[10] JacekGwizdka,PrebenHansen,ClaudiaHauff,JiyinHe,andNorikoKando.2016.
+thatyoungusersdonotactinthesamemannersasadultsdowhen Searchaslearning(SAL)workshop2016.In39thInternationalSIGIRconference
+interactingwithorevaluatingIRS[2,11].Forexample,kidstend onResearchandDevelopmentinInformationRetrieval.ACM,1249–1250.
+toclickonthefirstsearchresultonasearchresultpageregardless [11] LynneHall,ColetteHume,andSarahTazzyman.2016. FiveDegreesofHappi-
+ness:EffectiveSmileyFaceLikertScalesforEvaluatingwithChildren.InPro-
+ofitsrelevance[9,10].Naturally,thethoughtistousethechild’s ceedingsoftheThe15thInternationalConferenceonInteractionDesignandChil-
+clickedlinkastherelevantresultbutsincetheytendtofavorthe dren(IDCâĂŹ16).AssociationforComputingMachinery,NewYork,NY,USA,
+311âĂŞ321. DOI:http://dx.doi.org/10.1145/2930674.2930719
+firstresult,regardlessofrelevance,doesitworkasgroundtruth?
+[12] TheoHuibersandThijsWesterveld.2019. Relevanceandutilityinaneduca-
+Evenifyouaskchildrenwhattheirjudgmentsare,insteadoftrying tionalsearchenvironment.In3rdInternationalandInterdisciplinaryPerspectives
+toinferthem,youcanstillhaveproblems.Considerwhenasking onChildren&RecommenderandInformationRetrievalSystems,KidRec2019:what
+doesgoodlooklike?
+kidstorateonastandard1to5scale,studieshaveshowntheytend
+[13] HannaJochmann-Mannak,LeoLentz,TheoHuibers,andTedSanders.2016.
+toonlyrate4’sor5’sregardlessofwhattheythink[11].Behaviors HowInterfaceDesignandSearchStrategyInfluenceChildren’sSearchPerfor-
+likethesemakeithardtodefinewhatthegroundtruthofcollected manceandEvaluation.InWebDesignandDevelopment:Concepts,Methodologies,
+Tools,andApplications.IGIGlobal,1332–1379.
+dataisandhowapplicableitisforconductingofflineevaluations [14] LiadhKelly,LorraineGoeuriot,HannaSuominen,MarianaNeves,Evangelos
+ofIRS. Kanoulas,ReneSpijker,LeifAzzopardi,DanLi,JoãoPalotti,GuidoZuccon,and
+others.2019.CLEFehealth2019evaluationlab.InEuropeanConferenceonInfor-
+mationRetrieval.Springer,267–274.
+5 THEUNKNOWN [15] Monica Landoni, Davide Matteri, Emiliana Murgia, Theo Huibers, and
+MariaSoledadPera.2019.Sonny,Cerca!evaluatingtheimpactofusingavocal
+The current state of evaluating IRS for children is in its infancy assistanttosearchatschool.InInternationalConferenceoftheCross-Language
+and it is indeed a complex undertaking driven by multiple per- EvaluationForumforEuropeanLanguages.Springer,101–113.
+[16] RishabhMehrotra,JamesMcInerney,HuguesBouchard,MouniaLalmas,and
+spectives [17]. There isnot general framework thatcan be used
+Fernando Diaz. 2018. Towards a Fair Marketplace: Counterfactual Evalu-
+consistentlyandisacceptedbythecommunityasawhole;there ation of the Trade-off between Relevance, Fairness & Satisfaction in Rec-
+is no reliable and/or standard way toobtaindataforevaluation; ommendation Systems. In Proceedings of the 27th ACM International Con-
+ference on Information and Knowledge Management (CIKM âĂŹ18). Associ-
+andgroundtruthrequiresauniqueperspectiveofrelevance and
+ation for Computing Machinery, New York, NY, USA, 2243âĂŞ2251. DOI:
+thatisjustnotthecasewhenitcomestoIRSforchildren.Theseis- http://dx.doi.org/10.1145/3269206.3272027
+suesshowcasenotonlytheimportanceofdevelopingframeworks [17] Emiliana Murgia, Monica Landoni, Theo Huibers, Jerry Alan Fails, and
+Maria Soledad Pera. 2019. The Seven Layers of Complexity of Recom-
+without the need for massive amounts of data but also why in-
+mender SystemsforChildreninEducational Contexts. InWorkshoponRec-
+volving the larger community to create it is key. The reason for ommendationin ComplexScenarios, co-located withACMRecSys. 5–9. DOI:
+engagingwiththeIRcommunity(andbeyond)istwo-fold.First,if http://dx.doi.org/Vol-2449/paper1.pdf
+[18] MariaSoledadPera,EmilianaMurgia,MonicaLandoni,andTheoHuibers.2019.
+thecommunityisinvolved,theywillbecomeawareoftheissues WithaLittleHelpfromMyFriends:UseofRecommendationsatSchool.(2019).
+attached to the development and evaluation of IRS for children. [19] FamilyEducationalRights.1974.PrivacyActor1974.(1974).
+[20] FamilyEducationalRights.2017.PrivacyActof2017.(2017).
+Second,theresearchersandpractitionerscanbringintheirexpe-
+[21] PabloSánchez,RusM.Mesas,andAlejandroBellogín.2018. NewApproaches
+riences on evaluation, especiallyfrom other areas working with forEvaluation:CorrectnessandFreshness:ExtendedAbstract.InProceedings
+protectedpopulations.Workingtogetherwecanlearnfromeach ofthe5thSpanishConferenceonInformationRetrieval(CERIâĂŹ18).Associa-
+tionforComputingMachinery,NewYork,NY,USA,Article14,2pages. DOI:
+otherandhopefullycomeupwithwaystofacilitatethedevelop-
+http://dx.doi.org/10.1145/3230599.3230614
+mentofevaluationindifferentareasofstudyandbringtheissues [22] DanielValcarce,AlejandroBellogín,JavierParapar,andPabloCastells.2018.On
+ofevaluationofIRSforkidsintothespotlight. theRobustnessandDiscriminativePowerofInformationRetrievalMetricsfor
+Top-NRecommendation.InProceedingsofthe12thACMConferenceonRecom-
+menderSystems(RecSysâĂŹ18).AssociationforComputingMachinery,New
+REFERENCES York,NY,USA,260âĂŞ268. DOI:http://dx.doi.org/10.1145/3240323.3240347
+[23] EllenMVoorhees.2019. Theevolutionofcranfield. InInformationRetrieval
+[1] DaniaBilalandMeredithBoehm.2017.Towardsnewmethodologiesforassess-
+EvaluationinaChangingWorld.Springer,45–69.
+ingrelevanceofinformationretrievalfromwebsearchenginesonchildrenâĂŹs [24] SDWentzel.2019. EvaluatingInformationRetrievalSystemsforChildreninan
+queries.QualitativeandQuantitativeMethodsinLibraries2,1(2017),93–100. EducationalContext.B.S.thesis.UniversityofTwente.
+[2] DaniaBilalandJoeKirby.2002.Differencesandsimilaritiesininformationseek-
+ing:childrenandadultsasWebusers.Informationprocessing&management38,
+5(2002),649–670.
+[3] Jamie Callan. 2020. Better Representation of Search Tasks. Available at:
+https://www.youtube.com/watch?v=eHJTkFUxJgg&feature=youtu.be&t=18047.
+(2020). (accessedMay6).
+[4] RocíoCañamares,PabloCastells,andAlistairMoffat.2020. Offlineevaluation
+optionsforrecommendersystems.InformationRetrievalJournal(2020),1–24.
+[5] CyrilCleverdon.1967. TheCranfieldtestsonindexlanguagedevices.InAslib
+proceedings.MCBUPLtd.
+[6] FederalTradeCommissionandothers.1998.ChildrenâĂŹsonlineprivacypro-
+tectionactof1998.(1998).
+[7] BrodyDowns,OghenemaroAnuyah,AprajitaShukla,JerryFails,MariaSoledad
+Pera,KatherineLandauWright,andCaseyKennington.2020a.KidSpell:AChild-
+Oriented,Rule-Based,PhoneticSpellchecker.InProceedingsoftheThe11thIn-
+ternationalConferenceonLanguage,Resources,andEvaluation(LRECâĂŹ20).
+[8] BrodyDowns,AprajitaShukla,MikeyKrentz,MariaSoledadPera,CaseyKen-
+nington,JerryFails,andKatherineLandauWright.2020b.GuidingtheSelection
+ofChildSpellcheckerSuggestionsusingAudioandVisualCues.InProceedings

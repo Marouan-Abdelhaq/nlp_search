@@ -1,0 +1,421 @@
+Initiation à la programmation
+Mohsine Eleuldj
+Département Génie Informatique, EMI
+eleuldj@emi.ac.ma
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 1
+Initiation à la programmation
+Objectif
+• Introduction aux algorithmes et aux notions de base de la programmation
+• Programmation en Java sous Eclipse
+Contenu
+• Introduction
+• Conception des algorithmes
+• Environnement de développement Java
+• Programmation orientée objet Java
+• Bibliothèques des classes Java
+Evaluation des connaissances :
+• Comptes rendus (10%) + TP (20%) + Contrôle (70%)
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 2
+Chapitre I : Introduction
+1 Terminologie
+2 Structure d’un ordinateur
+3 Langages de programmation
+4 Systèmes d’exploitation
+5 Exécution d’un programme
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 3
+Terminologie
+Algorithme : suite de prescriptions précises qui indiquent
+l’exécution, dans ordre bien déterminé, d’une succession
+d’opérations en vue de la résolution d’un problème.
+Programme : ensemble d’ordres ou instructions qui agit sur les
+données pour produire des résultats.
+Ordinateur : machine électronique capable d’exécuter un
+programme.
+Informatique : traitement automatique de l’information à l’aide
+d’un ordinateur.
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 4
+Méthodologie de développement de programmes
+Vérification
+Conception
+(trace)
+Problème Algorithme Solution
+Traduction
+(programmation)
+Exécution
+Programme
+Soumission
+(compilation)
+Soumission
+Ordinateur
+Données
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 5
+Structure d’un ordinateur
+Ordinateur
+programme
+Unité Unité résultat
+Mémoire
+données d’entrée de sortie
+Processeur
+Automacité :
+faculté d’exécuter des millions d’instructions sans l’intervention humaine
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 6
+Types d’instructions
+• Instruction arithmétique : addition, soustraction, multiplication,…
+• Instruction de transfert : mouvement de l’information d’un emplacement à
+un autre (entre le processeur et la mémoire)
+• Instruction de branchement : rupture de l’exécution séquentielle des
+instructions
+Enchaînement
+Branchement
+des instructions
+• Instruction d’entrée/sortie : lecture ou écriture (caractère, nombre,…)
+• Commande de gestion des périphériques (imprimante, disque,…)
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 7
+Mémoire principale
+n bits
+.
+Cellule
+.
+.
+m adresses
+5408 001011…11
+.
+.
+Adresse .
+Mémoire
+Mémoire : ensemble de cellules ayant chacune une adresse unique et contenant
+des bits
+Rôle : emmagasiner les informations + pouvoir les accéder (lecture et écriture)
+Caractéristiques : volatile + capacité limitée (quelques Giga octets) + coût élevé
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 8
+Mémoire secondaire
+programme
+données
+Ordinateur
+données
+Mémoire
+secondaire
+Support : magnétique ou optique (biologique dans le stade de la recherche)
+Temps d’accès : dépend de la localisation de l’information dans le support
+Caractéristiques : permanente + capacité (quelques Téra octets) + coût bas
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 9
+Configuration de mon système
+Processeur : Intel i7-2760QM Fréquence : 2,40 Ghz
+Mémoire cache 6 Mo Mémoire RAM : 4 Go
+Disque dur : 698 Go 4 Cœurs et 8 Threads
+Lecteur DVD/CD-ROM Ports COM et LPT
+Carte réseau carte graphique
+claviers PS/2 contrôleur de bus USB
+Bluetooth Souris
+contrôleur audio vidéo, Moniteur
+lecteur carte à puce
+…
+Exercice : Déterminer la configuration de votre système
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 10
+Configuration de mon système
+SeriesIntel Core i7CodenameSandy BridgeClock Rate2400 - 3500 MHzLevel
+1 Cache256 KBLevel 2 Cache1024 KBLevel 3 Cache6144 KBNumber of
+Cores / Threads4 / 8Max. Power Consumption (TDP = Thermal Design
+Power)45 WattTransistor Count995 MillionManufacturing Technology32
+nmDie Size216 mm2Max. Temperature100 °CSocketFCBGA1224,
+FCPGA988FeaturesHD Graphics 3000, DDR-1333 Memory Controller,
+HyperThreading, AVX, Quick Sync, VirtualizationGPUIntel HD Graphics
+3000 (650 - 1300 MHz)64 Bit64 Bit support Hardware VirtualizationVT-x,
+VT-dStarting Price $378 U.S.Announcement Date09/03/2011 …
+http://www.notebookcheck.net/Intel-Core-i7-2760QM-Notebook-
+Processor.59920.0.html
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 11
+Intel Core i7-3770K
+Caractéristiques : fréquence = 3,4 GHz, technologie de fabrication = 22 nm et
+nombre de transistors = 1,4.
+Architectures parallèles, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 12
+Langages de programmation
+Définition : Outil à l’aide duquel le programmeur écrit des programmes
+exécutables sur un ordinateur
+Exemples : FORTRAN, COBOL, Pascal, Ada, C, Java,…
+…………
+101101101111 ……….. ………..
+111011110101 ADD R1,R2 Indice = i+3
+01100011011 MULT R4,13 System.out
+………… …………… ………..
+langage binaire Langage symbolique Langage évolué
+(langage machine) (langage d’assemblage) (haut niveau)
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 13
+Choix du langage de programmation
+Programmeur
+Langage évolué langage d’assemblage
+Compilateur Assembleur
+langage binaire
+Ordinateur
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 14
+Système d’exploitation
+Définition : ensemble de programmes qui permettent de gérer l’utilisation
+(exploitation) de la machine (Operating System)
+Composantes : compilateurs, assembleur, fonctions d’entrée/sortie, mémoire
+virtuelle, multiprogrammation…
+Rôle : faciliter au programmeur l’utilisation de la machine et ses périphériques
+et assurer le bon fonctionnement et l’utilisation optimale.
+Exemples : Unix, Linux, Windows, SunOS, …
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 15
+Exécution d’un programme
+Programme
+(fichier source)
+Compilation
+Fichier objet
+Edition Bibliothèque
+des liens des fonctions
+Fichier exécutable
+Données
+Résultat
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 16
+Chapitre II : Conception des algorithmes
+1 Notion d’algorithme
+2 Structures de contrôle
+Enchainement
+Sélection binaire
+Sélection multiple
+3 Structures répétitives
+Boucle tant que
+Boucle répéter … jusqu’à
+Boucle pour
+4 Structure de données tableau
+5 Etapes de résolution d’un problème
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 17
+Notion d’algorithme
+Origine d’après les historiens des mathématique en 825 du livre
+ʺﺔﻠﺒﺎﻗﻣﻟا و ﺮﺒﺟﻠاʺ ﮫﺒﺎﺗﻛ ﻲﻔ ﻲﻣزﺮاوﺧﻟا ﻰﺳوﻣ ﻦﺒإ ﺪﻣﺤﻣﺮﻔﻌﺟ
+Définition : Un algorithme est une suite de prescriptions précises qui indiquent
+d’exécuter, dans un ordre déterminé, une succession d’opérations en vue de
+la résolution d’un problème.
+Exemples
+Résolution d’une équation du second degré
+Guide d’utilisation d’un appareil ménager
+Recette de cuisine sans interprétation ni interprétation
+Pseudo-code (ou langage algorithmique) : langage informel qui vise à
+représenter un algorithme indépendamment de l’agent (humain ou
+machine) qui sera appelé à l’exécuter (intermédiaire entre un langage
+naturel et un langage de programmation)
+Organigramme : diagramme, qui est une autre représentation d’un algorithme,
+composé de rectangles, losanges, flèches, …
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 18
+Enchainement
+Problème 1 : Calculer l’intérêt I d’un montant M sachant que le taux d’intérêt
+est de 3,5%
+début
+lire M
+1 début
+2 lire M
+I  M * 3,5%
+3 I M * 3,5%
+4 écrire (I) écrire(I)
+5 fin
+fin
+Pseudo_code
+Organigramme
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 19
+Sélection binaire
+Problème 2 : Calculer l’intérêt I d’un montant M sachant que le taux d’intérêt
+est de 3,5% si M < 10 000 DH et de 4% sinon.
+début
+1 début
+2 lire M lire M
+3 si M < 10 000 alors
+oui non
+4 I M * 3,5% M < 10000
+5 sinon
+I  M * 3,5% I  M * 4%
+6 I M * 4%
+7 écrire(I)
+écrire(I)
+8 fin
+fin
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 20
+Sélections binaires imbriquées
+Problème 3 : Calculer l’intérêt I d’un montant M sachant que le taux d’intérêt
+annuel dépend de la période de dépôt P. Il est de 3,5% si P = 1 an, de 4% si
+P = 2 ans, de 4,5% si P = 3 ans et de 5% si P ≥ 4 ans.
+lire M, P lire M, P
+si P = 1 alors si P = 1 alors
+I M * 3,5% I M * 3,5%
+sinon sinon si P = 2 alors
+si P = 2 alors I M * 4%
+I M * 4% sinon si P = 3 alors
+sinon I M * 4,5%
+si P = 3 alors sinon
+I M * 4,5% I M * 5%
+sinon écrire (I)
+I M * 5%
+écrire(I)
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 21
+Sélection multiple
+Problème 4 : Calculer l’intérêt I d’un montant M sachant que le taux annuel est
+de 3,5% si P=1 an, de 4% si P=2 ans, de 4,5% si P=3 ans et de 5% si P=4 ans.
+lire M, P
+choisir P de
+1 : I M * 3,5%
+2 : I M * 4%
+3 : I M * 4,5%
+4 : I M * 5%
+écrire(I)
+Exercice :
+a) Dessiner l’organigramme de l’algorithme du problème 3.
+b) Quelle est la différence entre les algorithmes du problème 3 et 4 ?
+c) Qu’arrive-t-il si P est négatif ou supérieur à 4 ?
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 22
+Boucle tant que
+Forme générale
+tant que <condition> faire
+<traitement>
+Problème 5 : imprimer les valeurs N (1 ≤ N ≤ 3) en ordre décroissant.
+début
+1 début
+N  3
+2 N 3
+3 tant que N > 0 faire oui non
+N > 0
+4 écrire(N)
+5 N N – 1
+écrire(N)
+6 fin
+fin
+N  N - 1
+Exercice : Faire la trace.
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 23
+Trace de l’algorithme 5
+Opération N N > 0 Ecrire(N)
+1 - - -
+2 3 - -
+3 3 oui -
+4 3 - 3
+5 2 - -
+3 2 oui -
+4 2 - 2
+5 1 - -
+3 1 oui -
+4 1 - 1
+5 0 - -
+3 0 non -
+Initiation à la programmation, M.6 Eleuldj, Département Génie I-nformatique, EMI, septembre -2014 - 24
+Exercice 1
+Problème 6 : On dispose d’une liste de nombres positifs tel que le dernier
+nombre est 0. Calculer la moyenne arithmétique de ces nombres.
+a) Ecrire un algorithme en pseudo-code basé sur la boucle tant que.
+b) Dessiner l’organigramme de l’algorithme.
+c) Faire la trace de cet algorithme pour : 14,5 12 15 13 0
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 25
+Boucle répéter … jusqu’à
+Forme générale
+répéter
+<traitement>
+jusqu’à <condition>
+début
+Reprenons le problème 5 en utilisant la boucle
+N  3
+répéter…jusqu’à.
+écrire(N)
+1 début
+2 N 3
+3 répéter N  N - 1
+4 écrire(N)
+oui non
+5 N N – 1
+N > 0
+6 jusqu’à N=0
+7 fin fin
+non
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 26
+Exercice 2
+Reprenons le problème 6 qui consiste à calculer la moyenne arithmétique d’une
+liste de nombres positifs dont le dernier élément est 0.
+a) Ecrire l’algorithme en pseudo-code basé sur la boucle répéter…jusqu’à.
+b) Dessiner l’organigramme de l’algorithme.
+c) Faire la trace de ce algorithme pour la liste : 14 12 15 13 0
+d) Faire la trace de ce algorithme pour la liste : 0
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 27
+Boucle pour
+Forme générale
+pour v=valeur1 à valeur2 faire
+<traitement>
+Reprenons le problème 5 en utilisant la boucle pour.
+1 début
+2 pour N = 3 à 1 faire
+3 écrire(N)
+4 fin
+Exercice : Comparer les trois types de boucles (structures répétitives).
+Initiation à la programmation, M. Eleuldj, Département Génie Informe de boucleatique, EMI, septembre 2014 28
+Exercice 3
+Reprenons le problème 6 qui consiste à calculer la moyenne arithmétique d’une
+liste de nombres positifs sachant que la liste est composée de N éléments.
+a) Ecrire l’algorithme en pseudo-code basé sur la boucle pour.
+b) Faire la trace de ce algorithme pour : 14 12 15 13
+c) Comparer les trois algorithme du problème 6.
+Problème 7 : Considérons le calcul du quotient Q et du reste R de la division de
+deux nombres positifs A et B en utilisant l’addition et la soustraction
+uniquement (la division entière ne doit pas être utilisée).
+a) Décrire l’algorithme.
+b) Faire la trace pour A = 9 et B = 4
+c) Que se passe-t-il si : A = 0 et B ≠ 0; A > 0 et B = 0; A = 0 et B = 0; A < B
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 29
+Exercice 4
+Problème 8 : Trouver toutes les valeurs de N (1 ≤ N ≤ 100) tel que :
+1 + 2 + … + N = 3(N -1)
+Problème 9 : Déterminer le plus grand élément dans une suite de nombres
+positifs
+Problème 10 : Soit l’algorithme suivant:
+lire A, ε
+X A
+répéter
+X (X + A/X)/2
+jusqu’à |X2 – A| < ε
+écrire X
+a) Faire la trace pour A = 9 et ε = 0,1.
+b) Que calcule cet algorithme ?
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 30
+Structure de donnée tableau
+Définition : un tableau est une structure de données qui peut contenir plusieurs
+données de même type. Un élément du tableau est accédé en utilisant la
+variable du tableau suivie du numéro de l’élément appelé indice
+Exemple : Soit T un tableau de 10 entiers
+T(5) 26 permet d’affecter la valeur 26 au 5ème élément.
+Problème 11 : Considérons que le tableau Notes contient N notes. Calculer la
+moyenne arithmétique de ces notes.
+a) Ecrire l’algorithme en pseudo-code.
+b) Faire la trace de ce algorithme pour Notes=(14 ,12,15,13).
+Problème 12 : calculer le produit de deux matrices d’ordre n.
+a) Ecrire l’algorithme en pseudo-code.
+b) Faire la trace de cet algorithme pour deux matrices d’ordre 2.
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 31
+Etapes de résolution d’un problème
+1 Définition précise du problème
+généralement les problèmes sont mal définis et représentent des ambigüités.
+Il faudrait prévoir les cas susceptibles de se produire et préciser le traitement
+correspondant (données, traitement, résultats et erreurs)
+2 Méthode de développement
+procédurale
+orientée objet
+3 Conception des algorithmes
+4 Validation des algorithmes
+les algorithmes doivent répondre aux spécifications (trace)
+5 Codification
+expression (traduction) des algorithmes en langage de programmation
+dépendamment des langages disponibles et de la nature du problème.
+6 Mise au point
+correction des erreurs de syntaxe et de sémantique (à l’aide des jeux d’essai).
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 32
+Solutions
+Algorithme 8
+S 0
+pour N à 100 faire
+S S + N
+si S = 3(N – 1) alors
+écrire(N, vérifie l’équation)
+sinon
+écrire(N, ne vérifie pas l’équation)
+Algorithme 9
+lire A et B
+Q 0
+tant que A ≥ B faire
+A A + B
+Q Q + 1
+R A
+Initiation à la programmation, M. Eleuldj, Département Génie Informatique, EMI, septembre 2014 33

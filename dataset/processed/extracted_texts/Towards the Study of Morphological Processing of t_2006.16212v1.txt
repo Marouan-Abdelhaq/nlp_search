@@ -1,0 +1,267 @@
+0202
+nuJ
+92
+]LC.sc[
+1v21261.6002:viXra
+Towards the Study of Morphological Processing of the Tangkhul
+Language
+MirinsoShadang NavanathSaharia Thoudam Doren Singh
+IndianInstituteofInformationTechnologyManipur
+Imphal,India-795002
+{mirinso, nsaharia}@iiitmanipur.ac.in,thoudam.doren@gmail.com
+Abstract the accent of speech (way of speaking Tangkhul)
+variesfrom geographical area. Tangkhul region is
+There is no or little work on natural lan-
+mainlydividedintofourmajorparti.e. East(zing-
+guage processing of Tangkhul language.
+sho), west (zingtun), North (ato), South (azay).
+Thecurrentworkisahumblebeginningof
+There are more than 100 language spoken in the
+morphologicalprocessingofthislanguage various villages of Tangkhul diaspora, since all
+using an unsupervised approach. We use
+the villages of Tangkhul region (Ukhrul district
+a small corpus collected from different
+& Kamjong district) has their own native lan-
+sources oftextbooks, shortstories andar-
+guage,thepronunciation ofthecommonlanguage
+ticles of other topics. Based on the exper-
+(Tangkhul)ishighly varying.
+imentscarriedout,themorphemeidentifi-
+cationtaskusingmorphessorgivesreason-
+The most obvious working definition of the
+ableandinteresting output despite using a
+TangkhullanguageisthefamilyofTibeto-Burman
+smallcorpus.
+languages spoken by members of the Tangkhul
+tribe. This definition is complicated by a num-
+1 Introduction
+ber of factors, and is clearly inadequate (as will
+The name Tangkhul (also known as Hao or Ihao beseen), since someofthelanguages spoken asa
+especially in older literature) refers to an ethnic mother-tongue by ethnic Tangkhuls are not mem-
+group which live in the hill of Ukhrul district and bers of the family being discussed here and be-
+KamjongdistrictofManipurState,India,andcon- causeitispossiblethattherearemembersofother
+tiguous parts of Nagaland (another state of India) Nagatribes speaking languages that belong inthe
+and Burma. The Tangkhuls are quite diversified Tangkhul group. Thus, while ethnicity can be
+linguistically, and culturally. The speech vari- taken as neither a necessary nor a sufficient cri-
+eties of most Tangkhul villages are not mutually terionformembershipintheTangkhulfamilyitis
+intelligible with those of neighbouring villages. neverthelessausefulstartingpointforadiscussion
+Even the similarities are large enough to facili- ofthisgroupoflanguages.
+tate the rapid learning of one anothers languages.
+However, it is clear that the Tangkhul languages Morphological processing of a language is the
+are closely related to one-another and form a dis- beginning of NLP work of that particular lan-
+tinct subgroup within the Tibeto-Burman family. guage. There are reports on morphological pro-
+Tangkhulisanethnicgroupwhoselanguagevaries cessing work for many other major Indian lan-
+fromvillagetovillage. Ithaslongbeennotedthat guages. But, Tangkhul language in particular
+Tangkhul is a group of languages, rather than a which falls under resource constrained and less
+single language (Brown 1837), however, almost privileged categorywithnoorlittleworkonnatu-
+all of the available descriptions of Tangkhul lan- ral language processing till date. In this light, we
+guages have concentrated on a single varietythe attempt to collect small corpus and start the ini-
+languageofUkhrultown,whichhascometoserve tialstepstowardsmorphologicalprocessingofthis
+as a lingua franca for the whole Tangkhul tribe. language. Themorphological analysis ofthis lan-
+Even if the Tangkhul language serve as a com- guageisfoundtobeslightlycomplexbeingagglu-
+mon language for the whole Tangkhul region, but tinative(Mortensen,2003)one.
+2 Related Work Compounding is divided into three classes - en-
+docentric compound, exocentric compound and
+The Tibeto-Burman languages of India are
+co-ordinate compound. Endocentric compound
+still lacking the basic language processing
+is again divided into right headed compound and
+tools of required quality. Among the re-
+left-headed compound. In the right-headed com-
+ported work on Tibeto-Burman languages,
+pound, it may have many constituents such as
+Bodo (Sarmah, 2004), Mizo (Pakrayetal.,
+‘noun + noun’ and ‘noun + derived noun’, but
+2015), Kok-borok (Debbarmaetal., 2012) and
+‘noun + noun’ is more used than the other one in
+Manipuri (SinghandBandyopadhyay, 2008) are
+Tangkhul(Ahum,1997).
+main. Almost all the reported work used apriori
+TherearethreetypesofverbrootsinTangkhul-
+knowledge of the language either in the form of
+simple, complex and compound. A simple root
+dictionary or in the form of preparing label data
+is irreducible ’core element’ obtained by drop-
+for training. Being a resource less language, we
+ping all the affixes. A root may be monosyl-
+preferred unsupervised learning approach for the
+labic or bisyllabic. For example: lei (exist/have),
+considered language.
+vao(shout), and malai(forget). Though Tangkhul
+2.1 Languagemorphologyandsyntax verbs are close class, few verbs are derived from
+’nominal’ roots. For example: /pha/ /ra/. Table 1
+Tankhul has two distinct tones - high and low,
+tabulated fewcasemarkersofTanghullanguage.
+mainlywiththeutterances associated withthelet-
+tert,d,r,m,andf. Forexamples
+There are two broad types of modifiers- adjec-
+1. High(Kajuiya) tival and adverbials. Adjectives, as a word class,
+are quite different from nouns and verbs. In the
+Chanhan Kasho (open) Khaikao (dry fish)
+case of Tangkhul language, the exact relationship
+Khalen(trap)
+between adjectives on the one hand, and other
+2. Low (Khanema) kachang (month) kachui categories like nouns, verbs and adverbs on the
+(high)mashit(closeness) ashee(blood) other, has been one of the disputed issues in lin-
+guistics. InTangkhullanguage thereisnodistinc-
+Adjective of Tangkhul displays a hybrid mor- tionbetweenverbsandadjectivesinthesensethat
+phology, as it always occurs semantically some- theyarederivedfromroots,andfunctionasadjec-
+wherebetweenverbsandnouns. tives or verbs with (a) appropriate affixation and
+Like other morphologically rich neighbour (b) appropriate occurrence in a sentence (Ahum,
+languages (Majumderetal., 2007; Sahariaetal., 1997). Expressives (which are aplenty in the lan-
+2014), Tangkhul also has a strong tendency to guage and which most often have adverbial and
+formsequence ofaffixestoprepend/append tothe adjectival functions) can be compounded with a
+root. number of roots to form compound adjectival. In
+Infact, manyofthe prefixes found inTangkhul theprocessofcompoundingexpressivetendtobe-
+language behaves morphologically as if they are have like intensifiers or modifiers. The following
+part of the root. While it is possible to assign are some of the most commonly used adjectives
+independent historical origins to these elements, formedbycompounding rootsandexpressive.
+fromasynchronicstandpointthefactorsthatiden-
+tifythemarephonological andnotmorphological. 2.3 Compoundingandreduplication
+As will be seen, it is often not possible to assign There are some compound modifiers in the
+a consistent meaning or grammatical function to
+Tangkhul,whicharefurtherreduplicatedtodenote
+these prefixes, which will be referred to here as modified or completely changed meaning. In the
+lexicalprefixes (Mortensen,2003). process of reduplication, the last syllable of the
+compoundrootispartiallyreduplicated byreplac-
+2.2 WordFormation
+ing its initial consonant. The following are some
+The formation of words in a language is one the
+of the most commonly used reduplicated com-
+topic, which still attracts the researchers most.
+pound adjectives. For example: Root + Root +
+The two main class of word formation are inflec-
+Reduplicate
+tion and derivation. Derivation is divided into
+again two classes - affixation and compounding. • them-reak-sek =them (skill)- reak(pretend)-
+ProceedingofRegionalInternationalConferenceonNaturalLanguageProcessing(regICON)2017,3rdand4th
+November2017,IIITSenapati,Manipur,India
+Casemarker Suffix Example
+Locativecasemarker -li,-wui Manipur-li (inManipur)
+Genitivecasemarker -chi- Avi-chi(his)
+Nominativecasemarker -na khipa-na (who)
+Table1: Fewcasemarkerswithexample
+sek(redu) of the utterances of a language. As it is based on
+ApproximateEnglishmeaning: pretendingto words or utterance of the language and its fre-
+beveryskillful orlearned quency, mostofthetime,thetooldiscovers prefix
+(in sequence), stem and suffix (in sequence).
+• Khon-zar-tar=Khon(sound)-zar(dense)-tar During experiment, we found that, a word may
+(redu)
+havemaximumsevendifferentmorpheme,mostly
+ApproximateEnglishmeaning: verynoisy.
+sequence of affixes. The morpheme frequency
+with example is tabulated in Table 3. We also
+3 Corpus preparation and preprocessing
+found that The corpus contains a good number of
+borrowed words from English and neighbouring
+As the existence of the language is very rare in
+languages.
+web, we have manually collected/typed few texts
+for our experiment. The current version of the Thefollowingexamplesshowsthemorphologi-
+corpus contains 21713 words, out of which 7362 calrichnessoftheconsideredlanguagesegmented
+are unique words (include inflections). The arti- usingMorfessor.
+cles or segment of articles in the corpus can be maphaning (not thinking) = ma (no) + phaning
+categoriedintobiography(4numbers),shortstory (thinking)
+(6 numbers), essay (11 numbers), drama (2 num- maphaninsali =ma+pha+nin+sa+li
+bers) and letter (1 number) with average (approx- mapa˜msangmara=ma+pa˜ +m+sa+ng+mara
+imately) 904 words per article. The first ten fre- khamashasha˜li =kha+ma+sha+sh+a˜li
+quentwordsinthecorpusaretabulatedinTable2. kakhararkhangazai = ka + kharar + kha + nga +
+zai
+SrNo. Word Meaning frequency a˜cha˜honthangcham = a˜ + cha˜ + hon + thang +
+1 eina with 708 cham
+2 hi this 367
+3 chi that 358 The following are few examples, the Morfessor
+4 kala and 336 segmentedcorrectly.
+5 da 184 a+cham+a˜ram
+6 haowa 130 a˜ +lung+th+ung+li
+7 kaji that 122 a˜ +ng+a˜ +ng+nao+li
+8 a˜kha one 122 a+ri+shang+li
+9 a˜wui his 120
+10 chili there 110 Table4tabulatedfewwordsincorrectlysegmented
+byMorfessor.
+Table2: Tenmostfrequentwordsinthecorpus.
+Interestingly,duringsegmentation,basedonthe
+evidence in the corpus, the tool is splitting the
+For our experiment, we use Morfessor
+following English words used as loan words in
+(CreutzandLagus, 2005) version 1.01, an un-
+Tangkhul(Table5).
+supervised language independent morphology
+Inthecontextofloanwords,anotherinteresting
+learning package to discover the regularities
+example wefound isacid +pa˜ + va. Though the
+behind the word formation process. This leaning
+root(thefirstmorpheme) isavalid loanword,the
+approach discovers the primitive morphological
+units such as root/base/stem2, suffix and prefix context actually was indicating the root ashipa˜va
+(meanswife).
+1http://www.http://morpho.aalto.fi/projects/morpho; Ac-
+cessdate:30August,2017. andstem,forthisexperimentweareusingthesetermsinter-
+2Though,therearedifferencesintheconceptofroot,base changeablytoindicatestem
+ProceedingofRegionalInternationalConferenceonNaturalLanguageProcessing(regICON)2017,3rdand4th
+November2017,IIITSenapati,Manipur,India
+Wordswithnoaffix 1772 Example: khana
+Wordswithoneaffix 3600 Example: advocate+la
+Wordswithtwoaffixes 1487 Example: a˜+thingreira+wui
+Wordswiththreeaffixes 410 Example: kajui+kha+nem
+Wordswithfouraffixes 78 Example: +lung+th+ung+li
+Wordswithfiveaffixes 12 Example: la+ng+da+ng+la˜+na
+WordswithSixaffixes 3 Example: kha+nga+p+eo+bing+li+la
+Table3: Affixfrequency distribution inthecorpus
+Wrong(ByMorfessor) Correct Purkayastha.2012. Morphologicalanalysisofkok-
+a˜ +ka˜ +khare+wui a˜ +ka˜ +kha+re+wui borok for universal networking language dictio-
+nary. In Recent Advances in Information Technol-
+a˜ +mathen+pai+ra a˜ +ma+then+pai+ra
+ogy (RAIT), 2012 1st International Conference on.
+a˜ +ngasa˜m+khuiya a˜ +nga+sa˜m+khui+ya
+IEEE,pages474–477.
+Table4: Incorrect segmentation ofwords Prasenjit Majumder, Mandar Mitra, Swapan K Parui,
+Gobinda Kole, Pabitra Mitra, and Kalyankumar
+acqui+red Wrong Datta. 2007. Yass: Yet another suffix stripper.
+ACM transactions on information systems (TOIS)
+activ+ities Wrong
+25(4):18.
+activ+ity Wrong
+administra +tion+wui Wrong DavidMortensen.2003. Comparativetangkhul. Uni-
+versityofCalifornia,Berkeley.
+Table5: Segmentationofloanwords
+ParthaPakray,ArunagshuPal,GoutamMajumder,and
+Alexander Gelbukh. 2015. Resource building and
+parts-of-speech(pos)taggingforthemizolanguage.
+4 Conclusion
+In Artificial Intelligence (MICAI), 2015 Fourteenth
+Mexican InternationalConference on. IEEE, pages
+The demand for localization through electronic
+3–7.
+content has made the globe a smaller place and
+any digital divide in this regard has to be reduced Navanath Saharia, Utpal Sharma, and Jugal Kalita.
+2014. Stemming resource-poor indian languages.
+through the inclusion of more naturally occur-
+ACMTransactionson Asian LanguageInformation
+ring languages through the information technol-
+Processing(TALIP)13(3):14.
+ogyrevolution. Towardsthisdirection, thepresent
+task is a step to bring Tangkhul into the language Priyankoo Sarmah. 2004. Some aspects of the tonal
+phonologyof Bodo. Ph.D. thesis, Englishand For-
+technology revolution. In the present work, we
+eignLanguagesUniversity,Hyderabad.
+reported the morphological processing work of
+Tangkhul using an unsupervised approach. We Thoudam Doren Singh and Sivaji Bandyopadhyay.
+2008. Morphologydriven manipuripos tagger. In
+foundtheresultoftheexperimenttobereasonably
+IJCNLP.pages91–98.
+good as compared to the size of the corpus used
+in the work. Our future direction includes more
+experiment on this by including language specific
+rulesandothersemi-supervised approaches.
+References
+Victor Ahum. 1997. Tangkhul-Naga Grammar: A
+StudyofWordFormation. Ph.D.thesis.
+MathiasCreutzandKristaLagus.2005. Unsupervised
+morphemesegmentationandmorphologyinduction
+from text corpora using morfessor 1.0. Technical
+report.
+Khumbar Debbarma, Braja Gopal Patra, Swapan
+Debbarma, Lalita Kumari, and Bipul Shyam
+ProceedingofRegionalInternationalConferenceonNaturalLanguageProcessing(regICON)2017,3rdand4th
+November2017,IIITSenapati,Manipur,India
