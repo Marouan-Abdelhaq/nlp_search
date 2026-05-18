@@ -2,8 +2,8 @@
 dataset/raw/pdf/
 
 # Bloquer les fichiers de vecteurs trop lourds pour GitHub
-dataset/processed/bow_vectors/*.pkl
-dataset/processed/tfidf_vectors/*.pkl
+dataset/processed/preprocessed_data/*.pkl
+dataset/processed/w2v_vectors/*.pkl
 dataset/processed/*.pkl
 
 # Bloquer l'environnement virtuel et les caches
