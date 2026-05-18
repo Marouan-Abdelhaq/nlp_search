@@ -15,8 +15,12 @@ stop_words = set(stopwords.words("english"))
 stop_words.update(stopwords.words("french"))
 
 stop_words.update({
-    "would", "could", "also", "one", "know",
-    "like", "figure", "table", "nbsp", "quot"
+    "would","could","also","one","know","get","like","thank","im","ive",
+    "fig","figure","table","al","pp","vol","et","ibid","ref","dun","dune",
+    "comm","cett","peut","tout","tous","etre","dont","cela","cette","celui",
+    "celle","ceux","quand","bien","alors","ainsi","donc","mais","avoir",
+    "faire","tres","encore","toute","apres","avant","entre","selon","lors",
+    "depuis","nbsp","amp","quot",
 })
 
 stemmer_en = SnowballStemmer("english")
