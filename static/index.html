@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini search engine</title>
+    <meta name="description" content="249 scientific documents">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500&family=Roboto:wght@400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            font-size: 14px;
+        }
+
+        body {
+            font-family: 'Roboto', arial, sans-serif;
+            background: #202124;
+            color: #BDC1C6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        #home {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 0 24px;
+        }
+
+        .logo {
+            font-family: 'Google Sans', 'Roboto', sans-serif;
+            font-size: 4rem;
+            font-weight: 400;
+            letter-spacing: -2px;
+            margin-bottom: 8px;
+            user-select: none;
+        }
+
+        .logo .c1 {
+            color: #4285F4;
+        }
+
+        .logo .c2 {
+            color: #EA4335;
+        }
+
+        .logo .c3 {
+            color: #FBBC05;
+        }
+
+        .logo .c4 {
+            color: #4285F4;
+        }
+
+        .logo .c5 {
+            color: #34A853;
+        }
+
+        .logo .c6 {
+            color: #EA4335;
+        }
+
+        .subtitle {
+            color: #9AA0A6;
+            font-size: 1rem;
+            margin-bottom: 32px;
+            font-weight: 400;
+        }
+
+        .search-container {
+            width: 100%;
+            max-width: 584px;
+            position: relative;
+        }
+
+        .search-bar {
+            width: 100%;
+            height: 46px;
+            background: #303134;
+            border: 1px solid #5F6368;
+            border-radius: 24px;
+            padding: 0 48px 0 20px;
+            font-size: 1rem;
+            color: #E8EAED;
+            outline: none;
+            transition: background 0.2s, box-shadow 0.2s, border-color 0.15s;
+            font-family: 'Roboto', arial, sans-serif;
+        }
+
+        .search-bar::placeholder {
+            color: #9AA0A6;
+        }
+
+        .search-bar:hover {
+            background: #3C3F43;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+            border-color: transparent;
+        }
+
+        .search-bar:focus {
+            background: #444649;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+            border-color: transparent;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            color: #9AA0A6;
+            pointer-events: none;
+        }
+
+        .pills {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .pill {
+            font-size: 0.86rem;
+            font-weight: 400;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid #3C4043;
+            background: #303134;
+            color: #BDC1C6;
+            cursor: pointer;
+            transition: all 0.15s;
+            user-select: none;
+        }
+
+        .pill:hover {
+            background: #3C4043;
+            border-color: #5F6368;
+        }
+
+        .pill.active {
+            background: rgba(138, 180, 248, 0.15);
+            color: #8AB4F8;
+            border-color: rgba(138, 180, 248, 0.4);
+        }
+
+        .pill-sep {
+            width: 1px;
+            background: #3C4043;
+            margin: 0 4px;
+            align-self: stretch;
+        }
+
+        #results-page {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding: 20px 24px 16px;
+            border-bottom: 1px solid #3C4043;
+            background: #202124;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-small {
+            font-family: 'Google Sans', 'Roboto', sans-serif;
+            font-size: 1.65rem;
+            font-weight: 400;
+            letter-spacing: -1px;
+            cursor: pointer;
+            flex-shrink: 0;
+            user-select: none;
+        }
+
+        .results-header .search-container {
+            max-width: 690px;
+            flex: 1;
+        }
+
+        .results-body {
+            max-width: 652px;
+            padding: 20px 24px 60px;
+            margin-left: 168px;
+        }
+
+        @media (max-width: 900px) {
+            .results-body {
+                margin-left: 24px;
+            }
+        }
+
+        .results-info {
+            color: #9AA0A6;
+            font-size: 0.92rem;
+            padding-bottom: 14px;
+            border-bottom: 1px solid #3C4043;
+            margin-bottom: 6px;
+        }
+
+        .result-item {
+            padding: 16px 0;
+        }
+
+        .result-breadcrumb {
+            font-size: 0.85rem;
+            color: #BDC1C6;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .result-breadcrumb .domain {
+            color: #BDC1C6;
+        }
+
+        .result-breadcrumb .path {
+            color: #9AA0A6;
+        }
+
+        .result-title {
+            font-size: 1.3rem;
+            color: #8AB4F8;
+            font-weight: 400;
+            line-height: 1.3;
+            cursor: pointer;
+            margin-bottom: 6px;
+            word-break: break-word;
+        }
+
+        .result-title:hover {
+            text-decoration: underline;
+        }
+
+        .result-snippet {
+            font-size: 0.93rem;
+            color: #BDC1C6;
+            line-height: 1.58;
+            word-break: break-word;
+        }
+
+        .result-snippet b {
+            color: #E8EAED;
+            font-weight: 500;
+        }
+
+        .result-tags {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            font-size: 0.78rem;
+            padding: 3px 10px;
+            border-radius: 12px;
+            background: #303134;
+            color: #9AA0A6;
+            border: 1px solid #3C4043;
+        }
+
+        .tag-score {
+            color: #8AB4F8;
+            border-color: rgba(138, 180, 248, 0.3);
+        }
+
+        .compare-section {
+            margin-top: 8px;
+        }
+
+        .compare-label {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #8AB4F8;
+            padding: 14px 0 6px;
+            border-bottom: 1px solid #3C4043;
+            margin-bottom: 4px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 60px 0;
+            color: #9AA0A6;
+        }
+
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border: 3px solid #3C4043;
+            border-top-color: #8AB4F8;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .footer {
+            text-align: center;
+            padding: 32px;
+            color: #5F6368;
+            font-size: 0.82rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="home">
+        <div class="logo"><span class="c1">M</span><span class="c2">i</span><span class="c3">n</span><span
+                class="c4">i</span><span class="c5">s</span><span class="c6">e</span><span class="c1">a</span><span
+                class="c2">r</span><span class="c3">c</span><span class="c4">h</span><span class="c5">e</span><span
+                class="c6">n</span><span class="c1">g</span><span class="c2">i</span><span class="c3">n</span><span
+                class="c4">e</span></div>
+        <div class="subtitle">249 scientific documents</div>
+        <div class="search-container">
+            <input type="text" id="home-search" class="search-bar" placeholder="Search documents..." autocomplete="off"
+                autofocus>
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+        </div>
+        <div class="pills" id="home-pills">
+            <div class="pill active" data-algo="cosine">Cosine Similarity</div>
+            <div class="pill" data-algo="knn">BM25</div>
+            <div class="pill" data-algo="compare">Compare</div>
+            <div class="pill-sep"></div>
+            <div class="pill" data-k="3">Top 3</div>
+            <div class="pill active" data-k="5">Top 5</div>
+            <div class="pill" data-k="10">Top 10</div>
+        </div>
+    </div>
+    <div id="results-page">
+        <div class="results-header">
+            <div class="logo-small" id="back-home"><span class="c1">M</span><span class="c2">i</span><span
+                    class="c3">n</span><span class="c4">i</span><span class="c5">s</span><span class="c6">e</span><span
+                    class="c1">a</span><span class="c2">r</span><span class="c3">c</span><span class="c4">h</span><span
+                    class="c5">e</span><span class="c6">n</span><span class="c1">g</span><span class="c2">i</span><span
+                    class="c3">n</span><span class="c4">e</span></div>
+            <div class="search-container">
+                <input type="text" id="results-search" class="search-bar" placeholder="Search documents..."
+                    autocomplete="off">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </div>
+        </div>
+        <div class="results-body">
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                Searching...
+            </div>
+            <div id="results-content"></div>
+            <div class="footer">mini search engine
+            </div>
+        </div>
+    </div>
+    <script>
+        let currentAlgo = "cosine";
+        let currentK = 5;
+        const homeEl = document.getElementById("home");
+        const resultsPage = document.getElementById("results-page");
+        const homeSearch = document.getElementById("home-search");
+        const resultsSearch = document.getElementById("results-search");
+        const resultsContent = document.getElementById("results-content");
+        const loadingEl = document.getElementById("loading");
+        const backHome = document.getElementById("back-home");
+        document.getElementById("home-pills").addEventListener("click", (e) => {
+            const pill = e.target.closest(".pill");
+            if (!pill) return;
+            if (pill.dataset.algo) {
+                document.querySelectorAll("#home-pills .pill[data-algo]").forEach(p => p.classList.remove("active"));
+                pill.classList.add("active");
+                currentAlgo = pill.dataset.algo;
+            }
+            if (pill.dataset.k) {
+                document.querySelectorAll("#home-pills .pill[data-k]").forEach(p => p.classList.remove("active"));
+                pill.classList.add("active");
+                currentK = parseInt(pill.dataset.k);
+            }
+        });
+        homeSearch.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" && homeSearch.value.trim()) {
+                doSearch(homeSearch.value.trim());
+            }
+        });
+        resultsSearch.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" && resultsSearch.value.trim()) {
+                doSearch(resultsSearch.value.trim());
+            }
+        });
+        backHome.addEventListener("click", () => {
+            homeEl.style.display = "flex";
+            resultsPage.style.display = "none";
+            homeSearch.value = "";
+            homeSearch.focus();
+        });
+        function highlightWords(text, query) {
+            if (!text || !query) return text;
+            const words = query.split(/\s+/).filter(w => w.length > 2);
+            if (!words.length) return text;
+            const regex = new RegExp(`(${words.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})`, "gi");
+            return text.replace(regex, "<b>$1</b>");
+        }
+        function renderResult(r, idx, query) {
+            const source = r.source === "arxiv" ? "arxiv.org" : "course";
+            const theme = r.theme || "document";
+            const lang = r.lang === "en" ? "EN" : r.lang === "fr" ? "FR" : "";
+            const snippet = highlightWords(r.snippet, query);
+            return `
+        <div class="result-item">
+            <div class="result-breadcrumb">
+                <span class="domain">${source}</span>
+                <span class="path">&rsaquo; ${theme}</span>
+            </div>
+            <div class="result-title">${r.title}</div>
+            <div class="result-snippet">${snippet}</div>
+            <div class="result-tags">
+                <span class="tag tag-score">Score : ${r.score.toFixed(4)}</span>
+                ${lang ? `<span class="tag">${lang}</span>` : ""}
+                <span class="tag">#${idx + 1}</span>
+            </div>
+        </div>
+    `;
+        }
+        async function doSearch(query) {
+            homeEl.style.display = "none";
+            resultsPage.style.display = "block";
+            resultsSearch.value = query;
+            resultsContent.innerHTML = "";
+            loadingEl.style.display = "block";
+            const params = new URLSearchParams({ q: query, algo: currentAlgo, k: currentK });
+            try {
+                const resp = await fetch(`/api/search?${params}`);
+                const data = await resp.json();
+                loadingEl.style.display = "none";
+                const algoLabel = currentAlgo === "cosine" ? "Cosine Similarity"
+                    : currentAlgo === "knn" ? "BM25"
+                        : "Comparison";
+                if (data.algo === "compare") {
+                    let html = `<div class="results-info">Comparison (${data.time}s) &mdash; ${query}</div>`;
+                    html += `<div class="compare-section">`;
+                    html += `<div class="compare-label">Cosine Similarity (${data.results.length} results)</div>`;
+                    data.results.forEach((r, i) => { html += renderResult(r, i, query); });
+                    html += `</div>`;
+                    html += `<div class="compare-section">`;
+                    html += `<div class="compare-label">BM25 (${data.knn_results.length} results)</div>`;
+                    data.knn_results.forEach((r, i) => { html += renderResult(r, i, query); });
+                    html += `</div>`;
+                    resultsContent.innerHTML = html;
+                } else {
+                    const count = data.results.length;
+                    let html = `<div class="results-info">About ${count} results (${data.time} seconds) - ${algoLabel}</div>`;
+                    data.results.forEach((r, i) => { html += renderResult(r, i, query); });
+                    if (count === 0) {
+                        html += `<div style="padding:40px 0; color:#9AA0A6; text-align:center;">
+                    <p style="font-size:1.1rem; margin-bottom:8px;">No results for <strong style="color:#E8EAED">${query}</strong></p>
+                    <p>Try different keywords.</p>
+                </div>`;
+                    }
+                    resultsContent.innerHTML = html;
+                }
+            } catch (err) {
+                loadingEl.style.display = "none";
+                resultsContent.innerHTML = `<div style="padding:40px; color:#F28B82; text-align:center;">Server connection error.</div>`;
+            }
+        }
+    </script>
+</body>
+
+</html>
