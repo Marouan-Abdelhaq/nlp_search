@@ -1,10 +1,8 @@
 # Bloquer les PDF bruts de 3 Go
 dataset/raw/pdf/
 
-# Bloquer les fichiers de vecteurs trop lourds pour GitHub
-dataset/processed/preprocessed_data/*.pkl
-dataset/processed/w2v_vectors/*.pkl
-dataset/processed/*.pkl
+# Bloquer tout le dataset traité
+dataset/processed/
 
 # Bloquer l'environnement virtuel et les caches
 my_env/
